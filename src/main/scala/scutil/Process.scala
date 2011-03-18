@@ -1,0 +1,46 @@
+package scutil
+
+import java.io._
+
+import scala.collection.mutable
+
+import scutil.Resource._
+import scutil.Functions._
+import scutil.Concurrent._
+import scutil.ext.ReaderImplicits._
+import scutil.ext.WriterImplicits._
+
+object Process {
+	case class Result(rc:Int, out:Seq[String], err:Seq[String])
+	
+	def exec(command:String*):Result = 
+			exec(command, Map.empty[String,String], None, Seq.empty[String])
+		
+	def exec(command:Seq[String], env:Map[String,String], pwd:Option[File], input:Seq[String]):Result = {
+		import scala.collection.JavaConversions._
+		
+		val	builder	= new ProcessBuilder(command)
+		builder.environment() putAll env
+		pwd foreach { builder directory _ }
+		val proc	= builder.start()
+		
+		val in	= spawn { spewLines(proc.getOutputStream, input) }
+		val	err	= spawn { slurpLines(proc.getErrorStream) }
+		val	out	= spawn { slurpLines(proc.getInputStream) }
+		// avoid memory leak, see http://developer.java.sun.com/developer/qow/archive/68/
+		proc.waitFor()
+		val	rc	= proc.exitValue
+		Result(rc, out(), err())
+	}
+	
+	private def slurpLines(st:InputStream):Seq[String] = {
+		new InputStreamReader(st) use { _.readLines() }
+	}
+	
+	private def spewLines(st:OutputStream, lines:Seq[String]) {
+		new OutputStreamWriter(st) use { _ writeLines lines }
+	}
+	
+	private def spawn[T](task: =>T):Thunk[T] =
+			execute(backgroundExecutor, thunk(task))
+}
