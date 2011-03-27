@@ -1,1 +1,9 @@
 Some utilities I found useful to have around.
+
+To build this code, get and install SBT from 
+	http://code.google.com/p/simple-build-tool/ .
+
+Use these commands to build:
+	git clone git@github.com:ritschwumm/scutil.git
+	cd scutil
+	sbt update publish-local
