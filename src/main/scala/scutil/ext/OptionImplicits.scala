@@ -35,6 +35,4 @@ final class OptionExt[T](delegate:Option[T]) {
 	def noneEffect(effect: =>Unit):Option[T] = { if (delegate.isEmpty)  effect; delegate }
 	def someEffect(effect: =>Unit):Option[T] = { if (delegate.nonEmpty) effect; delegate }
 	def someEffect(effect:T=>Unit):Option[T] = { if (delegate.nonEmpty) effect(delegate.get); delegate }
-	
-
 }

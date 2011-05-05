@@ -3,18 +3,16 @@ package scutil
 import java.util.concurrent.Callable
 
 object Functions {
+	type Task			= Thunk[Unit]
+	type Thunk[+T]		= ()=>T		// aka Function0[T] aka Future[T]
+	type Effect[-T]		= T=>Unit	// Function1[T,Unit] aka Cont[T]
+	type Executor		= Task=>Unit
+	
 	//def const[S](s:S) = new { def apply[T](t: =>T):S = s }
-	def constant[S,T](value: =>T):(S=>T)	= _ => value
-	
-	def ignorant[S,T](func:()=>T):(S=>T)	= _ => func()
-	
-		type Task		= Thunk[Unit]
-	type Thunk[T]	= ()=>T		// aka Function0[T] aka Future[T]
-	type Effect[T]	= T=>Unit	// Function1[T,Unit] aka Cont[T]
-	type Executor	= Task=>Unit
-	
-	def task(value: =>Unit):Task		= thunk(value)
-	def thunk[T](value: =>T):Thunk[T]	= () => value
+	def constant[S,T](value: =>T):(S=>T)		= _ => value
+	def ignorant[S,T](thunk:Thunk[T]):(S=>T)	= _ => thunk()
+	def task(value: =>Unit):Task				= thunk(value)
+	def thunk[T](value: =>T):Thunk[T]			= () => value
 	
 	//------------------------------------------------------------------------------
 	

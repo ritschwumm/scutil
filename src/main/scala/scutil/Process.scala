@@ -3,12 +3,12 @@ package scutil
 import java.io._
 
 import scala.collection.mutable
+import scala.collection.JavaConversions
 
 import scutil.Resource._
 import scutil.Functions._
 import scutil.Concurrent._
 import scutil.ext.ReaderImplicits._
-import scutil.ext.WriterImplicits._
 
 object Process {
 	case class Result(rc:Int, out:Seq[String], err:Seq[String])
@@ -17,7 +17,7 @@ object Process {
 			exec(command, Map.empty[String,String], None, Seq.empty[String])
 		
 	def exec(command:Seq[String], env:Map[String,String], pwd:Option[File], input:Seq[String]):Result = {
-		import scala.collection.JavaConversions._
+		import JavaConversions._
 		
 		val	builder	= new ProcessBuilder(command)
 		builder.environment() putAll env
@@ -38,7 +38,12 @@ object Process {
 	}
 	
 	private def spewLines(st:OutputStream, lines:Seq[String]) {
-		new OutputStreamWriter(st) use { _ writeLines lines }
+		new OutputStreamWriter(st) use { writer =>
+			lines foreach { line =>
+				writer write line
+				writer write Platform.lineSeparator
+			}
+		}
 	}
 	
 	private def spawn[T](task: =>T):Thunk[T] =

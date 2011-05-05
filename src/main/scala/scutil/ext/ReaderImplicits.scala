@@ -26,6 +26,7 @@ final class ReaderExt(delegate:Reader) {
 		out.toString
 	}
 	
+	// TODO should take a line separator argument
 	def readLines():Seq[String]	= {
 		val in		= new BufferedReader(delegate)
 		val buffer	= new mutable.ArrayBuffer[String]

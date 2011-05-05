@@ -7,7 +7,7 @@ trait IterableImplicits {
 }
 
 final class IterableExt[T](delegate:Iterable[T]) {
-	//  list.view.compose(pf).head
+	// TODO replace with collectFirst when switching to 2.9
 	def collectHead[U](pf:PartialFunction[T,U]):Option[U] =
 			delegate.view.collect(pf).headOption
 }

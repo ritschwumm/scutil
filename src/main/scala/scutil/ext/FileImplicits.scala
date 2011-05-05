@@ -6,12 +6,14 @@ import java.nio.charset.Charset
 import annotation.tailrec
 
 import scutil.Files
-import scutil.TextFile
-import scutil.ByteFile
+import scutil.Platform
 import scutil.Resource._
+import scutil.time.Instant
 
 import AnyRefImplicits._
 import BooleanImplicits._
+import InputStreamImplicits._
+import ReaderImplicits._
 
 object FileImplicits extends FileImplicits
 
@@ -21,6 +23,10 @@ trait FileImplicits {
 
 /** utility methods for java File objects */ 
 final class FileExt(delegate:File) {
+	// /** time of last modification as an Instant */
+	// def lastModifiedInstant:Option[Instant]	=
+	// 		delegate.lastModified guardBy { _ != 0 } map Instant.apply
+	
 	/** add a component to this Files's path */
 	def /(name:String):File = new File(delegate, name)
 	
@@ -56,8 +62,9 @@ final class FileExt(delegate:File) {
 			(delegate listFiles (Files mkFileFilter predicate)).nullOption map { _.toSeq }
 	
 	/** Some existing file, or None */
-	def existsOption:Option[File] = 
-			delegate.exists guard delegate
+	def guardExists:Option[File] =
+			if (delegate.exists)	Some(delegate)
+			else					None
 
 	/** map only the name of this File */
 	def modifyName(func:String=>String):File =
@@ -101,7 +108,14 @@ final class FileExt(delegate:File) {
 			new OutputStreamWriter(new FileOutputStream(delegate), charset) use code
 
 	//------------------------------------------------------------------------------
-			
-	def toByteFile:ByteFile						= new ByteFile(delegate)
-	def toTextFile(charset:Charset):TextFile	= new TextFile(delegate, charset)
+		
+	def readBytes():Array[Byte]				= withInputStream { _ readFully () }
+	def writeBytes(bytes:Array[Byte]):Unit	= withOutputStream { _ write bytes }
+	
+	def readString(charset:Charset):String					= withReader(charset) { _ readFully () }
+	def writeString(charset:Charset, string:String):Unit	= withWriter(charset) { _ write string }
+	
+	// TODO writeLines should not use the platform line separator, readLines should honor a single lineSeparator 
+	def readLines(charset:Charset):Seq[String]				= withReader(charset) { _ readLines () }
+	def writeLines(charset:Charset, lines:Seq[String]):Unit	= withWriter(charset) { _ write (lines mkString Platform.lineSeparator) }
 }

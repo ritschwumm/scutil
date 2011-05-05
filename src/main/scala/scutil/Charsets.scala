@@ -3,6 +3,8 @@ package scutil
 import java.nio.charset.Charset
 
 object Charsets {
+	val platform	= Charset forName Platform.fileEncoding
+	
 	val	us_ascii	= Charset forName "US-ASCII"
 	
 	val	iso_8859_1	= Charset forName "ISO-8859-1"

@@ -11,6 +11,5 @@ final class SetExt[S](delegate:Set[S]) {
 	def containsAny(that:Set[S]):Boolean	= (delegate & that).nonEmpty
 	def containsNone(that:Set[S]):Boolean	= (delegate & that).isEmpty 
 	
-	def retainWhere(predicate:S=>Boolean):Set[S]	= delegate -- (delegate filterNot predicate)
-	def removeWhere(predicate:S=>Boolean):Set[S]	= delegate -- (delegate filter predicate)
+	def mapBy[T](func:S=>T):Map[S,T]	= delegate map { it => (it, func(it)) } toMap
 }

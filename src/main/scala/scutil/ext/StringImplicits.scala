@@ -1,6 +1,7 @@
 package scutil.ext
 
 import scala.collection.mutable
+import scala.util.control.Exception._
 
 import BooleanImplicits._
 
@@ -11,9 +12,20 @@ trait StringImplicits {
 }
 
 final class StringExt(delegate:String) {
-	def emptyOption:Option[String]	= 
-			if (delegate.isEmpty)	None 
-			else					Some(delegate)
+	def toBooleanOption:Option[Boolean]	= toNumberOption(_.toBoolean)
+	def toByteOption:Option[Byte]		= toNumberOption(_.toByte)
+	def toShortOption:Option[Short]		= toNumberOption(_.toShort)
+	def toIntOption:Option[Int]			= toNumberOption(_.toInt)
+	def toLongOption:Option[Long]		= toNumberOption(_.toLong)
+	def toFloatOption:Option[Float]		= toNumberOption(_.toFloat)
+	def toDoubleOption:Option[Double]	= toNumberOption(_.toDouble)
+	
+	private def toNumberOption[T](func:String=>T):Option[T]	=
+			catching(classOf[NumberFormatException]) opt func(delegate)
+	
+	def guardNonEmpty:Option[String]	= 
+			if (delegate.nonEmpty)	Some(delegate)
+			else					None 
 	
 	// TODO rename to stripPrefixOpt and stripSuffixOpt, or even return Eithers
 	

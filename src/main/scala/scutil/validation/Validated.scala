@@ -17,7 +17,7 @@ object Validated {
 }
 
 /** 
-A kind of right-leaning Either. This is a Monad.
+A kind of right-leaning Either. This is a Monad and has a special Applicative accumulating errors.
 All operations work on the Valid case, for the Invalid case use the InvalidProjection.
 The problem type P is expected to be a Semigroup (via implicit conversion)
 to enable accumulation of errors. The value type T is unrestricted.
@@ -33,7 +33,7 @@ sealed abstract class Validated[+P,+T] {
 	def map[U](func:T=>U):Validated[P,U]						= cata(func andThen Valid.apply,	Invalid.apply)
 	def flatMap[Q>:P,U](func:T=>Validated[Q,U]):Validated[Q,U]	= cata(func,						Invalid.apply)
 	
-	/** function application within the Applicative */
+	/** function application within the "useful" Applicative (which is not the one derived from the Monad!) */
 	def ap[Q>:P,U,V](that:Validated[Q,U])(implicit sg:Semigroup[Q], witness:T=>U=>V):Validated[Q,V]	= 
 			that pa (this map witness)
 	

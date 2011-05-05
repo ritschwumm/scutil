@@ -6,7 +6,7 @@ import SemigroupInstances._
 
 /** extends scala.util.control.Exception handling so it can be used with Validated */
 object ThrowableSafety {
-	// TODO is harcoding to NEL here any useful?
+	// TODO is harcoding to NEL here useful in any way?
 	type ThrowableSafe[T]	= Validated[NonEmptyList[Throwable],T]
 	
 	implicit def SafeCatch[T](delegate:Catch[T]) = new {

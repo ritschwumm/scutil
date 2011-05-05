@@ -17,20 +17,22 @@ trait LangImplicits
 		with	EitherImplicits
 		with	Function1Implicits
 		with	IterableImplicits
+		with	IterableLikeImplicits
 		with	ListImplicits
 		with	OptionImplicits
 		with	PairImplicits
+		with	PredicateImplicits
 		with	SeqImplicits
 		with	SetImplicits
 		with	StringImplicits
 		with	TraversableImplicits
+		with	TraversableLikeImplicits
 		
 object IoImplicits extends IoImplicits		
 trait IoImplicits
 		extends	FileImplicits
 		with	InputStreamImplicits
 		with	ReaderImplicits
-		with	WriterImplicits
 		with	URLImplicits
 		
 object GuiImplicits extends GuiImplicits				
