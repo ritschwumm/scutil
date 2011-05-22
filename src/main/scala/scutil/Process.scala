@@ -41,7 +41,7 @@ object Process {
 		new OutputStreamWriter(st) use { writer =>
 			lines foreach { line =>
 				writer write line
-				writer write Platform.lineSeparator
+				writer write Platform.line.separator
 			}
 		}
 	}

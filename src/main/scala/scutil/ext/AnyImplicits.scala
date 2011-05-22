@@ -14,7 +14,7 @@ final class AnyExt[T](delegate:T) {
 			// PartialFunction.condOpt(pf)(delegate)
 			
 	/** apply a single unary function, just like F#'s operator */
-	def |>[U](f:T=>U)(implicit witness:T <%< U)	= f(delegate)
+	def |>[U](f:T=>U):U	= f(delegate)
 	
 	/** apply an effect, then return the delegate itself. */
 	def doto(effect:Function1[T,Unit]):T = {
@@ -41,4 +41,8 @@ final class AnyExt[T](delegate:T) {
 	/** None if the predicate matches, else Some */
 	def preventBy(predicate:T=>Boolean):Option[T]	= 
 			if (predicate(delegate)) Some(delegate) else None
+			
+	/** Right if the predicate matches, else Left */
+	def eitherBy(predicate:T=>Boolean):Either[T,T]	= 
+			if (predicate(delegate)) Right(delegate) else Left(delegate)
 }

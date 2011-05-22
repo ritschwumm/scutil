@@ -10,10 +10,12 @@ trait AnyRefImplicits {
 
 final class AnyRefExt[T <: AnyRef](delegate:T) {
 	def nullError(s: =>String):T	= 
-			if (delegate == null)	error(s) 
-			else					delegate 
+			if (delegate != null)	delegate 
+			else					sys error s 
 	
-	def nullOption:Option[T]	= Option(delegate)
+	def guardNotNull:Option[T]	=
+			if (delegate != null)	Some(delegate)
+			else					None
 			
 	def instanceOption[T](implicit m:Manifest[T]):Option[T] =
 			if (!(delegate eq null) && Manifest.singleType(delegate) <:< m)	Some(delegate.asInstanceOf[T])

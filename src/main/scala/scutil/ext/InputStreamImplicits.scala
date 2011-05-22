@@ -39,7 +39,7 @@ final class InputStreamExt(delegate:InputStream) {
 	def drain() {
 		val buffer	= new Array[Byte](blockSize)
 		var running	= true
-		while (true) {
+		while (running) {
 			val len = delegate read buffer
 			if (len == -1)	running	= false
 		}

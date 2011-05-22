@@ -220,7 +220,7 @@ trait SwingCasterInstances {
 			caster.addTableColumnModelListener,
 			caster.removeTableColumnModelListener,
 			// TODO does not work because we have multiple event types here
-			error("not implemented"))
+			sys error "not implemented")
 	
 	type TreeModelCaster = {
 		def addTreeModelListener(listener:TreeModelListener):Unit

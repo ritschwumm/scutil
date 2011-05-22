@@ -2,8 +2,9 @@ package scutil
 
 import java.nio.charset.Charset
 
+/** charsets existing on all platforms */
 object Charsets {
-	val platform	= Charset forName Platform.fileEncoding
+	val platform	= Charset forName Platform.file.encoding
 	
 	val	us_ascii	= Charset forName "US-ASCII"
 	

@@ -7,7 +7,7 @@ trait OptionImplicits {
 }
 
 final class OptionExt[T](delegate:Option[T]) {
-	def getOrError(s:String) = delegate getOrElse error(s)
+	def getOrError(s:String) = delegate getOrElse (sys error s)
 	
 	// == map some getOrElse none
 	def fold[X](some:T => X, none: => X):X = delegate match {

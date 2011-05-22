@@ -20,4 +20,6 @@ case class Duration(millis:Long) extends Ordered[Duration] {
 	def / (factor:Long):Duration	= Duration(millis / factor)
 	
 	def compare(that:Duration):Int	= this.millis compare that.millis
+	def min(that:Duration):Duration	= if (this < that) this else that
+	def max(that:Duration):Duration	= if (this > that) this else that
 }

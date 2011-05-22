@@ -19,6 +19,7 @@ trait LangImplicits
 		with	IterableImplicits
 		with	IterableLikeImplicits
 		with	ListImplicits
+		with	NodeImplicits
 		with	OptionImplicits
 		with	PairImplicits
 		with	PredicateImplicits

@@ -23,6 +23,10 @@ trait FileImplicits {
 
 /** utility methods for java File objects */ 
 final class FileExt(delegate:File) {
+	private implicit def mkFileFilter(predicate:File=>Boolean) = new FileFilter {
+		def accept(file:File):Boolean	= predicate(file)
+	}
+	
 	// /** time of last modification as an Instant */
 	// def lastModifiedInstant:Option[Instant]	=
 	// 		delegate.lastModified guardBy { _ != 0 } map Instant.apply
@@ -35,11 +39,13 @@ final class FileExt(delegate:File) {
 	
 	/** names until getParentFile returns null */
 	def path:List[String] = {
-		@tailrec def recurse(file:File, path:List[String]):List[String] = file.getParentFile match {
-			case null	=> path
-			case parent	=> recurse(parent, file.getName :: path)
-		}
-		recurse(delegate, Nil)
+		@tailrec
+		def unfold(file:File, path:List[String]):List[String] = 
+				file.getParentFile match {
+					case null	=> path
+					case parent	=> unfold(parent, file.getName :: path)
+				}
+		unfold(delegate, Nil)
 	}
 	
 	/** get the parent file the scala way */
@@ -48,18 +54,21 @@ final class FileExt(delegate:File) {
 			
 	/** get all parent directories starting with the root */
 	def parentChain:List[File]	= {
-		// TODO this is an unfold!
-		def recurse(file:File):List[File]	=
+		def unfold(file:File):List[File]	=
 				file.getParentFile match {
 					case null	=> Nil
-					case parent	=> parent :: recurse(parent)
+					case parent	=> parent :: unfold(parent)
 				}
-		recurse(delegate)
+		unfold(delegate)
 	}
 	
+	/** list files in this directory */
+	def children:Option[Seq[File]] =
+			delegate.listFiles.guardNotNull map { _.toSeq }
+			
 	/** list files in this directory matching a predicate */
 	def childrenWhere(predicate:File=>Boolean):Option[Seq[File]] =
-			(delegate listFiles (Files mkFileFilter predicate)).nullOption map { _.toSeq }
+			(delegate listFiles predicate).guardNotNull map { _.toSeq }
 	
 	/** Some existing file, or None */
 	def guardExists:Option[File] =
@@ -83,10 +92,22 @@ final class FileExt(delegate:File) {
 	/** delete all children and the file itself */
 	def deleteRecursive() {
 		def recurse(file:File) {
-			Option(file.listFiles).toSeq.flatten foreach recurse _
+			file.listFiles.guardNotNull.toSeq.flatten foreach recurse _
 			file.delete()
 		}
 		recurse(delegate)
+	}
+	
+	/** create a temp file within this directory */
+	def createTempFile(prefix:String, suffix:String):File	=
+			File createTempFile (prefix, suffix, delegate)
+	
+	/** create a temp directory within this directory */
+	def createTempDirectory(prefix:String, suffix:String):File	= {
+		val	file	= File createTempFile (prefix, suffix, delegate)
+		require(file.delete(),	"cannot delete temp file: " + file)
+		require(file.mkdir(),	"cannot create temp directory: " + file)
+		file
 	}
 	
 	//------------------------------------------------------------------------------
@@ -117,5 +138,5 @@ final class FileExt(delegate:File) {
 	
 	// TODO writeLines should not use the platform line separator, readLines should honor a single lineSeparator 
 	def readLines(charset:Charset):Seq[String]				= withReader(charset) { _ readLines () }
-	def writeLines(charset:Charset, lines:Seq[String]):Unit	= withWriter(charset) { _ write (lines mkString Platform.lineSeparator) }
+	def writeLines(charset:Charset, lines:Seq[String]):Unit	= withWriter(charset) { _ write (lines mkString Platform.line.separator) }
 }

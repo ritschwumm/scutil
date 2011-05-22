@@ -12,6 +12,8 @@ case class Instant(millis:Long) extends Ordered[Instant] {
 	def - (duration:Duration):Instant	= Instant(millis-duration.millis)
 	
 	def compare(that:Instant):Int		= this.millis compare that.millis
+	def min(that:Instant):Instant		= if (this < that) this else that
+	def max(that:Instant):Instant		= if (this > that) this else that
 	
 	def until(that:Instant):Duration	= Duration(that.millis - this.millis)
 	// def - (that:Instant):Duration	= Duration(this.millis - that.millis)

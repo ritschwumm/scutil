@@ -2,7 +2,7 @@ import sbt._
 
 final class ScUtilProject(info:ProjectInfo) extends DefaultProject(info) {
 	// dependencies
-	val specs	= "org.scala-tools.testing"	%% "specs"	% "1.6.7.1"	% "test"
+	val specs	= "org.scala-tools.testing"	%% "specs"	% "1.6.8"	% "test"
 	
 	// issue compiler warnings
 	override def compileOptions	= super.compileOptions ++ Seq(Unchecked)
