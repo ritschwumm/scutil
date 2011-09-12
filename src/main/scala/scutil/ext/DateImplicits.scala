@@ -10,5 +10,5 @@ trait DateImplicits {
 }
 
 final class DateExt(delegate:Date) {
-	def format(fmt:String):String = new SimpleDateFormat(fmt).format(delegate)
+	def format(fmt:String):String = new SimpleDateFormat(fmt) format delegate
 }

@@ -7,23 +7,20 @@ trait AnyImplicits {
 }
 
 final class AnyExt[T](delegate:T) {
-	/** match lifted to an Option */ 
-	def matchOption[U](pf:PartialFunction[T,U]):Option[U] =
-			pf.lift apply delegate	
-			// Some(delegate) collect pf
-			// PartialFunction.condOpt(pf)(delegate)
-			
 	/** apply a single unary function, just like F#'s operator */
 	def |>[U](f:T=>U):U	= f(delegate)
 	
 	/** apply an effect, then return the delegate itself. */
-	def doto(effect:Function1[T,Unit]):T = {
+	def |>>(effect:T=>Unit):T = {
 		effect apply delegate
 		delegate
 	}
 	
+	/** same as |> but with different precendence */
+	def thru[U](f:T=>U):U	= f(delegate)
+	
 	/** apply a number of effects, then return the delegate itself. inspired by clojure's doto */
-	def dotoN(effects:Function1[T,Unit]*):T	= {
+	def doto(effects:(T=>Unit)*):T	= {
 		effects foreach { _ apply delegate }
 		delegate
 	}
@@ -34,15 +31,41 @@ final class AnyExt[T](delegate:T) {
 	/** type-invariant inequality */
 	def !===[U](that:T)(implicit ev:T=:=U):Boolean	= delegate != that
 	
+	/** match lifted to an Option */ 
+	def matchOption[U](pf:PartialFunction[T,U]):Option[U] =
+			if (pf isDefinedAt delegate)	Some(pf(delegate))
+			else							None
+			// pf.lift apply delegate	
+			// Some(delegate) collect pf
+			// PartialFunction.condOpt(pf)(delegate)
+			
+	/*
+	// NOTE works only for covariant type parameters
+	// typesafe casting
+	def guardInstanceOf[U](implicit tm:Manifest[T], um:Manifest[U]):Option[U] = {
+		def sameArgs	= (um.typeArguments zip tm.typeArguments) forall { case (ua,ta) => ua >:> ta }
+		if (um >:> tm && sameArgs)	Some(delegate.asInstanceOf[U])
+		else						None
+	}
+	*/
+	
 	/** Some if the predicate matches, else None */
 	def guardBy(predicate:T=>Boolean):Option[T]	= 
 			if (predicate(delegate)) Some(delegate) else None
 			
 	/** None if the predicate matches, else Some */
 	def preventBy(predicate:T=>Boolean):Option[T]	= 
-			if (predicate(delegate)) Some(delegate) else None
+			if (predicate(delegate)) None else Some(delegate)
 			
 	/** Right if the predicate matches, else Left */
 	def eitherBy(predicate:T=>Boolean):Either[T,T]	= 
 			if (predicate(delegate)) Right(delegate) else Left(delegate)
+	
+	/** Right if Some else original value in Left */
+	def rightBy(func:T=>Option[T]):Either[T,T]	=
+				func(delegate) toRight delegate
+
+	/** Left if Some else original value in Right */
+	def leftBy(func:T=>Option[T]):Either[T,T]	=
+				func(delegate) toLeft delegate		
 }

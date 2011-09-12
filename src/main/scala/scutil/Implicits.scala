@@ -13,21 +13,22 @@ trait LangImplicits
 		extends	AnyImplicits 
 		with	AnyRefImplicits
 		with	BooleanImplicits
+		with	ClassImplicits
 		with	DateImplicits
+		with	DateFormatImplicits
 		with	EitherImplicits
 		with	Function1Implicits
-		with	IterableImplicits
-		with	IterableLikeImplicits
 		with	ListImplicits
 		with	NodeImplicits
 		with	OptionImplicits
 		with	PairImplicits
 		with	PredicateImplicits
+		with	RegexImplicits
 		with	SeqImplicits
 		with	SetImplicits
 		with	StringImplicits
 		with	TraversableImplicits
-		with	TraversableLikeImplicits
+		with	TraversableOnceImplicits
 		
 object IoImplicits extends IoImplicits		
 trait IoImplicits
@@ -41,3 +42,4 @@ trait GuiImplicits
 		extends	ComponentImplicits
 		with	JComponentImplicits
 		with	RectangleImplicits
+		with	RootPaneContainerImplicits

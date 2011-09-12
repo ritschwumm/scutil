@@ -7,26 +7,30 @@ trait BooleanImplicits {
 }
 
 final class BooleanExt(delegate:Boolean) {
-	def fold[T](trueValue: =>T, falseValue: =>T):T = delegate match {
-		case true	=> trueValue
-		case false	=> falseValue
-	}
+	def fold[T](trueValue: =>T, falseValue: =>T):T =
+			if (delegate)	trueValue
+			else			falseValue
 	
-	def guard[T](trueSome: =>T):Option[T] = delegate match {
-		case true	=> Some(trueSome)
-		case false	=> None
-	}
+	def guard[T](trueSome: =>T):Option[T] =
+			if (delegate)	Some(trueSome)
+			else			None
 	
-	def prevent[T](falseSome: =>T):Option[T] = delegate match {
-		case true	=> None
-		case false	=> Some(falseSome)
-	}
+	def prevent[T](falseSome: =>T):Option[T] =
+			if (!delegate)	Some(falseSome)
+			else			None
 	
-	def either[U,V](falseLeft: =>U, trueRight: =>V):Either[U,V] = delegate match {
-		case true	=> Right(trueRight)
-		case false	=> Left(falseLeft)
-	}
+	def flatGuard[T](trueValue: =>Option[T]):Option[T] = 
+			if (delegate)	trueValue
+			else			None
 	
-	def trueEffect(effect: =>Unit):Boolean	= { if ( delegate) effect; delegate }
-	def falseEffect(effect: =>Unit):Boolean	= { if (!delegate) effect; delegate }
+	def flatPrevent[T](falseValue: =>Option[T]):Option[T] =
+			if (!delegate)	falseValue
+			else			None
+	
+	def either[U,V](falseLeft: =>U, trueRight: =>V):Either[U,V] =
+			if (delegate)	Right(trueRight)
+			else			Left(falseLeft)
+	
+	def trueEffect(effect: =>Unit):Boolean	= { if (delegate)	effect; delegate }
+	def falseEffect(effect: =>Unit):Boolean	= { if (!delegate)	effect; delegate }
 }

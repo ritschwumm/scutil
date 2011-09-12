@@ -3,7 +3,7 @@ package scutil.validation
 import scutil.log._
 import scutil.ext.OptionImplicits._
 
-import scutil.validation.SemigroupInstances._
+import ValidationInstances._
 
 object SimpleSafety extends Logging {
 	type Safe[T]	= Validated[NonEmptyList[String],T]

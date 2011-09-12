@@ -9,15 +9,13 @@ trait AnyRefImplicits {
 }
 
 final class AnyRefExt[T <: AnyRef](delegate:T) {
+	/** fail with an Exception if null */
 	def nullError(s: =>String):T	= 
 			if (delegate != null)	delegate 
 			else					sys error s 
 	
+	/** Some if not null, None if null */
 	def guardNotNull:Option[T]	=
 			if (delegate != null)	Some(delegate)
 			else					None
-			
-	def instanceOption[T](implicit m:Manifest[T]):Option[T] =
-			if (!(delegate eq null) && Manifest.singleType(delegate) <:< m)	Some(delegate.asInstanceOf[T])
-			else															None
 }

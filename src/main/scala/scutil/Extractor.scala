@@ -1,17 +1,20 @@
 package scutil
 
 object Extractor {
-	def total[S,T](func:S=>T):Extractor[S,T]	= new Extractor[S,T] {
-		def unapply(s:S):Option[T]	= Some(func(s))
-	}
+	def apply[S,T](func:Function[S,Option[T]]):Extractor[S,T]	= 
+			new FunctionExtractor(func)
 	
-	def partial[S,T](func:PartialFunction[S,T]):Extractor[S,T]	= new Extractor[S,T] {
-		def unapply(s:S):Option[T]	= if (func isDefinedAt s) Some(func apply s) else None
-	}
+	def total[S,T](func:S=>T):Extractor[S,T]	= Extractor(
+			s	=> Some(func(s)))
 	
-	def optional[S,T](func:Function[S,Option[T]]):Extractor[S,T]	= new Extractor[S,T] {
-		def unapply(s:S):Option[T]	= func(s)
-	}
+	def partial[S,T](func:PartialFunction[S,T]):Extractor[S,T]	= Extractor(
+			s	=> if (func isDefinedAt s) Some(func apply s) else None)
+	
+	def identity[T]:Extractor[T,T]	= 
+			Extractor(Some.apply)
+			
+	def trivial[T]:Extractor[T,Any]	= 
+			Extractor(_ => None)
 	
 	/*
 	def structural[S,T](func:{ def unapply(s:S):Option[T] })(implicit ms:Manifest[S], mt:Manifest[T]):Extractor[S,T]	= new Extractor[S,T] {
@@ -22,28 +25,28 @@ object Extractor {
 	
 /** representative extractor (as opposed to compiler magic) */
 trait Extractor[S,T] {
-	def unapply(s:S):Option[T]
+	final def unapply(s:S):Option[T]	= read(s)
+	
+	def read(s:S):Option[T]
 	
 	def compose[R](that:Extractor[R,S]):Extractor[R,T]	=
 			that andThen this
 			
-	def andThen[U](that:Extractor[T,U]):Extractor[S,U]	=
-			Extractor optional { s => 
-				//for { t <- this unapply s; u <- that unapply t } yield u
-				this unapply s flatMap { that unapply _ }
-			}
+	def andThen[U](that:Extractor[T,U]):Extractor[S,U]	= Extractor(
+			s => this read s flatMap that.read)
 	
-	def orElse(that:Extractor[S,T]):Extractor[S,T]	=
-			Extractor optional { s => 
-				(this unapply s) orElse (that unapply s) 
-			}
+	def orElse(that:Extractor[S,T]):Extractor[S,T]	= Extractor(
+			s	=> (this read s) orElse (that read s)) 
 			
-	def toFunction:Function[S,Option[T]]	= new Function[S,Option[T]] {
-		def apply(s:S):Option[T]	= unapply(s)
-	}
+	def asFunction:Function[S,Option[T]]	= 
+			s => read(s)
 	
-	def toPartialFunction:PartialFunction[S,T]	= new PartialFunction[S,T] {
-		def apply(s:S):T				= unapply(s).get
-		def isDefinedAt(s:S):Boolean	= unapply(s).isDefined
+	def asPartialFunction:PartialFunction[S,T]	= new PartialFunction[S,T] {
+		def apply(s:S):T				= read(s).get
+		def isDefinedAt(s:S):Boolean	= read(s).isDefined
 	}
+}
+
+private final class FunctionExtractor[S,T](readFunc:S=>Option[T]) extends Extractor[S,T] {
+	def read(s:S):Option[T]		= readFunc(s)
 }

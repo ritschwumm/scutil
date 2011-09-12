@@ -1,4 +1,4 @@
-package scutil.validation
+package scutil.structure
 
 object Semigroup {
 	def apply[T](appendFunc:(T,T)=>T):Semigroup[T]	= new Semigroup[T] {

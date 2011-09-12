@@ -31,8 +31,8 @@ object BigRational {
 					BigInt.valueOf(numerator),
 					BigInt.ONE)
 					
-	def unapply(self:BigRational):Option[Pair[BigInt,BigInt]] = 
-			Some(Pair(self.numerator, self.denominator)) 
+	def unapply(self:BigRational):Option[(BigInt,BigInt)] = 
+			Some((self.numerator, self.denominator)) 
 					
 	/** parse the output of #toString */
 	def parse(s:String):Option[BigRational] = s splitAround '/' match {
@@ -48,7 +48,7 @@ final class BigRational(_numerator:BigInt, _denominator:BigInt) extends java.lan
 	// simplify
 	val (numerator,denominator) = {
 		 val gcd	= _numerator gcd _denominator
-		 Pair(
+		 (
 			(if (_denominator.signum == -1)	_numerator.negate else _numerator) divide gcd, 
 			_denominator.abs divide gcd
 		)
@@ -115,7 +115,7 @@ final class BigRational(_numerator:BigInt, _denominator:BigInt) extends java.lan
 	def integralValue:BigInt		= numerator divide		denominator
 	def integralRemainder:BigInt	= numerator remainder	denominator
 	
-	def integralValueAndRemainder:Pair[BigInt,BigInt]	= {
+	def integralValueAndRemainder:(BigInt,BigInt)	= {
 		val	both	= numerator divideAndRemainder denominator
 		(both(0), both(1))
 	}

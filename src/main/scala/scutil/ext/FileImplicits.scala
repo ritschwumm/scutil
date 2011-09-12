@@ -10,8 +10,6 @@ import scutil.Platform
 import scutil.Resource._
 import scutil.time.Instant
 
-import AnyRefImplicits._
-import BooleanImplicits._
 import InputStreamImplicits._
 import ReaderImplicits._
 
@@ -27,14 +25,14 @@ final class FileExt(delegate:File) {
 		def accept(file:File):Boolean	= predicate(file)
 	}
 	
-	// /** time of last modification as an Instant */
-	// def lastModifiedInstant:Option[Instant]	=
-	// 		delegate.lastModified guardBy { _ != 0 } map Instant.apply
+	/** time of last modification as an Instant, returns Instant.zero for non-existing files */
+	def lastModifiedInstant:Instant	= 
+			Instant(delegate.lastModified)
 	
 	/** add a component to this Files's path */
 	def /(name:String):File = new File(delegate, name)
 	
-	/** add a component to this Files's path */
+	/** add multiple components to this Files's path */
 	def /(path:Seq[String]):File	= path.foldLeft(delegate)(new File(_,_))
 	
 	/** names until getParentFile returns null */
@@ -64,11 +62,11 @@ final class FileExt(delegate:File) {
 	
 	/** list files in this directory */
 	def children:Option[Seq[File]] =
-			delegate.listFiles.guardNotNull map { _.toSeq }
+			Option(delegate.listFiles) map { _.toSeq }
 			
 	/** list files in this directory matching a predicate */
 	def childrenWhere(predicate:File=>Boolean):Option[Seq[File]] =
-			(delegate listFiles predicate).guardNotNull map { _.toSeq }
+			Option(delegate listFiles predicate) map { _.toSeq }
 	
 	/** Some existing file, or None */
 	def guardExists:Option[File] =
@@ -80,11 +78,19 @@ final class FileExt(delegate:File) {
 			new File(delegate.getParentFile, func(delegate.getName))
 			
 	/** copy this File over another */
-	def copyTo(to:File) {
-		 if (!to.exists)	to.createNewFile()
+	def copyTo(to:File, force:Boolean=false) {
+		 if (!to.exists) {
+		 	to.createNewFile()
+		 }
 		 new FileInputStream(delegate).getChannel use { source =>
 			 new FileOutputStream(to).getChannel use { target =>
-				 target transferFrom (source, 0, source.size)
+			 	 var position	= 0L
+			 	 while (position < source.size) {
+			 	 	 position	+= (target transferFrom (source, 0, source.size-position))
+				 }
+				 if (force) {
+				 	 target force true
+				 }
 			 }
 		 }
 	}
@@ -92,18 +98,19 @@ final class FileExt(delegate:File) {
 	/** delete all children and the file itself */
 	def deleteRecursive() {
 		def recurse(file:File) {
-			file.listFiles.guardNotNull.toSeq.flatten foreach recurse _
+			Option(file.listFiles).toSeq.flatten foreach recurse _
 			file.delete()
 		}
 		recurse(delegate)
 	}
 	
 	/** create a temp file within this directory */
-	def createTempFile(prefix:String, suffix:String):File	=
+	def createTempFile(prefix:String, suffix:String = null):File	=
 			File createTempFile (prefix, suffix, delegate)
 	
 	/** create a temp directory within this directory */
-	def createTempDirectory(prefix:String, suffix:String):File	= {
+	def createTempDirectory(prefix:String, suffix:String = null):File	= {
+		require(prefix.length >= 3, "prefix must be at least 3 characters long")
 		val	file	= File createTempFile (prefix, suffix, delegate)
 		require(file.delete(),	"cannot delete temp file: " + file)
 		require(file.mkdir(),	"cannot create temp directory: " + file)
@@ -113,19 +120,19 @@ final class FileExt(delegate:File) {
 	//------------------------------------------------------------------------------
 			
 	/** execute a closure with an InputStream reading from this File */
-	def withInputStream[T](code:(InputStream=>T)):T	=
+	def withInputStream[T](code:(FileInputStream=>T)):T	=
 			new FileInputStream(delegate) use code
 	
 	/** execute a closure with an OutputStream writing into this File */
-	def withOutputStream[T](code:(OutputStream=>T)):T	=
+	def withOutputStream[T](code:(FileOutputStream=>T)):T	=
 			new FileOutputStream(delegate) use code
 			
 	/** execute a closure with a Reader reading from this File */
-	def withReader[T](charset:Charset)(code:(Reader=>T)):T	=
+	def withReader[T](charset:Charset)(code:(InputStreamReader=>T)):T	=
 			new InputStreamReader(new FileInputStream(delegate), charset) use code
 	
 	/** execute a closure with a Writer writing into this File */
-	def withWriter[T](charset:Charset)(code:(Writer=>T)):T	=
+	def withWriter[T](charset:Charset)(code:(OutputStreamWriter=>T)):T	=
 			new OutputStreamWriter(new FileOutputStream(delegate), charset) use code
 
 	//------------------------------------------------------------------------------
@@ -137,6 +144,13 @@ final class FileExt(delegate:File) {
 	def writeString(charset:Charset, string:String):Unit	= withWriter(charset) { _ write string }
 	
 	// TODO writeLines should not use the platform line separator, readLines should honor a single lineSeparator 
-	def readLines(charset:Charset):Seq[String]				= withReader(charset) { _ readLines () }
-	def writeLines(charset:Charset, lines:Seq[String]):Unit	= withWriter(charset) { _ write (lines mkString Platform.line.separator) }
+	def readLines(charset:Charset):Seq[String]	= 
+			withReader(charset) { _ readLines () }
+	def writeLines(charset:Charset, lines:Seq[String]):Unit	= 
+			withWriter(charset) { writer => 
+				lines foreach { line => 
+					writer write line
+					writer write Platform.line.separator
+				}
+			}
 }

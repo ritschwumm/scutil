@@ -2,7 +2,7 @@ package scutil.validation
 
 import scala.util.control.Exception._
 
-import SemigroupInstances._
+import ValidationInstances._
 
 /** extends scala.util.control.Exception handling so it can be used with Validated */
 object ThrowableSafety {

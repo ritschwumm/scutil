@@ -4,7 +4,9 @@ import java.util.concurrent.Callable
 
 import scala.concurrent.SyncVar
 
+import scutil.Types._
 import scutil.Functions._
+import scutil.time._
 
 object Concurrent {
 	def execute[T](execute:Executor, task:Thunk[T]):Thunk[T] = {
@@ -35,6 +37,12 @@ object Concurrent {
 	val directExecutor:Executor		= (task:Task) => task()
 	val backgroundExecutor:Executor	= (task:Task) => new Thread(runnableTask(task)).start
 	val spawnExecutor:Executor		= (task:Task) => scala.concurrent.ops.spawn { task() }
+	
+	//------------------------------------------------------------------------------
+	
+	def sleepFor(duration:Duration) {
+		Thread sleep duration.millis
+	}
 	
 	//------------------------------------------------------------------------------
 	

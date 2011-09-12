@@ -1,4 +1,4 @@
-package scutil.test
+package scutil
 
 import org.specs._
 import org.specs.matcher._

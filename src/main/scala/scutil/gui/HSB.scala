@@ -1,6 +1,13 @@
 package scutil.gui
 
+import java.awt.Color
+
 import scala.math._
+
+object HSB {
+	/** ignores the alpha channel */
+	def fromColor(color:Color):HSB	= RGB fromColor color toHSB;
+}
 
 /** value range is 0..1 */
 case class HSB(h:Float, s:Float, b:Float) {
@@ -36,4 +43,6 @@ case class HSB(h:Float, s:Float, b:Float) {
 			case 5	=> RGB(b, P, Q)
 		}
     }
+    
+    def toColor:Color	= toRGB.toColor 
 }

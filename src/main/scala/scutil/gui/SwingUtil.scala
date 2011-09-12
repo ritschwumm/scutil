@@ -1,5 +1,6 @@
 package scutil.gui
 
+import scutil.Types._
 import scutil.Functions._
 import scutil.Concurrent._
 import scutil.Executors

@@ -1,9 +1,10 @@
 package scutil.ext
 
+import java.util.regex.Pattern
+
+import scala.annotation.tailrec 
 import scala.collection.mutable
 import scala.util.control.Exception._
-
-import BooleanImplicits._
 
 object StringImplicits extends StringImplicits
 
@@ -27,28 +28,67 @@ final class StringExt(delegate:String) {
 			if (delegate.nonEmpty)	Some(delegate)
 			else					None 
 	
-	// TODO rename to stripPrefixOpt and stripSuffixOpt, or even return Eithers
-	
-	def cutPrefix(prefix:String):Option[String] = 
-			delegate startsWith prefix guard (delegate substring prefix.length) 
+	def cutPrefix(prefix:String):Option[String] =
+			if (delegate startsWith prefix)	Some(delegate substring prefix.length)
+			else							None
 				
 	def cutSuffix(suffix:String):Option[String] = 
-			delegate endsWith suffix guard (delegate substring (0, delegate.length-suffix.length)) 
-			
+			if (delegate endsWith suffix)	Some(delegate substring (0, delegate.length-suffix.length))
+			else							None
+		
+	/** exludes the separator chars themselves */
 	def splitAround(separator:Char):List[String] = {
-		val	out	= new mutable.ArrayBuffer[String]
-		val	len	= delegate.length
-		var	pos	= 0
-		for (i <- 0 until len) {
-			val	c	= delegate charAt i
-			if (c == separator) {
-				out	+= (delegate substring (pos, i))
-				pos	= i + 1
+		@tailrec 
+		def unfold(s:String, accu:List[String]):List[String]	= s lastIndexOf separator match {
+			case -1	=> s :: accu
+			case n	=> unfold(s substring (0,n), (s substring (n+1)) :: accu)
+		}
+		unfold(delegate, Nil)
+	}
+	
+	/** before index and after index excluding the index itself */
+	def splitAroundIndex(index:Int):Option[(String,String)]	=
+			if (index >= 0 && index <= delegate.length)	Some((delegate substring (0,index), delegate substring index+1))
+			else										None
+			
+	/** exludes the separator char itself */
+	def splitAroundFirst(separator:Char):Option[(String,String)] =
+			splitAroundIndex(delegate indexOf separator)
+		
+	/** exludes the separator char itself */
+	def splitAroundLast(separator:Char):Option[(String,String)] =
+			splitAroundIndex(delegate lastIndexOf separator)
+		
+	/*
+	def indexOfOption(separator:Char)	=
+			delegate indexOf separator match {
+				case -1		=> None
+				case index	=> Some(index)
 			}
+			
+	def lastIndexOfOption(separator:Char)	=
+			delegate lastIndexOf separator match {
+				case -1		=> None
+				case index	=> Some(index)
+			}
+	*/
+	
+	def quoteRegex:String	= Pattern quote delegate
+	
+	def quoteXML(quot:Boolean = false, apos:Boolean = false):String	= {
+		val b	= new StringBuilder
+		var i	= 0
+		while (i < delegate.length) {
+			delegate charAt i match {
+				case '<'				=> b append "&lt;"
+				case '>'				=> b append "&gt;"
+				case '&'				=> b append "&amp;"
+				case '"'	if quot		=> b append "&quot;"
+				case '\''	if apos		=> b append "&apos;"
+				case x					=> b += x
+			}
+			i	+= 1
 		}
-		if (pos <= len) {
-			out	+= (delegate substring (pos, len))
-		}
-		out.toList
+		b.toString
 	}
 }

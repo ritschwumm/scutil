@@ -1,5 +1,7 @@
 package scutil.validation
 
+import scutil.structure._
+
 object Validated {
 	def valid[P,T](value:T):Validated[P,T]		= Valid(value)
 	def invalid[P,T](problem:P):Validated[P,T]	= Invalid(problem)
@@ -58,7 +60,7 @@ sealed abstract class Validated[+P,+T] {
 	}
 	*/
 	
-	def pair[Q>:P,U](that:Validated[Q,U])(implicit sg:Semigroup[Q]):Validated[Q,Pair[T,U]]	=
+	def pair[Q>:P,U](that:Validated[Q,U])(implicit sg:Semigroup[Q]):Validated[Q,(T,U)]	=
 			// pure Pair ap this ap that === this map Pair ap that
 			// (Valid(Pair[T,U] _ curried):Validated[Q,T=>U=>Pair[T,U]]) ap this ap that
 			this map (Pair[T,U] _ curried) ap that

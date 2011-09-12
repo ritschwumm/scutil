@@ -2,6 +2,7 @@ package scutil
 
 import javax.swing.SwingUtilities
 
+import scutil.Types._
 import scutil.Functions._
 
 object Executors {

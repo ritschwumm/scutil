@@ -14,7 +14,22 @@ trait ComponentImplicits {
 }
 	
 final class ComponentExt[T <: Component](delegate:T) {
-	/** sets minimum, preferred and maximum size of a {@link Component} */
+	/** the nearest Window in the ancestor chain, including this component itself */
+	def windowSelfOrAncestor:Option[Window]	= 
+			windowSelfOrAncestor(delegate)
+	
+	/** the nearest Window in the ancestor chain, excluding this component itself */
+	def windowAncestor:Option[Window]	=
+			windowSelfOrAncestor(delegate.getParent)
+	
+	private def windowSelfOrAncestor(here:Component):Option[Window]	=
+			here match {
+				case null	=> None
+				case x:Window	=> Some(x)
+				case x			=> windowSelfOrAncestor(x.getParent)
+			}
+	
+    /** sets minimum, preferred and maximum size of a {@link Component} */
 	def setAllSizes(size:Dimension) {
 		delegate setMinimumSize	size
 		delegate setMaximumSize	size

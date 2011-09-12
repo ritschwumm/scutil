@@ -2,7 +2,8 @@ package scutil
 
 /** 
 encodes and decodes byte arrays into strings using the base64 encoding method.
-see RFC 4648 
+@see RFC4648
+@see  javax.xml.bind.DatatypeConverter 
 */
 object Base64 extends Marshaller[Array[Byte],String] {
 	private val whitespace	= """\s+"""
@@ -22,7 +23,7 @@ object Base64 extends Marshaller[Array[Byte],String] {
 		out
 	}
 	
-	def apply(data:Array[Byte]):String = {
+	def write(data:Array[Byte]):String = {
 		val	packetsSize		= data.length / 3
 		val extraSize		= data.length % 3
 		var	output			= new StringBuilder
@@ -51,7 +52,7 @@ object Base64 extends Marshaller[Array[Byte],String] {
 		output.toString
 	}
 	
-	def unapply(text:String):Option[Array[Byte]] = {
+	def read(text:String):Option[Array[Byte]] = {
 		val cleanText	= text replaceAll (whitespace, "")
 		if (cleanText.length == 0)		return Some(new Array[Byte](0))
 		

@@ -11,5 +11,7 @@ final class SetExt[S](delegate:Set[S]) {
 	def containsAny(that:Set[S]):Boolean	= (delegate & that).nonEmpty
 	def containsNone(that:Set[S]):Boolean	= (delegate & that).isEmpty 
 	
-	def mapBy[T](func:S=>T):Map[S,T]	= delegate map { it => (it, func(it)) } toMap
+	/** pairs items only in this with items only in that */
+	def hereAndThere(that:Set[S]):(Set[S],Set[S])	=
+			(delegate -- that, that -- delegate)
 }

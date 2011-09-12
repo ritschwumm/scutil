@@ -18,8 +18,6 @@ object NonEmptyList {
 	}
 }
 
-// TODO make this a real Collection/Seq
-
 /** 
 The Non-Empty List is quite like a standard single linked List, but always contains at least one element.
 Concatenation of NonEmptyLists is a Semigroup, but not a Monoid because there is no neutral element.

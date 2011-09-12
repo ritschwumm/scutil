@@ -1,8 +1,8 @@
 package scutil
 
+import scutil.Types._
+
 object Predicates {
-	type Predicate[-T]	= T=>Boolean
-	
 	val always:Any=>Boolean	= _ => true
 	val never:Any=>Boolean	= _ => false
 	

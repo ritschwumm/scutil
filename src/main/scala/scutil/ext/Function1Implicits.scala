@@ -13,7 +13,7 @@ final class Function1Ext[S,T](delegate:Function1[S,T]) {
 	}
 	
 	/** inverse to PartialFunction#lift */
-	def unlift[X](implicit witness:T=>Option[X]):PartialFunction[S,X] = new PartialFunction[S,X] {
+	def unlift[X](implicit ev:T=>Option[X]):PartialFunction[S,X] = new PartialFunction[S,X] {
 		// TODO @see http://lampsvn.epfl.ch/trac/scala/ticket/3825
 		
 		// def isDefinedAt(s:S):Boolean	= delegate(s).isDefined
@@ -22,7 +22,7 @@ final class Function1Ext[S,T](delegate:Function1[S,T]) {
 		def isDefinedAt(s:S):Boolean	= lift apply s isDefined;
 		def apply(s:S):X				= lift apply s get;
 		
-		// override def lift	= delegate andThen witness
+		// override def lift	= delegate andThen ev
 		override def lift	= delegate.asInstanceOf[S=>Option[X]] 
 	}
 }

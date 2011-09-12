@@ -13,9 +13,9 @@ object Human {
 		precise(pair._1, precision) + pair._2
 	}
 	
-	private def shorten(value:BigDecimal, factor:Int, prefixes:List[String]):Pair[BigDecimal,String] =
+	private def shorten(value:BigDecimal, factor:Int, prefixes:List[String]):(BigDecimal,String) =
 			if (value > factor && prefixes.nonEmpty)	shorten(value / factor, factor, prefixes.tail)
-			else										Pair(value, prefixes.head)
+			else										(value, prefixes.head)
 			
 	private def precise(value:BigDecimal, digits:Int):String = 
 			String.format("%." + digits + "f", Array(value.bigDecimal):_*)

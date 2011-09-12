@@ -6,6 +6,7 @@ import javax.swing._
 import javax.swing.event._
 
 import RectangleImplicits._
+import RootPaneContainerImplicits._
 
 object JComponentImplicits extends JComponentImplicits
 
@@ -17,13 +18,11 @@ final class JComponentExt[T <: JComponent](delegate:T) {
 	def innerRectangle:Rectangle	= 
 			new Rectangle(delegate.getSize()) inset delegate.getInsets
 			
-	def displayInFrame(size:Pair[Int,Int], onClose:()=>Unit):JFrame = {
+	def displayInFrame(size:(Int,Int), onClose:()=>Boolean=()=>true):JFrame = {
 		val	frame	= new JFrame
-		val content	= frame.getContentPane
-		content setLayout new BorderLayout
-		content add (delegate, BorderLayout.CENTER)
-		frame setVisible true
-		frame setSize (size._1, size._2)
+		frame setCenterContent	delegate
+		frame setVisible		true
+		frame setSize			(size._1, size._2)
 		/*
 		frame setUndecorated true
 		frame setSize Toolkit.getDefaultToolkit.getScreenSize
@@ -33,8 +32,7 @@ final class JComponentExt[T <: JComponent](delegate:T) {
 		frame setDefaultCloseOperation WindowConstants.DO_NOTHING_ON_CLOSE
 		
 		def doClose() {
-			frame.dispose()
-			onClose()
+			if (onClose()) frame.dispose()
 		}
 		
 		frame addWindowListener new WindowAdapter {

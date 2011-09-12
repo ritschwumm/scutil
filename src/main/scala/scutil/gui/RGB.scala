@@ -1,6 +1,16 @@
 package scutil.gui
 
+import java.awt.Color
+
 import scala.math._
+
+object RGB {
+	/** ignores the alpha channel */
+	def fromColor(color:Color):RGB	= {
+		val Array(r,g,b,a)	= color getRGBComponents null
+		RGB(r,g,b)
+	}
+}
 
 /** value range is 0..1 */
 case class RGB(r:Float, g:Float, b:Float) {
@@ -43,4 +53,7 @@ case class RGB(r:Float, g:Float, b:Float) {
 				else 		h
 		HSB(H,S,B)
 	}
+	
+	/** fully sets the alpha channel */
+	def toColor:Color	= new Color(r,g,b)
 }
