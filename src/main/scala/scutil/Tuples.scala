@@ -39,14 +39,14 @@ object Tuples {
 	type LCurried8[A,B,C,D,E,F,G,H]		= (A,(B,(C,(D,(E,(F,(G,H)))))))
 	type LCurried9[A,B,C,D,E,F,G,H,I]	= (A,(B,(C,(D,(E,(F,(G,(H,I))))))))
 	
-	def lcurry2[A,B]				(in:Product2[A,B]):					LCurried2[A,B]					= Pair(in._1, in._2)
-	def lcurry3[A,B,C]				(in:Product3[A,B,C]):				LCurried3[A,B,C]				= Pair(in._1, Pair(in._2, in._3))
-	def lcurry4[A,B,C,D]			(in:Product4[A,B,C,D]):				LCurried4[A,B,C,D]				= Pair(in._1, Pair(in._2, Pair(in._3, in._4)))
-	def lcurry5[A,B,C,D,E]			(in:Product5[A,B,C,D,E]):			LCurried5[A,B,C,D,E]			= Pair(in._1, Pair(in._2, Pair(in._3, Pair(in._4, in._5))))
-	def lcurry6[A,B,C,D,E,F]		(in:Product6[A,B,C,D,E,F]):			LCurried6[A,B,C,D,E,F]			= Pair(in._1, Pair(in._2, Pair(in._3, Pair(in._4, Pair(in._5, in._6)))))
-	def lcurry7[A,B,C,D,E,F,G]		(in:Product7[A,B,C,D,E,F,G]):		LCurried7[A,B,C,D,E,F,G]		= Pair(in._1, Pair(in._2, Pair(in._3, Pair(in._4, Pair(in._5, Pair(in._6, in._7))))))
-	def lcurry8[A,B,C,D,E,F,G,H]	(in:Product8[A,B,C,D,E,F,G,H]):		LCurried8[A,B,C,D,E,F,G,H]		= Pair(in._1, Pair(in._2, Pair(in._3, Pair(in._4, Pair(in._5, Pair(in._6, Pair(in._7, in._8)))))))
-	def lcurry9[A,B,C,D,E,F,G,H,I]	(in:Product9[A,B,C,D,E,F,G,H,I]):	LCurried9[A,B,C,D,E,F,G,H,I]	= Pair(in._1, Pair(in._2, Pair(in._3, Pair(in._4, Pair(in._5, Pair(in._6, Pair(in._7, Pair(in._8, in._9))))))))
+	def lcurry2[A,B]				(in:Product2[A,B]):					LCurried2[A,B]					= (in._1, in._2)
+	def lcurry3[A,B,C]				(in:Product3[A,B,C]):				LCurried3[A,B,C]				= (in._1, (in._2, in._3))
+	def lcurry4[A,B,C,D]			(in:Product4[A,B,C,D]):				LCurried4[A,B,C,D]				= (in._1, (in._2, (in._3, in._4)))
+	def lcurry5[A,B,C,D,E]			(in:Product5[A,B,C,D,E]):			LCurried5[A,B,C,D,E]			= (in._1, (in._2, (in._3, (in._4, in._5))))
+	def lcurry6[A,B,C,D,E,F]		(in:Product6[A,B,C,D,E,F]):			LCurried6[A,B,C,D,E,F]			= (in._1, (in._2, (in._3, (in._4, (in._5, in._6)))))
+	def lcurry7[A,B,C,D,E,F,G]		(in:Product7[A,B,C,D,E,F,G]):		LCurried7[A,B,C,D,E,F,G]		= (in._1, (in._2, (in._3, (in._4, (in._5, (in._6, in._7))))))
+	def lcurry8[A,B,C,D,E,F,G,H]	(in:Product8[A,B,C,D,E,F,G,H]):		LCurried8[A,B,C,D,E,F,G,H]		= (in._1, (in._2, (in._3, (in._4, (in._5, (in._6, (in._7, in._8)))))))
+	def lcurry9[A,B,C,D,E,F,G,H,I]	(in:Product9[A,B,C,D,E,F,G,H,I]):	LCurried9[A,B,C,D,E,F,G,H,I]	= (in._1, (in._2, (in._3, (in._4, (in._5, (in._6, (in._7, (in._8, in._9))))))))
 
 	def luncurry2[A,B]				(in:LCurried2[A,B]):				Tupled2[A,B]					= Tuple2(in._1,	in._2)
 	def luncurry3[A,B,C]			(in:LCurried3[A,B,C]):				Tupled3[A,B,C]					= Tuple3(in._1, in._2._1, in._2._2)
@@ -68,14 +68,14 @@ object Tuples {
 	type RCurried8[A,B,C,D,E,F,G,H]		= (((((((A,B),C),D),E),F),G),H)
 	type RCurried9[A,B,C,D,E,F,G,H,I]	= ((((((((A,B),C),D),E),F),G),H),I)
 	
-	def rcurry2[A,B]				(in:Product2[A,B]):					RCurried2[A,B]					= Pair(										in._1, in._2)
-	def rcurry3[A,B,C]				(in:Product3[A,B,C]):				RCurried3[A,B,C]				= Pair(Pair(								in._1, in._2), in._3)
-	def rcurry4[A,B,C,D]			(in:Product4[A,B,C,D]):				RCurried4[A,B,C,D]				= Pair(Pair(Pair(							in._1, in._2), in._3), in._4)
-	def rcurry5[A,B,C,D,E]			(in:Product5[A,B,C,D,E]):			RCurried5[A,B,C,D,E]			= Pair(Pair(Pair(Pair(						in._1, in._2), in._3), in._4), in._5)
-	def rcurry6[A,B,C,D,E,F]		(in:Product6[A,B,C,D,E,F]):			RCurried6[A,B,C,D,E,F]			= Pair(Pair(Pair(Pair(Pair(					in._1, in._2), in._3), in._4), in._5), in._6)
-	def rcurry7[A,B,C,D,E,F,G]		(in:Product7[A,B,C,D,E,F,G]):		RCurried7[A,B,C,D,E,F,G]		= Pair(Pair(Pair(Pair(Pair(Pair(			in._1, in._2), in._3), in._4), in._5), in._6), in._7)
-	def rcurry8[A,B,C,D,E,F,G,H]	(in:Product8[A,B,C,D,E,F,G,H]):		RCurried8[A,B,C,D,E,F,G,H]		= Pair(Pair(Pair(Pair(Pair(Pair(Pair(		in._1, in._2), in._3), in._4), in._5), in._6), in._7), in._8)
-	def rcurry9[A,B,C,D,E,F,G,H,I]	(in:Product9[A,B,C,D,E,F,G,H,I]):	RCurried9[A,B,C,D,E,F,G,H,I]	= Pair(Pair(Pair(Pair(Pair(Pair(Pair(Pair(	in._1, in._2), in._3), in._4), in._5), in._6), in._7), in._8), in._9)
+	def rcurry2[A,B]				(in:Product2[A,B]):					RCurried2[A,B]					= (			in._1, in._2)
+	def rcurry3[A,B,C]				(in:Product3[A,B,C]):				RCurried3[A,B,C]				= ((		in._1, in._2), in._3)
+	def rcurry4[A,B,C,D]			(in:Product4[A,B,C,D]):				RCurried4[A,B,C,D]				= (((		in._1, in._2), in._3), in._4)
+	def rcurry5[A,B,C,D,E]			(in:Product5[A,B,C,D,E]):			RCurried5[A,B,C,D,E]			= ((((		in._1, in._2), in._3), in._4), in._5)
+	def rcurry6[A,B,C,D,E,F]		(in:Product6[A,B,C,D,E,F]):			RCurried6[A,B,C,D,E,F]			= (((((		in._1, in._2), in._3), in._4), in._5), in._6)
+	def rcurry7[A,B,C,D,E,F,G]		(in:Product7[A,B,C,D,E,F,G]):		RCurried7[A,B,C,D,E,F,G]		= ((((((	in._1, in._2), in._3), in._4), in._5), in._6), in._7)
+	def rcurry8[A,B,C,D,E,F,G,H]	(in:Product8[A,B,C,D,E,F,G,H]):		RCurried8[A,B,C,D,E,F,G,H]		= (((((((	in._1, in._2), in._3), in._4), in._5), in._6), in._7), in._8)
+	def rcurry9[A,B,C,D,E,F,G,H,I]	(in:Product9[A,B,C,D,E,F,G,H,I]):	RCurried9[A,B,C,D,E,F,G,H,I]	= ((((((((	in._1, in._2), in._3), in._4), in._5), in._6), in._7), in._8), in._9)
 
 	def runcurry2[A,B]				(in:RCurried2[A,B]):				Tupled2[A,B]					= Tuple2(in._1,																																											in._2)
 	def runcurry3[A,B,C]			(in:RCurried3[A,B,C]):				Tupled3[A,B,C]					= Tuple3(in._1._1,																																							in._1._2,	in._2)
@@ -85,4 +85,26 @@ object Tuples {
 	def runcurry7[A,B,C,D,E,F,G]	(in:RCurried7[A,B,C,D,E,F,G]):		Tupled7[A,B,C,D,E,F,G]			= Tuple7(in._1._1._1._1._1._1,																	in._1._1._1._1._1._2,	in._1._1._1._1._2,	in._1._1._1._2,	in._1._1._2,	in._1._2,	in._2)
 	def runcurry8[A,B,C,D,E,F,G,H]	(in:RCurried8[A,B,C,D,E,F,G,H]):	Tupled8[A,B,C,D,E,F,G,H]		= Tuple8(in._1._1._1._1._1._1._1,									in._1._1._1._1._1._1._2,	in._1._1._1._1._1._2,	in._1._1._1._1._2,	in._1._1._1._2,	in._1._1._2,	in._1._2,	in._2)
 	def runcurry9[A,B,C,D,E,F,G,H,I](in:RCurried9[A,B,C,D,E,F,G,H,I]):	Tupled9[A,B,C,D,E,F,G,H,I]		= Tuple9(in._1._1._1._1._1._1._1._1,	in._1._1._1._1._1._1._1._2,	in._1._1._1._1._1._1._2,	in._1._1._1._1._1._2,	in._1._1._1._1._2,	in._1._1._1._2,	in._1._1._2,	in._1._2,	in._2)
+	
+	//------------------------------------------------------------------------------
+	
+	// lflip	== luncurry andThen rcurry
+	def lflip2[A,B]					(in:LCurried2[A,B]):				RCurried2[A,B]					= in
+	def lflip3[A,B,C]				(in:LCurried3[A,B,C]):				RCurried3[A,B,C]				= ((		in._1, in._2._1), in._2._2)
+	def lflip4[A,B,C,D]				(in:LCurried4[A,B,C,D]):			RCurried4[A,B,C,D]				= (((		in._1, in._2._1), in._2._2._1), in._2._2._2)
+	def lflip5[A,B,C,D,E]			(in:LCurried5[A,B,C,D,E]):			RCurried5[A,B,C,D,E]			= ((((		in._1, in._2._1), in._2._2._1), in._2._2._2._1), in._2._2._2._2)
+	def lflip6[A,B,C,D,E,F]			(in:LCurried6[A,B,C,D,E,F]):		RCurried6[A,B,C,D,E,F]			= (((((		in._1, in._2._1), in._2._2._1), in._2._2._2._1), in._2._2._2._2._1), in._2._2._2._2._2)
+	def lflip7[A,B,C,D,E,F,G]		(in:LCurried7[A,B,C,D,E,F,G]):		RCurried7[A,B,C,D,E,F,G]		= ((((((	in._1, in._2._1), in._2._2._1), in._2._2._2._1), in._2._2._2._2._1), in._2._2._2._2._2._1), in._2._2._2._2._2._2)
+	def lflip8[A,B,C,D,E,F,G,H]		(in:LCurried8[A,B,C,D,E,F,G,H]):	RCurried8[A,B,C,D,E,F,G,H]		= (((((((	in._1, in._2._1), in._2._2._1), in._2._2._2._1), in._2._2._2._2._1), in._2._2._2._2._2._1), in._2._2._2._2._2._2._1), in._2._2._2._2._2._2._2)
+	def lflip9[A,B,C,D,E,F,G,H,I]	(in:LCurried9[A,B,C,D,E,F,G,H,I]):	RCurried9[A,B,C,D,E,F,G,H,I]	= ((((((((	in._1, in._2._1), in._2._2._1), in._2._2._2._1), in._2._2._2._2._1), in._2._2._2._2._2._1), in._2._2._2._2._2._2._1), in._2._2._2._2._2._2._2._1), in._2._2._2._2._2._2._2._2)
+	
+	// rflip	== runcurry andThen lcurry
+	def rflip[A,B]					(in:RCurried2[A,B]):				LCurried2[A,B]					= in
+	def rflip3[A,B,C]				(in:RCurried3[A,B,C]):				LCurried3[A,B,C]				= 																																							(in._1._1,		(in._1._2, in._2))
+	def rflip4[A,B,C,D]				(in:RCurried4[A,B,C,D]):			LCurried4[A,B,C,D]				= 																																		(in._1._1._1,		(in._1._1._2,	(in._1._2, in._2)))
+	def rflip5[A,B,C,D,E]			(in:RCurried5[A,B,C,D,E]):			LCurried5[A,B,C,D,E]			= 																													(in._1._1._1._1,	(in._1._1._1._2,	(in._1._1._2,	(in._1._2, in._2))))
+	def rflip6[A,B,C,D,E,F]			(in:RCurried6[A,B,C,D,E,F]):		LCurried6[A,B,C,D,E,F]			= 																							(in._1._1._1._1._1,		(in._1._1._1._1._2,	(in._1._1._1._2,	(in._1._1._2,	(in._1._2, in._2)))))
+	def rflip7[A,B,C,D,E,F,G]		(in:RCurried7[A,B,C,D,E,F,G]):		LCurried7[A,B,C,D,E,F,G]		= 																(in._1._1._1._1._1._1,		(in._1._1._1._1._1._2,	(in._1._1._1._1._2,	(in._1._1._1._2,	(in._1._1._2,	(in._1._2, in._2))))))
+	def rflip8[A,B,C,D,E,F,G,H]		(in:RCurried8[A,B,C,D,E,F,G,H]):	LCurried8[A,B,C,D,E,F,G,H]		= 								(in._1._1._1._1._1._1._1,		(in._1._1._1._1._1._1._2,	(in._1._1._1._1._1._2,	(in._1._1._1._1._2,	(in._1._1._1._2,	(in._1._1._2,	(in._1._2, in._2)))))))
+	def rflip9[A,B,C,D,E,F,G,H,I]	(in:RCurried9[A,B,C,D,E,F,G,H,I]):	LCurried9[A,B,C,D,E,F,G,H,I]	= (in._1._1._1._1._1._1._1._1,	(in._1._1._1._1._1._1._1._2,	(in._1._1._1._1._1._1._2,	(in._1._1._1._1._1._2,	(in._1._1._1._1._2,	(in._1._1._1._2,	(in._1._1._2,	(in._1._2, in._2))))))))
 }

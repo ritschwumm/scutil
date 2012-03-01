@@ -17,16 +17,25 @@ trait LangImplicits
 		with	DateImplicits
 		with	DateFormatImplicits
 		with	EitherImplicits
+		with	ExecutorImplicits
+		with	Function0Implicits
 		with	Function1Implicits
+		with	Function2Implicits
+		with	IteratorImplicits
 		with	ListImplicits
+		with	MapImplicits
+		with	MatcherImplicits
 		with	NodeImplicits
 		with	OptionImplicits
+		with	OrderingImplicits
 		with	PairImplicits
+		with	PartialFunctionImplicits
 		with	PredicateImplicits
 		with	RegexImplicits
 		with	SeqImplicits
 		with	SetImplicits
 		with	StringImplicits
+		with	ThrowableImplicits
 		with	TraversableImplicits
 		with	TraversableOnceImplicits
 		
@@ -40,6 +49,11 @@ trait IoImplicits
 object GuiImplicits extends GuiImplicits				
 trait GuiImplicits
 		extends	ComponentImplicits
+		with	ContainerImplicits
+		with	DimensionImplicits
+		with	GraphicsImplicits
+		with	InsetsImplicits
 		with	JComponentImplicits
+		with	PointImplicits
 		with	RectangleImplicits
 		with	RootPaneContainerImplicits

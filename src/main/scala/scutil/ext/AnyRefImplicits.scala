@@ -12,7 +12,12 @@ final class AnyRefExt[T <: AnyRef](delegate:T) {
 	/** fail with an Exception if null */
 	def nullError(s: =>String):T	= 
 			if (delegate != null)	delegate 
-			else					sys error s 
+			else					sys error s
+			
+	/** replace null with another value */
+	def replaceNull[U>:T](replacement: =>U):U	=
+			if (delegate != null)	delegate
+			else					replacement
 	
 	/** Some if not null, None if null */
 	def guardNotNull:Option[T]	=

@@ -36,7 +36,7 @@ object BigRational {
 					
 	/** parse the output of #toString */
 	def parse(s:String):Option[BigRational] = s splitAround '/' match {
-		case List(num,den)	=> Some(new BigRational(new BigInt(num), new BigInt(den)))
+		case Seq(num,den)	=> Some(new BigRational(new BigInt(num), new BigInt(den)))
 		case _				=> None
 	}
 }

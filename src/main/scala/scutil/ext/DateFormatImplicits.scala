@@ -16,12 +16,15 @@ trait DateFormatImplicits {
 final class DateFormatExt(delegate:DateFormat) {
 	def asMarshaller:Marshaller[Date,String]	= Marshaller(
 			it => cloned format it, 
-			it => catching(classOf[ParseException]) opt { cloned parse it })
+			it => catching(classOf[ParseException]) opt {
+				val	clone	= cloned
+				clone setLenient false
+				cloned parse it 
+			})
 			
-	// NOTE DateFormat is not threadsafe
-	def cloned:DateFormat	= {
-		val clone	= delegate.clone.asInstanceOf[DateFormat]
-		clone setLenient false
-		clone
-	}
+	// cloning should be generalized, but @see https://issues.scala-lang.org/browse/SI-3197
+	
+	/** DateFormat is not threadsafe, cloning helps */
+	def cloned:DateFormat	= 
+			delegate.clone.asInstanceOf[DateFormat]
 }

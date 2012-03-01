@@ -5,15 +5,16 @@ import java.awt.event._
 import javax.swing._
 import javax.swing.event._
 
+import scutil.Lists
 import RectangleImplicits._
 
 object ComponentImplicits extends ComponentImplicits
 
 trait ComponentImplicits {
-	implicit def toComponentExt[T <: Component](delegate:T):ComponentExt[T] = new ComponentExt[T](delegate)
+	implicit def toComponentExt(delegate:Component):ComponentExt	= new ComponentExt(delegate)
 }
 	
-final class ComponentExt[T <: Component](delegate:T) {
+final class ComponentExt(delegate:Component) {
 	/** the nearest Window in the ancestor chain, including this component itself */
 	def windowSelfOrAncestor:Option[Window]	= 
 			windowSelfOrAncestor(delegate)
@@ -24,11 +25,21 @@ final class ComponentExt[T <: Component](delegate:T) {
 	
 	private def windowSelfOrAncestor(here:Component):Option[Window]	=
 			here match {
-				case null	=> None
+				case null		=> None
 				case x:Window	=> Some(x)
 				case x			=> windowSelfOrAncestor(x.getParent)
 			}
 	
+	/** get the parent Container the scala way */
+	def parentOption:Option[Container]	=
+			Option(delegate.getParent)
+		
+	/** get all parent Containers starting with the immediate parent and ending with the component root */
+	def parentChain:List[Container]	= 
+			Lists unfoldRightSimple (
+					delegate,
+					(it:Component) => Option(it.getParent))
+		
     /** sets minimum, preferred and maximum size of a {@link Component} */
 	def setAllSizes(size:Dimension) {
 		delegate setMinimumSize	size
@@ -39,11 +50,14 @@ final class ComponentExt[T <: Component](delegate:T) {
 	def outerRectangle:Rectangle =
 			new Rectangle(delegate.getSize)
 			
-	def mouseHovers(ev:MouseEvent):Boolean = {
+	def underMousePointer:Boolean	=
+			containsLocationOnScreen(MouseInfo.getPointerInfo.getLocation )
+		
+	def underMouseEvent(ev:MouseEvent):Boolean = {
 		val	within	= containsLocationOnScreen(ev.getLocationOnScreen)
 		val parent	= SwingUtilities isDescendingFrom (delegate, ev.getComponent)
 		val exited	= ev.getID() == MouseEvent.MOUSE_EXITED
-		within && !(parent &&  exited)
+		within && !(parent && exited)
 	}
 	
 	def containsLocationOnScreen(screenLocation:Point):Boolean = {

@@ -3,6 +3,7 @@ package scutil.gui
 import java.awt.{ List=>AwtList, _ }
 import java.awt.event._
 
+import scutil.Connectable
 import scutil.Disposable
 
 object GlobalKeyEvent extends Connectable[KeyEvent,Boolean] {
@@ -11,10 +12,8 @@ object GlobalKeyEvent extends Connectable[KeyEvent,Boolean] {
 			def dispatchKeyEvent(ev:KeyEvent):Boolean	= handler(ev)
 		}
 		install(dispatcher)
-		new Disposable {
-			def dispose() {
-				uninstall(dispatcher)
-			}
+		Disposable {
+			uninstall(dispatcher)
 		}
 	}
 	

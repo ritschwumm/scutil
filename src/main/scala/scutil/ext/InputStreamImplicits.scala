@@ -44,4 +44,7 @@ final class InputStreamExt(delegate:InputStream) {
 			if (len == -1)	running	= false
 		}
 	}
+	
+	def concat(that:InputStream):InputStream	=
+			new SequenceInputStream(delegate, that)
 }

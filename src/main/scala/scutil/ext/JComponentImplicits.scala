@@ -11,10 +11,10 @@ import RootPaneContainerImplicits._
 object JComponentImplicits extends JComponentImplicits
 
 trait JComponentImplicits {
-	implicit def toJComponentExt[T <: JComponent](delegate:T):JComponentExt[T] = new JComponentExt[T](delegate)
+	implicit def toJComponentExt(delegate:JComponent):JComponentExt	= new JComponentExt(delegate)
 }
 	
-final class JComponentExt[T <: JComponent](delegate:T) {
+final class JComponentExt(delegate:JComponent) {
 	def innerRectangle:Rectangle	= 
 			new Rectangle(delegate.getSize()) inset delegate.getInsets
 			
@@ -32,7 +32,10 @@ final class JComponentExt[T <: JComponent](delegate:T) {
 		frame setDefaultCloseOperation WindowConstants.DO_NOTHING_ON_CLOSE
 		
 		def doClose() {
-			if (onClose()) frame.dispose()
+			if (onClose()) {
+				frame setVisible false
+				frame.dispose()
+			}
 		}
 		
 		frame addWindowListener new WindowAdapter {

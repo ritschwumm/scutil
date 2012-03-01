@@ -9,17 +9,13 @@ object Base64 extends Marshaller[Array[Byte],String] {
 	private val whitespace	= """\s+"""
 	private val validInput	= """^[^=]+={0,2}$"""
 	private val padding		= '='
-	private val encode 		= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".toCharArray
+	private val encode 		= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray
 	private val	decode		= {
 		// -1 means "invalid", -2 means "padding"
 		val out	= new Array[Byte](256)
-		for (i <- 0 until 256)	out(i)	= -1
-		for (i <- 'A' to 'Z')	out(i) = (     i - 'A').toByte
-		for (i <- 'a' to 'z')	out(i) = (26 + i - 'a').toByte
-		for (i <- '0' to '9')	out(i) = (52 + i - '0').toByte
-		out('+')	= 62
-		out('/')	= 63
-		out('=')	= -2
+		for (i <- 0 until 256)				out(i)		= -1
+											out('=')	= -2
+		for ((i,v) <- encode.zipWithIndex)	out(i)		= v.toByte
 		out
 	}
 	

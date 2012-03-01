@@ -7,6 +7,12 @@ trait ListImplicits {
 }
 
 final class ListExt[T](delegate:List[T]) {
+	def cata[U](cons:(T,List[T])=>U, nil: =>U):U =
+			delegate match {
+				case head :: tail	=> cons(head, tail)
+				case Nil			=> nil
+			}
+			
 	/**
 	calculate common prefix and differing tails for two lists
 	usage example: 

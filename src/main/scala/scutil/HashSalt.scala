@@ -3,7 +3,7 @@ package scutil
 import java.security._
 import java.text.Normalizer
 
-import scutil.Implicits._
+import scutil.LangImplicits._
 
 /*
 object HashSalt {
@@ -63,7 +63,7 @@ final class HashSalt(
 	/** check if a raw password, when cooked, matches the same password cooked before */
 	def taste(raw:String, cooked:String):Boolean = {
 		(for {
-			List(r,s,p)	<- cooked splitAround '$' guardBy { _.size == 3 }
+			Seq(r,s,p)	<- cooked splitAround '$' guardBy { _.size == 3 }
 			rounds		<- r.toIntOption
 			salt		<- Base64 unapply s
 			prepared	<- Base64 unapply p
@@ -80,7 +80,7 @@ final class HashSalt(
 			(_ getBytes encoding) 						|> 
 			(salt ++ _) 								|> 
 			hash(rounds)
-			
+	
 	private def hash(rounds:Int)(bytes:Array[Byte]):Array[Byte]	= {
 		// throws NoSuchAlgorithmException
 		val	digest	= MessageDigest getInstance hashAlgorithm

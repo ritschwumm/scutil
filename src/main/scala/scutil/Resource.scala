@@ -9,6 +9,7 @@ import java.util.concurrent.locks.Lock
 // import java.beans.XMLDecoder
 import java.util.Scanner
 import javax.imageio.stream.ImageInputStream
+import java.awt.Graphics
 
 import scutil.log._
 
@@ -35,6 +36,7 @@ object Resource {
 	// implicit def XMLEncoderResource		[T <: XMLEncoder]		(delegate:T)	= new Resource(delegate, delegate.close)
 	implicit def ScannerResource			[T <: Scanner]			(delegate:T)	= new Resource(delegate, delegate.close)
 	implicit def ImageInputStreamResource	[T <: ImageInputStream]	(delegate:T)	= new Resource(delegate, delegate.close)
+	implicit def GraphicsResource			[T <: Graphics]			(delegate:T)	= new Resource(delegate, delegate.dispose)
 }
 
 final class Resource[+T](value:T, close: =>Unit) extends Logging {

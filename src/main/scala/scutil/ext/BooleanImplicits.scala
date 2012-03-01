@@ -7,7 +7,7 @@ trait BooleanImplicits {
 }
 
 final class BooleanExt(delegate:Boolean) {
-	def fold[T](trueValue: =>T, falseValue: =>T):T =
+	def cata[T](trueValue: =>T, falseValue: =>T):T =
 			if (delegate)	trueValue
 			else			falseValue
 	

@@ -7,8 +7,14 @@ trait AnyImplicits {
 }
 
 final class AnyExt[T](delegate:T) {
-	/** apply a single unary function, just like F#'s operator */
+	/** ensure we get the java wrapper */
+	def boxed:AnyRef	= delegate.asInstanceOf[AnyRef]
+	
+	/** apply a single unary function, just like F#'s operator or ruby's thrush */
 	def |>[U](f:T=>U):U	= f(delegate)
+	
+	/** same as |> but with different precendence */
+	def into[U](f:T=>U):U	= f(delegate)
 	
 	/** apply an effect, then return the delegate itself. */
 	def |>>(effect:T=>Unit):T = {
@@ -16,10 +22,7 @@ final class AnyExt[T](delegate:T) {
 		delegate
 	}
 	
-	/** same as |> but with different precendence */
-	def thru[U](f:T=>U):U	= f(delegate)
-	
-	/** apply a number of effects, then return the delegate itself. inspired by clojure's doto */
+	/** apply a number of effects, then return the delegate itself; inspired by clojure's doto */
 	def doto(effects:(T=>Unit)*):T	= {
 		effects foreach { _ apply delegate }
 		delegate
@@ -63,9 +66,20 @@ final class AnyExt[T](delegate:T) {
 	
 	/** Right if Some else original value in Left */
 	def rightBy(func:T=>Option[T]):Either[T,T]	=
-				func(delegate) toRight delegate
+			func(delegate) toRight delegate
 
 	/** Left if Some else original value in Right */
 	def leftBy(func:T=>Option[T]):Either[T,T]	=
-				func(delegate) toLeft delegate		
+			func(delegate) toLeft delegate	
+				
+	/** pair with function applied */
+	def firstBy[U](func:T=>U):(T,U)	=
+			(delegate, func(delegate))
+
+	/** pair with function applied */
+	def secondBy[U](func:T=>U):(U,T)	=
+			(func(delegate), delegate)
+	
+	/** pair with itself */ 
+	def duplicate:(T,T)	= (delegate,delegate)
 }

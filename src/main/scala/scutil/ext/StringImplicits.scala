@@ -6,6 +6,8 @@ import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.util.control.Exception._
 
+import scutil.Functions.neverComesHere
+
 object StringImplicits extends StringImplicits
 
 trait StringImplicits {
@@ -35,8 +37,44 @@ final class StringExt(delegate:String) {
 	def cutSuffix(suffix:String):Option[String] = 
 			if (delegate endsWith suffix)	Some(delegate substring (0, delegate.length-suffix.length))
 			else							None
-		
+	
 	/** exludes the separator chars themselves */
+	def splitAround(separator:Char):Seq[String] = {
+		val	out	= new mutable.ArrayBuffer[String]
+		var pos	= 0
+		while (true) {
+			val	index	= delegate indexOf (separator, pos)
+			if (index == -1) {
+				out	+= delegate substring pos
+				return out
+			}
+			else {
+				out	+= delegate substring (pos, index)
+				pos	= index + 1
+			}
+		}
+		neverComesHere
+	}
+	
+	/** exludes the separator strings themselves */
+	def splitAround(separator:String):Seq[String] = {
+		val	out	= new mutable.ArrayBuffer[String]
+		var pos	= 0
+		while (true) {
+			val	index	= delegate indexOf (separator, pos)
+			if (index == -1) {
+				out	+= delegate substring pos
+				return out
+			}
+			else {
+				out	+= delegate substring (pos, index)
+				pos	= index + separator.length
+			}
+		}
+		neverComesHere
+	}
+	
+	/*
 	def splitAround(separator:Char):List[String] = {
 		@tailrec 
 		def unfold(s:String, accu:List[String]):List[String]	= s lastIndexOf separator match {
@@ -45,12 +83,18 @@ final class StringExt(delegate:String) {
 		}
 		unfold(delegate, Nil)
 	}
+	*/
 	
-	/** before index and after index excluding the index itself */
-	def splitAroundIndex(index:Int):Option[(String,String)]	=
-			if (index >= 0 && index <= delegate.length)	Some((delegate substring (0,index), delegate substring index+1))
+	/** like splitAt, but None for indizes outside the String's boundaries */
+	def splitAtIndex(index:Int):Option[(String,String)]	=
+			if (index >= 0 && index <= delegate.length)	Some((delegate substring (0,index), delegate substring index))
 			else										None
 			
+	/** before index and after index excluding the index itself */
+	def splitAroundIndex(index:Int):Option[(String,String)]	=
+			if (index >= 0 && index < delegate.length)	Some((delegate substring (0,index), delegate substring index+1))
+			else										None
+	
 	/** exludes the separator char itself */
 	def splitAroundFirst(separator:Char):Option[(String,String)] =
 			splitAroundIndex(delegate indexOf separator)
@@ -59,33 +103,53 @@ final class StringExt(delegate:String) {
 	def splitAroundLast(separator:Char):Option[(String,String)] =
 			splitAroundIndex(delegate lastIndexOf separator)
 		
-	/*
-	def indexOfOption(separator:Char)	=
-			delegate indexOf separator match {
+	/** like indexOf, but None if not found */
+	def indexOfOption(ch:Int, fromIndex:Int=0)	=
+			delegate indexOf (ch, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)
 			}
 			
-	def lastIndexOfOption(separator:Char)	=
-			delegate lastIndexOf separator match {
+	/** like lastIndexOf, but None if not found */
+	def lastIndexOfOption(ch:Int, fromIndex:Int=delegate.length-1)	=
+			delegate lastIndexOf (ch, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)
 			}
-	*/
 	
+	/** quote to use as a literal in a Regex */
 	def quoteRegex:String	= Pattern quote delegate
 	
+	/** quote to use within a character class in a Regex */
+	def quoteCharacterClass:String	= {
+		val b	= new StringBuilder
+		var i	= 0
+		while (i < delegate.length) {
+			delegate charAt i match {
+				case '\\'	=> b append "\\\\"
+				case '-'	=> b append "\\-"
+				case '^'	=> b append "\\^"
+				case '['	=> b append "\\["
+				case ']'	=> b append "\\]"
+				case x		=> b += x
+			}
+			i	+= 1
+		}
+		b.toString
+	}
+	
+	/** quote for use in XML */
 	def quoteXML(quot:Boolean = false, apos:Boolean = false):String	= {
 		val b	= new StringBuilder
 		var i	= 0
 		while (i < delegate.length) {
 			delegate charAt i match {
-				case '<'				=> b append "&lt;"
-				case '>'				=> b append "&gt;"
-				case '&'				=> b append "&amp;"
-				case '"'	if quot		=> b append "&quot;"
-				case '\''	if apos		=> b append "&apos;"
-				case x					=> b += x
+				case '<'			=> b append "&lt;"
+				case '>'			=> b append "&gt;"
+				case '&'			=> b append "&amp;"
+				case '"'	if quot	=> b append "&quot;"
+				case '\''	if apos	=> b append "&apos;"
+				case x				=> b += x
 			}
 			i	+= 1
 		}

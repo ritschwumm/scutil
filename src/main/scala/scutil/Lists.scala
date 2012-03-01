@@ -10,7 +10,7 @@ object Lists {
 			}
 		
 	// == unfoldRight(seed, func andThen { it => (it,it) })
-	def unfoldRightSimple[T](seed:T, func:T=>Option[T]):List[T]	=
+	def unfoldRightSimple[S,T<:S](seed:S, func:S=>Option[T]):List[T]	=
 			func(seed) match {
 				case Some(next)	=> next :: unfoldRightSimple(next, func)
 				case None		=> Nil
@@ -26,9 +26,9 @@ object Lists {
 	}
 	
 	// == unfoldLeft(seed, func andThen { it => (it,it) })
-	def unfoldLeftSimple[T](seed:T, func:T=>Option[T]) = {
+	def unfoldLeftSimple[S,T<:S](seed:S, func:S=>Option[T]) = {
 		@tailrec 
-		def recurse(seed:T, accu:List[T]):List[T] = func(seed) match {
+		def recurse(seed:S, accu:List[T]):List[T] = func(seed) match {
 			case Some(next)	=> recurse(next, next :: accu)
 			case None		=> accu
 		}

@@ -1,12 +1,12 @@
 package scutil.ext
 
-import scutil.Types._
+import scutil.Functions._
 import scutil.Predicates._
 
 object PredicateImplicits extends PredicateImplicits
 
 trait PredicateImplicits {
-	implicit def toPredicateExt[T](delegate:Predicate[T]) = new PredicateExt[T](delegate)
+	implicit def toPredicateExt[T](delegate:Predicate[T])	= new PredicateExt[T](delegate)
 }
 
 final class PredicateExt[T](delegate:Predicate[T]) {

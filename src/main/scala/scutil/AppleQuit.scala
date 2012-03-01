@@ -5,7 +5,7 @@ import java.lang.reflect.{Proxy,Method,InvocationHandler}
 import scutil.log._
 
 object AppleQuit extends Logging {
-	/** tries to install an com.apple.mrj.com.apple.mrj.MRJQuitHandler */
+	/** tries to install an com.apple.mrj.MRJQuitHandler */
 	def install(task: => Unit) {
 		try {
 			val handlerClass	= Class forName "com.apple.mrj.MRJQuitHandler"

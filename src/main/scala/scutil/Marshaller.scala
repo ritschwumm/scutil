@@ -45,26 +45,38 @@ trait Marshaller[S,T] {
 			t	=> (this read t) orElse (that read t))
 			
 	/** map the target value in both directions */
-	final def xmap[U](bijection:Bijection[T,U]):Marshaller[S,U]	= Marshaller(
+	final def xmapForward[U](bijection:Bijection[T,U]):Marshaller[S,U]	= Marshaller(
 			s	=> bijection write (this write s),
 			u	=> this read (bijection read u))
 			
 	/** map the source value in both directions */
-	final def ymap[R](bijection:Bijection[R,S]):Marshaller[R,T]	= Marshaller(
+	final def xmapReverse[R](bijection:Bijection[R,S]):Marshaller[R,T]	= Marshaller(
 			r	=> this write (bijection write r),
 			u	=> this read u map bijection.read)
 		
-	final def cofilterWritten(pred:T=>Boolean):Marshaller[S,T]	= Marshaller(
+	final def cofilterBefore(pred:T=>Boolean):Marshaller[S,T]	= Marshaller(
 			s	=> write(s),
 			t	=> if (pred(t)) read(t) else None)
 			
-	final def cofilterRead(pred:S=>Boolean):Marshaller[S,T]	= Marshaller(
+	final def cofilterAfter(pred:S=>Boolean):Marshaller[S,T]	= Marshaller(
 			s	=> write(s),
 			t	=> read(t) filter pred)
 			
 	final def asPartialBijection:PartialBijection[S,T]	= PartialBijection(
 			it => Some(write(it)), 
 			read)
+			
+	final def asBijection(default: =>S):Bijection[S,T]	= Bijection[S,T](
+			it => write(it),
+			it => read(it) getOrElse default)
+			
+	/** attention: throws exceptions when not matching. do not use this unless you know what you are doing */
+	final def asBijectionFailing:Bijection[S,T]	= Bijection[S,T](
+			it => write(it),
+			it => read(it) getOrElse (sys error ("cannot unmarshall: " + it)))
+			
+	final def readExtractor:Extractor[T,S]	= Extractor(read _)
+	final def writeFunction:Function1[S,T]	= write _
 }
 
 private final class FunctionMarshaller[S,T](writeFunc:S=>T, readFunc:T=>Option[S]) extends Marshaller[S,T] {

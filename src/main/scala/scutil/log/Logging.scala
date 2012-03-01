@@ -1,14 +1,17 @@
 package scutil.log
 
-trait Logging { self =>
-	import LogLevels._
+import LogLevels._
+
+trait Logging {
+	final def FATAL(elements:Any*)	{ log(LogFatal,	elements) }
+	final def ERROR(elements:Any*)	{ log(LogError,	elements) }
+	final def WARN(elements:Any*)	{ log(LogWarn,	elements) }
+	final def INFO(elements:Any*)	{ log(LogInfo,	elements) }
+	final def DEBUG(elements:Any*)	{ log(LogDebug,	elements) }
+	final def TRACE(elements:Any*)	{ log(LogTrace,	elements) }
 	
-	final def DEBUG(elements:Any*)	{ LOG(LogLevels.DEBUG,	elements) }
-	final def INFO(elements:Any*)	{ LOG(LogLevels.INFO,	elements) }
-	final def WARN(elements:Any*)	{ LOG(LogLevels.WARN,	elements) }
-	final def ERROR(elements:Any*)	{ LOG(LogLevels.ERROR,	elements) }
-	
-	final def LOG(level:LogLevel, elements:Seq[Any]) { 
+	final def log(level:LogLevel, elements:Seq[Any]) { 
+		// NOTE the hack
 		//val	trace	= Thread.currentThread.getStackTrace.toList drop 5
 		val here	= "scutil.log.Logging$class"
 		val trace	= Thread.currentThread.getStackTrace.toList
@@ -18,8 +21,9 @@ trait Logging { self =>
 						.dropWhile { _.getClassName == here }	// ERROR method
 						.drop(1)								// ERROR mixin forwarder
 						.headOption
-		logger log (trace, level, elements) 
+		val entry	= LogEntry(getClass, trace, level, elements) 
+		logHandler log entry
 	}
 	
-	protected val logger:Logger	= Log logger getClass
+	def logHandler:LogHandler	= DefaultLogHandler
 }

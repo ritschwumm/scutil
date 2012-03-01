@@ -7,11 +7,14 @@ trait EitherImplicits {
 }
 
 final class EitherExt[S,T](delegate:Either[S,T]) {
+	def cata[U](left:S=>U, right:T=>U)	= delegate fold (left, right)
+			
+	/** same as cata(identity,identity) but with improved type inference */
+	def upfold[U](implicit ev:delegate.type <:< Either[U,U]):U	=
+			ev(delegate) fold (identity, identity)
+		
 	def leftOrError(s:String)	= delegate.left		getOrElse (sys error s)
 	def rightOrError(s:String)	= delegate.right	getOrElse (sys error s)
-	
-	def leftEffect(fx: =>Unit):Either[S,T]	= { if (delegate.isLeft)  fx; delegate }
-	def rightEffect(fx: =>Unit):Either[S,T]	= { if (delegate.isRight) fx; delegate }
 	
 	def leftEffect(fx:S=>Unit):Either[S,T]	= { if (delegate.isLeft)  fx(delegate.left.get);	delegate }
 	def rightEffect(fx:T=>Unit):Either[S,T]	= { if (delegate.isRight) fx(delegate.right.get);	delegate }

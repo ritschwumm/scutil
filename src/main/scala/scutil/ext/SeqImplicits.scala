@@ -5,13 +5,16 @@ import scutil.Tuples
 object SeqImplicits extends SeqImplicits
 
 trait SeqImplicits {
-	implicit def toSeqExt[S](delegate:Seq[S])	= new SeqExt(delegate)
+	implicit def toSeqExt[T](delegate:Seq[T])	= new SeqExt(delegate)
 }
 
-final class SeqExt[S](delegate:Seq[S]) {
+final class SeqExt[T](delegate:Seq[T]) {
+	def containsIndex(index:Int):Boolean	=
+			index >= 0 && index < delegate.size
+
 	/** distinct with a custom equality check */ 
-	def distinctWith(same:(S,S)=>Boolean):Seq[S] = 
-			( delegate.toList.foldLeft(List.empty[S]) { (retained:List[S],candidate:S) =>
+	def distinctWith(same:(T,T)=>Boolean):Seq[T] = 
+			( delegate.toList.foldLeft(List.empty[T]) { (retained:List[T],candidate:T) =>
 				retained find { same(_,candidate) } match {
 					case Some(_)	=> retained
 					case None		=> candidate :: retained
@@ -19,19 +22,57 @@ final class SeqExt[S](delegate:Seq[S]) {
 			}).toList.reverse
 	
 	/** distinct on a single property */ 
-	def distinctBy[T](extract:S=>T):Seq[S] = 
+	def distinctBy[U](extract:T=>U):Seq[T] = 
 			distinctWith { extract(_) == extract(_) }
 	
+	/** pairwise neighbors */
+	def zipTail:Seq[(T,T)]	= 
+			if (delegate.nonEmpty)	delegate zip delegate.tail
+			else					Seq.empty
+	
 	/** insert a separator between elements */	
-	def intersperse[S1>:S](separator:S1):Seq[S1]	=
+	def intersperse[U>:T](separator: =>U):Seq[U]	=
 			if (delegate.nonEmpty)	delegate flatMap { Seq(separator, _) } tail
 			else					delegate
-			
+	
 	/** triple every item with its previous and next item */
-	def adjacents:Seq[(Option[S],S,Option[S])]	= {
+	def adjacents:Seq[(Option[T],T,Option[T])]	= {
 		val somes	= delegate map Some.apply
 		val prevs	= None +: (somes dropRight 1) 
 		val nexts	= (somes drop 1) :+ None
 		prevs zip delegate zip nexts map Tuples.runcurry3
 	}
+	
+	/** optionally insert something between two items */
+	def between(func:(T,T)=>Option[T]):Seq[T]	= {
+		if (delegate.size < 2)	return delegate
+		val	out	= new scala.collection.immutable.VectorBuilder[T]
+		delegate zip delegate.tail foreach { case (now,later) =>
+			out	+= now
+			func(now,later) foreach out.+=
+		}
+		out	+= delegate.last
+		out.result
+	}
+		
+	/** equivalent elements go into own Seqs */
+	def equivalentSpans(equivalent:(T,T)=>Boolean):Seq[Seq[T]]	= {
+		def impl(in:Seq[T]):Seq[Seq[T]]	= {
+			val (a,b)	= in span { equivalent(in.head, _) }
+			if (b.nonEmpty)	a +: impl(b)
+			else			Seq(a)
+		}
+		if (delegate.nonEmpty)	impl(delegate)
+		else					Seq.empty
+	}
+	
+	/** equivalentSpans on a single property */
+	def equivalentSpansBy[U](extract:T=>U):Seq[Seq[T]]	=
+			equivalentSpans { extract(_) == extract(_) }
+		
+	def insertAt(index:Int, item:T):Seq[T]	= 
+			delegate patch (index, Seq(item), 0)
+		
+	def removeAt(index:Int):Seq[T]	= 
+			delegate patch (index, Seq.empty, 1)
 }

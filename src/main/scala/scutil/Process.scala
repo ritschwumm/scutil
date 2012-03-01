@@ -5,11 +5,10 @@ import java.io._
 import scala.collection.mutable
 import scala.collection.JavaConversions
 
-import scutil.Resource._
-import scutil.Types._
 import scutil.Functions._
-import scutil.Concurrent._
+import scutil.Resource._
 import scutil.ext.ReaderImplicits._
+import scutil.ext.ExecutorImplicits._
 
 object Process {
 	case class Result(rc:Int, out:Seq[String], err:Seq[String])
@@ -48,5 +47,5 @@ object Process {
 	}
 	
 	private def spawn[T](task: =>T):Thunk[T] =
-			execute(backgroundExecutor, thunk(task))
+			Executors.spawn withResult thunk(task)
 }

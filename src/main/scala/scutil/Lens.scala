@@ -33,12 +33,12 @@ trait Lens[S,T] {
 			put(s, func(get(s)))
 	
 	/** map the value in both directions */
-	def xmap[U](bijection:Bijection[T,U]):Lens[S,U]	= Lens(
+	def mapValue[U](bijection:Bijection[T,U]):Lens[S,U]	= Lens(
 			s		=> bijection write (this get s),
 			(s,u)	=> this put (s, bijection read u))
 		
 	/** map the container in both directions */
-	def ymap[R](bijection:Bijection[R,S]):Lens[R,T]	= Lens(
+	def mapContainer[R](bijection:Bijection[R,S]):Lens[R,T]	= Lens(
 			r		=> this get (bijection write r),
 			(r,t)	=> bijection read (this put ((bijection write r), t)))
 	
@@ -48,6 +48,18 @@ trait Lens[S,T] {
 	
 	def andThen[U](that:Lens[T,U]):Lens[S,U]	= 
 			that compose this
+		
+	/** set two values from a pair */
+	def zip[U](that:Lens[S,U]):Lens[S,(T,U)]	= Lens(
+			s		=> (this get s, that get s),
+			(s,tu)	=> that put (this put (s,tu._1), tu._2))
+			
+	/*
+	// TODO generalize to any Functor
+	def liftSeq:Lens[Seq[S],Seq[T]]	= Lens(
+			(c)		=> c map get,
+			(c,v)	=> c zip v map (put _ tupled))
+	*/
 }
 
 private final class FunctionLens[S,T](getFunc:S=>T, putFunc:(S,T)=>S) extends Lens[S,T] {

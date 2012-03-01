@@ -8,13 +8,13 @@ import RectangleImplicits._
 object RootPaneContainerImplicits extends RootPaneContainerImplicits
 
 trait RootPaneContainerImplicits {
-	implicit def toRootPaneContainerExt[T <: RootPaneContainer](delegate:T):RootPaneContainerExt[T] = new RootPaneContainerExt[T](delegate)
+	implicit def toRootPaneContainerExt(delegate:RootPaneContainer):RootPaneContainerExt	= new RootPaneContainerExt(delegate)
 }
 	
-final class RootPaneContainerExt[T <: RootPaneContainer](delegate:T) {
+final class RootPaneContainerExt(delegate:RootPaneContainer) {
 	def setCenterContent(child:Component) {
 		val content	= delegate.getContentPane
-		content setLayout new BorderLayout
-		content add (child, BorderLayout.CENTER)
+		content setLayout	new BorderLayout
+		content add			(child, BorderLayout.CENTER)
 	}
 }

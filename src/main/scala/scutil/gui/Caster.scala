@@ -1,7 +1,8 @@
 package scutil.gui
 
+import scutil.Functions._
+import scutil.Connectable
 import scutil.Disposable
-import scutil.Types._
 
 abstract class Caster[L,E] private[gui] (addListener:Effect[L], removeListener:Effect[L], createListener:Effect[E]=>L) extends Connectable[E,Unit] {
 	def connect(callback:E=>Unit):Disposable = 
@@ -9,10 +10,8 @@ abstract class Caster[L,E] private[gui] (addListener:Effect[L], removeListener:E
 	
 	def connect(listener:L):Disposable = {
 		addListener(listener)
-		new Disposable {
-			def dispose() {
-				removeListener(listener)
-			}
+		Disposable {
+			removeListener(listener)
 		}
 	}
 }

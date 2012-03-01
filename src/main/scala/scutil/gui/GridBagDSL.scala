@@ -63,6 +63,7 @@ final class GridBagDSL(delegate:GridBagConstraints) {
 	
 	def insets(v:Insets):GridBagConstraints														= modify { c => c.insets	= v.clone.asInstanceOf[Insets]			}
 	def insets(top:Int, left:Int, bottom:Int, right:Int):GridBagConstraints						= modify { c => c.insets	= new Insets(top, left, bottom, right)	}
+	def insets(p:Place2D, hgap:Int, vgap:Int):GridBagConstraints								= modify { c => c.insets	= p insets (hgap, vgap) }
 	
 	// implicit def toInsets(v:Tuple4[Int,Int,Int,Int]):Insets	= new Insets(v._1, v._2, v._3, v._4)
 		

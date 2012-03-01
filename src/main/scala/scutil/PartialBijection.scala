@@ -28,12 +28,15 @@ trait PartialBijection[S,T] { self =>
 			that andThen this
 	
 	final def andThen[U](that:PartialBijection[T,U]):PartialBijection[S,U]	= PartialBijection(
-			s	=> this write s flatMap that.write,
-			u	=> that read u flatMap this.read)
+			s	=> this write	s flatMap that.write,
+			u	=> that read	u flatMap this.read)
 			
 	final def asBijection:Bijection[Option[S],Option[T]]	= Bijection(
-			it => it flatMap write, 
-			it => it flatMap read)
+			_ flatMap write, 
+			_ flatMap read)
+			
+	final def readExtractor:Extractor[T,S]	= Extractor(read _)
+	final def writeExtractor:Extractor[S,T]	= Extractor(write _)
 }
 
 private final class FunctionPartialBijection[S,T](writeFunc:S=>Option[T], readFunc:T=>Option[S]) extends PartialBijection[S,T] {

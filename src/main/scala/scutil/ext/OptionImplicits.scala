@@ -7,23 +7,26 @@ trait OptionImplicits {
 }
 
 final class OptionExt[T](delegate:Option[T]) {
-	def getOrError(s:String) = delegate getOrElse (sys error s)
+	def getOrError(s:String)	= delegate getOrElse (sys error s)
 	
 	// == map some getOrElse none
-	def fold[X](some:T => X, none: => X):X = delegate match {
+	def cata[X](some:T => X, none: => X):X = delegate match {
 		case Some(x)	=> some(x)
 		case None		=> none
 	}
 	
-	/** ap of the monad , <*> of the applicative functor */
+	/** ap of the monad, <*> of the applicative functor */
 	def ap[U,V](source:Option[U])(implicit witness:T=>U=>V):Option[V] =
 			for { f	<- delegate; s	<- source } yield f(s)
+		
+	/** ap with inverted parameters */
+	def pa[U](func:Option[T=>U]):Option[U] =
+			for { f	<- func; s	<- delegate } yield f(s)
 	
 	/** the flatten method defined on Iterable returns a List, not an Option */
 	def flatten[U](implicit witness:T=>Option[U]):Option[U] =
 			delegate flatMap witness
 			
-	def someEffect(effect:T=>Unit):Option[T] = { if (delegate.nonEmpty) effect(delegate.get); delegate }
-	def someEffect(effect: =>Unit):Option[T] = { if (delegate.nonEmpty) effect; delegate }
-	def noneEffect(effect: =>Unit):Option[T] = { if (delegate.isEmpty)  effect; delegate }
+	def someEffect(effect:T=>Unit):Option[T] = { if (delegate.nonEmpty) effect(delegate.get);	delegate }
+	def noneEffect(effect: =>Unit):Option[T] = { if (delegate.isEmpty)  effect; 				delegate }
 }

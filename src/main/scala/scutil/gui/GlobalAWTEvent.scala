@@ -3,6 +3,7 @@ package scutil.gui
 import java.awt.{ List=>AwtList, _ }
 import java.awt.event._
 
+import scutil.Connectable
 import scutil.Disposable
 
 object GlobalAWTEvent extends Connectable[AWTEvent,Unit] {
@@ -11,10 +12,8 @@ object GlobalAWTEvent extends Connectable[AWTEvent,Unit] {
 			def eventDispatched(ev:AWTEvent)	= handler(ev)
 		}
 		install(listener)
-		new Disposable {
-			def dispose() {
-				uninstall(listener)
-			}
+		Disposable {
+			uninstall(listener)
 		}
 	}
 	

@@ -30,7 +30,7 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](delegate:CC[T]) {
 		out
 	}
 	
-	// NOTE these don't terminate for inifinite collections!
+	// NOTE these don't terminate for infinite collections!
 	
 	/** pair elements of a collection with a function applied to an element */
 	def zipBy[U](func:T=>U)(implicit cbf:CanBuildFrom[CC[T],(T,U),CC[(T,U)]]):CC[(T,U)]	= {
@@ -53,8 +53,8 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](delegate:CC[T]) {
 	}
 	
 	/** create a map from all elements with a given function to generate the keys */
-	def mapBy[S](index:T=>S):Map[S,T]	=
-			delegate map { it => (index(it), it) } toMap;
+	def mapBy[S](key:T=>S):Map[S,T]	=
+			delegate map { it => (key(it), it) } toMap;
 			
 	// NOTE this should be generalized to other AFs, not just Option
 	// NOTE supplying pure and flatMap of a Monad wold work, too!

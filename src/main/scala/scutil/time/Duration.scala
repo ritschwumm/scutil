@@ -16,8 +16,15 @@ case class Duration(millis:Long) extends Ordered[Duration] {
 	def + (that:Duration):Duration	= Duration(this.millis + that.millis)
 	def - (that:Duration):Duration	= Duration(this.millis - that.millis)
 	
+	def + (instant:Instant):Instant	= Instant(millis + instant.millis)
+	// def - (instant:Instant):Instant	= Instant(millis - instant.millis)
+	
+	def / (that:Duration):Long		= this.millis / that.millis
+	def % (that:Duration):Long		= this.millis % that.millis
+
 	def * (factor:Long):Duration	= Duration(millis * factor)
 	def / (factor:Long):Duration	= Duration(millis / factor)
+	def % (factor:Long):Duration	= Duration(millis % factor)
 	
 	def compare(that:Duration):Int	= this.millis compare that.millis
 	def min(that:Duration):Duration	= if (this < that) this else that
