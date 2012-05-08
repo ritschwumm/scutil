@@ -1,49 +1,54 @@
 package scutil
 
-import java.math.{ BigDecimal => BigDec }
-import java.math.{ BigInteger => BigInt }
-import java.math.MathContext
-import java.math.RoundingMode
+import java.lang.{ 
+	Number	=> JNumber 
+}
+import java.math.{
+	BigDecimal	=> JBigDecimal,
+	BigInteger	=> JBigInteger,
+	MathContext,
+	RoundingMode
+}
 
 import scutil.ext.StringImplicits._
 
 object BigRational {
 	/** additive neutral element */
-	val ZERO	= new BigRational(BigInt.ZERO, BigInt.ONE)
+	val ZERO	= new BigRational(JBigInteger.ZERO, JBigInteger.ONE)
 	/** multiplicative neutral element */
-	val ONE		= new BigRational(BigInt.ONE,  BigInt.ONE)	
+	val ONE		= new BigRational(JBigInteger.ONE,  JBigInteger.ONE)	
 	
-	def apply(numerator:BigInt, denominator:BigInt):BigRational = 
+	def apply(numerator:JBigInteger, denominator:JBigInteger):BigRational = 
 			new BigRational(numerator, denominator)
 			
-	def apply(numerator:BigDec):BigRational = 
+	def apply(numerator:JBigDecimal):BigRational = 
 			new BigRational(
 					numerator.unscaledValue,
-					BigDec.ONE scaleByPowerOfTen numerator.scale toBigInteger)
+					JBigDecimal.ONE scaleByPowerOfTen numerator.scale toBigInteger)
 					
 	def apply(numerator:Long, denominator:Long):BigRational = 
 			new BigRational(
-					BigInt.valueOf(numerator),
-					BigInt.valueOf(denominator))
+					JBigInteger valueOf numerator,
+					JBigInteger valueOf denominator)
 					
 	def apply(numerator:Long):BigRational = 
 			new BigRational(
-					BigInt.valueOf(numerator),
-					BigInt.ONE)
+					JBigInteger valueOf numerator,
+					JBigInteger.ONE)
 					
-	def unapply(self:BigRational):Option[(BigInt,BigInt)] = 
+	def unapply(self:BigRational):Option[(JBigInteger,JBigInteger)] = 
 			Some((self.numerator, self.denominator)) 
 					
 	/** parse the output of #toString */
 	def parse(s:String):Option[BigRational] = s splitAround '/' match {
-		case Seq(num,den)	=> Some(new BigRational(new BigInt(num), new BigInt(den)))
+		case Seq(num,den)	=> Some(new BigRational(new JBigInteger(num), new JBigInteger(den)))
 		case _				=> None
 	}
 }
 
 /** an immutable, auto-simplifying BigInteger fraction */
-final class BigRational(_numerator:BigInt, _denominator:BigInt) extends java.lang.Number with Ordered[BigRational] {
-	if (_denominator == BigInt.ZERO)	throw new ArithmeticException("denominator must not be zero")
+final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extends JNumber with Ordered[BigRational] {
+	if (_denominator == JBigInteger.ZERO)	throw new ArithmeticException("denominator must not be zero")
 	
 	// simplify
 	val (numerator,denominator) = {
@@ -110,12 +115,12 @@ final class BigRational(_numerator:BigInt, _denominator:BigInt) extends java.lan
 			else				negate
 
 	/** -1 for negative, 0 for zero, +1 for positive */
-	def signum:Int					= (numerator compareTo	BigInt.ZERO)
+	def signum:Int	= (numerator compareTo	JBigInteger.ZERO)
 	
-	def integralValue:BigInt		= numerator divide		denominator
-	def integralRemainder:BigInt	= numerator remainder	denominator
+	def integralValue:JBigInteger		= numerator divide		denominator
+	def integralRemainder:JBigInteger	= numerator remainder	denominator
 	
-	def integralValueAndRemainder:(BigInt,BigInt)	= {
+	def integralValueAndRemainder:(JBigInteger,JBigInteger)	= {
 		val	both	= numerator divideAndRemainder denominator
 		(both(0), both(1))
 	}
@@ -125,14 +130,6 @@ final class BigRational(_numerator:BigInt, _denominator:BigInt) extends java.lan
 	
 	def min(that:BigRational):BigRational = if (this < that) this else that
 	def max(that:BigRational):BigRational = if (this > that) this else that
-	
-	/*
-	// imlemented by the Ordered trait
-	def <(that:BigRational):Boolean		= (this compareTo that) == -1
-	def >(that:BigRational):Boolean		= (this compareTo that) == +1
-	def <=(that:BigRational):Boolean	= (this compareTo that) != +1
-	def >=(that:BigRational):Boolean	= (this compareTo that) != -1
-	*/
 	
 	def compare(that:BigRational):Int =
 			if (this == that)	0
@@ -153,11 +150,11 @@ final class BigRational(_numerator:BigInt, _denominator:BigInt) extends java.lan
 	//------------------------------------------------------------------------------
 	//## conversion
 	
-	def toBigDecimal(scale:Int, roundingMode:RoundingMode):BigDec =
-			new BigDec(numerator) divide (new BigDec(denominator), scale, roundingMode)
+	def toBigDecimal(scale:Int, roundingMode:RoundingMode):JBigDecimal =
+			new JBigDecimal(numerator) divide (new JBigDecimal(denominator), scale, roundingMode)
 	
-	def toBigDecimal(mathContext:MathContext):BigDec =
-			new BigDec(numerator) divide (new BigDec(denominator), mathContext)
+	def toBigDecimal(mathContext:MathContext):JBigDecimal =
+			new JBigDecimal(numerator) divide (new JBigDecimal(denominator), mathContext)
 			
 	// TODO weak 
 	override def doubleValue:Double	= numerator.doubleValue / denominator.doubleValue

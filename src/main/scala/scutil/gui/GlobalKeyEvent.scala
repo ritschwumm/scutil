@@ -11,7 +11,9 @@ object GlobalKeyEvent extends Connectable[KeyEvent,Boolean] {
 		val dispatcher	= new KeyEventDispatcher {
 			def dispatchKeyEvent(ev:KeyEvent):Boolean	= handler(ev)
 		}
-		install(dispatcher)
+		{
+			install(dispatcher)
+		}
 		Disposable {
 			uninstall(dispatcher)
 		}

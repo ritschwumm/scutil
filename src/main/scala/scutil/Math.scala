@@ -53,6 +53,14 @@ object Math {
 	
 	//------------------------------------------------------------------------------
 	
+	def blend(a:Float, b:Float, ratio:Float):Float	=
+			a * (0 + ratio) + b * (1 - ratio) 
+	
+	def blend(a:Double, b:Double, ratio:Double):Double	=
+			a * (0 + ratio) + b * (1 - ratio) 
+	
+	//------------------------------------------------------------------------------
+	
 	def unsigned(value:Byte):Short	= (value & 0x000000ff).toShort
 	def unsigned(value:Short):Int	= (value & 0x0000ffff)
 	def unsigned(value:Int):Long	= (value & 0xffffffffL)
@@ -64,6 +72,12 @@ object Math {
 	
 	//------------------------------------------------------------------------------
 	
+	def swapEndian(value:Char):Char	= 
+			(
+				((value << 8) & 0xff00) |
+				((value >> 8) & 0x00ff)
+			).toChar
+			
 	def swapEndian(value:Short):Short	= 
 			(
 				((value << 8) & 0xff00) |
@@ -85,4 +99,32 @@ object Math {
 			((value >> 24) & 0x0000000000ff0000L)	|
 			((value <<  8) & 0x000000ff00000000L)	|
 			((value >>  8) & 0x00000000ff000000L)
+			
+	def swapEndian(value:Array[Byte]):Array[Byte]	= {
+		val l	= value.length
+		val	out	= new Array[Byte](l)
+		var i	= 0
+		while (i < l) {
+			out(i)	= value(l-i-1)
+			i	+= 1
+		}
+		out
+	}
+	
+	//------------------------------------------------------------------------------
+	
+	def maskTest(value:Byte, onMask:Byte, offMask:Byte):Boolean = 
+			(value & (onMask | offMask)) == onMask
+		
+	def maskTest(value:Short, onMask:Short, offMask:Short):Boolean = 
+			(value & (onMask | offMask)) == onMask
+		
+	def maskTest(value:Int, onMask:Int, offMask:Int):Boolean = 
+			(value & (onMask | offMask)) == onMask
+		
+	def maskTest(value:Long, onMask:Long, offMask:Long):Boolean = 
+			(value & (onMask | offMask)) == onMask
+		
+	def maskTest(value:Char, onMask:Char, offMask:Char):Boolean = 
+			(value & (onMask | offMask)) == onMask
 }

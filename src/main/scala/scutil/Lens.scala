@@ -19,6 +19,20 @@ object Lens {
 	def second[S,T]:Lens[(S,T),T]	= Lens(
 			p		=> p._2,
 			(p,t)	=> (p._1, t))
+			
+	def codiag[T]:Lens[Either[T,T],T]	=
+			identity[T] ||| identity[T]
+			
+	def map[K,V](k:K):Lens[Map[K,V],Option[V]]	= Lens(
+			_ get k,
+			(c,v)	=> v match {
+				case Some(v)	=> c + (k -> v)
+				case None		=> c - k
+			})
+			
+	def set[T](t:T):Lens[Set[T],Boolean]	= Lens(
+			_ contains t,
+			(c,v)	=> if (v) c + t else c - t)
 }
 
 trait Lens[S,T] {
@@ -29,8 +43,16 @@ trait Lens[S,T] {
 	def get(s:S):T
 	def put(s:S, t:T):S
 	
+	/** put with flipped arguments, curried */
+	def putter(t:T):S=>S	= 
+			s => put(s,t)
+	
 	def modify(s:S, func:T=>T):S	=
 			put(s, func(get(s)))
+		
+	/** modify with flipped arguments */
+	def modification(func:T=>T):S=>S	= 
+			s => put(s, func(get(s)))
 	
 	/** map the value in both directions */
 	def mapValue[U](bijection:Bijection[T,U]):Lens[S,U]	= Lens(
@@ -54,6 +76,21 @@ trait Lens[S,T] {
 			s		=> (this get s, that get s),
 			(s,tu)	=> that put (this put (s,tu._1), tu._2))
 			
+	def |||[SS](that:Lens[SS,T]):Lens[Either[S,SS],T]	= Lens(
+			sss	=> sss match {
+				case Left(s)	=> this get s
+				case Right(ss)	=> that get ss
+			},
+			(sss,t)	=> sss match {
+				case Left(s)	=> Left(this put (s, t))
+				case Right(ss)	=> Right(that put (ss, t))
+			})
+	
+	def ***[SS,TT](that:Lens[SS,TT]):Lens[(S,SS),(T,TT)]	= Lens(
+		(sss)		=> (this get sss._1,			that get sss._2),
+		(sss,ttt)	=> (this put (sss._1, ttt._1),	that put (sss._2, ttt._2))
+	)
+	
 	/*
 	// TODO generalize to any Functor
 	def liftSeq:Lens[Seq[S],Seq[T]]	= Lens(

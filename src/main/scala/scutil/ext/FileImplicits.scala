@@ -77,7 +77,7 @@ final class FileExt(delegate:File) {
 		 }
 	}
 	
-		/** walk this file and all children in pre order */
+	/** walk this file and all children in pre order */
 	def walkPreOrder(effect:Effect[File]) {
 		def recurse(file:File) {
 			effect(file)

@@ -3,7 +3,6 @@ package scutil
 import org.specs2.mutable._
 
 class Base64Test extends Specification {
-	//val hexDump	= new HexDump(60)
 	val	possible = {
 		val	out	= new Array[Byte](256)
 		for (i <- 0 until 256) out(i) = i.toByte

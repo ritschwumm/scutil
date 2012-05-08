@@ -4,6 +4,8 @@ import java.awt.Color
 
 import scala.math._
 
+import scutil.Math
+
 object RGBA {
 	def fromColor(color:Color):RGBA	= {
 		val Array(r,g,b,a)	= color getRGBComponents null
@@ -19,15 +21,13 @@ object RGBA {
 
 /** value range is 0..1 */
 case class RGBA(r:Float, g:Float, b:Float, a:Float) {
-	def blend(that:RGBA, ratio:Float):RGBA	= {
-		val iratio	= 1f - ratio
-		RGBA(
-			r	= this.r * ratio + that.r * iratio,
-			g	= this.g * ratio + that.g * iratio,
-			b	= this.b * ratio + that.b * iratio,
-			a	= this.a * ratio + that.a * iratio
-		)
-	}
+	def blend(that:RGBA, ratio:Float):RGBA	= 
+			RGBA(
+				r	= Math blend (this.r, that.r, ratio),
+				g	= Math blend (this.g, that.g, ratio),
+				b	= Math blend (this.b, that.b, ratio),
+				a	= Math blend (this.a, that.a, ratio)
+			)
 	
 	def diff(that:RGBA):Float	= 
 			(	abs(this.r - that.r) +

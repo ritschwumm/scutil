@@ -4,21 +4,21 @@ import java.awt.Color
 
 import scala.math._
 
+import scutil.Math
+
 object HSBA {
 	def fromColor(color:Color):HSBA	= RGBA fromColor color toHSBA;
 }
 
 /** value range is 0..1 */
 case class HSBA(h:Float, s:Float, b:Float, a:Float) {
-	def blend(that:HSBA, ratio:Float):HSBA	= {
-		val iratio	= 1f - ratio
-		HSBA(
-			h	= this.h * ratio + that.h * iratio,
-			s	= this.s * ratio + that.s * iratio,
-			b	= this.b * ratio + that.b * iratio,
-			a	= this.a * ratio + that.a * iratio
-		)
-	}
+	def blend(that:HSBA, ratio:Float):HSBA	= 
+			HSBA(
+				h	= Math blend (this.h, that.h, ratio),
+				s	= Math blend (this.s, that.s, ratio),
+				b	= Math blend (this.b, that.b, ratio),
+				a	= Math blend (this.a, that.a, ratio)
+			)
 	
 	def diff(that:HSBA):Float	=
 			(	abs(this.h - that.h) +

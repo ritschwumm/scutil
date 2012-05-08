@@ -1,10 +1,14 @@
 package scutil.gui
 
+import javax.swing.SwingUtilities
+
 import scutil.Functions._
 import scutil.Executors
 import scutil.ext.ExecutorImplicits._
 
 object SwingUtil {
+	def withinEDT:Boolean	= SwingUtilities.isEventDispatchThread
+	
 	def worker[T](job: =>T):Thunk[T]	= Executors.thread withResultEither thunk(job)
 	def workerWait[T](job: => T):T		= worker(job)()
 	

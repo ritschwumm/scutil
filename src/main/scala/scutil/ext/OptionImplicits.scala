@@ -19,7 +19,7 @@ final class OptionExt[T](delegate:Option[T]) {
 	def ap[U,V](source:Option[U])(implicit witness:T=>U=>V):Option[V] =
 			for { f	<- delegate; s	<- source } yield f(s)
 		
-	/** ap with inverted parameters */
+	/** ap with inverted parameters, aka <**> */
 	def pa[U](func:Option[T=>U]):Option[U] =
 			for { f	<- func; s	<- delegate } yield f(s)
 	

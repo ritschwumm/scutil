@@ -1,5 +1,7 @@
 package scutil.ext
 
+import scala.collection.immutable
+
 import scutil.Tuples
 
 object SeqImplicits extends SeqImplicits
@@ -11,6 +13,11 @@ trait SeqImplicits {
 final class SeqExt[T](delegate:Seq[T]) {
 	def containsIndex(index:Int):Boolean	=
 			index >= 0 && index < delegate.size
+		
+	/** map the value for a single index */
+	def updatedBy(index:Int, func:T=>T):Seq[T]	=
+			if (index >= 0 && index < delegate.size)	delegate updated (index, func(delegate(index)))
+			else										delegate
 
 	/** distinct with a custom equality check */ 
 	def distinctWith(same:(T,T)=>Boolean):Seq[T] = 
@@ -46,7 +53,7 @@ final class SeqExt[T](delegate:Seq[T]) {
 	/** optionally insert something between two items */
 	def between(func:(T,T)=>Option[T]):Seq[T]	= {
 		if (delegate.size < 2)	return delegate
-		val	out	= new scala.collection.immutable.VectorBuilder[T]
+		val	out	= new immutable.VectorBuilder[T]
 		delegate zip delegate.tail foreach { case (now,later) =>
 			out	+= now
 			func(now,later) foreach out.+=

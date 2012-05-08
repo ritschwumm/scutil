@@ -11,7 +11,9 @@ object GlobalAWTEvent extends Connectable[AWTEvent,Unit] {
 		val listener	= new AWTEventListener {
 			def eventDispatched(ev:AWTEvent)	= handler(ev)
 		}
-		install(listener)
+		{
+			install(listener)
+		}
 		Disposable {
 			uninstall(listener)
 		}
