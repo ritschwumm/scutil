@@ -1,4 +1,4 @@
-package scutil
+package scutil.data
 
 object PartialBijection {
 	def apply[S,T](writeFunc:S=>Option[T], readFunc:T=>Option[S]):PartialBijection[S,T]	= 

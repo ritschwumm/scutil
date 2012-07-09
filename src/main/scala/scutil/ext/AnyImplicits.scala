@@ -1,5 +1,7 @@
 package scutil.ext
 
+import scutil.data._
+
 object AnyImplicits extends AnyImplicits
 
 trait AnyImplicits {
@@ -63,7 +65,7 @@ final class AnyExt[T](delegate:T) {
 	/** Right if the predicate matches, else Left */
 	def eitherBy(predicate:T=>Boolean):Either[T,T]	= 
 			if (predicate(delegate)) Right(delegate) else Left(delegate)
-	
+			
 	/** Right if Some else original value in Left */
 	def rightBy(func:T=>Option[T]):Either[T,T]	=
 			func(delegate) toRight delegate
@@ -71,6 +73,24 @@ final class AnyExt[T](delegate:T) {
 	/** Left if Some else original value in Right */
 	def leftBy(func:T=>Option[T]):Either[T,T]	=
 			func(delegate) toLeft delegate	
+		
+	/** Win if the predicate matches, else Fail */
+	def trialBy(predicate:T=>Boolean):Tried[T,T]	= 
+			if (predicate(delegate)) Win(delegate) else Fail(delegate)
+	
+	/** Win if Some else original value in Fail */
+	def winBy(func:T=>Option[T]):Tried[T,T]	=
+			func(delegate) match {
+				case Some(x)	=> Win(x)
+				case None		=> Fail(delegate)
+			}
+
+	/** Fail if Some else original value in Win */
+	def failBy(func:T=>Option[T]):Tried[T,T]	=
+			func(delegate) match {
+				case Some(x)	=> Fail(x)
+				case None		=> Win(delegate)
+			}
 				
 	/** pair with function applied */
 	def firstBy[U](func:T=>U):(T,U)	=

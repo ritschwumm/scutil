@@ -2,6 +2,8 @@ package scutil.ext
 
 import scala.collection.generic.CanBuildFrom
 
+import scutil.data._
+
 object TraversableImplicits extends TraversableImplicits
 
 trait TraversableImplicits {
@@ -56,23 +58,34 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](delegate:CC[T]) {
 	def mapBy[S](key:T=>S):Map[S,T]	=
 			delegate map { it => (key(it), it) } toMap;
 			
-	// NOTE this should be generalized to other AFs, not just Option
-	// NOTE supplying pure and flatMap of a Monad wold work, too!
+	// NOTE these should be generalized to other AFs, not just Option and Tried
+	// NOTE supplying pure and flatMap of a Monad would work, too!
 	
 	/** Delegate is traversable (in the haskell sense), Option is an idiom. */
 	def sequenceOption[U](implicit ev:T=>Option[U], cbf:CanBuildFrom[CC[T],U,CC[U]]):Option[CC[U]]	=
 			traverseOption(identity[U])
 	
 	/** Delegate is traversable (in the haskell sense), Option is an idiom. */
-	def traverseOption[U,V](func:U=>V)(implicit ev:T=>Option[U], cbf:CanBuildFrom[CC[T],V,CC[V]]):Option[CC[V]]	=
-			if (delegate forall { _.isDefined }) {
-				val builder	= cbf()
-				delegate foreach { it =>
-					builder	+= func(it.get)
-				}
-				Some(builder.result)
-			}	
-			else {
-				None
-			}
+	def traverseOption[U,V](func:U=>V)(implicit ev:T=>Option[U], cbf:CanBuildFrom[CC[T],V,CC[V]]):Option[CC[V]]	= {
+		val builder	= cbf()
+		delegate map ev foreach {
+			case Some(x)	=> builder	+= func(x)
+			case None		=> return None
+		}
+		Some(builder.result)
+	}
+			
+	/** Delegate is traversable (in the haskell sense), Option is an idiom. */
+	def sequenceTried[F,W](implicit ev:T=>Tried[F,W], cbf:CanBuildFrom[CC[T],W,CC[W]]):Tried[F,CC[W]]	=
+			traverseTried(identity[W])
+		
+	/** Delegate is traversable (in the haskell sense), Option is an idiom. */
+	def traverseTried[F,W,V](func:W=>V)(implicit ev:T=>Tried[F,W], cbf:CanBuildFrom[CC[T],V,CC[V]]):Tried[F,CC[V]]	= {
+		val builder	= cbf()
+		delegate map ev foreach {
+			case Win(x)		=> builder	+= func(x)
+			case Fail(x)	=> return Fail(x)
+		}
+		Win(builder.result)
+	}
 }

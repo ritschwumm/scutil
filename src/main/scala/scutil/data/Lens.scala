@@ -1,4 +1,4 @@
-package scutil
+package scutil.data
 
 object Lens {
 	def apply[S,T](getFunc:S=>T, setFunc:(S,T)=>S):Lens[S,T] = 
@@ -36,11 +36,14 @@ object Lens {
 }
 
 trait Lens[S,T] {
-	// can be used as scala getter - but not as a setter
-	final def apply(s:S):T			= get(s)
+	// can be used as scala getter
+	final def apply(s:S):T	= get(s)
+	// but not as a setter
 	// final def update(s:S, t:T):S	= put(s,T)
 	
+	/** get the detail value */
 	def get(s:S):T
+	/** set the detail value */
 	def put(s:S, t:T):S
 	
 	/** put with flipped arguments, curried */
@@ -50,8 +53,8 @@ trait Lens[S,T] {
 	def modify(s:S, func:T=>T):S	=
 			put(s, func(get(s)))
 		
-	/** modify with flipped arguments */
-	def modification(func:T=>T):S=>S	= 
+	/** modify with flipped arguments, curried */
+	def modifier(func:T=>T):S=>S	= 
 			s => put(s, func(get(s)))
 	
 	/** map the value in both directions */
@@ -76,6 +79,7 @@ trait Lens[S,T] {
 			s		=> (this get s, that get s),
 			(s,tu)	=> that put (this put (s,tu._1), tu._2))
 			
+	// either
 	def |||[SS](that:Lens[SS,T]):Lens[Either[S,SS],T]	= Lens(
 			sss	=> sss match {
 				case Left(s)	=> this get s
@@ -86,6 +90,7 @@ trait Lens[S,T] {
 				case Right(ss)	=> Right(that put (ss, t))
 			})
 	
+	// pair
 	def ***[SS,TT](that:Lens[SS,TT]):Lens[(S,SS),(T,TT)]	= Lens(
 		(sss)		=> (this get sss._1,			that get sss._2),
 		(sss,ttt)	=> (this put (sss._1, ttt._1),	that put (sss._2, ttt._2))

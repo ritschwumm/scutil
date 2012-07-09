@@ -3,6 +3,8 @@ package scutil.gui
 import java.awt.GridBagConstraints
 import java.awt.Insets
 
+import scutil.Implicits._
+
 object GridBagDSL {
 	def GBC = new GridBagConstraints
 	
@@ -73,9 +75,9 @@ final class GridBagDSL(delegate:GridBagConstraints) {
 	
 	// implicit def toInsets(v:Tuple4[Int,Int,Int,Int]):Insets	= new Insets(v._1, v._2, v._3, v._4)
 		
-	def modify(effect:GridBagConstraints=>Unit):GridBagConstraints = {
-		val out	= delegate.clone.asInstanceOf[GridBagConstraints]
-		effect(out)
-		out
-	}
+	def modify(effect:GridBagConstraints=>Unit):GridBagConstraints =
+			cloned |>> effect
+	
+	def cloned:GridBagConstraints	= 
+			delegate.clone.asInstanceOf[GridBagConstraints]
 }

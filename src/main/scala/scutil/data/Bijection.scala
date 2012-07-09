@@ -1,4 +1,4 @@
-package scutil
+package scutil.data
 
 import scala.util.control.Exception._
 

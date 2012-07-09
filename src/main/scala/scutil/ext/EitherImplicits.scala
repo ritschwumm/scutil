@@ -1,5 +1,7 @@
 package scutil.ext
 
+import scutil.data._
+
 object EitherImplicits extends EitherImplicits
 
 trait EitherImplicits {
@@ -18,4 +20,6 @@ final class EitherExt[S,T](delegate:Either[S,T]) {
 	
 	def leftEffect(fx:S=>Unit):Either[S,T]	= { if (delegate.isLeft)  fx(delegate.left.get);	delegate }
 	def rightEffect(fx:T=>Unit):Either[S,T]	= { if (delegate.isRight) fx(delegate.right.get);	delegate }
+	
+	def toTried:Tried[S,T]	= delegate fold (Fail.apply, Win.apply)
 }

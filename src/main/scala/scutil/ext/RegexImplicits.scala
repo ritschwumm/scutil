@@ -2,7 +2,7 @@ package scutil.ext
 
 import scala.util.matching.Regex
 
-import scutil.Marshaller
+import scutil.data.Marshaller
 
 object RegexImplicits extends RegexImplicits
 

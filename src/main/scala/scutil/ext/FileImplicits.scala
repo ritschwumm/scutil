@@ -8,8 +8,8 @@ import annotation.tailrec
 import scutil.Functions._
 import scutil.Resource._
 import scutil.Files
-import scutil.Lists 
 import scutil.Platform
+import scutil.data.Lists
 import scutil.time.Instant
 
 import InputStreamImplicits._
@@ -33,6 +33,10 @@ final class FileExt(delegate:File) {
 	/** time of last modification as an Instant, returns Instant.zero for non-existing files */
 	def lastModifiedInstant:Instant	= 
 			Instant(delegate.lastModified)
+	
+	/** whether the delegate is newer than another file. if the other file does not exist it counts as newer */ 
+	def newerThan(that:File):Boolean	=
+			delegate.exists && (!that.exists || delegate.lastModified > that.lastModified)
 	
 	/** add a component to this Files's path */
 	def /(name:String):File 		= new File(delegate, name)
@@ -77,34 +81,20 @@ final class FileExt(delegate:File) {
 		 }
 	}
 	
-	/** walk this file and all children in pre order */
-	def walkPreOrder(effect:Effect[File]) {
-		def recurse(file:File) {
-			effect(file)
-			Option(file.listFiles).toSeq.flatten foreach recurse _
-		}
-		recurse(delegate)
-	}
-	
-	/** walk this file and all children in post order */
-	def walkPostOrder(effect:Effect[File]) {
-		def recurse(file:File) {
-			Option(file.listFiles).toSeq.flatten foreach recurse _
-			effect(file)
-		}
-		recurse(delegate)
-	}
-	
 	/** delete all children and the file itself */
 	def deleteRecursive() {
-		walkPostOrder(_.delete())
-		/*
 		def recurse(file:File) {
-			Option(file.listFiles).toSeq.flatten foreach recurse _
-			file.delete()
+			val deleted	= file.delete()
+			// NOTE this prevents deletion of the contents of symlinked directories
+			if (!deleted && file.isDirectory) {
+				val list	= file.listFiles
+				if (list != null) {
+					list foreach recurse
+				}
+				file.delete()
+			}
 		}
 		recurse(delegate)
-		*/
 	}
 
 	//------------------------------------------------------------------------------
@@ -161,8 +151,10 @@ final class FileExt(delegate:File) {
 	//## temp
 	
 	/** create a temp file within this directory */
-	def createTempFile(prefix:String, suffix:String = null):File	=
-			File createTempFile (prefix, suffix, delegate)
+	def createTempFile(prefix:String, suffix:String = null):File	= {
+		require(prefix.length >= 3, "prefix must be at least 3 characters long")
+		File createTempFile (prefix, suffix, delegate)
+	}
 	
 	/** create a temp directory within this directory */
 	def createTempDirectory(prefix:String, suffix:String = null):File	= {

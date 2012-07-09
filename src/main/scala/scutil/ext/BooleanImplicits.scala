@@ -1,5 +1,7 @@
 package scutil.ext
 
+import scutil.data._
+
 object BooleanImplicits extends BooleanImplicits
 
 trait BooleanImplicits {
@@ -30,6 +32,10 @@ final class BooleanExt(delegate:Boolean) {
 	def either[U,V](falseLeft: =>U, trueRight: =>V):Either[U,V] =
 			if (delegate)	Right(trueRight)
 			else			Left(falseLeft)
+		
+	def trial[U,V](falseFail: =>U, trueWin: =>V):Tried[U,V] =
+			if (delegate)	Win(trueWin)
+			else			Fail(falseFail)
 	
 	def trueEffect(effect: =>Unit):Boolean	= { if (delegate)	effect; delegate }
 	def falseEffect(effect: =>Unit):Boolean	= { if (!delegate)	effect; delegate }

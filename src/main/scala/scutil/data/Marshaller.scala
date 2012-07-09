@@ -1,4 +1,4 @@
-package scutil
+package scutil.data
 
 object Marshaller {
 	def apply[S,T](writeFunc:S=>T, readFunc:T=>Option[S]):Marshaller[S,T] = 

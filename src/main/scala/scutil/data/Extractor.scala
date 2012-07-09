@@ -1,4 +1,4 @@
-package scutil
+package scutil.data
 
 object Extractor {
 	def apply[S,T](func:Function[S,Option[T]]):Extractor[S,T]	= 

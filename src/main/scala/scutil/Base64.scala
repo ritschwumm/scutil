@@ -1,5 +1,7 @@
 package scutil
 
+import scutil.data.Marshaller
+
 /** 
 encodes and decodes byte arrays into strings using the base64 encoding method.
 @see RFC4648

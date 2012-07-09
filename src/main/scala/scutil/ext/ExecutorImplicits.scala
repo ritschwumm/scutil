@@ -3,6 +3,7 @@ package scutil.ext
 import scala.concurrent.SyncVar
 
 import scutil.Functions._
+import scutil.data._
 
 object ExecutorImplicits extends ExecutorImplicits
 
@@ -18,18 +19,18 @@ final class ExecutorExt(delegate:Executor) {
 	}
 	
 	def withResultEither[T](task:Thunk[T]):Thunk[T] = {
-		val	out	= new SyncVar[Either[Exception,T]]
+		val	out	= new SyncVar[Tried[Exception,T]]
 		delegate(thunk(out set wrapException(task)))
 		thunk(unwrapException(out.get))
 	}
 	
-	private def wrapException[T](task:Thunk[T]):Either[Exception,T]	=
-			try { Right(task()) }
-			catch { case e:Exception => Left(e) }
+	private def wrapException[T](task:Thunk[T]):Tried[Exception,T]	=
+			try { Win(task()) }
+			catch { case e:Exception => Fail(e) }
 			
-	private def unwrapException[T](either:Either[Exception,T]):T =
-			either match {
-				case Right(v)	=> v
-				case Left(e)	=> throw e
+	private def unwrapException[T](trial:Tried[Exception,T]):T =
+			trial match {
+				case Win(v)	=> v
+				case Fail(e)	=> throw e
 			}
 }

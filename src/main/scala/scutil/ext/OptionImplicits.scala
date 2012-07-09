@@ -1,5 +1,7 @@
 package scutil.ext
 
+import scutil.data._
+
 object OptionImplicits extends OptionImplicits
 
 trait OptionImplicits {
@@ -29,4 +31,7 @@ final class OptionExt[T](delegate:Option[T]) {
 			
 	def someEffect(effect:T=>Unit):Option[T] = { if (delegate.nonEmpty) effect(delegate.get);	delegate }
 	def noneEffect(effect: =>Unit):Option[T] = { if (delegate.isEmpty)  effect; 				delegate }
+	
+	def toWin[F](fail: =>F):Tried[F,T]	= cata(Win.apply, Fail(fail))
+	def toFail[W](win: =>W):Tried[T,W]	= cata(Fail.apply, Win(win))
 }

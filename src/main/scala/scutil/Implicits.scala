@@ -13,10 +13,12 @@ trait LangImplicits
 		extends	AnyImplicits 
 		with	AnyRefImplicits
 		with	BooleanImplicits
+		with	CatchImplicits
 		with	ClassImplicits
 		with	DateImplicits
 		with	DateFormatImplicits
 		with	EitherImplicits
+		with	ElemImplicits
 		with	ExecutorImplicits
 		with	Function0Implicits
 		with	Function1Implicits

@@ -5,7 +5,7 @@ import java.awt.event._
 import javax.swing._
 import javax.swing.event._
 
-import scutil.Lists
+import scutil.data.Lists
 import RectangleImplicits._
 
 object ComponentImplicits extends ComponentImplicits
