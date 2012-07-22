@@ -4,7 +4,7 @@ import java.io._
 import java.util.Date
 
 import scutil.time._
-import LogLevels._
+import LogLevelEnum._
 
 object DefaultLogFormatter extends LogFormatter {
 	def format(entry:LogEntry):String	= {

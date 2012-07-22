@@ -5,7 +5,7 @@ import java.util.Date
 
 import scala.util.control.Exception._
 
-import scutil.data.Marshaller
+import scutil.lang._
 
 object DateFormatImplicits extends DateFormatImplicits
 

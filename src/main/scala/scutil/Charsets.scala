@@ -4,7 +4,7 @@ import java.nio.charset.Charset
 
 /** charsets existing on all platforms */
 object Charsets {
-	val platform	= Charset forName Platform.file.encoding
+	val platform	= Charset forName SystemProperties.file.encoding
 	
 	val	us_ascii	= Charset forName "US-ASCII"
 	

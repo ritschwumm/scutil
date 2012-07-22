@@ -2,8 +2,8 @@ package scutil.ext
 
 import scala.concurrent.SyncVar
 
-import scutil.Functions._
-import scutil.data._
+import scutil.lang._
+import scutil.tried._
 
 object ExecutorImplicits extends ExecutorImplicits
 

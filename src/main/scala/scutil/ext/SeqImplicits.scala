@@ -2,8 +2,8 @@ package scutil.ext
 
 import scala.collection.immutable
 
-import scutil.Functions._
-import scutil.data.Tuples
+import scutil.lang._
+import scutil.Tuples
 
 object SeqImplicits extends SeqImplicits
 

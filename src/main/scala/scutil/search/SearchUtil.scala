@@ -1,6 +1,6 @@
 package scutil.search
 
-import scutil.Functions._
+import scutil.lang._
 
 object SearchUtil {
 	def compile(pattern:String):Predicate[String]			= SearchCompiler compile	(SearchParser parse pattern) 

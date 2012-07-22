@@ -1,6 +1,6 @@
 package scutil.ext
 
-import scutil.data._
+import scutil.tried._
 
 import scala.util.control.Exception.Catch
 

@@ -5,11 +5,11 @@ import java.nio.charset.Charset
 
 import annotation.tailrec
 
-import scutil.Functions._
+import scutil.lang._
 import scutil.Resource._
 import scutil.Files
-import scutil.Platform
-import scutil.data.Lists
+import scutil.SystemProperties
+import scutil.Lists
 import scutil.time.Instant
 
 import InputStreamImplicits._
@@ -143,7 +143,7 @@ final class FileExt(delegate:File) {
 			withWriter(charset) { writer => 
 				lines foreach { line => 
 					writer write line
-					writer write Platform.line.separator
+					writer write SystemProperties.line.separator
 				}
 			}
 			

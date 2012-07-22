@@ -1,7 +1,7 @@
-package scutil.data
+package scutil.lang
 
 object Extractor {
-	def apply[S,T](func:Function[S,Option[T]]):Extractor[S,T]	= 
+	def apply[S,T](func:Chance[S,T]):Extractor[S,T]	= 
 			new FunctionExtractor(func)
 	
 	def total[S,T](func:S=>T):Extractor[S,T]	= Extractor(

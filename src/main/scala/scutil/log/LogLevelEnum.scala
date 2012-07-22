@@ -1,6 +1,6 @@
 package scutil.log
 
-object LogLevels {
+object LogLevelEnum {
 	sealed abstract class LogLevel(val name:String, private val priority:Int) extends Ordered[LogLevel] {
 		def compare(that:LogLevel):Int	= this.priority compare that.priority
 	}

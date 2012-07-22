@@ -1,28 +1,24 @@
 package scutil
 
-object Functions {
-	/*
-	// BETTER end in colon so it associates to the right
-	type =>?[-S,+T]	= PartialFunction[S,T]
-	type ?<=>[S,T]	= Marshaller[S,T]
-	type <=>[S,T]	= Bijection[S,T]
-	*/
-	
+package object lang {
 	type Predicate[-T]	= T=>Boolean
 	
-	type Thunk[+T]		= ()=>T			// aka Function0[T] aka Future[T] see Callable
-	type Effect[-T]		= T=>Unit		// aka Function1[T,Unit] aka Cont[T]
+	type Thunk[+T]		= ()=>T
+	type Effect[-T]		= T=>Unit
 	
-	type Task			= Thunk[Unit]	// see Runnable
+	type Task			= Thunk[Unit]
 	type Executor		= Task=>Unit
+	
+	type Chance[-S,+T]	= S=>Option[T]
 	
 	//------------------------------------------------------------------------------
 	
 	def constant[S,T](value: =>T):(S=>T)		= _ => value
 	def ignorant[S,T](thunk:Thunk[T]):(S=>T)	= _ => thunk()
+	
 	def task(value: =>Unit):Task				= thunk(value)
 	def thunk[T](value: =>T):Thunk[T]			= () => value
 	
-	/** used to show the reader control flow never reaches this point */
+	/** tell the compiler the control flow never reaches this point */
 	def neverComesHere:Nothing	= sys error "silence! i kill you!"
 }

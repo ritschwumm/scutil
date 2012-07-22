@@ -1,6 +1,6 @@
 package scutil.ext
 
-import scutil.data._
+import scutil.tried._
 
 object OptionImplicits extends OptionImplicits
 

@@ -2,7 +2,7 @@ package scutil.log
 
 import java.io._
 
-import LogLevels._
+import LogLevelEnum._
 	
 object DefaultLogHandler extends LogHandler {
 	def log(entry:LogEntry) {

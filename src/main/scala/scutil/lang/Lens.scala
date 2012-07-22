@@ -1,4 +1,4 @@
-package scutil.data
+package scutil.lang
 
 object Lens {
 	def apply[S,T](getFunc:S=>T, setFunc:(S,T)=>S):Lens[S,T] = 

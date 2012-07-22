@@ -1,8 +1,8 @@
 package scutil.ext
 
-import scutil.Functions._
+import scutil.lang._
+import scutil.tried._
 import scutil.Predicates._
-import scutil.data._
 
 object PredicateImplicits extends PredicateImplicits
 

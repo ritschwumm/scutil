@@ -2,7 +2,7 @@ package scutil.gui
 
 import javax.swing.SwingUtilities
 
-import scutil.Functions._
+import scutil.lang._
 import scutil.Executors
 import scutil.ext.ExecutorImplicits._
 

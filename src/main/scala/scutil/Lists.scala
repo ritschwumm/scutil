@@ -1,4 +1,4 @@
-package scutil.data
+package scutil
 
 import scala.annotation.tailrec 
 

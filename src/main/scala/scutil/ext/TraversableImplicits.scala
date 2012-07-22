@@ -2,7 +2,7 @@ package scutil.ext
 
 import scala.collection.generic.CanBuildFrom
 
-import scutil.data._
+import scutil.tried._
 
 object TraversableImplicits extends TraversableImplicits
 

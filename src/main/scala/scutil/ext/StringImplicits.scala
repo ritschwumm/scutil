@@ -6,7 +6,7 @@ import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.util.control.Exception._
 
-import scutil.Functions.neverComesHere
+import scutil.lang._
 
 object StringImplicits extends StringImplicits
 

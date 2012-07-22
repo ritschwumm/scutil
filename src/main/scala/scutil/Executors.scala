@@ -3,7 +3,7 @@ package scutil
 import java.util.concurrent.{Executor=>JExecutor}
 import javax.swing.SwingUtilities
 
-import scutil.Functions._
+import scutil.lang._
 import scutil.ext.Function0Implicits._
 
 // TODO convert back to java executor

@@ -1,13 +1,13 @@
 package scutil
 
-object OperatingSystems {
+object OperatingSystemEnum {
 	object OperatingSystem {
 		val	all	= Set(OSX, Windows, Linux)
 		
 		def byId(id:String):Option[OperatingSystem]	= all find { _.id == id }
 		
 		def current:Option[OperatingSystem]	= {
-			val	osName	= Platform.os.name.toLowerCase
+			val	osName	= SystemProperties.os.name.toLowerCase
 				 if (osName contains "linux")		Some(Linux)
 			else if (osName contains "windows")		Some(Windows)
 			else if (osName contains "mac os x")	Some(OSX)

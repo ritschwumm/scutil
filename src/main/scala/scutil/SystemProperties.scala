@@ -1,7 +1,7 @@
 package scutil
 
 /** mirrors important system properties */
-object Platform {
+object SystemProperties {
 	object file {
 		// NOTE this one is not guaranteed to exist
 		def encoding			= System getProperty "file.encoding"

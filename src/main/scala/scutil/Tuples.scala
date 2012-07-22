@@ -1,4 +1,4 @@
-package scutil.data
+package scutil
 
 object Tuples {
 	def append2[A,Z]				(in:Product1[A],				last:Z):Tuple2[A,Z]					= Tuple2(in._1,														last)

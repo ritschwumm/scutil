@@ -2,7 +2,7 @@ package scutil.search
 
 import java.util.regex.Pattern
 
-import scutil.Functions._
+import scutil.lang._
 import scutil.Implicits._
 
 object SearchCompiler {

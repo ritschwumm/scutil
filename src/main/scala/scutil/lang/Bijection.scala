@@ -1,4 +1,4 @@
-package scutil.data
+package scutil.lang
 
 import scala.util.control.Exception._
 
@@ -43,7 +43,7 @@ trait Bijection[S,T] {
 	final def asMarshallerCatchingRead:Marshaller[S,T]	= 
 			Marshaller(write, it => allCatch opt read(it))
 		
-	final def asPartialBijection:PartialBijection[S,T]	= PartialBijection(
+	final def asBichance:Bichance[S,T]	= Bichance(
 			it => Some(write(it)), 
 			it => Some(read(it)))
 			

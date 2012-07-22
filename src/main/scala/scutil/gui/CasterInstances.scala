@@ -5,7 +5,7 @@ import java.awt.event._
 import java.awt.dnd._
 import javax.swing.event._
 
-import scutil.Disposable
+import scutil.lang._
 
 import ListenerInstances._
 
@@ -304,7 +304,6 @@ object CasterInstances {
 	implicit def generifyListSelectionCaster(caster:ListSelectionCaster):ListSelectionCasterExt	= new ListSelectionCasterExt(caster)
 	final class ListSelectionCasterExt(caster:ListSelectionCaster) extends Caster(caster.addListSelectionListener, caster.removeListSelectionListener, mkListSelectionListener) {
 		def onValueChanged(callback:ListSelectionEvent=>Unit):Disposable	= listen(on_valueChanged(callback))
-	
 	}
 	
 	type AncestorCaster = {

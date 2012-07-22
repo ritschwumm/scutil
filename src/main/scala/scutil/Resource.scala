@@ -11,6 +11,7 @@ import java.util.Scanner
 import javax.imageio.stream.ImageInputStream
 import java.awt.Graphics
 
+import scutil.lang._
 import scutil.log._
 
 object Resource {

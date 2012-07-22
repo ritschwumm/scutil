@@ -3,10 +3,9 @@ package scutil.gui
 import java.awt.{ List=>AwtList, _ }
 import java.awt.event._
 
-import scutil.Connectable
-import scutil.Disposable
+import scutil.lang._
 
-object GlobalKeyEvent extends Connectable[KeyEvent,Boolean] {
+object GlobalKeyEvent {
 	def connect(handler:KeyEvent=>Boolean):Disposable = {
 		val dispatcher	= new KeyEventDispatcher {
 			def dispatchKeyEvent(ev:KeyEvent):Boolean	= handler(ev)

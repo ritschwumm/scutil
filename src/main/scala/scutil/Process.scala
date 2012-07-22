@@ -5,7 +5,7 @@ import java.io._
 import scala.collection.mutable
 import scala.collection.JavaConversions
 
-import scutil.Functions._
+import scutil.lang._
 import scutil.Resource._
 import scutil.ext.ReaderImplicits._
 import scutil.ext.ExecutorImplicits._
@@ -41,7 +41,7 @@ object Process {
 		new OutputStreamWriter(st) use { writer =>
 			lines foreach { line =>
 				writer write line
-				writer write Platform.line.separator
+				writer write SystemProperties.line.separator
 			}
 		}
 	}

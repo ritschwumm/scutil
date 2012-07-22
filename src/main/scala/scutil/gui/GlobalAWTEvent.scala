@@ -3,10 +3,9 @@ package scutil.gui
 import java.awt.{ List=>AwtList, _ }
 import java.awt.event._
 
-import scutil.Connectable
-import scutil.Disposable
+import scutil.lang._
 
-object GlobalAWTEvent extends Connectable[AWTEvent,Unit] {
+object GlobalAWTEvent {
 	def connect(handler:AWTEvent=>Unit):Disposable = {
 		val listener	= new AWTEventListener {
 			def eventDispatched(ev:AWTEvent)	= handler(ev)

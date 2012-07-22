@@ -1,4 +1,4 @@
-package scutil.data
+package scutil.tried
 
 object Tried {
 	def win[F,W](it:W):Tried[F,W]	= Win(it)

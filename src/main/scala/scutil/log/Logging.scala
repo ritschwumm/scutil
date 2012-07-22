@@ -1,6 +1,6 @@
 package scutil.log
 
-import LogLevels._
+import LogLevelEnum._
 
 trait Logging {
 	final def FATAL(elements:Any*)	{ log(LogFatal,	elements) }

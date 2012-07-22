@@ -1,6 +1,6 @@
 package scutil
 
-import scutil.Functions._
+import scutil.lang._
 
 object Predicates {
 	val always:Any=>Boolean	= _ => true

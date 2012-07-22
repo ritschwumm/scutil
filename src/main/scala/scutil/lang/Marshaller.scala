@@ -1,4 +1,4 @@
-package scutil.data
+package scutil.lang
 
 object Marshaller {
 	def apply[S,T](writeFunc:S=>T, readFunc:T=>Option[S]):Marshaller[S,T] = 
@@ -62,7 +62,7 @@ trait Marshaller[S,T] {
 			s	=> write(s),
 			t	=> read(t) filter pred)
 			
-	final def asPartialBijection:PartialBijection[S,T]	= PartialBijection(
+	final def asBichance:Bichance[S,T]	= Bichance(
 			it => Some(write(it)), 
 			read)
 			
