@@ -34,4 +34,9 @@ final class OptionExt[T](delegate:Option[T]) {
 	
 	def toWin[F](fail: =>F):Tried[F,T]	= cata(Win.apply, Fail(fail))
 	def toFail[W](win: =>W):Tried[T,W]	= cata(Fail.apply, Win(win))
+	
+	def toVector:Vector[T]	= delegate match {
+		case Some(x)	=> Vector(x)
+		case None		=> Vector.empty
+	}
 }

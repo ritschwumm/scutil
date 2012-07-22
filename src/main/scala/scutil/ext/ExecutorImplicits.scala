@@ -28,8 +28,8 @@ final class ExecutorExt(delegate:Executor) {
 			try { Win(task()) }
 			catch { case e:Exception => Fail(e) }
 			
-	private def unwrapException[T](trial:Tried[Exception,T]):T =
-			trial match {
+	private def unwrapException[T](tried:Tried[Exception,T]):T =
+			tried match {
 				case Win(v)	=> v
 				case Fail(e)	=> throw e
 			}

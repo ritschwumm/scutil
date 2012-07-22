@@ -42,7 +42,7 @@ final class FileExt(delegate:File) {
 	def /(name:String):File 		= new File(delegate, name)
 	
 	/** add multiple components to this Files's path */
-	def /(path:Seq[String]):File	= path.foldLeft(delegate)(new File(_,_))
+	def /(path:Seq[String]):File	= (path foldLeft delegate) { new File(_,_) }
 	
 	/** get the parent File the scala way */
 	def parentFileOption:Option[File]	= 

@@ -14,7 +14,7 @@ final class URLExt(delegate:URL) {
 	def /(name:String):URL = new URL(delegate, name)
 	
 	/** add multiple components to this URL's path */
-	def /(path:Seq[String]):URL	= path.foldLeft(delegate)(new URL(_,_))
+	def /(path:Seq[String]):URL	= (path foldLeft delegate) { new URL(_,_) }
 	
 	/** 
 	converts a "file://..." URL to a File without being too critical

@@ -2,6 +2,7 @@ package scutil.ext
 
 import scutil.Functions._
 import scutil.Predicates._
+import scutil.data._
 
 object PredicateImplicits extends PredicateImplicits
 
@@ -28,4 +29,7 @@ final class PredicateExt[T](delegate:Predicate[T]) {
 			
 	def eitherOn[S<:T,UL,UR](left:S=>UL, right:S=>UR):S=>Either[UL,UR]	=
 			it	=> if (delegate(it))	Left(left(it))	else	Right(right(it))
+			
+	def triedOn[S<:T,UF,UW](fail:S=>UF, win:S=>UW):S=>Tried[UF,UW]	=
+			it	=> if (delegate(it))	Fail(fail(it))	else	Win(win(it))
 }

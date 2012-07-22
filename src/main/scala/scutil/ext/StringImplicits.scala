@@ -38,7 +38,7 @@ final class StringExt(delegate:String) {
 			if (delegate endsWith suffix)	Some(delegate substring (0, delegate.length-suffix.length))
 			else							None
 	
-	/** exludes the separator chars themselves */
+	/** excludes the separator chars themselves */
 	def splitAround(separator:Char):Seq[String] = {
 		val	out	= new mutable.ArrayBuffer[String]
 		var pos	= 0
@@ -56,7 +56,7 @@ final class StringExt(delegate:String) {
 		neverComesHere
 	}
 	
-	/** exludes the separator strings themselves */
+	/** excludes the separator strings themselves */
 	def splitAround(separator:String):Seq[String] = {
 		val	out	= new mutable.ArrayBuffer[String]
 		var pos	= 0

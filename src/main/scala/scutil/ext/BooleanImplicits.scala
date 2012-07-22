@@ -33,7 +33,7 @@ final class BooleanExt(delegate:Boolean) {
 			if (delegate)	Right(trueRight)
 			else			Left(falseLeft)
 		
-	def trial[U,V](falseFail: =>U, trueWin: =>V):Tried[U,V] =
+	def tried[U,V](falseFail: =>U, trueWin: =>V):Tried[U,V] =
 			if (delegate)	Win(trueWin)
 			else			Fail(falseFail)
 	

@@ -2,6 +2,7 @@ package scutil.ext
 
 import scala.collection.immutable
 
+import scutil.Functions._
 import scutil.data.Tuples
 
 object SeqImplicits extends SeqImplicits
@@ -11,6 +12,12 @@ trait SeqImplicits {
 }
 
 final class SeqExt[T](delegate:Seq[T]) {
+	def insertAt(index:Int, item:T):Seq[T]	= 
+			delegate patch (index, Seq(item), 0)
+		
+	def removeAt(index:Int):Seq[T]	= 
+			delegate patch (index, Seq.empty, 1)
+		
 	def containsIndex(index:Int):Boolean	=
 			index >= 0 && index < delegate.size
 		
@@ -21,12 +28,12 @@ final class SeqExt[T](delegate:Seq[T]) {
 
 	/** distinct with a custom equality check */ 
 	def distinctWith(same:(T,T)=>Boolean):Seq[T] = 
-			( delegate.toList.foldLeft(List.empty[T]) { (retained:List[T],candidate:T) =>
+			((delegate.toList foldLeft List.empty[T]) { (retained:List[T],candidate:T) =>
 				retained find { same(_,candidate) } match {
 					case Some(_)	=> retained
 					case None		=> candidate :: retained
 				}
-			}).toList.reverse
+			}).reverse
 	
 	/** distinct on a single property */ 
 	def distinctBy[U](extract:T=>U):Seq[T] = 
@@ -61,7 +68,20 @@ final class SeqExt[T](delegate:Seq[T]) {
 		out	+= delegate.last
 		out.result
 	}
-		
+	
+	/** separators go to the Left, the rest goes into Right Seqs  */
+	def splitWhere(separator:Predicate[T]):Seq[Either[T,Seq[T]]] =
+			if (delegate.nonEmpty) {
+				val indizes = delegate.zipWithIndex collect { case (t,i) if (separator(t)) => i }
+				(-1 +: indizes) zip (indizes :+ delegate.size) flatMap { case (a,b) => 
+					Seq(Right(delegate slice (a+1,b))) ++
+					((delegate lift b) map Left.apply)
+				}
+			}
+			else {
+				Seq.empty
+			}
+
 	/** equivalent elements go into own Seqs */
 	def equivalentSpans(equivalent:(T,T)=>Boolean):Seq[Seq[T]]	= {
 		def impl(in:Seq[T]):Seq[Seq[T]]	= {
@@ -76,10 +96,4 @@ final class SeqExt[T](delegate:Seq[T]) {
 	/** equivalentSpans on a single property */
 	def equivalentSpansBy[U](extract:T=>U):Seq[Seq[T]]	=
 			equivalentSpans { extract(_) == extract(_) }
-		
-	def insertAt(index:Int, item:T):Seq[T]	= 
-			delegate patch (index, Seq(item), 0)
-		
-	def removeAt(index:Int):Seq[T]	= 
-			delegate patch (index, Seq.empty, 1)
 }
