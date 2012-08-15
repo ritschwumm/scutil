@@ -33,6 +33,7 @@ trait LangImplicits
 		with	PairImplicits
 		with	PartialFunctionImplicits
 		with	PredicateImplicits
+		with	QueueImplicits
 		with	RegexImplicits
 		with	SeqImplicits
 		with	SetImplicits

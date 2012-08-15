@@ -17,12 +17,6 @@ object Bijection {
 }
 
 trait Bijection[S,T] {
-	/*
-	// can be used as function and extractor
-	final def apply(s:S):T				= write(s)
-	final def unapply(t:T):Option[S]	= Some(read(t))
-	*/
-	
 	def write(s:S):T
 	def read(t:T):S
 	

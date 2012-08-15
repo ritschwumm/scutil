@@ -36,11 +36,6 @@ object Lens {
 }
 
 trait Lens[S,T] {
-	// can be used as scala getter
-	final def apply(s:S):T	= get(s)
-	// but not as a setter
-	// final def update(s:S, t:T):S	= put(s,T)
-	
 	/** get the detail value */
 	def get(s:S):T
 	/** set the detail value */
@@ -55,7 +50,7 @@ trait Lens[S,T] {
 		
 	/** modify with flipped arguments, curried */
 	def modifier(func:T=>T):S=>S	= 
-			s => put(s, func(get(s)))
+			modify(_, func)
 	
 	/** map the value in both directions */
 	def mapValue[U](bijection:Bijection[T,U]):Lens[S,U]	= Lens(

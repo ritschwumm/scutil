@@ -15,12 +15,6 @@ object Extractor {
 			
 	def trivial[T]:Extractor[T,Any]	= 
 			Extractor(_ => None)
-	
-	/*
-	def structural[S,T](func:{ def unapply(s:S):Option[T] })(implicit ms:Manifest[S], mt:Manifest[T]):Extractor[S,T]	= new Extractor[S,T] {
-		def unapply(s:S):Option[T]	= func unapply s
-	}
-	*/
 }
 	
 /** representative extractor (as opposed to compiler magic) */

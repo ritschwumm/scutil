@@ -13,12 +13,14 @@ sealed trait Tried[+F,+W] {
 				case Fail(x)	=> fail(x)
 			}
 			
+	//------------------------------------------------------------------------------
+	
 	def isWin:Boolean	= 
 			cata(_ => false,  _ => true)
 		
 	def isFail:Boolean	=
 			cata(_ => true, _ => false)
-	
+		
 	//------------------------------------------------------------------------------
 		
 	def exists(func:W=>Boolean):Boolean	=
@@ -74,15 +76,20 @@ sealed trait Tried[+F,+W] {
 			
 	def swap:Tried[W,F]	= 
 			cata(Win.apply,	Fail.apply)
-	
-	def orElse[FF>:F,WW>:W](that: =>Tried[FF,WW]):Tried[FF,WW]	= 
-			cata(_ => that, Win.apply)
 		
+	def withSwapped[FX,WX](func:Tried[W,F]=>Tried[WX,FX]):Tried[FX,WX]	=
+			func(swap).swap
+	
+	//------------------------------------------------------------------------------
+	
 	def getOrElse[WW>:W](that: =>WW):WW	= 
 			cata(_ => that, identity)
 		
 	def getOrError(s:String):W	=
 			getOrElse(sys error s) 
+		
+	def orElse[FF>:F,WW>:W](that: =>Tried[FF,WW]):Tried[FF,WW]	= 
+			cata(_ => that, Win.apply)
 		
 	//------------------------------------------------------------------------------
 	
@@ -90,52 +97,16 @@ sealed trait Tried[+F,+W] {
 			cata(it => func(it) map Win.apply getOrElse Fail(it), Win.apply)
 		
 	def reject[FF>:F](func:W=>Option[FF]):Tried[FF,W]	=
-			// swap.rescue(func).swap
 			cata(Fail.apply, it => func(it) map Fail.apply getOrElse Win(it))
 		
-	//------------------------------------------------------------------------------
-			
-	/*
-	def filter[FF>:F](fail: =>FF)(func:W=>Boolean):Tried[FF,W]	=
+	def filterOr[FF>:F](func:W=>Boolean, fail:FF):Tried[FF,W]	=
 			cata(Fail.apply, it => if (func(it)) Win(it) else Fail(fail))
 			
-	def filterMap[FF>:F,X](fail: =>FF)(func:W=>Option[X]):Tried[FF,X]	=
+	def mapOr[FF>:F,WW](func:W=>Option[WW], fail:FF):Tried[FF,WW]	=
 			cata(Fail.apply, it => func(it) map Win.apply getOrElse Fail(fail))
 		
-	def collect[FF>:F,X](fail: =>FF)(func:PartialFunction[W,X]):Tried[FF,X]	=
-			filterMap(fail)(func.lift)
-		
-	def mapOr[WW>:W,X](win: =>WW, func:F=>Option[X]):Tried[X,WW]	=
-			// swap.filterMap(win)(func).swap
-			cata(it => func(it) map Fail.apply getOrElse Win(win), Win.apply)
-	*/
-	
-	/*
-	// NOTE 
-	// accepting any supertypes for the default looks stupid
-	// could wrap default value into a zero-typeclass
-	
-	def collect[FF>:F,X](func:PartialFunction[W,X])(implicit default:Tried[FF,X]):Tried[FF,X]	=
-			cata(Fail.apply, it => if (func isDefinedAt it) Win(func(it)) else default)
-	
-	def filter[FF>:F,WW>:W](pred:W=>Boolean)(implicit default:Tried[FF,WW])	= 
-			cata(Fail.apply, it => if (pred(it)) Win(it) else default)
-		
-	def withFilter[FF>:F,WW>:W](predicate:WW=>Boolean)(implicit default:Tried[FF,WW])	= 
-			new TriedWithFilter(this, predicate, default)
-	
-	final class TriedWithFilter[+F,+W](self:Tried[F,W], pred:W=>Boolean, default:Tried[F,W]) {
-		def map[X](func:W=>X):Tried[F,X]	= 
-				self.filter(pred)(default) map func
-		def flatMap[FF>:F,X](func:W=>Tried[FF,X]):Tried[FF,X]	= 
-				self.filter(pred)(default) flatMap	func
-		def withFilter(pred2:W=>Boolean):TriedWithFilter[F,W]	= 
-				new TriedWithFilter[F,W](
-						self, 
-						it	=> pred(it) && pred2(it),
-						default)
-	}
- 	*/
+	def collectOr[FF>:F,WW](func:PartialFunction[W,WW], fail:FF):Tried[FF,WW]	=
+			cata(Fail.apply, it => if (func isDefinedAt it) Win(func(it)) else Fail(fail))
  	 
 	//------------------------------------------------------------------------------
 		
@@ -147,6 +118,9 @@ sealed trait Tried[+F,+W] {
 		
 	def toList:List[W]	= 
 			cata(_ => Nil, List(_))
+		
+	def toVector:Vector[W]	= 
+			cata(_ => Vector.empty, Vector(_))
 }
 
 case class Win[F,W](value:W)	extends Tried[F,W]
