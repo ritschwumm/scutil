@@ -18,7 +18,7 @@ final class ExecutorExt(delegate:Executor) {
 		thunk(out.get)
 	}
 	
-	def withResultEither[T](task:Thunk[T]):Thunk[T] = {
+	def withResultTried[T](task:Thunk[T]):Thunk[T] = {
 		val	out	= new SyncVar[Tried[Exception,T]]
 		delegate(thunk(out set wrapException(task)))
 		thunk(unwrapException(out.get))
@@ -30,7 +30,7 @@ final class ExecutorExt(delegate:Executor) {
 			
 	private def unwrapException[T](tried:Tried[Exception,T]):T =
 			tried match {
-				case Win(v)	=> v
+				case Win(v)		=> v
 				case Fail(e)	=> throw e
 			}
 }

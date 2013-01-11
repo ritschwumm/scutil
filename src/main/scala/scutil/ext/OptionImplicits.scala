@@ -37,8 +37,15 @@ final class OptionExt[T](delegate:Option[T]) {
 	def someEffect(effect:T=>Unit):Option[T] = { if (delegate.nonEmpty) effect(delegate.get);	delegate }
 	def noneEffect(effect: =>Unit):Option[T] = { if (delegate.isEmpty)  effect; 				delegate }
 	
-	def toWin[F](fail: =>F):Tried[F,T]	= cata(Win.apply, Fail(fail))
-	def toFail[W](win: =>W):Tried[T,W]	= cata(Fail.apply, Win(win))
+	def toWin[F](fail: =>F):Tried[F,T]	= delegate match {
+		case Some(win)	=> Win(win)
+		case None		=> Fail(fail)
+	} 
+	
+	def toFail[W](win: =>W):Tried[T,W]	= delegate match {
+		case Some(fail)	=> Fail(fail)
+		case None		=> Win(win)
+	} 
 	
 	def toVector:Vector[T]	= delegate match {
 		case Some(x)	=> Vector(x)

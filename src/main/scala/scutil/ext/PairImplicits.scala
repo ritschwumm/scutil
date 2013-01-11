@@ -9,6 +9,9 @@ trait PairImplicits {
 final class PairExt[T1,T2](delegate:Pair[T1,T2]) {
 	def first:FirstProjection[T1,T2]	= new FirstProjection[T1,T2](delegate)
 	def second:SecondProjection[T1,T2]	= new SecondProjection[T1,T2](delegate)
+	
+	def apply1to2[U](implicit ev:T1=>(T2=>U)):U	= ev(delegate._1)(delegate._2)
+	def apply2to1[U](implicit ev:T2=>(T1=>U)):U	= ev(delegate._2)(delegate._1)
 }
 
 /** comonad, see Either's LeftProjection which is a monad */

@@ -3,6 +3,20 @@ package scutil.tried
 object Tried {
 	def win[F,W](it:W):Tried[F,W]	= Win(it)
 	def fail[F,W](it:F):Tried[F,W]	= Fail(it)
+	
+	def optional[F,W](value:Option[W], default: =>F):Tried[F,W]	=
+			value match {
+				case Some(win)	=> Win(win)
+				case None		=> Fail(default)
+			}
+			
+	def notNull[T](value:T):Tried[Null,T]	= 
+			if (value != null)	Win(value)
+			else				Fail(null)
+	
+	def allCatch[T](value: =>T):Tried[Throwable,T]	=
+			try { Win(value) }
+			catch { case e => Fail(e) }
 }
 
 /** right biased Either (with swapped type parameters), Try with parameterized error */

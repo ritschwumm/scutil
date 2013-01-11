@@ -1,11 +1,13 @@
 package scutil.gui
 
-import java.awt.{ List=>AwtList, _ }
-import java.awt.event._
-import java.awt.dnd._
-import javax.swing._
-import java.applet.Applet
 import java.lang.ref.WeakReference
+import java.awt.Component
+import java.awt.MouseInfo
+import java.awt.Point
+import java.awt.Window
+import java.awt.IllegalComponentStateException
+import java.applet.Applet
+import javax.swing.SwingUtilities
 
 import scala.collection.mutable
 
@@ -36,13 +38,6 @@ object ComponentUnderMouse extends Logging {
 				entries	+= (component -> Entry(nowUnderMouse, newCallbacks))
 			case None			=>
 				entries	+= (component -> Entry(nowUnderMouse, Vector(new WeakReference(callback))))
-				component	addComponentListener	ComponentHandler
-				component	addMouseListener		MouseHandler
-				// TODO breaks on change
-				val dropTarget	= component.getDropTarget
-				if (dropTarget != null) {
-					dropTarget addDropTargetListener DropHandler
-				}
 		}
 		Disposable {
 			entries	= entries flatMap { case (component,entry) =>
@@ -51,13 +46,6 @@ object ComponentUnderMouse extends Logging {
 				}
 				if (newCallbacks.nonEmpty)	Some((component, Entry(entry.state, newCallbacks)))
 				else						None
-			}
-			component removeComponentListener	ComponentHandler
-			component removeMouseListener		MouseHandler
-			// TODO breaks on change
-			val dropTarget	= component.getDropTarget
-			if (dropTarget != null) {
-				dropTarget removeDropTargetListener DropHandler
 			}
 		}
 	}
@@ -76,28 +64,28 @@ object ComponentUnderMouse extends Logging {
 			callbackHard	= callback.get
 			if callbackHard != null
 		} {
-			callbackHard(entry.state)
+			try {
+				callbackHard(entry.state)
+			}
+			catch {
+				case e	=> ERROR("callback failed", e)
+			}
 		}
 	}
-	
-	// import scutil.Implicits._
-	// private def underMousePointer(delegate:Component):Boolean = delegate.underMousePointer
 	
 	private def underMousePointer(delegate:Component):Boolean = {
 		val	pi	= MouseInfo.getPointerInfo
 		if (pi != null) {
 			val localPosition	= convertPointFromScreen (pi.getLocation, delegate)
-			localPosition.x >= 0				&&
-			localPosition.y >= 0				&&
-			localPosition.x	< delegate.getWidth	&&
-			localPosition.y	< delegate.getHeight
+			localPosition.x >= 0	&&	localPosition.x	< delegate.getWidth	&&
+			localPosition.y >= 0	&&	localPosition.y	< delegate.getHeight
 		}
 		else {
 			false
 		}
 	}
 	
-   private def convertPointFromScreen(point:Point, component:Component):Point	= {
+	private def convertPointFromScreen(point:Point, component:Component):Point	= {
     	var x:Int		= point.x
     	var y:Int		= point.y
     	var c:Component	= component
@@ -128,24 +116,6 @@ object ComponentUnderMouse extends Logging {
 		neverComesHere
 	}
 	
-	private object ComponentHandler extends ComponentAdapter {
-		override def componentHidden(ev:ComponentEvent)		{ update()	}
-		override def componentMoved(ev:ComponentEvent)		{ update()	}
-		override def componentResized(ev:ComponentEvent)	{ update()	}
-		override def componentShown(ev:ComponentEvent)		{ update()	}
-    }
-    
-    private object MouseHandler extends MouseAdapter {
-		override def mouseEntered(ev:MouseEvent)	{ update() }
-		override def mouseExited(ev:MouseEvent)		{ update() }
-	}
-	
-	private object DropHandler extends DropTargetAdapter {
-		override def dragEnter(ev:DropTargetDragEvent)	{ update() }
-		override def dragExit(ev:DropTargetEvent)		{ update() }
-		override def drop(ev:DropTargetDropEvent)		{}
-	}
-	
 	private val testThread	= new Thread {
 		override def run() {
 			while (true) {
@@ -156,7 +126,7 @@ object ComponentUnderMouse extends Logging {
 							update()
 						}
 						catch {
-							case e	=> ERROR(e)
+							case e	=> ERROR("test thread failed", e)
 						}
 					}
 				}

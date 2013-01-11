@@ -21,5 +21,8 @@ final class EitherExt[S,T](delegate:Either[S,T]) {
 	def leftEffect(fx:S=>Unit):Either[S,T]	= { if (delegate.isLeft)  fx(delegate.left.get);	delegate }
 	def rightEffect(fx:T=>Unit):Either[S,T]	= { if (delegate.isRight) fx(delegate.right.get);	delegate }
 	
-	def toTried:Tried[S,T]	= delegate fold (Fail.apply, Win.apply)
+	def toTried:Tried[S,T]	= delegate match {
+		case Left(it)	=> Fail(it)
+		case Right(it)	=> Win(it)
+	}
 }

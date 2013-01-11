@@ -23,5 +23,4 @@ final class SetExt[T](delegate:Set[T]) {
 	/** create a map from all elements with a given function to generate the values */
 	def mapTo[U](value:T=>U):Map[T,U]	=
 			delegate map { it => (it, value(it)) } toMap;
-
 }
