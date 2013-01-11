@@ -27,6 +27,10 @@ sealed trait Tried[+F,+W] {
 				case Fail(x)	=> fail(x)
 			}
 			
+	/** same as cata(identity,identity) but with improved type inference */
+	def upfold[U](implicit ev:this.type <:< Tried[U,U]):U	=
+			ev(this) cata (identity, identity)
+		
 	//------------------------------------------------------------------------------
 	
 	def isWin:Boolean	= 

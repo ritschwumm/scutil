@@ -15,6 +15,11 @@ final class SetExt[T](delegate:Set[T]) {
 	def hereAndThere(that:Set[T]):(Set[T],Set[T])	=
 			(delegate -- that, that -- delegate)
 			
+	/** get one element and all other elements */
+	def extractSingleOption:Option[(T,Set[T])]	=
+			if (delegate.nonEmpty)	Some((delegate.head, delegate - delegate.head))
+			else					None
+		
 	/** set or remove the value */
 	def set(value:T, in:Boolean):Set[T]	=
 			if (in)	delegate + value

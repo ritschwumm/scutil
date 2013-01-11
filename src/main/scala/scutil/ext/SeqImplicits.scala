@@ -21,6 +21,23 @@ final class SeqExt[T](delegate:Seq[T]) {
 	def containsIndex(index:Int):Boolean	=
 			index >= 0 && index < delegate.size
 		
+	def liftOrElse(index:Int, default:T):T	=
+			delegate lift index getOrElse default
+		
+	def findLast(predicate:T=>Boolean):Option[T]	=
+			delegate.reverse find predicate
+			
+	def collectLast[U](pf:PartialFunction[T,U]):Option[U]	=
+			delegate.reverse collectFirst pf
+	
+	def flatMapLast[U](find:T=>Option[U]):Option[U]	= {
+		delegate.reverse foreach { it =>
+			val out	= find(it)
+			if (out.isDefined)	return out
+		}
+		return None
+	}
+	
 	def extractAtOption(index:Int):Option[(T,Seq[T])]	=
 			delegate lift index map { it =>
 				(it, delegate patch (index, Seq.empty, 1))

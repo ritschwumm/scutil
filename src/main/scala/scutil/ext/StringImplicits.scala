@@ -7,6 +7,7 @@ import scala.collection.mutable
 import scala.util.control.Exception._
 
 import scutil.lang._
+import scutil.tried._
 
 object StringImplicits extends StringImplicits
 
@@ -25,6 +26,18 @@ final class StringExt(delegate:String) {
 	
 	private def toNumberOption[T](func:String=>T):Option[T]	=
 			catching(classOf[NumberFormatException]) opt func(delegate)
+		
+	def toBooleanTried:Tried[NumberFormatException,Boolean]	= toNumberTried(_.toBoolean)
+	def toByteTried:Tried[NumberFormatException,Byte]		= toNumberTried(_.toByte)
+	def toShortTried:Tried[NumberFormatException,Short]		= toNumberTried(_.toShort)
+	def toIntTried:Tried[NumberFormatException,Int]			= toNumberTried(_.toInt)
+	def toLongTried:Tried[NumberFormatException,Long]		= toNumberTried(_.toLong)
+	def toFloatTried:Tried[NumberFormatException,Float]		= toNumberTried(_.toFloat)
+	def toDoubleTried:Tried[NumberFormatException,Double]	= toNumberTried(_.toDouble)
+		
+	private def toNumberTried[T](func:String=>T):Tried[NumberFormatException,T]	=
+			try { Win(func(delegate)) }
+			catch { case e:NumberFormatException => Fail(e) }
 	
 	def guardNonEmpty:Option[String]	= 
 			if (delegate.nonEmpty)	Some(delegate)

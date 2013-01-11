@@ -1,5 +1,7 @@
 package scutil.ext
 
+import scala.collection.generic.CanBuildFrom
+
 import scutil.lang._
 import scutil.tried._
 
@@ -34,6 +36,50 @@ final class OptionExt[T](delegate:Option[T]) {
 	def partition(pred:Predicate[T]):(Option[T],Option[T])	=
 			(delegate filter pred, delegate filterNot pred)
 		
+	/** the zip method defined on Iterable is useless */
+	def zip[U](that:Option[U]):Option[(T,U)]	=
+			(delegate,that) match {
+				case ((Some(t),Some(u)))	=> Some((t,u))
+				case _						=> None
+			}
+			
+	def zipBy[U](func:T=>U):Option[(T,U)]	=
+			delegate map { it => (it,func(it)) }
+		
+	def zipWith[U,V](that:Option[U])(func:(T,U)=>V):Option[V]	=
+			(delegate,that) match {
+				case ((Some(t),Some(u)))	=> Some(func(t,u))
+				case _						=> None
+			}
+			
+	/** the unzip method defined on Iterable is useless */	
+	def unzip[U,V](implicit ev:T=>(U,V)):(Option[U],Option[V])	=
+			delegate map ev match {
+				case Some((u,v))	=> (Some(u),	Some(v))
+				case None			=> (None,		None)
+			}
+			
+	def cozipEither[U,V](implicit ev:T=>Either[U,V]):(Option[U],Option[V])	=
+			delegate map ev match {
+				case Some(Left(x))	=> (Some(x),	None)
+				case Some(Right(x))	=> (None,		Some(x))
+				case None			=> (None,		None)
+			}
+	
+	def cozipTried[F,W](implicit ev:T=>Tried[F,W]):(Option[F],Option[W])	=
+			delegate map ev match {
+				case Some(Fail(x))	=> (Some(x),	None)
+				case Some(Win(x))	=> (None,		Some(x))
+				case None			=> (None,		None)
+			}
+	
+	/** handy replacement for opt.toSeq.flatten by abusing CanBuildFrom as a Zero typeclass */
+	def flattenMany[U,CC[_]](implicit ev:T=>CC[U], cbf:CanBuildFrom[CC[U],U,CC[U]]):CC[U]	=
+			delegate map ev match {
+				case Some(cc)	=> cc
+				case None		=> cbf().result
+			}
+	
 	def someEffect(effect:T=>Unit):Option[T] = { if (delegate.nonEmpty) effect(delegate.get);	delegate }
 	def noneEffect(effect: =>Unit):Option[T] = { if (delegate.isEmpty)  effect; 				delegate }
 	

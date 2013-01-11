@@ -10,6 +10,9 @@ object Extractor {
 	def partial[S,T](func:PartialFunction[S,T]):Extractor[S,T]	= Extractor(
 			s	=> if (func isDefinedAt s) Some(func apply s) else None)
 	
+	def guarding[T](pred:Predicate[T]):Extractor[T,T]	=
+			Extractor(it => if (pred(it)) Some(it) else None)
+			
 	def identity[T]:Extractor[T,T]	= 
 			Extractor(Some.apply)
 			
