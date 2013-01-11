@@ -23,6 +23,6 @@ final class URLExt(delegate:URL) {
 	def toFile:Option[File]	=
 			if (delegate.getProtocol == "file")	Some(
 					try { new File(delegate.toURI) } 
-					catch { case _	=> new File(delegate.getPath) })
+					catch { case _:Exception => new File(delegate.getPath) })
 			else None
 }

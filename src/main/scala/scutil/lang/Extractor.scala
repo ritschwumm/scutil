@@ -26,24 +26,36 @@ trait Extractor[S,T] {
 	
 	def read(s:S):Option[T]
 	
-	def compose[R](that:Extractor[R,S]):Extractor[R,T]	=
+	final def compose[R](that:Extractor[R,S]):Extractor[R,T]	=
 			that andThen this
 			
-	def andThen[U](that:Extractor[T,U]):Extractor[S,U]	= Extractor(
+	final def andThen[U](that:Extractor[T,U]):Extractor[S,U]	= Extractor(
 			s => this read s flatMap that.read)
 	
-	def orElse(that:Extractor[S,T]):Extractor[S,T]	= Extractor(
+	final def orElse(that:Extractor[S,T]):Extractor[S,T]	= Extractor(
 			s	=> (this read s) orElse (that read s)) 
 			
-	def asFunction:Function[S,Option[T]]	= 
+	// TODO check method names
+	
+	final def map[U](func:T=>U):Extractor[S,U]	=
+			Extractor(s => read(s) map func)
+		
+	final def contraMap[R](func:R=>S):Extractor[R,T]	=
+			Extractor(func andThen read)
+		
+	final def filter(pred:T=>Boolean):Extractor[S,T]	= 
+			Extractor(s	=> read(s) filter pred)
+		
+	final def cofilter(pred:S=>Boolean):Extractor[S,T]	= 
+			Extractor(s	=> if (pred(s))	read(s)	else None)
+			
+	final def asFunction:Function[S,Option[T]]	= 
 			s => read(s)
 	
-	def asPartialFunction:PartialFunction[S,T]	= new PartialFunction[S,T] {
-		def apply(s:S):T				= read(s).get
-		def isDefinedAt(s:S):Boolean	= read(s).isDefined
-	}
+	final def asPartialFunction:PartialFunction[S,T]	= 
+			Function unlift read	
 }
 
 private final class FunctionExtractor[S,T](readFunc:S=>Option[T]) extends Extractor[S,T] {
-	def read(s:S):Option[T]		= readFunc(s)
+	def read(s:S):Option[T]	= readFunc(s)
 }

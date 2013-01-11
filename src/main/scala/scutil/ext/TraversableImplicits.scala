@@ -76,7 +76,7 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](delegate:CC[T]) {
 	
 	/** create a map from all elements with a given function to generate the keys */
 	def mapBy[S](key:T=>S):Map[S,T]	=
-			delegate map { it => (key(it), it) } toMap;
+			(delegate map { it => (key(it), it) }).toMap
 			
 	// NOTE these should be generalized to other AFs, not just Option and Tried
 	// NOTE supplying pure and flatMap of a Monad would work, too!
@@ -95,7 +95,7 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](delegate:CC[T]) {
 		Some(builder.result)
 	}
 			
-	/** delegate is traversable (in the haskell sense), Option is an idiom. */
+	/** delegate is traversable (in the haskell sense), Tried is an idiom. */
 	def sequenceTried[F,W](implicit ev:T=>Tried[F,W], cbf:CanBuildFrom[CC[T],W,CC[W]]):Tried[F,CC[W]]	=
 			traverseTried(identity[W])
 		

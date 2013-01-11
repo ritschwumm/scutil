@@ -31,7 +31,7 @@ final class Java6AWTExceptionHandler extends Logging {
 		}
 		catch {
 			// an exception escaping here would cause an infinite loop
-			case e	=> e.printStackTrace()
+			case e:Throwable	=> e.printStackTrace()
 		}
 	}
 }

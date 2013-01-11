@@ -14,6 +14,6 @@ final class MatcherExt(delegate:Matcher) {
 			else 					None
 		
 	def matchedGroups:Option[Seq[Option[String]]]	=
-			if (delegate.matches)	Some(1 to delegate.groupCount map delegate.group map Option.apply toSeq)
+			if (delegate.matches)	Some((1 to delegate.groupCount map delegate.group map Option.apply).toSeq)
 			else 					None
 }

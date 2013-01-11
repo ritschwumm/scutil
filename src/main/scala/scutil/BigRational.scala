@@ -24,7 +24,7 @@ object BigRational {
 	def apply(numerator:JBigDecimal):BigRational = 
 			new BigRational(
 					numerator.unscaledValue,
-					JBigDecimal.ONE scaleByPowerOfTen numerator.scale toBigInteger)
+					(JBigDecimal.ONE scaleByPowerOfTen numerator.scale).toBigInteger)
 					
 	def apply(numerator:Long, denominator:Long):BigRational = 
 			new BigRational(
@@ -40,10 +40,13 @@ object BigRational {
 			Some((self.numerator, self.denominator)) 
 					
 	/** parse the output of #toString */
-	def parse(s:String):Option[BigRational] = s splitAround '/' match {
-		case Seq(num,den)	=> Some(new BigRational(new JBigInteger(num), new JBigInteger(den)))
-		case _				=> None
-	}
+	def parse(s:String):Option[BigRational] = 
+			s splitAround '/' match {
+				case Seq(num,den)	=> 
+					try { Some(new BigRational(new JBigInteger(num), new JBigInteger(den))) }
+					catch { case e:NumberFormatException	=> None }
+				case _	=> None
+			}
 }
 
 /** an immutable, auto-simplifying BigInteger fraction */
@@ -150,8 +153,10 @@ final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extend
 	//------------------------------------------------------------------------------
 	//## conversion
 	
+	/*
 	def toBigDecimal(scale:Int, roundingMode:RoundingMode):JBigDecimal =
 			new JBigDecimal(numerator) divide (new JBigDecimal(denominator), scale, roundingMode)
+	*/
 	
 	def toBigDecimal(mathContext:MathContext):JBigDecimal =
 			new JBigDecimal(numerator) divide (new JBigDecimal(denominator), mathContext)
@@ -159,7 +164,7 @@ final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extend
 	// TODO weak 
 	override def doubleValue:Double	= numerator.doubleValue / denominator.doubleValue
 	override def floatValue:Float	= numerator.floatValue  / denominator.floatValue
-	override def intValue:Int		= scala.math.round(doubleValue) toInt
+	override def intValue:Int		= scala.math.round(doubleValue).toInt
 	override def longValue:Long		= scala.math.round(doubleValue)
 	
 	override def toString:String	= numerator + "/" + denominator

@@ -2,7 +2,7 @@ package scutil
 
 object OperatingSystemEnum {
 	object OperatingSystem {
-		val	all	= Set(OSX, Windows, Linux)
+		val	all:Set[OperatingSystem]	= Set(OSX, Windows, Linux)
 		
 		def byId(id:String):Option[OperatingSystem]	= all find { _.id == id }
 		

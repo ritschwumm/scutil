@@ -12,7 +12,7 @@ trait RegexImplicits {
 
 final class RegexExt(delegate:Regex) {
 	def matches(s:CharSequence):Boolean	= 
-			delegate.pattern matcher s matches;
+			(delegate.pattern matcher s).matches
 	
 	def asMarshaller:Marshaller[String,String]	= 
 			Marshaller guarded matches

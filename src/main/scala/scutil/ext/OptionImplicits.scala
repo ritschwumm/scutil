@@ -20,6 +20,14 @@ final class OptionExt[T](delegate:Option[T]) {
 		case None		=> none
 	}
 	
+	/*
+	// BETTER use this for symmetry with Tried
+	def cata[X](none: => X, some:T => X):X = delegate match {
+		case Some(x)	=> some(x)
+		case None		=> none
+	}
+	*/
+	
 	/** ap of the monad, <*> of the applicative functor */
 	def ap[U,V](source:Option[U])(implicit witness:T=>U=>V):Option[V] =
 			for { f	<- delegate; s	<- source } yield f(s)
@@ -73,7 +81,7 @@ final class OptionExt[T](delegate:Option[T]) {
 				case None			=> (None,		None)
 			}
 	
-	/** handy replacement for opt.toSeq.flatten by abusing CanBuildFrom as a Zero typeclass */
+	/** handy replacement for opt.toSeq.flatten abusing CanBuildFrom as a Zero typeclass */
 	def flattenMany[U,CC[_]](implicit ev:T=>CC[U], cbf:CanBuildFrom[CC[U],U,CC[U]]):CC[U]	=
 			delegate map ev match {
 				case Some(cc)	=> cc

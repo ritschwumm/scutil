@@ -7,12 +7,14 @@ import scutil.Executors
 import scutil.ext.ExecutorImplicits._
 
 object SwingUtil {
-	def withinEDT:Boolean	= SwingUtilities.isEventDispatchThread
+	def insideEDT:Boolean	= SwingUtilities.isEventDispatchThread
 	
-	def worker[T](job: =>T):Thunk[T]	= Executors.thread	withResultTried thunk(job)
+	// transports Exceptions but not every Throwable
+	def worker[T](job: =>T):Thunk[T]	= Executors.thread	withResult thunk(job)
 	def workerWait[T](job: => T):T		= worker(job)()
 	
-	def edt[T](job: =>T):Thunk[T]		= Executors.edt		withResultTried thunk(job)
+	// transports Exceptions but not every Throwable
+	def edt[T](job: =>T):Thunk[T]		= Executors.edt		withResult thunk(job)
 	def edtWait[T](job: =>T):T			= edt(job)()
 	
 	/** classical SwingWorker pattern without exception handling */

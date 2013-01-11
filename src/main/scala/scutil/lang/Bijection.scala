@@ -45,7 +45,7 @@ trait Bijection[S,T] {
 	final def writeFunction:Function1[S,T]	= write _
 	
 	/*
-	// TODO generalize to any Functor
+	// BETTER generalize to any Functor
 	def liftSeq:Bijection[Seq[S],Seq[T]]	= Bijection(
 			_ map write,
 			_ map read)

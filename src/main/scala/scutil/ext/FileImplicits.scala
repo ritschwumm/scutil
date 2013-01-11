@@ -42,7 +42,7 @@ final class FileExt(delegate:File) {
 	def /(name:String):File 		= new File(delegate, name)
 	
 	/** add multiple components to this Files's path */
-	def /(path:Seq[String]):File	= (path foldLeft delegate) { new File(_,_) }
+	def /+(path:Seq[String]):File	= (path foldLeft delegate) { new File(_,_) }
 	
 	/** get the parent File the scala way */
 	def parentFileOption:Option[File]	= 
@@ -111,9 +111,9 @@ final class FileExt(delegate:File) {
 	/** the path upwards from another File to this File */
 	def containsRecursive(that:File):Option[Seq[String]]	= {
 		def loop(test:File, path:Seq[String]):Option[Seq[String]]	=
-				 if (test == null)		None
-			else if (test == delegate)	Some(path)
-			else						loop(test.getParentFile, test.getName +: path)
+					 if (test == null)		None
+				else if (test == delegate)	Some(path)
+				else						loop(test.getParentFile, test.getName +: path)
 		loop(that, Seq.empty)
 	}
 			
@@ -145,9 +145,10 @@ final class FileExt(delegate:File) {
 	def readString(charset:Charset):String					= withReader(charset) { _ readFully () }
 	def writeString(charset:Charset, string:String):Unit	= withWriter(charset) { _ write string }
 	
-	// TODO writeLines should not use the platform line separator, readLines should honor a single lineSeparator 
+	// TODO should honor a single lineSeparator 
 	def readLines(charset:Charset):Seq[String]	= 
 			withReader(charset) { _ readLines () }
+	// TODO should not use the platform line separator
 	def writeLines(charset:Charset, lines:Seq[String]):Unit	= 
 			withWriter(charset) { writer => 
 				lines foreach { line => 

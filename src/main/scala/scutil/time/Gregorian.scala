@@ -36,7 +36,7 @@ case class Gregorian(day:Int, month:Int, year:Int) extends Ordered[Gregorian] {
 		cal setLenient false
 		intoCalendar(cal)
 		try { cal.getTime; Some(cal) }
-		catch { case e => None }
+		catch { case e:Exception => None }
 	}
 	
 	def intoCalendar(cal:Calendar) {

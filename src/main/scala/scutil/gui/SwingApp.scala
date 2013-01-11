@@ -11,7 +11,7 @@ trait SwingApp extends App with Logging  {
 				super.main(args)
 			}
 			catch {
-				case e	=> ERROR(e)
+				case e:Exception	=> ERROR(e)
 			}
 		}
 	}

@@ -17,8 +17,13 @@ final class SetExt[T](delegate:Set[T]) {
 			
 	/** get one element and all other elements */
 	def extractSingleOption:Option[(T,Set[T])]	=
-			if (delegate.nonEmpty)	Some((delegate.head, delegate - delegate.head))
-			else					None
+			if (delegate.nonEmpty)	{
+				val head	= delegate.head
+				Some((head, delegate - head))
+			}
+			else {
+				None
+			}
 		
 	/** set or remove the value */
 	def set(value:T, in:Boolean):Set[T]	=
@@ -27,5 +32,5 @@ final class SetExt[T](delegate:Set[T]) {
 			
 	/** create a map from all elements with a given function to generate the values */
 	def mapTo[U](value:T=>U):Map[T,U]	=
-			delegate map { it => (it, value(it)) } toMap;
+			(delegate map { it => (it, value(it)) }).toMap
 }

@@ -1,6 +1,22 @@
 package scutil
 
+import java.lang.{ Math => JMath }
+
 object Math {
+	val Log2			= JMath log 2
+	val Log2Reciprocal	= 1.0 / Log2
+	
+	def log2(value:Double):Double	= (JMath log value) * Log2Reciprocal
+	def exp2(value:Double):Double	= JMath exp (value * Log2)
+	
+	// inverse to log10 in the standard library
+	def exp10(value:Double):Double	= JMath pow (10, value)
+	
+	// inverse to pow in the standard library
+	def logN(value:Double, base:Double):Double	= (JMath log value) / (JMath log base)
+
+	//------------------------------------------------------------------------------
+
 	def clamp(value:Byte, minValue:Byte, maxValue:Byte):Byte	=
 			if (value < minValue) minValue else if (value > maxValue) maxValue else value
 	

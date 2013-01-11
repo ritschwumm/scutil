@@ -80,8 +80,8 @@ final class ReaderExt(delegate:Reader) {
 		var running	= true
 		while (running) {
 			val	line	= in.readLine
-			if (line != null)	buffer += line
-			else				running		= false
+			if (line != null)	buffer	+= line
+			else				running	= false
 		}
 		buffer
 	}

@@ -7,7 +7,7 @@ package object lang {
 	type Effect[-T]		= T=>Unit
 	
 	type Task			= Thunk[Unit]
-	type Executor		= Task=>Unit
+	type Executor		= Effect[Task]
 	
 	type Chance[-S,+T]	= S=>Option[T]
 	

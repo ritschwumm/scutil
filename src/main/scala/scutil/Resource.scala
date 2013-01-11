@@ -47,7 +47,7 @@ final class Resource[+T](value:T, close:Task) extends Logging {
 			work(value) 
 		}
 		catch {
-			case e	=> 
+			case e:Throwable	=> 
 				thrown	= true
 				throw e
 		}
@@ -56,7 +56,7 @@ final class Resource[+T](value:T, close:Task) extends Logging {
 				close()
 			}
 			catch {
-				case e	=> 
+				case e:Throwable	=> 
 					if (thrown)	ERROR("cannot close resource", value, e) 
 					else		throw e
 			}

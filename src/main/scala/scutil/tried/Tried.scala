@@ -16,7 +16,11 @@ object Tried {
 	
 	def allCatch[T](value: =>T):Tried[Throwable,T]	=
 			try { Win(value) }
-			catch { case e => Fail(e) }
+			catch { case e:Throwable => Fail(e) }
+			
+	def exceptionCatch[T](value: =>T):Tried[Exception,T]	=
+			try { Win(value) }
+			catch { case e:Exception => Fail(e) }
 }
 
 /** right biased Either (with swapped type parameters), Try with parameterized error */
@@ -97,6 +101,9 @@ sealed trait Tried[+F,+W] {
 		
 	def withSwapped[FX,WX](func:Tried[W,F]=>Tried[WX,FX]):Tried[FX,WX]	=
 			func(swap).swap
+		
+	def bimap[FX,WX](failFunc:F=>FX, winFunc:W=>WX):Tried[FX,WX]	=
+			cata(failFunc andThen Fail.apply, winFunc andThen Win.apply)
 	
 	//------------------------------------------------------------------------------
 	
@@ -128,6 +135,14 @@ sealed trait Tried[+F,+W] {
  	 
 	//------------------------------------------------------------------------------
 		
+	def allThrow(implicit ev:F=>Throwable):W	=
+			cata(throw _, identity)
+	
+	def exceptionThrow(implicit ev:F=>Exception):W	=
+			cata(throw _, identity)
+		
+	//------------------------------------------------------------------------------
+	
 	def toEither:Either[F,W]	= 
 			cata(Left.apply, Right.apply)
 		

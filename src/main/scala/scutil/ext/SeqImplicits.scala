@@ -76,7 +76,7 @@ final class SeqExt[T](delegate:Seq[T]) {
 	
 	/** insert a separator between elements */	
 	def intersperse[U>:T](separator: =>U):Seq[U]	=
-			if (delegate.nonEmpty)	delegate flatMap { Seq(separator, _) } tail
+			if (delegate.nonEmpty)	(delegate flatMap { Seq(separator, _) }).tail
 			else					delegate
 	
 	/** triple every item with its previous and next item */

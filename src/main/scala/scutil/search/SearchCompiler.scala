@@ -22,7 +22,7 @@ object SearchCompiler {
 		val pattern	= Pattern compile (
 				(token.start cata ("^", "")) + token.text.quoteRegex + (token.end cata ("$", "")), 
 				token.caseInsensitive cata (Pattern.CASE_INSENSITIVE, 0))
-		s:String	=>  pattern matcher s find;
+		s:String	=>  (pattern matcher s).find
 	}
 }
 

@@ -68,7 +68,7 @@ object ComponentUnderMouse extends Logging {
 				callbackHard(entry.state)
 			}
 			catch {
-				case e	=> ERROR("callback failed", e)
+				case e:Exception	=> ERROR("callback failed", e)
 			}
 		}
 	}
@@ -136,5 +136,5 @@ object ComponentUnderMouse extends Logging {
 	testThread setName		"ComponentUnderMouse"
 	testThread setDaemon	true
 	testThread setPriority	Thread.MIN_PRIORITY
-	testThread start
+	testThread.start()
 }

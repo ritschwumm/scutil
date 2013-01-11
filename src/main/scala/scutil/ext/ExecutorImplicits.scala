@@ -1,5 +1,7 @@
 package scutil.ext
 
+import java.util.concurrent.{ Executor=>JExecutor }
+
 import scala.concurrent.SyncVar
 
 import scutil.lang._
@@ -12,25 +14,16 @@ trait ExecutorImplicits {
 }
 
 final class ExecutorExt(delegate:Executor) {
-	def withResult[T](task:Thunk[T]):Thunk[T] = {
-		val	out	= new SyncVar[T]
-		delegate(thunk(out set task()))
-		thunk(out.get)
-	}
-	
-	def withResultTried[T](task:Thunk[T]):Thunk[T] = {
+	/** transports Exceptions (but not every Throwable) to the user of the value */
+	def withResult[T](job:Thunk[T]):Thunk[T] = {
 		val	out	= new SyncVar[Tried[Exception,T]]
-		delegate(thunk(out set wrapException(task)))
-		thunk(unwrapException(out.get))
+		delegate(thunk { out set (Tried exceptionCatch job()) })
+		thunk { out.get.exceptionThrow }
 	}
 	
-	private def wrapException[T](task:Thunk[T]):Tried[Exception,T]	=
-			try { Win(task()) }
-			catch { case e:Exception => Fail(e) }
-			
-	private def unwrapException[T](tried:Tried[Exception,T]):T =
-			tried match {
-				case Win(v)		=> v
-				case Fail(e)	=> throw e
-			}
+	def asJava:JExecutor	= new JExecutor {
+		def execute(command:Runnable) {
+			delegate(command.run)
+		}
+	}
 }

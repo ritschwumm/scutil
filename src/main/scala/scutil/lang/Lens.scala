@@ -92,7 +92,7 @@ trait Lens[S,T] {
 	)
 	
 	/*
-	// TODO generalize to any Functor
+	// BETTER generalize to any Functor
 	def liftSeq:Lens[Seq[S],Seq[T]]	= Lens(
 			(c)		=> c map get,
 			(c,v)	=> c zip v map (put _ tupled))

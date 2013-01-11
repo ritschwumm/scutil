@@ -7,7 +7,7 @@ import scala.math._
 import scutil.Math
 
 object HSBA {
-	def fromColor(color:Color):HSBA	= RGBA fromColor color toHSBA;
+	def fromColor(color:Color):HSBA	= (RGBA fromColor color).toHSBA
 }
 
 /** value range is 0..1 */

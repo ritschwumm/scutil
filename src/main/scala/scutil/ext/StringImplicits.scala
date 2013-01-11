@@ -1,5 +1,9 @@
 package scutil.ext
 
+import java.lang.{
+	Byte => JByte, Short => JShort, Integer => JInt, Long => JLong,
+	Float => JFloat, Double => JDouble, Boolean => JBoolean
+} 
 import java.util.regex.Pattern
 
 import scala.annotation.tailrec 
@@ -25,19 +29,21 @@ final class StringExt(delegate:String) {
 	def toDoubleOption:Option[Double]	= toNumberOption(_.toDouble)
 	
 	private def toNumberOption[T](func:String=>T):Option[T]	=
-			catching(classOf[NumberFormatException]) opt func(delegate)
+			toNumberTried(func).toOption
 		
-	def toBooleanTried:Tried[NumberFormatException,Boolean]	= toNumberTried(_.toBoolean)
-	def toByteTried:Tried[NumberFormatException,Byte]		= toNumberTried(_.toByte)
-	def toShortTried:Tried[NumberFormatException,Short]		= toNumberTried(_.toShort)
-	def toIntTried:Tried[NumberFormatException,Int]			= toNumberTried(_.toInt)
-	def toLongTried:Tried[NumberFormatException,Long]		= toNumberTried(_.toLong)
-	def toFloatTried:Tried[NumberFormatException,Float]		= toNumberTried(_.toFloat)
-	def toDoubleTried:Tried[NumberFormatException,Double]	= toNumberTried(_.toDouble)
+	def toBooleanTried:Tried[NumberFormatException,Boolean]	= toNumberTried(JBoolean.parseBoolean)
+	def toByteTried:Tried[NumberFormatException,Byte]		= toNumberTried(JByte.parseByte)
+	def toShortTried:Tried[NumberFormatException,Short]		= toNumberTried(JShort.parseShort)
+	def toIntTried:Tried[NumberFormatException,Int]			= toNumberTried(JInt.parseInt)
+	def toLongTried:Tried[NumberFormatException,Long]		= toNumberTried(JLong.parseLong)
+	def toFloatTried:Tried[NumberFormatException,Float]		= toNumberTried(JFloat.parseFloat)
+	def toDoubleTried:Tried[NumberFormatException,Double]	= toNumberTried(JDouble.parseDouble)
 		
 	private def toNumberTried[T](func:String=>T):Tried[NumberFormatException,T]	=
 			try { Win(func(delegate)) }
 			catch { case e:NumberFormatException => Fail(e) }
+	
+	//------------------------------------------------------------------------------
 	
 	def guardNonEmpty:Option[String]	= 
 			if (delegate.nonEmpty)	Some(delegate)
