@@ -1,5 +1,7 @@
 package scutil.ext
 
+import scala.annotation._
+
 import scutil.tried._
 
 object AnyImplicits extends AnyImplicits
@@ -102,4 +104,46 @@ final class AnyExt[T](delegate:T) {
 	
 	/** pair with itself */ 
 	def duplicate:(T,T)	= (delegate,delegate)
+	
+	/** apply until the value doesn't change any more */
+	def fixpoint(func:T=>T):T	= {
+		@tailrec
+		def loop(it:T):T	= {
+			val tmp	= func(it)
+			if (tmp != it)	loop(tmp)
+			else			it
+		}
+		loop(delegate)
+	}
+	
+	/** apply until the value doesn't change any more */
+	def fixpointEq(func:T=>T, equal:(T,T)=>Boolean):T	= {
+		@tailrec
+		def loop(it:T):T	= {
+			val tmp	= func(it)
+			if (!equal(tmp,it))	loop(tmp)
+			else				it
+		}
+		loop(delegate)
+	}
+	
+	/** apply until the value becomes None */
+	def rewrite(func:T=>Option[T]):T	= {
+		@tailrec
+		def loop(it:T):T	=
+				func(it) match {
+					case Some(next)	=> loop(next)
+					case None		=> it
+				}
+		loop(delegate)
+	}
+	
+	/** apply until the value becomes None */
+	def rewritePartial(func:PartialFunction[T,T]):T	= {
+		@tailrec
+		def loop(it:T):T	= 
+				if (func isDefinedAt it)	loop(func(it))
+				else						it
+		loop(delegate)
+	}
 }

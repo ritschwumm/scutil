@@ -108,4 +108,11 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](delegate:CC[T]) {
 		}
 		Win(builder.result)
 	}
+	
+	/** all Fails if there is at least one, else all Wins */
+	def validateTried[F,W](implicit ev:T=>Tried[F,W], cbf1:CanBuildFrom[CC[T],F,CC[F]], cbf2:CanBuildFrom[CC[T],W,CC[W]]):Tried[CC[F],CC[W]]	= {
+		val (fails,wins)	= cozipTried
+		if (fails.isEmpty)	Win(wins)
+		else				Fail(fails)
+	}
 }

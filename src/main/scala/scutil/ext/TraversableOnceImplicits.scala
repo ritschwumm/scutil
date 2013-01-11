@@ -18,6 +18,4 @@ final class TraversableOnceExt[T](delegate:TraversableOnce[T]) {
 		}
 		None
 	}
-	
-	def toVector:Vector[T]	= Vector.empty ++ delegate
 }

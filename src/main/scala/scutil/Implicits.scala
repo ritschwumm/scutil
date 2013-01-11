@@ -12,7 +12,6 @@ object LangImplicits extends LangImplicits
 trait LangImplicits
 		extends	AnyImplicits 
 		with	AnyRefImplicits
-		with	ArrayImplicits 
 		with	BooleanImplicits
 		with	CatchImplicits
 		with	ClassImplicits
