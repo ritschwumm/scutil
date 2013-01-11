@@ -21,6 +21,19 @@ final class SeqExt[T](delegate:Seq[T]) {
 	def containsIndex(index:Int):Boolean	=
 			index >= 0 && index < delegate.size
 		
+	def extractAtOption(index:Int):Option[(T,Seq[T])]	=
+			delegate lift index map { it =>
+				(it, delegate patch (index, Seq.empty, 1))
+			}
+		
+	def extractHeadOption:Option[(T,Seq[T])]	=
+			if (delegate.nonEmpty)	Some((delegate.head,delegate.tail))
+			else					None
+		
+	def extractLastOption:Option[(T,Seq[T])]	=
+			if (delegate.nonEmpty)	Some((delegate.last,delegate.init))
+			else					None
+		
 	/** map the value for a single index */
 	def updatedBy(index:Int, func:T=>T):Seq[T]	=
 			if (index >= 0 && index < delegate.size)	delegate updated (index, func(delegate(index)))

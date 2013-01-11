@@ -50,20 +50,26 @@ final class ComponentExt(delegate:Component) {
 	def outerRectangle:Rectangle =
 			new Rectangle(delegate.getSize)
 			
-	def underMousePointer:Boolean	=
-			containsLocationOnScreen(MouseInfo.getPointerInfo.getLocation )
+	def underMousePointer:Boolean	= {
+		val	pi	= MouseInfo.getPointerInfo
+		if (pi != null)	containsScreenLocation(pi.getLocation )
+		else			false
+	}
 		
+	/*
 	def underMouseEvent(ev:MouseEvent):Boolean = {
-		val	within	= containsLocationOnScreen(ev.getLocationOnScreen)
+		val	within	= containsScreenLocation(ev.getLocationOnScreen)
 		val parent	= SwingUtilities isDescendingFrom (delegate, ev.getComponent)
 		val exited	= ev.getID() == MouseEvent.MOUSE_EXITED
 		within && !(parent && exited)
 	}
+	*/
 	
-	def containsLocationOnScreen(screenLocation:Point):Boolean = {
-		val localBounds		= SwingUtilities getLocalBounds delegate
+	def containsScreenLocation(screenLocation:Point):Boolean = {
 		val localPosition	= new Point(screenLocation)
 		SwingUtilities convertPointFromScreen (localPosition, delegate)
+		
+		val localBounds		= SwingUtilities getLocalBounds delegate
 		localBounds contains localPosition
 	}
 	

@@ -107,6 +107,15 @@ final class FileExt(delegate:File) {
 	/** list files in this directory matching a predicate */
 	def childrenWhere(predicate:File=>Boolean):Option[Seq[File]] =
 			Option(delegate listFiles predicate) map { _.toSeq }
+		
+	/** the path upwards from another File to this File */
+	def containsRecursive(that:File):Option[Seq[String]]	= {
+		def loop(test:File, path:Seq[String]):Option[Seq[String]]	=
+				 if (test == null)		None
+			else if (test == delegate)	Some(path)
+			else						loop(test.getParentFile, test.getName +: path)
+		loop(that, Seq.empty)
+	}
 			
 	//------------------------------------------------------------------------------
 	//## file only: resource closure

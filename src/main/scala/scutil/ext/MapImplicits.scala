@@ -7,6 +7,17 @@ trait MapImplicits {
 }
 
 final class MapExt[S,T](delegate:Map[S,T]) {
+	/** remove an element and return it */
+	def extractAtOption(s:S):Option[(T,Map[S,T])]	=
+			delegate get s map { t => (t, delegate - s) }
+		
+	/** set or remove the value */
+	def set(key:S, value:Option[T]):Map[S,T]	=
+			value match {
+				case Some(value)	=> delegate + (key -> value)
+				case None			=> delegate - key
+			}
+			
 	/** map the value for a single key */
 	def updatedBy(key:S, func:T=>T):Map[S,T]	=
 			delegate get key match {

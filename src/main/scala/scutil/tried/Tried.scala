@@ -116,6 +116,9 @@ sealed trait Tried[+F,+W] {
 	def toOption:Option[W]	= 
 			cata(_ => None, Some.apply)
 		
+	def toSeq:Seq[W]	= 
+			toList
+		
 	def toList:List[W]	= 
 			cata(_ => Nil, List(_))
 		

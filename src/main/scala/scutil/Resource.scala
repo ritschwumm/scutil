@@ -40,7 +40,7 @@ object Resource {
 	implicit def GraphicsResource			[T <: Graphics]			(delegate:T)	= new Resource(delegate, delegate.dispose)
 }
 
-final class Resource[+T](value:T, close: =>Unit) extends Logging {
+final class Resource[+T](value:T, close:Task) extends Logging {
 	def use[U](work:T=>U):U = {
 		var thrown	= false
 		try {
@@ -53,7 +53,7 @@ final class Resource[+T](value:T, close: =>Unit) extends Logging {
 		}
 		finally {
 			try { 
-				close 
+				close()
 			}
 			catch {
 				case e	=> 

@@ -38,6 +38,7 @@ trait LangImplicits
 		with	SeqImplicits
 		with	SetImplicits
 		with	StringImplicits
+		with	StringTokenizerImplicits
 		with	ThrowableImplicits
 		with	TraversableImplicits
 		with	TraversableOnceImplicits
@@ -55,6 +56,8 @@ trait GuiImplicits
 		with	ContainerImplicits
 		with	DimensionImplicits
 		with	GraphicsImplicits
+		with	ImageImplicits
+		with	ImageIconImplicits
 		with	InsetsImplicits
 		with	JComponentImplicits
 		with	PointImplicits

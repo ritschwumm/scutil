@@ -54,6 +54,26 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](delegate:CC[T]) {
 		builder.result
 	}
 	
+	def cozipEither[U,V](implicit ev:T=>Either[U,V], cbf1:CanBuildFrom[CC[T],U,CC[U]], cbf2:CanBuildFrom[CC[T],V,CC[V]]):(CC[U],CC[V])	= {
+		val	builder1	= cbf1()
+		val	builder2	= cbf2()
+		delegate map ev foreach {
+			case Left(x)	=> builder1	+= x
+			case Right(x)	=> builder2	+= x
+		}
+		(builder1.result, builder2.result)
+	} 
+	
+	def cozipTried[F,W](implicit ev:T=>Tried[F,W], cbf1:CanBuildFrom[CC[T],F,CC[F]], cbf2:CanBuildFrom[CC[T],W,CC[W]]):(CC[F],CC[W])	= {
+		val	builder1	= cbf1()
+		val	builder2	= cbf2()
+		delegate map ev foreach {
+			case Fail(x)	=> builder1	+= x
+			case Win(x)		=> builder2	+= x
+		}
+		(builder1.result, builder2.result)
+	} 
+	
 	/** create a map from all elements with a given function to generate the keys */
 	def mapBy[S](key:T=>S):Map[S,T]	=
 			delegate map { it => (key(it), it) } toMap;
@@ -61,11 +81,11 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](delegate:CC[T]) {
 	// NOTE these should be generalized to other AFs, not just Option and Tried
 	// NOTE supplying pure and flatMap of a Monad would work, too!
 	
-	/** Delegate is traversable (in the haskell sense), Option is an idiom. */
+	/** delegate is traversable (in the haskell sense), Option is an idiom. */
 	def sequenceOption[U](implicit ev:T=>Option[U], cbf:CanBuildFrom[CC[T],U,CC[U]]):Option[CC[U]]	=
 			traverseOption(identity[U])
 	
-	/** Delegate is traversable (in the haskell sense), Option is an idiom. */
+	/** delegate is traversable (in the haskell sense), Option is an idiom. */
 	def traverseOption[U,V](func:U=>V)(implicit ev:T=>Option[U], cbf:CanBuildFrom[CC[T],V,CC[V]]):Option[CC[V]]	= {
 		val builder	= cbf()
 		delegate map ev foreach {
@@ -75,11 +95,11 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](delegate:CC[T]) {
 		Some(builder.result)
 	}
 			
-	/** Delegate is traversable (in the haskell sense), Option is an idiom. */
+	/** delegate is traversable (in the haskell sense), Option is an idiom. */
 	def sequenceTried[F,W](implicit ev:T=>Tried[F,W], cbf:CanBuildFrom[CC[T],W,CC[W]]):Tried[F,CC[W]]	=
 			traverseTried(identity[W])
 		
-	/** Delegate is traversable (in the haskell sense), Option is an idiom. */
+	/** delegate is traversable (in the haskell sense), Option is an idiom. */
 	def traverseTried[F,W,V](func:W=>V)(implicit ev:T=>Tried[F,W], cbf:CanBuildFrom[CC[T],V,CC[V]]):Tried[F,CC[V]]	= {
 		val builder	= cbf()
 		delegate map ev foreach {
