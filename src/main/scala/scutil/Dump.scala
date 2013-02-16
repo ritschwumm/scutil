@@ -17,7 +17,7 @@ object Dump {
 	
 	object HexFormat extends DumpFormat {
 		def string(line:Seq[Byte])	= line map { "%02x" format _ } mkString " "
-		def width(size:Int):Int		= size != 0 cata (size*3-1, 0)
+		def width(size:Int):Int		= size != 0 cataSwapped (size*3-1, 0)
 	}
 	
 	object AsciiFormat extends DumpFormat {

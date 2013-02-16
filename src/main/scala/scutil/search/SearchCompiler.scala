@@ -6,10 +6,10 @@ import scutil.lang._
 import scutil.Implicits._
 
 object SearchCompiler {
-	def compileSeq(pattern:SearchPattern):Predicate[Seq[String]]	= {
+	def compileSeq(pattern:SearchPattern):Predicate[Iterable[String]]	= {
 		val pos	= pattern.positive map compileToken
 		val neg	= pattern.negative map compileToken
-		ss:Seq[String]	=> (pos forall ss.exists) && !(neg exists ss.exists)
+		ss:Iterable[String]	=> (pos forall ss.exists) && !(neg exists ss.exists)
 	}
 	
 	def compile(pattern:SearchPattern):Predicate[String]	= {
@@ -20,18 +20,8 @@ object SearchCompiler {
 	
 	private def compileToken(token:SearchToken):Predicate[String]	= {
 		val pattern	= Pattern compile (
-				(token.start cata ("^", "")) + token.text.quoteRegex + (token.end cata ("$", "")), 
-				token.caseInsensitive cata (Pattern.CASE_INSENSITIVE, 0))
-		s:String	=>  (pattern matcher s).find
+				(token.start cataSwapped ("^", "")) + token.text.quoteRegex + (token.end cataSwapped ("$", "")), 
+				token.caseInsensitive cataSwapped (Pattern.CASE_INSENSITIVE, 0))
+		s:String	=> (pattern matcher s).find
 	}
 }
-
-/*
-def matches(key:String):Boolean	= {
-	val value	= if (low)	key.toLowerCase		else key
-	val pattern	= if (low)	text.toLowerCase	else text
-	(!start			|| (value startsWith	pattern))	&&
-	(!end			|| (value endsWith	pattern))		&&
-	((start || end)	|| (value contains	pattern))
-}
-*/

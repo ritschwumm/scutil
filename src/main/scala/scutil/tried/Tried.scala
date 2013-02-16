@@ -1,5 +1,7 @@
 package scutil.tried
 
+import scala.util.{ Try, Success, Failure }
+
 object Tried {
 	def win[F,W](it:W):Tried[F,W]	= Win(it)
 	def fail[F,W](it:F):Tried[F,W]	= Fail(it)
@@ -30,6 +32,9 @@ sealed trait Tried[+F,+W] {
 				case Win(x)		=> win(x)
 				case Fail(x)	=> fail(x)
 			}
+			
+	def cataSwapped[X](win:W=>X, fail:F=>X):X	=
+			cata(fail, win)
 			
 	/** same as cata(identity,identity) but with improved type inference */
 	def upfold[U](implicit ev:this.type <:< Tried[U,U]):U	=
@@ -142,6 +147,9 @@ sealed trait Tried[+F,+W] {
 			cata(throw _, identity)
 		
 	//------------------------------------------------------------------------------
+	
+	def toTry(implicit ev:F=>Throwable):Try[W]	=
+			cata(Failure(_), Success(_))
 	
 	def toEither:Either[F,W]	= 
 			cata(Left.apply, Right.apply)

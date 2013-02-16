@@ -1,7 +1,7 @@
 Some utilities I found useful to have around.
 
 To build this code, get and install SBT from 
-	https://github.com/harrah/xsbt
+	https://github.com/sbt/sbt
 
 Use these commands to build:
 	git clone git@github.com:ritschwumm/scutil.git

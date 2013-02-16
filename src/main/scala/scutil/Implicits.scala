@@ -42,6 +42,7 @@ trait LangImplicits
 		with	ThrowableImplicits
 		with	TraversableImplicits
 		with	TraversableOnceImplicits
+		with	TryImplicits
 		
 object IoImplicits extends IoImplicits		
 trait IoImplicits

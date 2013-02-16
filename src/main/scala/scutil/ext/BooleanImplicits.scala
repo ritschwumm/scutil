@@ -9,9 +9,12 @@ trait BooleanImplicits {
 }
 
 final class BooleanExt(delegate:Boolean) {
-	def cata[T](trueValue: =>T, falseValue: =>T):T =
+	def cata2[T](falseValue: =>T, trueValue: =>T):T =
 			if (delegate)	trueValue
 			else			falseValue
+	
+	def cataSwapped[T](trueValue: =>T, falseValue: =>T):T =
+			cata2(falseValue, trueValue)
 	
 	def guard[T](trueSome: =>T):Option[T] =
 			if (delegate)	Some(trueSome)

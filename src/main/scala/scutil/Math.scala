@@ -1,6 +1,6 @@
 package scutil
 
-import java.lang.{ Math => JMath }
+import java.lang.{ Math => JMath, Long => JLong }
 
 object Math {
 	val Log2			= JMath log 2
@@ -143,4 +143,11 @@ object Math {
 		
 	def maskTest(value:Char, onMask:Char, offMask:Char):Boolean = 
 			(value & (onMask | offMask)) == onMask
+		
+	//------------------------------------------------------------------------------
+	
+	def nextPow2(it:Long):Long	=
+				 if (it == 0)	0
+			else if (it == 1)	1
+			else 				(JLong highestOneBit (it-1)) << 1
 }
