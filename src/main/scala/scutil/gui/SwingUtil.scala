@@ -4,6 +4,7 @@ import javax.swing.SwingUtilities
 
 import scutil.lang._
 import scutil.Executors
+import scutil.tried._
 import scutil.ext.ExecutorImplicits._
 
 object SwingUtil {
@@ -21,6 +22,16 @@ object SwingUtil {
 	def swingWorker[T](calculate:Thunk[T], use:Effect[T]) {
 		worker {
 			val	value	= calculate()
+			edt {
+				use(value)
+			}
+		}
+	}
+	
+	/** classical SwingWorker pattern, but with exception handling */
+	def swingWorkerException[T](calculate:Thunk[T], use:Effect[Tried[Exception,T]]) {
+		worker {
+			val	value	= Tried exceptionCatch calculate()
 			edt {
 				use(value)
 			}

@@ -72,7 +72,7 @@ final class SeqExt[T](delegate:Seq[T]) {
 	/** pairwise neighbors */
 	def zipTail:Seq[(T,T)]	= 
 			if (delegate.nonEmpty)	delegate zip delegate.tail
-			else					Seq.empty
+			else					Vector.empty
 	
 	/** insert a separator between elements */	
 	def intersperse[U>:T](separator: =>U):Seq[U]	=
@@ -104,12 +104,12 @@ final class SeqExt[T](delegate:Seq[T]) {
 			if (delegate.nonEmpty) {
 				val indizes = delegate.zipWithIndex collect { case (t,i) if (separator(t)) => i }
 				(-1 +: indizes) zip (indizes :+ delegate.size) flatMap { case (a,b) => 
-					Seq(Right(delegate slice (a+1,b))) ++
+					Vector(Right(delegate slice (a+1,b))) ++
 					((delegate lift b) map Left.apply)
 				}
 			}
 			else {
-				Seq.empty
+				Vector.empty
 			}
 
 	/** equivalent elements go into own Seqs */
@@ -117,10 +117,10 @@ final class SeqExt[T](delegate:Seq[T]) {
 		def impl(in:Seq[T]):Seq[Seq[T]]	= {
 			val (a,b)	= in span { equivalent(in.head, _) }
 			if (b.nonEmpty)	a +: impl(b)
-			else			Seq(a)
+			else			Vector(a)
 		}
 		if (delegate.nonEmpty)	impl(delegate)
-		else					Seq.empty
+		else					Vector.empty
 	}
 	
 	/** equivalentSpans on a single property */

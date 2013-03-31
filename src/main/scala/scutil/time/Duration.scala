@@ -2,6 +2,7 @@ package scutil.time
 
 import scala.math.Ordered
 
+import scutil.lang._
 import scutil.Human
 
 object Duration {
@@ -12,6 +13,8 @@ object Duration {
 	def second:Duration		= milli		* 1000
 	def milli:Duration		= Duration(1)
 	def zero:Duration		= Duration(0)
+	
+	val newType	= Bijection[Duration,Long](_.millis, Duration.apply)
 }
 
 case class Duration(millis:Long) extends Ordered[Duration] {

@@ -1,5 +1,6 @@
 package scutil.log
 
-import LogLevelEnum._
+import scutil.SourceLocation
 
-case class LogEntry(source:Class[_], trace:Option[StackTraceElement], level:LogLevel, elements:Seq[Any])
+case class LogEntry(level:LogLevel, location:SourceLocation, elements:Seq[Any])
+

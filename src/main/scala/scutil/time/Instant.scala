@@ -6,11 +6,15 @@ import java.text.SimpleDateFormat
 
 import scala.math.Ordered
 
+import scutil.lang._
+
 object Instant {
 	def zero:Instant	= Instant(0)
 	def now:Instant		= Instant(System.currentTimeMillis)
 	
 	def fromDate(date:Date):Instant	= Instant(date.getTime)
+	
+	val newType	= Bijection[Instant,Long](_.millis, Instant.apply)
 }
 
 case class Instant(millis:Long) extends Ordered[Instant] {

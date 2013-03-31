@@ -5,6 +5,10 @@ import org.specs2.mutable._
 import search._
 
 class SearchTest extends Specification {
+	object SearchUtil {
+		def compile(s:String):String=>Boolean				= SearchCompiler compile	(SearchParser parse s)
+		def compileSeq(s:String):Iterable[String]=>Boolean	= SearchCompiler compileSeq	(SearchParser parse s)
+	}
 	"TokenMatcher for a single string" should {
 		"work 1" in { SearchUtil.compile	("oo")			("foobar")	mustEqual true	} 
 		"work 2" in { SearchUtil.compile	("|oo")			("foobar")	mustEqual false	}

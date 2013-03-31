@@ -1,5 +1,5 @@
 package scutil.log
 
 trait LogHandler {
-	def log(entry:LogEntry):Unit
+	def handle(event:LogEvent):Unit
 }

@@ -20,9 +20,12 @@ object SystemProperties {
 		def dir					= System getProperty "user.dir"
 		def home				= System getProperty "user.home"
 		def name				= System getProperty "user.name"
+		
 		def country				= System getProperty "user.country"
-		def timezone			= System getProperty "user.timezone"
+		def language			= System getProperty "user.language"
 		def variant				= System getProperty "user.variant"
+		def timezone			= System getProperty "user.timezone"
+		//def region			= System getProperty "user.region"
 	}
 	
 	object java {

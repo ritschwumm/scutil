@@ -1,14 +1,9 @@
 package scutil
 
 object Text {
-	/*
-	private val Strip	= new scala.util.matching.Regex("""^\s*\|\t(.*)$""")
-	def strip(s:String):String	= s.lines collect { case Strip(it) => it } mkString "\n"
-	*/
-	
 	/** indent every line with a single tab */
 	def indent(prefix:String, str:String):String =
-			str.replaceAll("(?m)^", prefix)
+			str replaceAll ("(?m)^", prefix)
 			
 	/** treats all combinations of CR and LF as line endings */
 	def expandTabs(width:Int, text:String):String = {

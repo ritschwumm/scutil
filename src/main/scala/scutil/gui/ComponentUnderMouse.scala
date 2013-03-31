@@ -19,7 +19,7 @@ get notifications whenever the mouse moves over a Component or leaves it.
 in contrast to simple mouseEnter/mouseExit events this works when the mouse
 moves fast or something is dragged over the component.
 */
-object ComponentUnderMouse extends Logging {
+final class ComponentUnderMouse(onError:(String,Exception)=>Unit) {
 	private val TEST_CYCLE	= 100	// millis
 	
 	private type Callback	= Effect[Boolean]
@@ -67,8 +67,8 @@ object ComponentUnderMouse extends Logging {
 			try {
 				callbackHard(entry.state)
 			}
-			catch {
-				case e:Exception	=> ERROR("callback failed", e)
+			catch { case e:Exception	=>
+				onError("callback failed", e)
 			}
 		}
 	}
@@ -98,10 +98,9 @@ object ComponentUnderMouse extends Logging {
 						x	-= pp.x
 						y	-= pp.y
 					}
-					catch {
-						case e:IllegalComponentStateException	=>
-							x	-= cc.getX
-							y	-= cc.getY
+					catch { case e:IllegalComponentStateException	=>
+						x	-= cc.getX
+						y	-= cc.getY
 					}
 					return new Point(x,y)
 				case _	=>
@@ -125,8 +124,8 @@ object ComponentUnderMouse extends Logging {
 						try {
 							update()
 						}
-						catch {
-							case e	=> ERROR("test thread failed", e)
+						catch { case e:Exception	=>
+							onError("test thread failed", e)
 						}
 					}
 				}

@@ -1,5 +1,7 @@
 package scutil.ext
 
+import scutil.tried._
+
 object PairImplicits extends PairImplicits
 
 trait PairImplicits {
@@ -17,13 +19,15 @@ final class PairExt[T1,T2](delegate:Pair[T1,T2]) {
 /** comonad, see Either's LeftProjection which is a monad */
 final class FirstProjection[T1,T2](delegate:Pair[T1,T2]) {
 	def get:T1	= delegate._1
-	def map[U](func:T1=>U):Pair[U,T2]							= Pair(func(delegate._1), delegate._2)
-	def unflatMap[U,TT2>:T2](func:Pair[T1,TT2]=>U):Pair[U,TT2]	= Pair(func(delegate), delegate._2)
+	def map[U](func:T1=>U):Pair[U,T2]								= Pair(func(delegate._1),	delegate._2)
+	def unflatMap[U,TT2>:T2](func:Pair[T1,TT2]=>U):Pair[U,TT2]		= Pair(func(delegate),		delegate._2)
+	def sequenceTried[F,W](ev:T1=>Tried[F,W]):Tried[F,Pair[W,T2]]	= ev(delegate._1) map { (_, delegate._2) }
 }
 
 /** comonad, see Either's RightProjection which is a monad */
 final class SecondProjection[T1,T2](delegate:Pair[T1,T2]) {
 	def get:T2	= delegate._2
-	def map[U](func:T2=>U):Pair[T1,U]							= Pair(delegate._1, func(delegate._2))
-	def unflatMap[TT1>:T1,U](func:Pair[TT1,T2]=>U):Pair[TT1,U]	= Pair(delegate._1, func(delegate))
+	def map[U](func:T2=>U):Pair[T1,U]								= Pair(delegate._1,	func(delegate._2))
+	def unflatMap[TT1>:T1,U](func:Pair[TT1,T2]=>U):Pair[TT1,U]		= Pair(delegate._1,	func(delegate))
+	def sequenceTried[F,W](ev:T2=>Tried[F,W]):Tried[F,Pair[T1,W]]	= ev(delegate._2) map { (delegate._1, _) }
 } 

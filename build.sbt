@@ -2,17 +2,20 @@ name			:= "scutil"
 
 organization	:= "de.djini"
 
-version			:= "0.16.0"
+version			:= "0.17.0"
 
 scalaVersion	:= "2.10.0"
 
 // crossScalaVersions	:= Seq("2.9.2", "2.10.0")
 
 libraryDependencies	++= Seq(
-	"org.specs2"	%% "specs2"	% "1.13"	% "test"
+	"org.specs2"	%% "specs2"	% "1.14"	% "test"
 )
 
+libraryDependencies	<+= (scalaVersion) { "org.scala-lang" % "scala-reflect" % _ }
+
 scalacOptions	++= Seq(
+	// "-Ymacro-debug-lite",
 	"-deprecation",
 	"-unchecked",
 	"-language:implicitConversions",
@@ -21,7 +24,7 @@ scalacOptions	++= Seq(
 	"-language:reflectiveCalls",
 	// "-language:dynamics",
 	// "-language:postfixOps",
-	// "-language:experimental.macros"
+	// "-language:experimental.macros",
 	"-feature"
 )
 

@@ -4,7 +4,8 @@ import scutil.ext._
 
 object Implicits extends Implicits
 trait Implicits 
-		extends	LangImplicits 
+		extends	LangImplicits
+		with	JavaImplicits
 		with	IoImplicits
 		with	GuiImplicits
 		
@@ -14,9 +15,6 @@ trait LangImplicits
 		with	AnyRefImplicits
 		with	BooleanImplicits
 		with	CatchImplicits
-		with	ClassImplicits
-		with	DateImplicits
-		with	DateFormatImplicits
 		with	EitherImplicits
 		with	ElemImplicits
 		with	ExecutorImplicits
@@ -26,7 +24,6 @@ trait LangImplicits
 		with	IteratorImplicits
 		with	ListImplicits
 		with	MapImplicits
-		with	MatcherImplicits
 		with	NodeImplicits
 		with	OptionImplicits
 		with	OrderingImplicits
@@ -37,12 +34,19 @@ trait LangImplicits
 		with	RegexImplicits
 		with	SeqImplicits
 		with	SetImplicits
-		with	StringImplicits
-		with	StringTokenizerImplicits
-		with	ThrowableImplicits
 		with	TraversableImplicits
 		with	TraversableOnceImplicits
 		with	TryImplicits
+		
+object JavaImplicits extends JavaImplicits
+trait JavaImplicits
+		extends	ClassImplicits
+		with	DateImplicits
+		with	DateFormatImplicits
+		with	MatcherImplicits
+		with	StringImplicits
+		with	StringTokenizerImplicits
+		with	ThrowableImplicits
 		
 object IoImplicits extends IoImplicits		
 trait IoImplicits

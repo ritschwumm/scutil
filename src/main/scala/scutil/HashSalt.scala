@@ -2,8 +2,10 @@ package scutil
 
 import java.security._
 import java.text.Normalizer
+import java.nio.charset.Charset
 
 import scutil.LangImplicits._
+import scutil.JavaImplicits._
 
 /*
 object HashSalt {
@@ -42,7 +44,7 @@ salting makes dictionary attacks more expensive,
 multiple rounds help against brute force attacks.
 */
 final class HashSalt(
-	encoding:String,
+	encoding:Charset,
 	normalizerForm:Normalizer.Form,
 	hashAlgorithm:String,
 	randomAlgorithm:String,
