@@ -56,6 +56,14 @@ final class StringExt(delegate:String) {
 	def cutSuffix(suffix:String):Option[String] = 
 			if (delegate endsWith suffix)	Some(delegate substring (0, delegate.length-suffix.length))
 			else							None
+		
+	def providePrefix(prefix:String):String	=
+			if (delegate startsWith prefix)	delegate
+			else							prefix + delegate
+	
+	def provideSuffix(suffix:String):String	=
+			if (delegate endsWith suffix)	delegate
+			else							delegate + suffix
 	
 	/** excludes the separator chars themselves */
 	def splitAround(separator:Char):Seq[String] = {

@@ -2,9 +2,9 @@ name			:= "scutil"
 
 organization	:= "de.djini"
 
-version			:= "0.17.0"
+version			:= "0.18.0"
 
-scalaVersion	:= "2.10.0"
+scalaVersion	:= "2.10.1"
 
 // crossScalaVersions	:= Seq("2.9.2", "2.10.0")
 
