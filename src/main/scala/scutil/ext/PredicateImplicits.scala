@@ -15,16 +15,16 @@ final class PredicateExt[T](delegate:Predicate[T]) {
 	def && [U<:T](that:Predicate[U]):Predicate[U]	= and(delegate, that)
 	def || [U<:T](that:Predicate[U]):Predicate[U]	= or(delegate, that)
 	
-	def guardOn[S<:T,U](function:S=>U):S=>Option[U]	= 
+	def guardOn[S<:T,U](function:S=>U):PFunction[S,U]	= 
 			it	=> if (delegate(it))	Some(function(it))	else None
 			
-	def preventOn[S<:T,U](function:S=>U):S=>Option[U]	=
+	def preventOn[S<:T,U](function:S=>U):PFunction[S,U]	=
 			it	=> if (!delegate(it))	Some(function(it))	else None
 			
-	def flatGuardOn[S<:T,U](function:S=>Option[U]):S=>Option[U]	=
+	def flatGuardOn[S<:T,U](function:PFunction[S,U]):PFunction[S,U]	=
 			it	=> if (delegate(it))	function(it)	else None
 			
-	def flatPreventOn[S<:T,U](function:S=>Option[U]):S=>Option[U]	=
+	def flatPreventOn[S<:T,U](function:PFunction[S,U]):PFunction[S,U]	=
 			it	=> if (!delegate(it))	function(it)	else None
 			
 	def eitherOn[S<:T,UL,UR](left:S=>UL, right:S=>UR):S=>Either[UL,UR]	=

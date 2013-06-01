@@ -2,6 +2,8 @@ package scutil.ext
 
 import java.awt.{ List=>AwtList, _ }
 
+import scutil.geom._
+
 object RectangleImplicits extends RectangleImplicits
 
 trait RectangleImplicits {
@@ -32,4 +34,7 @@ final class RectangleExt(delegate:Rectangle) {
 			delegate.y + insets.top,
 			delegate.width	- insets.left	- insets.right,
 			delegate.height	- insets.top	- insets.bottom)
+			
+	def toIntRect:IntRect	=
+			IntRect fromAwtRectangle delegate
 }

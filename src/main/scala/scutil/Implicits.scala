@@ -68,3 +68,4 @@ trait GuiImplicits
 		with	PointImplicits
 		with	RectangleImplicits
 		with	RootPaneContainerImplicits
+		with	WindowImplicits

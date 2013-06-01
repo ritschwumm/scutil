@@ -6,6 +6,8 @@ import javax.swing._
 import javax.swing.event._
 
 import scutil.Lists
+import scutil.geom._
+
 import RectangleImplicits._
 
 object ComponentImplicits extends ComponentImplicits
@@ -94,4 +96,10 @@ final class ComponentExt(delegate:Component) {
 			else
 				Nil
 	*/
+	
+	def getIntBounds:IntRect	=
+			IntRect fromAwtRectangle delegate.getBounds
+		
+	def setIntBounds(rect:IntRect):Unit	=
+			delegate setBounds rect.toAwtRectangle
 }

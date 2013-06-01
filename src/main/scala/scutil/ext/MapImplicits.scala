@@ -1,5 +1,7 @@
 package scutil.ext
 
+import scutil.lang.Endo
+
 object MapImplicits extends MapImplicits
 
 trait MapImplicits {
@@ -19,13 +21,13 @@ final class MapExt[S,T](delegate:Map[S,T]) {
 			}
 			
 	/** map the value for a single key */
-	def updatedBy(key:S, func:T=>T):Map[S,T]	=
+	def updatedBy(key:S, func:Endo[T]):Map[S,T]	=
 			delegate get key match {
 				case Some(value)	=> delegate + (key -> func(value))
 				case None			=> delegate
 			}
 	
 	/** map the value for a single key if it exists or insert a new value for this key */
-	def updatedByOrInserted(key:S, update:T=>T, insert: =>T):Map[S,T]	=
+	def updatedByOrInserted(key:S, update:Endo[T], insert: =>T):Map[S,T]	=
 			delegate + (key -> (delegate get key map update getOrElse insert))
 }

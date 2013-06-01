@@ -1,0 +1,105 @@
+package scutil.lens
+
+import scutil.lang._
+import scutil.Implicits._
+
+object TLens {
+	def create[S,T](get:S=>T, put:(S,T)=>S):TLens[S,T]	=
+			TLens(s =>
+				Store[S,T](
+					get(s),
+					put(s,_)
+				)
+			)
+			
+	def identity[T]:TLens[T,T]	= 
+			TLens(Store.identity)
+		
+	def trivial[T]:TLens[T,Unit]	=
+			TLens(Store.trivial)
+	
+	def bijection[S,T](bijection:Bijection[S,T]):TLens[S,T]	= 
+			TLens { s	=>
+				Store(bijection write s, bijection.read)
+			}
+		
+	def codiag[T]:TLens[Either[T,T],T]	=
+			identity[T] sum identity[T]
+}
+
+case class TLens[S,T](on:S=>Store[S,T]) {
+	def get(s:S):T	= on(s).get
+	
+	def put(s:S, t:T):S		= on(s) set t
+	def putter(t:T):Endo[S]	= put(_, t)
+	
+	def modify(s:S, func:Endo[T]):S		= on(s) mod func
+	def modifier(func:Endo[T]):Endo[S]	= modify(_, func)
+	
+	def compose[R](that:TLens[R,S]):TLens[R,T]	=
+			that andThen this
+		
+	def andThen[U](that:TLens[T,U]):TLens[S,U]	=
+			TLens { s =>
+				val thisStore:Store[S,T]	= this on s
+				val thatStore:Store[T,U]	= that on thisStore.get
+				Store[S,U](
+					thatStore.get,
+					thatStore.set andThen thisStore.set
+				)
+			}
+			
+	def mapContainer[R](bijection:Bijection[R,S]):TLens[R,T]	=
+			TLens { r =>
+				on(bijection write r) map bijection.read
+			}
+		
+	def mapValue[U](bijection:Bijection[T,U]):TLens[S,U]	=
+			TLens { s =>
+				on(s) xmapValue bijection
+			}
+			
+	def over[R](store:Store[R,S]):Store[R,T]	=
+			this on store.get compose store
+		
+	def zip[U](that:TLens[S,U]):TLens[S,(T,U)]	=
+			TLens { s =>
+				Store[S,(T,U)](
+					((this on s).get, (that on s).get),
+					{ case (t,u)	=> that on (this on s set t) set u }
+				)
+			}
+			
+	// ||| 
+	def sum[SS](that:TLens[SS,T]):TLens[Either[S,SS],T]	=
+			TLens { 
+				_ match {
+					case Left(s)	=>
+						val store	= this on s
+						Store[Either[S,SS],T](
+							store.get,
+							it => Left(store set it)
+						)
+					case Right(ss)	=>
+						val store	= that on ss
+						Store[Either[S,SS],T](
+							store.get,
+							it => Right(store set it)
+						)
+				}
+			}
+			
+	// ***
+	def product[SS,TT](that:TLens[SS,TT]):TLens[(S,SS),(T,TT)]	= 
+			TLens { case (s,ss)	=>
+				val thisStore	= this on s
+				val thatStore	= that on ss
+				Store[(S,SS),(T,TT)](
+					(thisStore.get, thatStore.get),
+					{ case (t,tt) => (thisStore set t, thatStore set tt) }
+				)
+			}
+			
+	def toPLens:PLens[S,T]	=
+			PLens(on andThen Some.apply)
+}

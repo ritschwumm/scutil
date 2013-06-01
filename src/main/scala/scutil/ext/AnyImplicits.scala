@@ -2,6 +2,7 @@ package scutil.ext
 
 import scala.annotation._
 
+import scutil.lang._
 import scutil.tried._
 
 object AnyImplicits extends AnyImplicits
@@ -69,11 +70,11 @@ final class AnyExt[T](delegate:T) {
 			if (predicate(delegate)) Right(delegate) else Left(delegate)
 			
 	/** Right if Some else original value in Left */
-	def rightBy[U](func:T=>Option[U]):Either[T,U]	=
+	def rightBy[U](func:PFunction[T,U]):Either[T,U]	=
 			func(delegate) toRight delegate
 
 	/** Left if Some else original value in Right */
-	def leftBy[U](func:T=>Option[U]):Either[U,T]	=
+	def leftBy[U](func:PFunction[T,U]):Either[U,T]	=
 			func(delegate) toLeft delegate	
 		
 	/** Win if the predicate matches, else Fail */
@@ -81,14 +82,14 @@ final class AnyExt[T](delegate:T) {
 			if (predicate(delegate)) Win(delegate) else Fail(delegate)
 	
 	/** Win if Some else original value in Fail */
-	def winBy[U](func:T=>Option[U]):Tried[T,U]	=
+	def winBy[U](func:PFunction[T,U]):Tried[T,U]	=
 			func(delegate) match {
 				case Some(x)	=> Win(x)
 				case None		=> Fail(delegate)
 			}
 
 	/** Fail if Some else original value in Win */
-	def failBy[U](func:T=>Option[U]):Tried[U,T]	=
+	def failBy[U](func:PFunction[T,U]):Tried[U,T]	=
 			func(delegate) match {
 				case Some(x)	=> Fail(x)
 				case None		=> Win(delegate)
@@ -106,7 +107,7 @@ final class AnyExt[T](delegate:T) {
 	def duplicate:(T,T)	= (delegate,delegate)
 	
 	/** apply until the value doesn't change any more */
-	def fixpoint(func:T=>T):T	= {
+	def fixpoint(func:Endo[T]):T	= {
 		@tailrec
 		def loop(it:T):T	= {
 			val tmp	= func(it)
@@ -117,7 +118,7 @@ final class AnyExt[T](delegate:T) {
 	}
 	
 	/** apply until the value doesn't change any more */
-	def fixpointEq(func:T=>T, equal:(T,T)=>Boolean):T	= {
+	def fixpointEq(func:Endo[T], equal:(T,T)=>Boolean):T	= {
 		@tailrec
 		def loop(it:T):T	= {
 			val tmp	= func(it)
@@ -128,7 +129,7 @@ final class AnyExt[T](delegate:T) {
 	}
 	
 	/** apply until the value becomes None */
-	def rewrite(func:T=>Option[T]):T	= {
+	def rewrite(func:PEndo[T]):T	= {
 		@tailrec
 		def loop(it:T):T	=
 				func(it) match {

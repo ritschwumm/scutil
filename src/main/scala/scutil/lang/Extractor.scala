@@ -1,7 +1,7 @@
 package scutil.lang
 
 object Extractor {
-	def apply[S,T](func:Chance[S,T]):Extractor[S,T]	= 
+	def apply[S,T](func:PFunction[S,T]):Extractor[S,T]	= 
 			new FunctionExtractor(func)
 	
 	def total[S,T](func:S=>T):Extractor[S,T]	= Extractor(
@@ -49,13 +49,13 @@ trait Extractor[S,T] {
 	final def cofilter(pred:S=>Boolean):Extractor[S,T]	= 
 			Extractor(s	=> if (pred(s))	read(s)	else None)
 			
-	final def asFunction:Function[S,Option[T]]	= 
+	final def asFunction:PFunction[S,T]	= 
 			s => read(s)
 	
 	final def asPartialFunction:PartialFunction[S,T]	= 
 			Function unlift read	
 }
 
-private final class FunctionExtractor[S,T](readFunc:S=>Option[T]) extends Extractor[S,T] {
+private final class FunctionExtractor[S,T](readFunc:PFunction[S,T]) extends Extractor[S,T] {
 	def read(s:S):Option[T]	= readFunc(s)
 }

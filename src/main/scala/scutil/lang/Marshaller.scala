@@ -1,7 +1,7 @@
 package scutil.lang
 
 object Marshaller {
-	def apply[S,T](writeFunc:S=>T, readFunc:T=>Option[S]):Marshaller[S,T] = 
+	def apply[S,T](writeFunc:S=>T, readFunc:PFunction[T,S]):Marshaller[S,T] = 
 			new FunctionMarshaller[S,T](writeFunc, readFunc)
 			
 	def partial[S,T](writeFunc:S=>T, readFunc:PartialFunction[T,S]):Marshaller[S,T] = 
@@ -62,7 +62,7 @@ trait Marshaller[S,T] {
 			s	=> write(s),
 			t	=> read(t) filter pred)
 			
-	final def asBichance:Bichance[S,T]	= Bichance(
+	final def asBichance:PBijection[S,T]	= PBijection(
 			it => Some(write(it)), 
 			read)
 			
@@ -79,7 +79,7 @@ trait Marshaller[S,T] {
 	final def writeFunction:Function1[S,T]	= write _
 }
 
-private final class FunctionMarshaller[S,T](writeFunc:S=>T, readFunc:T=>Option[S]) extends Marshaller[S,T] {
+private final class FunctionMarshaller[S,T](writeFunc:S=>T, readFunc:PFunction[T,S]) extends Marshaller[S,T] {
 	def write(s:S):T		= writeFunc(s)
 	def read(t:T):Option[S]	= readFunc(t)
 }

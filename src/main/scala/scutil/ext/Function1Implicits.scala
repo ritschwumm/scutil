@@ -2,6 +2,8 @@ package scutil.ext
 
 import scala.annotation._
 
+import scutil.lang._
+
 object Function1Implicits extends Function1Implicits
 
 trait Function1Implicits {
@@ -15,6 +17,6 @@ final class Function1Ext[S,T](delegate:Function1[S,T]) {
 	}
 	
 	/** inverse to PartialFunction#lift */
-	def unlift[X](implicit ev:T=>Option[X]):PartialFunction[S,X]	=
-			Function unlift delegate.asInstanceOf[S=>Option[X]]
+	def unlift[X](implicit ev:PFunction[T,X]):PartialFunction[S,X]	=
+			Function unlift delegate.asInstanceOf[PFunction[S,X]]
 }

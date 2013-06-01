@@ -1,0 +1,14 @@
+package scutil.color
+
+import scala.math._
+
+import scutil.Math
+
+/** value range is 0..1 */
+case class Alpha(a:Float) {
+	def blend(that:Alpha, ratio:Float):Alpha	= 
+			Alpha(Math blend (this.a, that.a, ratio))
+	
+	def diff(that:Alpha):Float	= 
+			abs(this.a - that.a)
+}

@@ -11,7 +11,7 @@ object Bijection {
 			Predef.identity)
 		
 	/** attention: throws exceptions when not matching. do not use this unless you know what you are doing */
-	def marshallerFailing[S,T](applyFunc:S=>T, unapplyFunc:T=>Option[S]):Bijection[S,T]	= Bijection[S,T](
+	def marshallerFailing[S,T](applyFunc:S=>T, unapplyFunc:PFunction[T,S]):Bijection[S,T]	= Bijection[S,T](
 			applyFunc,
 			it => unapplyFunc(it) getOrElse (sys error ("cannot unmarshall: " + it)))
 }
@@ -37,7 +37,7 @@ trait Bijection[S,T] {
 	final def asMarshallerCatchingRead:Marshaller[S,T]	= 
 			Marshaller(write, it => allCatch opt read(it))
 		
-	final def asBichance:Bichance[S,T]	= Bichance(
+	final def asPBijection:PBijection[S,T]	= PBijection(
 			it => Some(write(it)), 
 			it => Some(read(it)))
 			

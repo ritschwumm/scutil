@@ -31,9 +31,11 @@ final class OptionExt[T](delegate:Option[T]) {
 	def pa[U](func:Option[T=>U]):Option[U] =
 			for { f	<- func; s	<- delegate } yield f(s)
 	
-	/** the flatten method defined on Iterable is useless */
-	def flatten[U](implicit witness:T=>Option[U]):Option[U] =
+	/*
+	//* the flatten method defined on Iterable is useless 
+	def flatten[U](implicit witness:PFunction[T,U]):Option[U] =
 			delegate flatMap witness
+	*/
 			
 	/** the partition method defined on Iterable is useless */
 	def partition(pred:Predicate[T]):(Option[T],Option[T])	=

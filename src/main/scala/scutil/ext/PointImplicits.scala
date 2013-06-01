@@ -2,6 +2,8 @@ package scutil.ext
 
 import java.awt.{ List=>AwtList, _ }
 
+import scutil.geom._
+
 object PointImplicits extends PointImplicits
 
 trait PointImplicits {
@@ -21,6 +23,15 @@ final class PointExt(delegate:Point) {
 			delegate.x	- that.x,
 			delegate.y	- that.y)
 			
+	def *(that:Point):Point	=  new Point(
+			delegate.x  * that.x,
+			delegate.y	* that.y)
+			
+	def /(that:Point):Point	=  new Point(
+			delegate.x / that.x,
+			delegate.y / that.y)
+			
+	/*
 	def *(factor:Int):Point	=  new Point(
 			delegate.x  * factor,
 			delegate.y * factor)
@@ -28,7 +39,8 @@ final class PointExt(delegate:Point) {
 	def /(factor:Int):Point	=  new Point(
 			delegate.x / factor,
 			delegate.y / factor)
-			
+	*/
+
 	//------------------------------------------------------------------------------
 			
 	def moveBy(dimension:Dimension):Point	= new Point(
@@ -53,4 +65,7 @@ final class PointExt(delegate:Point) {
 	def toDimension:Dimension	= new Dimension(
 			delegate.x,
 			delegate.y)
+			
+	def toIntPoint:IntPoint	=
+			IntPoint fromAwtPoint delegate
 }

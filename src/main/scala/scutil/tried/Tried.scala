@@ -2,6 +2,8 @@ package scutil.tried
 
 import scala.util.{ Try, Success, Failure }
 
+import scutil.lang._
+
 object Tried {
 	def win[F,W](it:W):Tried[F,W]	= Win(it)
 	def fail[F,W](it:F):Tried[F,W]	= Fail(it)
@@ -123,16 +125,16 @@ sealed trait Tried[+F,+W] {
 		
 	//------------------------------------------------------------------------------
 	
-	def rescue[WW>:W](func:F=>Option[WW]):Tried[F,WW]	=
+	def rescue[WW>:W](func:PFunction[F,WW]):Tried[F,WW]	=
 			cata(it => func(it) map Win.apply getOrElse Fail(it), Win.apply)
 		
-	def reject[FF>:F](func:W=>Option[FF]):Tried[FF,W]	=
+	def reject[FF>:F](func:PFunction[W,FF]):Tried[FF,W]	=
 			cata(Fail.apply, it => func(it) map Fail.apply getOrElse Win(it))
 		
 	def filterOr[FF>:F](func:W=>Boolean, fail:FF):Tried[FF,W]	=
 			cata(Fail.apply, it => if (func(it)) Win(it) else Fail(fail))
 			
-	def mapOr[FF>:F,WW](func:W=>Option[WW], fail:FF):Tried[FF,WW]	=
+	def mapOr[FF>:F,WW](func:PFunction[W,WW], fail:FF):Tried[FF,WW]	=
 			cata(Fail.apply, it => func(it) map Win.apply getOrElse Fail(fail))
 		
 	def collectOr[FF>:F,WW](func:PartialFunction[W,WW], fail:FF):Tried[FF,WW]	=

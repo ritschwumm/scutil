@@ -2,6 +2,8 @@ package scutil.ext
 
 import java.awt.{ List=>AwtList, _ }
 
+import scutil.geom._
+
 object DimensionImplicits extends DimensionImplicits
 
 trait DimensionImplicits {
@@ -21,6 +23,15 @@ final class DimensionExt(delegate:Dimension) {
 			delegate.width	- that.width,
 			delegate.height	- that.height)
 			
+	def *(that:Dimension):Dimension	=  new Dimension(
+			delegate.width  * that.width,
+			delegate.height * that.height)
+			
+	def /(that:Dimension):Dimension	=  new Dimension(
+			delegate.width  / that.width,
+			delegate.height / that.height)
+			
+	/*
 	def *(factor:Int):Dimension	=  new Dimension(
 			delegate.width  * factor,
 			delegate.height * factor)
@@ -28,10 +39,14 @@ final class DimensionExt(delegate:Dimension) {
 	def /(factor:Int):Dimension	=  new Dimension(
 			delegate.width  / factor,
 			delegate.height / factor)
-			
+	*/
+	
 	//------------------------------------------------------------------------------
 			
 	def toPoint:Point	= new Point(
 			delegate.width,
 			delegate.height)
+			
+	def toIntPoint:IntPoint	=
+			IntPoint fromAwtDimension delegate
 }

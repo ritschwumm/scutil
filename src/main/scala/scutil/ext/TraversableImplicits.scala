@@ -2,6 +2,7 @@ package scutil.ext
 
 import scala.collection.generic.CanBuildFrom
 
+import scutil.lang._
 import scutil.tried._
 
 object TraversableImplicits extends TraversableImplicits
@@ -82,11 +83,11 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](delegate:CC[T]) {
 	// NOTE supplying pure and flatMap of a Monad would work, too!
 	
 	/** delegate is traversable (in the haskell sense), Option is an idiom. */
-	def sequenceOption[U](implicit ev:T=>Option[U], cbf:CanBuildFrom[CC[T],U,CC[U]]):Option[CC[U]]	=
+	def sequenceOption[U](implicit ev:PFunction[T,U], cbf:CanBuildFrom[CC[T],U,CC[U]]):Option[CC[U]]	=
 			traverseOption(identity[U])
 	
 	/** delegate is traversable (in the haskell sense), Option is an idiom. */
-	def traverseOption[U,V](func:U=>V)(implicit ev:T=>Option[U], cbf:CanBuildFrom[CC[T],V,CC[V]]):Option[CC[V]]	= {
+	def traverseOption[U,V](func:U=>V)(implicit ev:PFunction[T,U], cbf:CanBuildFrom[CC[T],V,CC[V]]):Option[CC[V]]	= {
 		val builder	= cbf()
 		delegate map ev foreach {
 			case Some(x)	=> builder	+= func(x)

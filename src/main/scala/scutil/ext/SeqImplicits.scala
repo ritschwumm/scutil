@@ -30,7 +30,7 @@ final class SeqExt[T](delegate:Seq[T]) {
 	def collectLast[U](pf:PartialFunction[T,U]):Option[U]	=
 			delegate.reverse collectFirst pf
 	
-	def flatMapLast[U](find:T=>Option[U]):Option[U]	= {
+	def flatMapLast[U](find:PFunction[T,U]):Option[U]	= {
 		delegate.reverse foreach { it =>
 			val out	= find(it)
 			if (out.isDefined)	return out
@@ -52,7 +52,7 @@ final class SeqExt[T](delegate:Seq[T]) {
 			else					None
 		
 	/** map the value for a single index */
-	def updatedBy(index:Int, func:T=>T):Seq[T]	=
+	def updatedBy(index:Int, func:Endo[T]):Seq[T]	=
 			if (index >= 0 && index < delegate.size)	delegate updated (index, func(delegate(index)))
 			else										delegate
 
