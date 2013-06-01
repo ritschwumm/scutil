@@ -2,7 +2,7 @@ name			:= "scutil"
 
 organization	:= "de.djini"
 
-version			:= "0.18.0"
+version			:= "0.19.0"
 
 scalaVersion	:= "2.10.1"
 

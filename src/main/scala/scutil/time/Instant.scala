@@ -14,7 +14,8 @@ object Instant {
 	
 	def fromDate(date:Date):Instant	= Instant(date.getTime)
 	
-	val newType	= Bijection[Instant,Long](_.millis, Instant.apply)
+	val newType			= Bijection[Instant,Long](_.millis, Instant.apply)
+	val dateBijection	= Bijection[Instant,Date](_.toDate, Instant.fromDate)
 }
 
 case class Instant(millis:Long) extends Ordered[Instant] {

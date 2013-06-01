@@ -1,6 +1,7 @@
 package scutil
 
 package object lang {
+	type Endo[T]		= T=>T
 	type Predicate[-T]	= T=>Boolean
 	
 	type Thunk[+T]		= ()=>T

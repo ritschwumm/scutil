@@ -13,14 +13,15 @@ trait OptionImplicits {
 
 final class OptionExt[T](delegate:Option[T]) {
 	def getOrError(s:String)	= delegate getOrElse (sys error s)
-	
-	def cata2[X](none: => X, some:T => X):X = delegate match {
-		case Some(x)	=> some(x)
-		case None		=> none
-	}
+		
+	def cata[X](none: => X, some:T => X):X = 
+		delegate match {
+			case Some(x)	=> some(x)
+			case None		=> none
+		}
 	
 	def cataSwapped[X](some:T => X, none: => X):X =
-			cata2(none, some)
+			cata(none, some)
 	
 	/** ap of the monad, <*> of the applicative functor */
 	def ap[U,V](source:Option[U])(implicit witness:T=>U=>V):Option[V] =
