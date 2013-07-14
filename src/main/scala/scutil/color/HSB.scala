@@ -7,6 +7,9 @@ import scala.math._
 import scutil.Math
 
 object HSB {
+	val white	= HSB(1,1,1)
+	val black	= HSB(0,0,0)
+	
 	def fromColor(color:Color):HSB	= (RGB fromColor color).toHSB
 	def toColor(hsb:HSB):Color		= hsb.toColor
 }

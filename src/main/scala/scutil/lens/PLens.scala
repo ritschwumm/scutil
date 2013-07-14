@@ -26,7 +26,7 @@ object PLens {
 case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 	def get(s:S):Option[T]	= on(s) map { _.get }
 	
-	def put(s:S, t:T):Option[S]	= on(s) map { _ set t }
+	def put(s:S, t:T):Option[S]	= on(s) map { _ put t }
 	def putter(t:T):PEndo[S]	= put(_, t)
 	
 	def modify(s:S, func:Endo[T]):Option[S]	= on(s) map { _ mod func }
@@ -44,7 +44,7 @@ case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 				yield {
 					Store[S,U](
 						thatStore.get,
-						thatStore.set andThen thisStore.set
+						thatStore.put andThen thisStore.put
 					)
 				}
 			}
@@ -80,14 +80,14 @@ case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 						this on s map { store =>
 							Store[Either[S,SS],T](
 								store.get,
-								it => Left(store set it)
+								it => Left(store put it)
 							)
 						}
 					case Right(ss)	=>
 						that on ss map { store =>
 							Store[Either[S,SS],T](
 								store.get,
-								it => Right(store set it)
+								it => Right(store put it)
 							)
 						}
 				}
@@ -103,7 +103,7 @@ case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 				yield {
 					Store[(S,SS),(T,TT)](
 						(thisStore.get, thatStore.get),
-						{ case (t,tt) => (thisStore set t, thatStore set tt) }
+						{ case (t,tt) => (thisStore put t, thatStore put tt) }
 					)
 				}
 			}

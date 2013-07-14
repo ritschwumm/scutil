@@ -1,6 +1,6 @@
 package scutil.ext
 
-import scutil.lang.PFunction
+import scutil.lang._
 
 object PFunctionImplicits extends PFunctionImplicits
 
@@ -17,4 +17,8 @@ final class PFunctionExt[S,T](delegate:PFunction[S,T]) {
 		
 	def toFunction(default: =>T):Function[S,T]	=
 			it => delegate(it) getOrElse default
+		
+	/** make PEndo[S] to Endo[S] with getOrElse */
+	def toEndo(implicit ev:T=>S):Endo[S]	=
+			s => delegate(s) map ev getOrElse s
 }

@@ -18,6 +18,25 @@ final class SeqExt[T](delegate:Seq[T]) {
 	def removeAt(index:Int):Seq[T]	= 
 			delegate patch (index, Seq.empty, 1)
 		
+	def moveAt(from:Int, to:Int):Option[Seq[T]]	=
+			if (from < to-1) {
+				Some(
+					delegate 
+					.patch(to,		Seq(delegate(from)),	0) 
+					.patch(from,	Seq.empty,				1)
+				)
+			}
+			else if (from > to) {
+				Some(delegate 
+					.patch(from,	Seq.empty,				1) 
+					.patch(to,		Seq(delegate(from)),	0)
+				)
+			}
+			else None
+			
+	def times(count:Int):Seq[T]	=
+			(0 until count).toVector flatMap { _ => delegate }
+	
 	def containsIndex(index:Int):Boolean	=
 			index >= 0 && index < delegate.size
 		

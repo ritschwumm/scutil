@@ -7,6 +7,9 @@ import scala.math._
 import scutil.Math
 
 object RGB {
+	val white	= RGB(1,1,1)
+	val black	= RGB(0,0,0)
+	
 	def fromColor(color:Color):RGB	= {
 		val Array(r, g, b, a)	= color getRGBComponents null
 		RGB(r, g, b)

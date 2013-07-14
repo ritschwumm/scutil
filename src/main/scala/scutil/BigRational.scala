@@ -14,9 +14,11 @@ import scutil.ext.StringImplicits._
 
 object BigRational {
 	/** additive neutral element */
-	val ZERO	= new BigRational(JBigInteger.ZERO, JBigInteger.ONE)
+	val zero	= new BigRational(JBigInteger.ZERO, JBigInteger.ONE)
 	/** multiplicative neutral element */
-	val ONE		= new BigRational(JBigInteger.ONE,  JBigInteger.ONE)	
+	val one		= new BigRational(JBigInteger.ONE,  JBigInteger.ONE)	
+	
+	//------------------------------------------------------------------------------
 	
 	def apply(numerator:JBigInteger, denominator:JBigInteger):BigRational = 
 			new BigRational(numerator, denominator)
@@ -37,8 +39,10 @@ object BigRational {
 					JBigInteger.ONE)
 					
 	def unapply(self:BigRational):Option[(JBigInteger,JBigInteger)] = 
-			Some((self.numerator, self.denominator)) 
+			Some((self.numerator, self.denominator))
 					
+	//------------------------------------------------------------------------------
+	
 	/** parse the output of #toString */
 	def parse(s:String):Option[BigRational] = 
 			s splitAround '/' match {
@@ -71,43 +75,43 @@ final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extend
 	//## calculation
 	
 	def +(that:BigRational):BigRational =
-				 if (this == BigRational.ZERO)	that
-			else if (that == BigRational.ZERO)	this
+				 if (this == BigRational.zero)	that
+			else if (that == BigRational.zero)	this
 			else new BigRational(
 					(this.numerator multiply that.denominator) add (this.denominator multiply that.numerator),
 					this.denominator multiply that.denominator)
 
 	def -(that:BigRational):BigRational =
-				 if (this == BigRational.ZERO)	that.negate
-			else if (that == BigRational.ZERO)	this
+				 if (this == BigRational.zero)	that.negate
+			else if (that == BigRational.zero)	this
 			else new BigRational(
 					(this.numerator multiply that.denominator) subtract (this.denominator multiply that.numerator),
 					this.denominator multiply that.denominator)
 		
 	def *(that:BigRational):BigRational =
-				 if (this == BigRational.ONE)	that
-			else if (that == BigRational.ONE)	this
+				 if (this == BigRational.one)	that
+			else if (that == BigRational.one)	this
 			else new BigRational(
 					this.numerator		multiply that.numerator,
 					this.denominator	multiply that.denominator)
 	
 	def /(that:BigRational):BigRational =
-				 if (this == BigRational.ONE)	that.reciprocal
-			else if (that == BigRational.ONE)	this
+				 if (this == BigRational.one)	that.reciprocal
+			else if (that == BigRational.one)	this
 			else new BigRational(
 					this.numerator		multiply that.denominator,
 					this.denominator	multiply that.numerator)
 	
 	/** additive inverse */
 	def negate:BigRational = 
-			if (this == BigRational.ZERO)	this
+			if (this == BigRational.zero)	this
 			else new BigRational(
 					numerator.negate, 
 					denominator)
 
 	/** multiplicative inverse */
 	def reciprocal:BigRational =
-			if (this == BigRational.ONE)	this
+			if (this == BigRational.zero)	this
 			else new BigRational(
 					denominator, 
 					numerator)

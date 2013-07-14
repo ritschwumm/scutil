@@ -30,7 +30,7 @@ object TLens {
 case class TLens[S,T](on:S=>Store[S,T]) {
 	def get(s:S):T	= on(s).get
 	
-	def put(s:S, t:T):S		= on(s) set t
+	def put(s:S, t:T):S		= on(s) put t
 	def putter(t:T):Endo[S]	= put(_, t)
 	
 	def modify(s:S, func:Endo[T]):S		= on(s) mod func
@@ -45,16 +45,16 @@ case class TLens[S,T](on:S=>Store[S,T]) {
 				val thatStore:Store[T,U]	= that on thisStore.get
 				Store[S,U](
 					thatStore.get,
-					thatStore.set andThen thisStore.set
+					thatStore.put andThen thisStore.put
 				)
 			}
 			
-	def mapContainer[R](bijection:Bijection[R,S]):TLens[R,T]	=
+	def xmapContainer[R](bijection:Bijection[R,S]):TLens[R,T]	=
 			TLens { r =>
 				on(bijection write r) map bijection.read
 			}
 		
-	def mapValue[U](bijection:Bijection[T,U]):TLens[S,U]	=
+	def xmapValue[U](bijection:Bijection[T,U]):TLens[S,U]	=
 			TLens { s =>
 				on(s) xmapValue bijection
 			}
@@ -66,7 +66,7 @@ case class TLens[S,T](on:S=>Store[S,T]) {
 			TLens { s =>
 				Store[S,(T,U)](
 					((this on s).get, (that on s).get),
-					{ case (t,u)	=> that on (this on s set t) set u }
+					{ case (t,u)	=> that on (this on s put t) put u }
 				)
 			}
 			
@@ -78,13 +78,13 @@ case class TLens[S,T](on:S=>Store[S,T]) {
 						val store	= this on s
 						Store[Either[S,SS],T](
 							store.get,
-							it => Left(store set it)
+							it => Left(store put it)
 						)
 					case Right(ss)	=>
 						val store	= that on ss
 						Store[Either[S,SS],T](
 							store.get,
-							it => Right(store set it)
+							it => Right(store put it)
 						)
 				}
 			}
@@ -96,7 +96,7 @@ case class TLens[S,T](on:S=>Store[S,T]) {
 				val thatStore	= that on ss
 				Store[(S,SS),(T,TT)](
 					(thisStore.get, thatStore.get),
-					{ case (t,tt) => (thisStore set t, thatStore set tt) }
+					{ case (t,tt) => (thisStore put t, thatStore put tt) }
 				)
 			}
 			
