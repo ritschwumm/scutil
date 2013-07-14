@@ -1,6 +1,6 @@
 package scutil.ext
 
-import scala.annotation._
+import scala.annotation.tailrec
 
 import scutil.lang._
 import scutil.tried._

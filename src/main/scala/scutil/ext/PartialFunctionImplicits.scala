@@ -1,5 +1,7 @@
 package scutil.ext
 
+import scutil.lang.PFunction
+
 object PartialFunctionImplicits extends PartialFunctionImplicits
 
 trait PartialFunctionImplicits {
@@ -20,4 +22,7 @@ final class PartialFunctionExt[S,T](delegate:PartialFunction[S,T]) {
 		def isDefinedAt(it:R):Boolean	= (that isDefinedAt it) && (delegate isDefinedAt that(it))
 		def apply(it:R):T				= delegate(that(it))
 	}
+	
+	def toPFunction:PFunction[S,T]	=
+			delegate.lift
 }

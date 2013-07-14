@@ -6,7 +6,6 @@ import java.lang.{
 } 
 import java.util.regex.Pattern
 
-import scala.annotation.tailrec 
 import scala.collection.mutable
 import scala.util.control.Exception._
 

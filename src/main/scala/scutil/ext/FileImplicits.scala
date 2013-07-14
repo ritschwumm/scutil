@@ -3,8 +3,6 @@ package scutil.ext
 import java.io._
 import java.nio.charset.Charset
 
-import annotation.tailrec
-
 import scutil.lang._
 import scutil.Resource._
 import scutil.Files

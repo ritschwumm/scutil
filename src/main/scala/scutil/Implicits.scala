@@ -27,6 +27,7 @@ trait LangImplicits
 		with	NodeImplicits
 		with	OptionImplicits
 		with	OrderingImplicits
+		with	PFunctionImplicits
 		with	PairImplicits
 		with	PartialFunctionImplicits
 		with	PredicateImplicits
