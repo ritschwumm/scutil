@@ -3,7 +3,6 @@ package scutil.pimp
 import scala.collection.immutable
 
 import scutil.lang._
-import scutil.Tuples
 
 object SeqImplicits extends SeqImplicits
 

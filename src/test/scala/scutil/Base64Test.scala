@@ -1,4 +1,4 @@
-package scutil
+package scutil.io
 
 import org.specs2.mutable._
 

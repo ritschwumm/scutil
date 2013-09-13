@@ -4,7 +4,7 @@ import java.awt.Color
 
 import scala.math._
 
-import scutil.Math
+import scutil.math
 
 object RGB {
 	val white	= RGB(1,1,1)
@@ -22,9 +22,9 @@ object RGB {
 case class RGB(r:Float, g:Float, b:Float) {
 	def blend(that:RGB, ratio:Float):RGB	= 
 			RGB(
-				r	= Math blend (this.r, that.r, ratio),
-				g	= Math blend (this.g, that.g, ratio),
-				b	= Math blend (this.b, that.b, ratio)
+				r	= math blend (this.r, that.r, ratio),
+				g	= math blend (this.g, that.g, ratio),
+				b	= math blend (this.b, that.b, ratio)
 			)
 	
 	def diff(that:RGB):Float	= 

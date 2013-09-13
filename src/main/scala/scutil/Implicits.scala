@@ -8,6 +8,7 @@ trait Implicits
 		with	JavaImplicits
 		with	IoImplicits
 		with	GuiImplicits
+		with	DisposableConversions
 		
 object LangImplicits extends LangImplicits
 trait LangImplicits

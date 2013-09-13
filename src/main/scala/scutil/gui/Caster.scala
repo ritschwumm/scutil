@@ -14,7 +14,7 @@ abstract class Caster[L,E] private[gui] (
 		{
 			addListener(listener)
 		}
-		Disposable {
+		disposable {
 			removeListener(listener)
 		}
 	}

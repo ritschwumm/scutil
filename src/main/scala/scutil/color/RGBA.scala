@@ -4,8 +4,6 @@ import java.awt.Color
 
 import scala.math._
 
-import scutil.Math
-
 object RGBA {
 	def fromColor(color:Color):RGBA	= {
 		val Array(r, g, b, a)	= color getRGBComponents null

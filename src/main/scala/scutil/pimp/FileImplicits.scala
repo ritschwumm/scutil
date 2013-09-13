@@ -4,14 +4,10 @@ import java.io._
 import java.nio.charset.Charset
 
 import scutil.lang._
-import scutil.Resources._
-import scutil.Files
-import scutil.SystemProperties
-import scutil.Lists
-import scutil.time.Instant
-
-import InputStreamImplicits._
-import ReaderImplicits._
+import scutil.Implicits._
+import scutil.io.Files
+import scutil.time.MilliInstant
+import scutil.platform.SystemProperties
 
 object FileImplicits extends FileImplicits
 
@@ -27,9 +23,9 @@ final class FileExt(delegate:File) {
 	//------------------------------------------------------------------------------
 	//## file and directory
 	
-	/** time of last modification as an Instant, returns Instant.zero for non-existing files */
-	def lastModifiedInstant:Instant	= 
-			Instant(delegate.lastModified)
+	/** time of last modification as an MilliInstant, returns MilliInstant.zero for non-existing files */
+	def lastModifiedMilliInstant:MilliInstant	= 
+			MilliInstant(delegate.lastModified)
 	
 	/** whether the delegate is newer than another file. if the other file does not exist it counts as newer */ 
 	def newerThan(that:File):Boolean	=

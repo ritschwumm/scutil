@@ -1,6 +1,6 @@
 package scutil.log
 
-import scutil.SourceLocation
+import scutil.lang.SourceLocation
 
 object LogLevel {
 	/** in order of severity */

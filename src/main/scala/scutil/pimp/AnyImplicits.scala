@@ -3,7 +3,6 @@ package scutil.pimp
 import scala.annotation.tailrec
 
 import scutil.lang._
-import scutil.tried._
 
 object AnyImplicits extends AnyImplicits
 
@@ -15,22 +14,42 @@ final class AnyExt[T](delegate:T) {
 	/** ensure we get the java wrapper */
 	def boxed:AnyRef	= delegate.asInstanceOf[AnyRef]
 	
-	/** apply a single unary function, just like F#'s operator or ruby's thrush */
-	def |>[U](f:T=>U):U	= f(delegate)
+	/** symbolic alias for into */
+	@inline
+	def |>[U](f:T=>U):U		= into(f)
+
+	/** symbolic alias for doto */
+	@inline
+	def |>>(effect:T=>Unit):T	= doto(effect)
 	
-	/** same as |> but with different precendence */
+	/** apply a single unary function, just like F#'s operator or ruby's thrush */
 	def into[U](f:T=>U):U	= f(delegate)
 	
-	/** apply an effect, then return the delegate itself. */
-	def |>>(effect:T=>Unit):T = {
+	/** apply an effect, then return the delegate itself; inspired by clojure's doto */
+	def doto(effect:T=>Unit):T	= {
 		effect apply delegate
 		delegate
 	}
 	
-	/** apply a number of effects, then return the delegate itself; inspired by clojure's doto */
-	def doto(effects:(T=>Unit)*):T	= {
-		effects foreach { _ apply delegate }
-		delegate
+	/** do something to us, then dispose */
+	def use[U](func:T=>U)(implicit ev:T=>Disposable):U = {
+		var thrown	= false
+		try {
+			func(delegate) 
+		}
+		catch { case e:Throwable	=> 
+			thrown	= true
+			throw e
+		}
+		finally {
+			try { 
+				ev(delegate).dispose()
+			}
+			catch { case e:Throwable	=> 
+				if (!thrown)	throw e
+				// NOTE the exception from close has been swallowed
+			}
+		}
 	}
 	
 	/** type-invariant equality */

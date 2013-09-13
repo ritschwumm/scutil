@@ -4,7 +4,7 @@ import java.awt.Color
 
 import scala.math._
 
-import scutil.Math
+import scutil.math
 
 object HSB {
 	val white	= HSB(1,1,1)
@@ -18,9 +18,9 @@ object HSB {
 case class HSB(h:Float, s:Float, b:Float) {
 	def blend(that:HSB, ratio:Float):HSB	= 
 			HSB(
-				h	= Math blend (this.h, that.h, ratio),
-				s	= Math blend (this.s, that.s, ratio),
-				b	= Math blend (this.b, that.b, ratio)
+				h	= math blend (this.h, that.h, ratio),
+				s	= math blend (this.s, that.s, ratio),
+				b	= math blend (this.b, that.b, ratio)
 			)
 	
 	def diff(that:HSB):Float	=

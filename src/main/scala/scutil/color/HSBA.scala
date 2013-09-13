@@ -2,10 +2,6 @@ package scutil.color
 
 import java.awt.Color
 
-import scala.math._
-
-import scutil.Math
-
 object HSBA {
 	def fromColor(color:Color):HSBA	= (RGBA fromColor color).toHSBA
 	def toColor(hsba:HSBA):Color	= hsba.toColor

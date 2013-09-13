@@ -2,7 +2,7 @@ package scutil.pimp
 
 import scala.util.{ Try, Success, Failure }
 
-import scutil.tried._
+import scutil.lang._
 
 object TryImplicits extends TryImplicits
 

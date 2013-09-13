@@ -8,13 +8,6 @@ object Bijection {
 		
 	def identity[T]:Bijection[T,T]	= 
 			Bijection(Predef.identity, Predef.identity)
-		
-	/** attention: throws exceptions when not matching. do not use this unless you know what you are doing */
-	@deprecated("use PFunctionExt.orDefault", "0.24.0")
-	def marshallerFailing[S,T](applyFunc:S=>T, unapplyFunc:PFunction[T,S]):Bijection[S,T]	= 
-			Bijection[S,T](
-					applyFunc,
-					it => unapplyFunc(it) getOrElse (sys error ("cannot unmarshall: " + it)))
 }
 
 trait Bijection[S,T] {
@@ -34,10 +27,6 @@ trait Bijection[S,T] {
 			
 	final def asMarshaller:Marshaller[S,T]	= 
 			Marshaller total (write, read)
-		
-	@deprecated("catch manually", "0.24.0")
-	final def asMarshallerCatchingRead:Marshaller[S,T]	= 
-			Marshaller(write, it => allCatch opt read(it))
 		
 	final def asPBijection:PBijection[S,T]	=
 			PBijection(

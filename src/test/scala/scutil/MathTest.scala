@@ -1,6 +1,8 @@
-package scutil
+package scutil.math
 
 import org.specs2.mutable._
+
+import scutil.{ math => Math }
 
 class MathTest extends Specification {
 	"Unsigned" should {

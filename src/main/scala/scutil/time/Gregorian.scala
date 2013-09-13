@@ -13,7 +13,7 @@ object Gregorian {
 				(cal get Calendar.MONTH)		+ 1,
 				(cal get Calendar.YEAR)			+ 0)
 				
-	def atInstant(instant:Instant, tz:TimeZone):Gregorian	= {
+	def atMilliInstant(instant:MilliInstant, tz:TimeZone):Gregorian	= {
 		val	cal	= new GregorianCalendar(tz)
 		cal setTime instant.toDate
 		fromCalendar(cal)

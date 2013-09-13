@@ -1,14 +1,13 @@
 package scutil.lang
 
 object Disposable {
-	def apply(todo: =>Unit):Disposable	= new FunctionDisposable(task(todo))
-	def fromThunk(todo:Task):Disposable	= new FunctionDisposable(todo)
+	def apply(todo:Task):Disposable	= new FunctionDisposable(todo)
 	
 	/** forms a monoid with append */
 	val empty:Disposable	= EmptyDisposable
 	
 	def all(subs:Seq[Disposable]):Disposable	=
-			Disposable {
+			disposable {
 				subs foreach {
 					_.dispose() 
 				}
@@ -21,7 +20,7 @@ trait Disposable {
 	
 	/** forms a monoid with empty */
 	final def append(that:Disposable):Disposable	=
-			Disposable {
+			disposable {
 				this.dispose()
 				that.dispose()
 			}

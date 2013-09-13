@@ -1,5 +1,7 @@
 package scutil
 
+import scutil.lang.SourceLocation
+
 package object log {
 	/** make LogLevel usable to log to an implicit LogHandler as provided by Logging */
 	implicit class LogLevelWithApply(level:LogLevel) {

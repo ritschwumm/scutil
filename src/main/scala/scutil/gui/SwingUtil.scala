@@ -3,8 +3,6 @@ package scutil.gui
 import javax.swing.SwingUtilities
 
 import scutil.lang._
-import scutil.Executors
-import scutil.tried._
 import scutil.pimp.ExecutorImplicits._
 
 object SwingUtil {

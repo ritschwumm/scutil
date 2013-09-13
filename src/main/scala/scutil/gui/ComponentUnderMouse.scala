@@ -39,7 +39,7 @@ final class ComponentUnderMouse(onError:(String,Exception)=>Unit) {
 			case None			=>
 				entries	+= (component -> Entry(nowUnderMouse, Vector(new WeakReference(callback))))
 		}
-		Disposable {
+		disposable {
 			entries	= entries flatMap { case (component,entry) =>
 				val newCallbacks	= entry.callbacks filterNot { it:WeakReference[Callback] => 
 					it.get == null || it.get == callback 

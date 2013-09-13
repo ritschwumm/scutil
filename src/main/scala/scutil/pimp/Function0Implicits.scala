@@ -2,6 +2,8 @@ package scutil.pimp
 
 import java.util.concurrent.Callable
 
+import scutil.lang.Disposable
+
 object Function0Implicits extends Function0Implicits
 
 trait Function0Implicits {

@@ -1,8 +1,6 @@
 package scutil.pimp
 
 import scutil.lang._
-import scutil.tried._
-import scutil.Predicates._
 
 object PredicateImplicits extends PredicateImplicits
 
@@ -11,9 +9,9 @@ trait PredicateImplicits {
 }
 
 final class PredicateExt[T](delegate:Predicate[T]) {
-	def unary_! :Predicate[T]						= not(delegate)
-	def && [U<:T](that:Predicate[U]):Predicate[U]	= and(delegate, that)
-	def || [U<:T](that:Predicate[U]):Predicate[U]	= or(delegate, that)
+	def unary_! :Predicate[T]						= Predicates not	delegate
+	def && [U<:T](that:Predicate[U]):Predicate[U]	= Predicates and	(delegate, that)
+	def || [U<:T](that:Predicate[U]):Predicate[U]	= Predicates or		(delegate, that)
 	
 	def guardOn[S<:T,U](function:S=>U):PFunction[S,U]	= 
 			it	=> if (delegate(it))	Some(function(it))	else None

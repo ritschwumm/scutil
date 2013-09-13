@@ -3,7 +3,7 @@ package scutil.gui
 import java.awt.event._
 
 import scutil.lang._
-import scutil.Math._
+import scutil.math._
 
 object InputEventPredicates {
 	//------------------------------------------------------------------------------

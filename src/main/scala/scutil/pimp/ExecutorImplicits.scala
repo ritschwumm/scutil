@@ -5,7 +5,6 @@ import java.util.concurrent.{ Executor=>JExecutor }
 import scala.concurrent.SyncVar
 
 import scutil.lang._
-import scutil.tried._
 
 object ExecutorImplicits extends ExecutorImplicits
 

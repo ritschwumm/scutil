@@ -1,6 +1,6 @@
 package scutil.pimp
 
-import scutil.tried._
+import scutil.lang._
 
 object PairImplicits extends PairImplicits
 

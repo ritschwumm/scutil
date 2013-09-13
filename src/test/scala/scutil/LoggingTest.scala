@@ -9,6 +9,7 @@ class LoggingTest extends Specification {
 		"just work" in {
 			Foo.test()
 			FooBar.test()
+			success
 		}
 	}
 	

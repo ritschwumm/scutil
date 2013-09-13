@@ -20,7 +20,7 @@ object Boilerplate {
 	
 	def getTuplesTrait:String	= {
 		"""
-		|package scutil
+		|package scutil.lang
 		|
 		|trait TuplesGenerated {
 		""".stripMargin		+ 

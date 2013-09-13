@@ -15,7 +15,7 @@ trait DefaultLogHandler extends LogHandler {
 		val messages		= event.elements collect { case x if !x.isInstanceOf[Throwable] => x }
 		val messagesText	= 
 				event.level.name					+:
-				("[" + Instant.now.toISO8601 + "]")	+:
+				("[" + MilliInstant.now.toISO8601 + "]")	+:
 				event.location.toString				+:
 				messages							mkString
 				"\t"

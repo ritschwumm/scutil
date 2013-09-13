@@ -13,7 +13,7 @@ object GlobalKeyEvent {
 		{
 			install(dispatcher)
 		}
-		Disposable {
+		disposable {
 			uninstall(dispatcher)
 		}
 	}

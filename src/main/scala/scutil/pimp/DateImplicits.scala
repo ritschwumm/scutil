@@ -4,7 +4,7 @@ import java.util.Date
 import java.util.TimeZone
 import java.text.SimpleDateFormat
 
-import scutil.time.Instant
+import scutil.time.MilliInstant
 
 object DateImplicits extends DateImplicits
 
@@ -22,5 +22,5 @@ final class DateExt(delegate:Date) {
 		df format delegate
 	}
 	
-	def toInstant:Instant	= Instant fromDate delegate
+	def toMilliInstant:MilliInstant	= MilliInstant fromDate delegate
 }

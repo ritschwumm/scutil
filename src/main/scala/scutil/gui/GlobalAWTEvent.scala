@@ -13,7 +13,7 @@ object GlobalAWTEvent {
 		{
 			install(listener)
 		}
-		Disposable {
+		disposable {
 			uninstall(listener)
 		}
 	}

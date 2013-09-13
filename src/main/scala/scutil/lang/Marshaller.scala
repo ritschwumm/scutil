@@ -83,11 +83,6 @@ trait Marshaller[S,T] {
 	final def toBijectionWith(default: =>S):Bijection[S,T]	= 
 			toBijection(constant(default))
 			
-	/** attention: throws exceptions when not matching. do not use this unless you know what you are doing */
-	@deprecated("use toBijectionWith", "0.24.0")
-	final def asBijectionFailing:Bijection[S,T]	=
-			toBijection(it => sys error ("cannot unmarshall: " + it))
-			
 	// TODO check for correctness
 	final def asPLens:PLens[T,S]	=
 			PLens { this read _ map (Store(_, this.write)) }

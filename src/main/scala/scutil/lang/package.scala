@@ -18,8 +18,10 @@ package object lang {
 	def constant[S,T](value: =>T):(S=>T)		= _ => value
 	def ignorant[S,T](thunk:Thunk[T]):(S=>T)	= _ => thunk()
 	
-	def task(value: =>Unit):Task				= thunk(value)
+	def task(block: =>Unit):Task				= thunk(block)
 	def thunk[T](value: =>T):Thunk[T]			= () => value
+	
+	def disposable(block: =>Unit):Disposable	= Disposable(task(block))
 	
 	/** tell the compiler the control flow never reaches this point */
 	def neverComesHere:Nothing	= sys error "silence! i kill you!"

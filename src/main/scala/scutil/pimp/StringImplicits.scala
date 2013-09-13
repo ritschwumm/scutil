@@ -10,7 +10,6 @@ import scala.collection.mutable
 import scala.util.control.Exception._
 
 import scutil.lang._
-import scutil.tried._
 
 object StringImplicits extends StringImplicits
 
