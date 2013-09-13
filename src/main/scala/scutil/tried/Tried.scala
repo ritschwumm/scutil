@@ -35,11 +35,12 @@ sealed trait Tried[+F,+W] {
 				case Fail(x)	=> fail(x)
 			}
 			
+	@deprecated("use cata", "0.23.0")
 	def cataSwapped[X](win:W=>X, fail:F=>X):X	=
 			cata(fail, win)
 			
 	/** same as cata(identity,identity) but with improved type inference */
-	def upfold[U](implicit ev:this.type <:< Tried[U,U]):U	=
+	def merge[U](implicit ev:this.type <:< Tried[U,U]):U	=
 			ev(this) cata (identity, identity)
 		
 	//------------------------------------------------------------------------------

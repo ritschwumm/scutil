@@ -32,7 +32,7 @@ trait Bijection[S,T] {
 			u	=> this read  (that read  u))
 			
 	final def asMarshaller:Marshaller[S,T]	= 
-			Marshaller unpartial (write, read)
+			Marshaller total (write, read)
 		
 	final def asMarshallerCatchingRead:Marshaller[S,T]	= 
 			Marshaller(write, it => allCatch opt read(it))
@@ -43,13 +43,6 @@ trait Bijection[S,T] {
 			
 	final def readFunction:Function1[T,S]	= read _
 	final def writeFunction:Function1[S,T]	= write _
-	
-	/*
-	// BETTER generalize to any Functor
-	def liftSeq:Bijection[Seq[S],Seq[T]]	= Bijection(
-			_ map write,
-			_ map read)
-	*/
 }
 
 private final class FunctionBijection[S,T](writeFunc:S=>T, readFunc:T=>S) extends Bijection[S,T] {

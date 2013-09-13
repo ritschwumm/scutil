@@ -6,7 +6,7 @@ import scala.collection.mutable
 import scala.collection.JavaConversions
 
 import scutil.lang._
-import scutil.Resource._
+import scutil.Resources._
 import scutil.ext.ReaderImplicits._
 import scutil.ext.ExecutorImplicits._
 

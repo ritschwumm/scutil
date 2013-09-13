@@ -4,7 +4,7 @@ import java.io._
 import java.nio.charset.Charset
 
 import scutil.lang._
-import scutil.Resource._
+import scutil.Resources._
 import scutil.Files
 import scutil.SystemProperties
 import scutil.Lists

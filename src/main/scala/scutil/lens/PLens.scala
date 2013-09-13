@@ -18,6 +18,10 @@ object PLens {
 			PLens { s	=>
 				Some(Store(bijection write s, bijection.read))
 			}
+			
+	// TODO check for correctness
+	def always[T]:PLens[Option[T],T]	=
+			Marshaller.always[T].asPLens
 		
 	def codiag[T]:PLens[Either[T,T],T]	=
 			identity[T] sum identity[T]
@@ -57,6 +61,11 @@ case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 	def xmapValue[U](bijection:Bijection[T,U]):PLens[S,U]	=
 			PLens { s =>
 				on(s) map { _ xmapValue bijection }
+			}
+			
+	def xmapValueInverse[U](bijection:Bijection[U,T]):PLens[S,U]	=
+			PLens { s =>
+				on(s) map { _ xmapValueInverse bijection }
 			}
 			
 	def over[R](store:Option[Store[R,S]]):Option[Store[R,T]]	=

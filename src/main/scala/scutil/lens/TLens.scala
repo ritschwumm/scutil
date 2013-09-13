@@ -54,9 +54,15 @@ case class TLens[S,T](on:S=>Store[S,T]) {
 				on(bijection write r) map bijection.read
 			}
 		
+	// TODO shouldn't this use the bijection the other way round?
 	def xmapValue[U](bijection:Bijection[T,U]):TLens[S,U]	=
 			TLens { s =>
 				on(s) xmapValue bijection
+			}
+			
+	def xmapValueInverse[U](bijection:Bijection[U,T]):TLens[S,U]	=
+			TLens { s =>
+				on(s) xmapValueInverse bijection
 			}
 			
 	def over[R](store:Store[R,S]):Store[R,T]	=

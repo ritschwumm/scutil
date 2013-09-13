@@ -17,6 +17,7 @@ final class TryExt[T](delegate:Try[T]) {
 				case Failure(t)	=> failure(t)
 			}
 			
+	@deprecated("use cata", "0.23.0")
 	def cataSwapped[U](success:T=>U, failure:Throwable=>U):U	=
 			cata(failure, success)
 			

@@ -21,9 +21,9 @@ object SearchParser {
 	}
 	
 	private def parseHit(descriptor1:String):(Boolean,SearchToken) = {
-		val (exclude,descriptor2)	= descriptor1 cutPrefix "-" filter { _.nonEmpty} cataSwapped ((true,_), (false,descriptor1))
-		val (start,descriptor3)		= descriptor2 cutPrefix "|" filter { _.nonEmpty} cataSwapped ((true,_), (false,descriptor2))
-		val (end,descriptor4)		= descriptor3 cutSuffix "|" filter { _.nonEmpty} cataSwapped ((true,_), (false,descriptor3))
+		val (exclude,descriptor2)	= descriptor1 cutPrefix "-" filter { _.nonEmpty} cata ((false, descriptor1),	(true, _))
+		val (start,descriptor3)		= descriptor2 cutPrefix "|" filter { _.nonEmpty} cata ((false, descriptor2),	(true, _))
+		val (end,descriptor4)		= descriptor3 cutSuffix "|" filter { _.nonEmpty} cata ((false, descriptor3),	(true, _))
 		val caseInsensitive			= descriptor4 == descriptor4.toLowerCase
 		
 		(exclude, SearchToken(descriptor4, caseInsensitive, start, end))

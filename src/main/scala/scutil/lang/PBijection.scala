@@ -36,8 +36,8 @@ trait PBijection[S,T] { self =>
 			_ flatMap write, 
 			_ flatMap read)
 			
-	final def readExtractor:Extractor[T,S]	= Extractor(read _)
-	final def writeExtractor:Extractor[S,T]	= Extractor(write _)
+	final def readExtractor:Extractor[T,S]	= Extractor(read)
+	final def writeExtractor:Extractor[S,T]	= Extractor(write)
 }
 
 private final class FunctionPBijection[S,T](writeFunc:PFunction[S,T], readFunc:PFunction[T,S]) extends PBijection[S,T] {

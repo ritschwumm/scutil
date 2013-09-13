@@ -20,6 +20,7 @@ final class OptionExt[T](delegate:Option[T]) {
 			case None		=> none
 		}
 	
+	@deprecated("use cata", "0.23.0")
 	def cataSwapped[X](some:T => X, none: => X):X =
 			cata(none, some)
 	
