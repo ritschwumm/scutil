@@ -55,7 +55,7 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](delegate:CC[T]) {
 		builder.result
 	}
 	
-	def cozipEither[U,V](implicit ev:T=>Either[U,V], cbf1:CanBuildFrom[CC[T],U,CC[U]], cbf2:CanBuildFrom[CC[T],V,CC[V]]):(CC[U],CC[V])	= {
+	def splitEither[U,V](implicit ev:T=>Either[U,V], cbf1:CanBuildFrom[CC[T],U,CC[U]], cbf2:CanBuildFrom[CC[T],V,CC[V]]):(CC[U],CC[V])	= {
 		val	builder1	= cbf1()
 		val	builder2	= cbf2()
 		delegate map ev foreach {
@@ -65,7 +65,7 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](delegate:CC[T]) {
 		(builder1.result, builder2.result)
 	} 
 	
-	def cozipTried[F,W](implicit ev:T=>Tried[F,W], cbf1:CanBuildFrom[CC[T],F,CC[F]], cbf2:CanBuildFrom[CC[T],W,CC[W]]):(CC[F],CC[W])	= {
+	def splitTried[F,W](implicit ev:T=>Tried[F,W], cbf1:CanBuildFrom[CC[T],F,CC[F]], cbf2:CanBuildFrom[CC[T],W,CC[W]]):(CC[F],CC[W])	= {
 		val	builder1	= cbf1()
 		val	builder2	= cbf2()
 		delegate map ev foreach {
@@ -112,7 +112,7 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](delegate:CC[T]) {
 	
 	/** all Fails if there is at least one, else all Wins */
 	def validateTried[F,W](implicit ev:T=>Tried[F,W], cbf1:CanBuildFrom[CC[T],F,CC[F]], cbf2:CanBuildFrom[CC[T],W,CC[W]]):Tried[CC[F],CC[W]]	= {
-		val (fails,wins)	= cozipTried
+		val (fails,wins)	= splitTried
 		if (fails.isEmpty)	Win(wins)
 		else				Fail(fails)
 	}

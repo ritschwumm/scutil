@@ -7,11 +7,12 @@ object Disposable {
 	/** forms a monoid with append */
 	val empty:Disposable	= EmptyDisposable
 	
-	def all(subs:Seq[Disposable]):Disposable	= Disposable {
-		subs foreach {
-			_.dispose() 
-		}
-	}
+	def all(subs:Seq[Disposable]):Disposable	=
+			Disposable {
+				subs foreach {
+					_.dispose() 
+				}
+			}
 }
 
 /** something with a destructor */
@@ -19,10 +20,11 @@ trait Disposable {
 	def dispose():Unit
 	
 	/** forms a monoid with empty */
-	final def append(that:Disposable):Disposable	= Disposable {
-		this.dispose()
-		that.dispose()
-	}
+	final def append(that:Disposable):Disposable	=
+			Disposable {
+				this.dispose()
+				that.dispose()
+			}
 }
 
 private object EmptyDisposable extends Disposable {

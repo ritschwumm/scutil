@@ -20,10 +20,6 @@ final class OptionExt[T](delegate:Option[T]) {
 			case None		=> none
 		}
 	
-	@deprecated("use cata", "0.23.0")
-	def cataSwapped[X](some:T => X, none: => X):X =
-			cata(none, some)
-	
 	/** ap of the monad, <*> of the applicative functor */
 	def ap[U,V](source:Option[U])(implicit witness:T=>U=>V):Option[V] =
 			for { f	<- delegate; s	<- source } yield f(s)
@@ -65,14 +61,14 @@ final class OptionExt[T](delegate:Option[T]) {
 				case None			=> (None,		None)
 			}
 			
-	def cozipEither[U,V](implicit ev:T=>Either[U,V]):(Option[U],Option[V])	=
+	def splitEither[U,V](implicit ev:T=>Either[U,V]):(Option[U],Option[V])	=
 			delegate map ev match {
 				case Some(Left(x))	=> (Some(x),	None)
 				case Some(Right(x))	=> (None,		Some(x))
 				case None			=> (None,		None)
 			}
 	
-	def cozipTried[F,W](implicit ev:T=>Tried[F,W]):(Option[F],Option[W])	=
+	def splitTried[F,W](implicit ev:T=>Tried[F,W]):(Option[F],Option[W])	=
 			delegate map ev match {
 				case Some(Fail(x))	=> (Some(x),	None)
 				case Some(Win(x))	=> (None,		Some(x))

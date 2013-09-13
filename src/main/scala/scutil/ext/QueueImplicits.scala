@@ -9,7 +9,7 @@ trait QueueImplicits {
 }
 
 final class QueueExt[T](delegate:Queue[T]) {
-	def dequeueOption:Option[(T,Queue[T])]	=
+	def extractHead:Option[(T,Queue[T])]	=
 			if (delegate.nonEmpty)	Some(delegate.dequeue)
 			else					None
 }

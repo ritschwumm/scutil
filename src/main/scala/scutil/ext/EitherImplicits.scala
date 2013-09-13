@@ -13,9 +13,6 @@ trait EitherImplicits {
 final class EitherExt[S,T](delegate:Either[S,T]) {
 	def cata[U](left:S=>U, right:T=>U)			= delegate fold (left, right)
 	
-	@deprecated("use cata", "0.23.0")
-	def cataSwapped[U](right:T=>U, left:S=>U)	= cata(left, right)
-			
 	def leftOrError(s:String)	= delegate.left		getOrElse (sys error s)
 	def rightOrError(s:String)	= delegate.right	getOrElse (sys error s)
 	

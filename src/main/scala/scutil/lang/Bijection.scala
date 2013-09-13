@@ -6,40 +6,43 @@ object Bijection {
 	def apply[S,T](writeFunc:S=>T, readFunc:T=>S):Bijection[S,T]	= 
 			new FunctionBijection[S,T](writeFunc,readFunc)
 		
-	def identity[T]:Bijection[T,T]	= Bijection(
-			Predef.identity,
-			Predef.identity)
+	def identity[T]:Bijection[T,T]	= 
+			Bijection(Predef.identity, Predef.identity)
 		
 	/** attention: throws exceptions when not matching. do not use this unless you know what you are doing */
-	def marshallerFailing[S,T](applyFunc:S=>T, unapplyFunc:PFunction[T,S]):Bijection[S,T]	= Bijection[S,T](
-			applyFunc,
-			it => unapplyFunc(it) getOrElse (sys error ("cannot unmarshall: " + it)))
+	@deprecated("use PFunctionExt.orDefault", "0.24.0")
+	def marshallerFailing[S,T](applyFunc:S=>T, unapplyFunc:PFunction[T,S]):Bijection[S,T]	= 
+			Bijection[S,T](
+					applyFunc,
+					it => unapplyFunc(it) getOrElse (sys error ("cannot unmarshall: " + it)))
 }
 
 trait Bijection[S,T] {
 	def write(s:S):T
 	def read(t:T):S
 	
-	final def inverse:Bijection[T,S]	= Bijection(
-			read, 
-			write)
+	final def inverse:Bijection[T,S]	=
+			Bijection(read, write)
 	
 	final def compose[R](that:Bijection[R,S]):Bijection[R,T]	= 
 			that andThen this
 	
-	final def andThen[U](that:Bijection[T,U]):Bijection[S,U]	= Bijection(
-			s	=> that write (this write s),
-			u	=> this read  (that read  u))
+	final def andThen[U](that:Bijection[T,U]):Bijection[S,U]	=
+			Bijection(
+					s	=> that write (this write s),
+					u	=> this read  (that read  u))
 			
 	final def asMarshaller:Marshaller[S,T]	= 
 			Marshaller total (write, read)
 		
+	@deprecated("catch manually", "0.24.0")
 	final def asMarshallerCatchingRead:Marshaller[S,T]	= 
 			Marshaller(write, it => allCatch opt read(it))
 		
-	final def asPBijection:PBijection[S,T]	= PBijection(
-			it => Some(write(it)), 
-			it => Some(read(it)))
+	final def asPBijection:PBijection[S,T]	=
+			PBijection(
+					it => Some(write(it)), 
+					it => Some(read(it)))
 			
 	final def readFunction:Function1[T,S]	= read _
 	final def writeFunction:Function1[S,T]	= write _

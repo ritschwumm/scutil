@@ -1,6 +1,6 @@
 package scutil.ext
 
-import scutil.lang.Endo
+import scutil.lang._
 
 object MapImplicits extends MapImplicits
 
@@ -10,8 +10,12 @@ trait MapImplicits {
 
 final class MapExt[S,T](delegate:Map[S,T]) {
 	/** remove an element and return it */
-	def extractAtOption(s:S):Option[(T,Map[S,T])]	=
+	def extractAt(s:S):Option[(T,Map[S,T])]	=
 			delegate get s map { t => (t, delegate - s) }
+		
+	/** inverse filterKeys */
+	def filterNotKeys(pred:Predicate[S]):Map[S,T]	=
+			delegate filterKeys { it => !pred(it) } 
 		
 	/** set or remove the value */
 	def set(key:S, value:Option[T]):Map[S,T]	=

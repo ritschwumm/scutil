@@ -13,10 +13,6 @@ final class BooleanExt(delegate:Boolean) {
 			if (delegate)	trueValue
 			else			falseValue
 	
-	@deprecated("use cata", "0.23.0")
-	def cataSwapped[T](trueValue: =>T, falseValue: =>T):T =
-			cata(falseValue, trueValue)
-	
 	def guard[T](trueSome: =>T):Option[T] =
 			if (delegate)	Some(trueSome)
 			else			None

@@ -15,10 +15,6 @@ final class ListExt[T](delegate:List[T]) {
 				case Nil			=> nil
 			}
 			
-	@deprecated("use cata", "0.23.0")
-	def cataSwapped[U](cons:(T,List[T])=>U, nil: =>U):U =
-			cata(nil, cons)
-			
 	/**
 	calculate common prefix and differing tails for two lists
 	usage example: 
