@@ -10,7 +10,7 @@ import java.math.{
 	RoundingMode
 }
 
-import scutil.ext.StringImplicits._
+import scutil.pimp.StringImplicits._
 
 object BigRational {
 	/** additive neutral element */

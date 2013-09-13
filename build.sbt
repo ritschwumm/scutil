@@ -2,17 +2,16 @@ name			:= "scutil"
 
 organization	:= "de.djini"
 
-version			:= "0.24.0"
+version			:= "0.25.0"
 
 scalaVersion	:= "2.10.2"
 
 // crossScalaVersions	:= Seq("2.9.2", "2.10.0")
 
 libraryDependencies	++= Seq(
-	"org.specs2"	%% "specs2"	% "1.14"	% "test"
+	"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "compile",
+	"org.specs2"		%%	"specs2"		% "1.14"				% "test"		exclude("org.scala-lang", "scala-library")
 )
-
-libraryDependencies	<+= (scalaVersion) { "org.scala-lang" % "scala-reflect" % _ }
 
 scalacOptions	++= Seq(
 	// "-Ymacro-debug-lite",

@@ -1,6 +1,6 @@
 package scutil
 
-import scutil.ext._
+import scutil.pimp._
 
 object Implicits extends Implicits
 trait Implicits 

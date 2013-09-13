@@ -147,6 +147,18 @@ sealed trait Tried[+F,+W] {
 		
 	//------------------------------------------------------------------------------
 	
+	def winEffect(effect:W=>Unit):this.type	= {
+		this foreach effect
+		this
+	}
+	
+	def failEffect(effect:F=>Unit):this.type	= {
+		this.swap foreach effect
+		this
+	}
+	
+	//------------------------------------------------------------------------------
+	
 	def toTry(implicit ev:F=>Throwable):Try[W]	=
 			cata(Failure(_), Success(_))
 	

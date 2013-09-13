@@ -7,7 +7,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
 import scutil.lang._
-import scutil.ext.Function0Implicits._
+import scutil.pimp.Function0Implicits._
 
 object Executors {
 	import ExecutionContext.Implicits.global
