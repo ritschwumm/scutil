@@ -8,34 +8,44 @@ object DefaultLogHandler extends DefaultLogHandler
 
 trait DefaultLogHandler extends LogHandler {
 	def handle(event:LogEvent) {
-		write(format(event))
+		if (accept(event)) {
+			print(format(event))
+		}
+	}
+	
+	def accept(event:LogEvent):Boolean	= true
+	
+	def print(s:String) {
+		synchronized {
+			System.err println	s
+			System.err flush	()
+		}
 	}
 	
 	def format(event:LogEvent):String	= {
-		val messages		= event.elements collect { case x if !x.isInstanceOf[Throwable] => x }
-		val messagesText	= 
-				event.level.name					+:
-				("[" + MilliInstant.now.toISO8601 + "]")	+:
-				event.location.toString				+:
-				messages							mkString
-				"\t"
-		
-		val throwables		= event.elements collect { case x:Throwable	=> x }
-		val throwablesText	= {
-			val	sw	= new StringWriter
-			val	pw	= new PrintWriter(sw)
-			throwables foreach {  _ printStackTrace pw }
-			sw.toString
-		}
-		
-		messagesText															+
-		(if (messagesText.nonEmpty && throwablesText.nonEmpty) "\n" else "")	+ 
-		throwablesText
+		val first	= header(event) ++ messages(event.elements) mkString "\t"
+		val more	= throwables(event.elements) map trace  mkString ""
+		first +	
+		(if (more.nonEmpty) "\n" else "")	+
+		more
 	}
+	
+	def messages(elements:Seq[Any]):Seq[String]	=
+			elements collect { case x if !x.isInstanceOf[Throwable] => x.toString }
 		
-	def write(s:String) {
-		synchronized {
-			System.err println s
-		}
+	def throwables(elements:Seq[Any]):Seq[Throwable]	=
+			elements collect { case x:Throwable => x }
+	
+	def header(event:LogEvent):Seq[String]	=
+			Vector(event.level.name, s"[${now}]", event.location.toString)
+	
+	def now:String	=
+			MilliInstant.now.toISO8601
+		
+	def trace(t:Throwable):String	= {
+		val	sw	= new StringWriter
+		val	pw	= new PrintWriter(sw)
+		t printStackTrace pw
+		sw.toString
 	}
 }

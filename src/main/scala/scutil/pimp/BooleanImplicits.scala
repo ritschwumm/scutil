@@ -36,7 +36,29 @@ final class BooleanExt(delegate:Boolean) {
 	def tried[U,V](falseFail: =>U, trueWin: =>V):Tried[U,V] =
 			if (delegate)	Win(trueWin)
 			else			Fail(falseFail)
+		
+	//------------------------------------------------------------------------------
 	
+	// BETTER rename these to guard and prevent?
+	
+	def trueSome:Option[Unit]	=
+			if (delegate)	Some(())
+			else			None
+	
+	def falseSome:Option[Unit]	=
+			if (!delegate)	Some(())
+			else			None
+		
+	def trueWin[U](problem: =>U):Tried[U,Unit]	=
+			if (delegate)	Win(())
+			else			Fail(problem)
+	
+	def falseWin[U](problem: =>U):Tried[U,Unit]	=
+			if (!delegate)	Win(())
+			else			Fail(problem)
+		
+	//------------------------------------------------------------------------------
+		
 	def trueEffect(effect: =>Unit):Boolean	= { if (delegate)	effect; delegate }
 	def falseEffect(effect: =>Unit):Boolean	= { if (!delegate)	effect; delegate }
 }

@@ -11,4 +11,6 @@ final case class Alpha(a:Float) {
 	
 	def diff(that:Alpha):Float	= 
 			abs(this.a - that.a)
+		
+	def inverse:Alpha	= Alpha(1-a)
 }

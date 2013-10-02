@@ -4,12 +4,24 @@ import java.awt.Color
 
 import scala.math._
 
+import scutil.lang._
+import scutil.Implicits._
 import scutil.math
 
 object RGB {
 	val white	= RGB(1,1,1)
 	val black	= RGB(0,0,0)
 	
+	def parseHex(s:String):Option[RGB]	=
+			s guardBy hexString map decodeHex
+		
+	val hexString:Predicate[String]	= 
+			_ matches "[0-9a-fA-F]{6}"
+		
+	/** throws an Exception when !hexString(s) */
+	def decodeHex(s:String):RGB	=
+			fromColor(Color decode ("#" + s))
+		
 	def fromColor(color:Color):RGB	= {
 		val Array(r, g, b, a)	= color getRGBComponents null
 		RGB(r, g, b)
@@ -34,6 +46,9 @@ final case class RGB(r:Float, g:Float, b:Float) {
 			abs(this.r - that.r) +
 			abs(this.g - that.g) + 
 			abs(this.b - that.b)
+			
+	def withAlpha(alpha:Alpha):RGBA	=
+			RGBA(this, alpha)
 	
 	def toHSB:HSB = {
 		val	cmax	= r max g max b
