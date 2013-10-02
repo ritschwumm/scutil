@@ -10,7 +10,7 @@ object HSBA {
 	def toIntARGB(hsba:HSBA):Int	= hsba.toIntARGB
 }
 
-case class HSBA(hsb:HSB, alpha:Alpha) {
+final case class HSBA(hsb:HSB, alpha:Alpha) {
 	def h	= hsb.h
 	def s	= hsb.s
 	def b	= hsb.b

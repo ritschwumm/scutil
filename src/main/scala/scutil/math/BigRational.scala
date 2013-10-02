@@ -46,7 +46,7 @@ object BigRational {
 	/** parse the output of #toString */
 	def parse(s:String):Option[BigRational] = 
 			s splitAround '/' match {
-				case Seq(num,den)	=> 
+				case Seq(num, den)	=> 
 					try { Some(new BigRational(new JBigInteger(num), new JBigInteger(den))) }
 					catch { case e:NumberFormatException	=> None }
 				case _	=> None
@@ -58,10 +58,12 @@ final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extend
 	if (_denominator == JBigInteger.ZERO)	throw new ArithmeticException("denominator must not be zero")
 	
 	// simplify
-	val (numerator,denominator) = {
+	val (numerator, denominator) = {
 		 val gcd	= _numerator gcd _denominator
 		 (
-			(if (_denominator.signum == -1)	_numerator.negate else _numerator) divide gcd, 
+			(	if (_denominator.signum == -1)	_numerator.negate
+				else							_numerator
+			) divide gcd, 
 			_denominator.abs divide gcd
 		)
 	}
@@ -142,10 +144,11 @@ final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extend
 			if (this == that)	0
 			else 				(this.numerator multiply that.denominator) compareTo (that.numerator multiply this.denominator)
 	
-	override def equals(that:Any)	= that match {
-	 	case x:BigRational	=> this equalsTo x 
-	 	case _				=> false
-	}
+	override def equals(that:Any)	= 
+			that match {
+				case x:BigRational	=> this equalsTo x 
+				case _				=> false
+			}
 			
 	def equalsTo(that:BigRational):Boolean = 
 			this.numerator		== that.numerator	&& 

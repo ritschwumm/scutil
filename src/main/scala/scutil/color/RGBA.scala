@@ -27,7 +27,7 @@ object RGBA {
 	def toIntARGB(rbga:RGBA):Int	= rbga.toIntARGB
 }
 
-case class RGBA(rgb:RGB, alpha:Alpha) {
+final case class RGBA(rgb:RGB, alpha:Alpha) {
 	def r	= rgb.r
 	def g	= rgb.g
 	def b	= rgb.b

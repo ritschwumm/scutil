@@ -23,7 +23,7 @@ object Human {
 			munit cata (
 					label => List((value, label)),
 					(label, divisor, bigger) => {
-						val (div,mod)	= value /% divisor
+						val (div, mod)	= value /% divisor
 						(mod, label) :: decomposeReverse1(bigger, div)
 					})
 			

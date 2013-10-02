@@ -138,7 +138,7 @@ final class FileExt(delegate:File) {
 	def readString(charset:Charset):String					= withReader(charset) { _ readFully () }
 	def writeString(charset:Charset, string:String):Unit	= withWriter(charset) { _ write string }
 	
-	// TODO should honor a single lineSeparator 
+	// TODO should honor a single line separator 
 	def readLines(charset:Charset):Seq[String]	= 
 			withReader(charset) { _ readLines () }
 	// TODO should not use the platform line separator

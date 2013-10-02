@@ -12,7 +12,7 @@ object IntRect {
 			own.toAwtRectangle
 }
 
-case class IntRect(x:IntSpan, y:IntSpan) {
+final case class IntRect(x:IntSpan, y:IntSpan) {
 	def withX(x:IntSpan):IntRect	= IntRect(x, y)
 	def withY(y:IntSpan):IntRect	= IntRect(x, y)
 	

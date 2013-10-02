@@ -15,7 +15,7 @@ object HSB {
 }
 
 /** value range is 0..1 */
-case class HSB(h:Float, s:Float, b:Float) {
+final case class HSB(h:Float, s:Float, b:Float) {
 	def blend(that:HSB, ratio:Float):HSB	= 
 			HSB(
 				h	= math blend (this.h, that.h, ratio),

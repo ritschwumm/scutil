@@ -1,14 +1,14 @@
 package scutil
 
 package object lang {
-	type Endo[T]		= T=>T
-	type Predicate[-T]	= T=>Boolean
+	type Endo[T]			= T=>T
+	type Predicate[-T]		= T=>Boolean
 	
-	type Thunk[+T]		= ()=>T
-	type Effect[-T]		= T=>Unit
+	type Thunk[+T]			= ()=>T
+	type Effect[-T]			= T=>Unit
 	
-	type Task			= Thunk[Unit]
-	type Executor		= Effect[Task]
+	type Task				= Thunk[Unit]
+	type Executor			= Effect[Task]
 	
 	type PFunction[-S,+T]	= S=>Option[T]
 	type PEndo[T]			= T=>Option[T]

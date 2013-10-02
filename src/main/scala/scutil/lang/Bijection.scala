@@ -3,41 +3,37 @@ package scutil.lang
 import scala.util.control.Exception._
 
 object Bijection {
-	def apply[S,T](writeFunc:S=>T, readFunc:T=>S):Bijection[S,T]	= 
-			new FunctionBijection[S,T](writeFunc,readFunc)
-		
 	def identity[T]:Bijection[T,T]	= 
 			Bijection(Predef.identity, Predef.identity)
 }
 
-trait Bijection[S,T] {
-	def write(s:S):T
-	def read(t:T):S
-	
-	final def inverse:Bijection[T,S]	=
+final case class Bijection[S,T](write:S=>T, read:T=>S) {
+	def inverse:Bijection[T,S]	= 
 			Bijection(read, write)
 	
-	final def compose[R](that:Bijection[R,S]):Bijection[R,T]	= 
+	/** symbolic alias for andThen */
+	@inline
+	def >=>[U](that:Bijection[T,U]):Bijection[S,U]	=
+			this andThen that
+		
+	/** symbolic alias for compose */
+	@inline
+	def <=<[R](that:Bijection[R,S]):Bijection[R,T]	= 
+			this compose that
+		
+	def compose[R](that:Bijection[R,S]):Bijection[R,T]	= 
 			that andThen this
 	
-	final def andThen[U](that:Bijection[T,U]):Bijection[S,U]	=
+	def andThen[U](that:Bijection[T,U]):Bijection[S,U]	=
 			Bijection(
 					s	=> that write (this write s),
 					u	=> this read  (that read  u))
 			
-	final def asMarshaller:Marshaller[S,T]	= 
+	def asMarshaller:Marshaller[S,T]	= 
 			Marshaller total (write, read)
 		
-	final def asPBijection:PBijection[S,T]	=
+	def asPBijection:PBijection[S,T]	=
 			PBijection(
 					it => Some(write(it)), 
 					it => Some(read(it)))
-			
-	final def readFunction:Function1[T,S]	= read _
-	final def writeFunction:Function1[S,T]	= write _
-}
-
-private final class FunctionBijection[S,T](writeFunc:S=>T, readFunc:T=>S) extends Bijection[S,T] {
-	def write(s:S):T	= writeFunc(s)
-	def read(t:T):S		= readFunc(t)
 }

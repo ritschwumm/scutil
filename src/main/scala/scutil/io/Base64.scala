@@ -7,7 +7,7 @@ encodes and decodes byte arrays into strings using the base64 encoding method.
 @see RFC4648
 @see  javax.xml.bind.DatatypeConverter 
 */
-object Base64 extends Marshaller[Array[Byte],String] {
+object Base64 {
 	private val whitespace	= """\s+"""
 	private val validInput	= """^[^=]+={0,2}$"""
 	private val padding		= '='
@@ -88,4 +88,7 @@ object Base64 extends Marshaller[Array[Byte],String] {
 		}
 		Some(output)
 	}
+	
+	def asMarshaller:Marshaller[Array[Byte],String]	=
+			Marshaller(write, read)
 }

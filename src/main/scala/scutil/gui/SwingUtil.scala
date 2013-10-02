@@ -29,7 +29,7 @@ object SwingUtil {
 	/** classical SwingWorker pattern, but with exception handling */
 	def swingWorkerException[T](calculate:Thunk[T], use:Effect[Tried[Exception,T]]) {
 		worker {
-			val	value	= Tried exceptionCatch calculate()
+			val	value	= Tried catchException calculate()
 			edt {
 				use(value)
 			}

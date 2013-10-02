@@ -4,7 +4,7 @@ object IntSpan {
 	val zero	= IntSpan(0, 0)
 }
 
-case class IntSpan(start:Int, size:Int) {
+final case class IntSpan(start:Int, size:Int) {
 	val end	= start + size
 	
 	def withStart(start:Int):IntSpan	= IntSpan(start,		size)

@@ -23,7 +23,7 @@ object SourceLocation {
 	}
 }
 
-case class SourceLocation(
+final case class SourceLocation(
 	fileName:String, 
 	line:Int
 ) {

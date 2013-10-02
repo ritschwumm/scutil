@@ -17,7 +17,7 @@ object MilliDuration {
 	val newType	= Bijection[MilliDuration,Long](_.millis, MilliDuration.apply)
 }
 
-case class MilliDuration(millis:Long) extends Ordered[MilliDuration] {
+final case class MilliDuration(millis:Long) extends Ordered[MilliDuration] {
 	def + (that:MilliDuration):MilliDuration	= MilliDuration(this.millis + that.millis)
 	def - (that:MilliDuration):MilliDuration	= MilliDuration(this.millis - that.millis)
 	

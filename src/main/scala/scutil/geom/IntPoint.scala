@@ -19,7 +19,7 @@ object IntPoint {
 			own.toAwtDimension
 }
 
-case class IntPoint(x:Int, y:Int) {
+final case class IntPoint(x:Int, y:Int) {
 	def withX(x:Int):IntPoint	= IntPoint(x, y)
 	def withY(y:Int):IntPoint	= IntPoint(x, y)
 	

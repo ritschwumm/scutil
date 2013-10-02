@@ -18,11 +18,11 @@ object Tried {
 			if (value != null)	Win(value)
 			else				Fail(null)
 	
-	def allCatch[T](value: =>T):Tried[Throwable,T]	=
+	def catchThrowable[T](value: =>T):Tried[Throwable,T]	=
 			try { Win(value) }
 			catch { case e:Throwable => Fail(e) }
 			
-	def exceptionCatch[T](value: =>T):Tried[Exception,T]	=
+	def catchException[T](value: =>T):Tried[Exception,T]	=
 			try { Win(value) }
 			catch { case e:Exception => Fail(e) }
 }
@@ -139,10 +139,10 @@ sealed trait Tried[+F,+W] {
  	 
 	//------------------------------------------------------------------------------
 		
-	def allThrow(implicit ev:F=>Throwable):W	=
+	def throwThrowable(implicit ev:F=>Throwable):W	=
 			cata(throw _, identity)
 	
-	def exceptionThrow(implicit ev:F=>Exception):W	=
+	def throwException(implicit ev:F=>Exception):W	=
 			cata(throw _, identity)
 		
 	//------------------------------------------------------------------------------

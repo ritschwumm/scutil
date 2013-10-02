@@ -19,7 +19,7 @@ object RGB {
 }
 
 /** value range is 0..1 */
-case class RGB(r:Float, g:Float, b:Float) {
+final case class RGB(r:Float, g:Float, b:Float) {
 	def blend(that:RGB, ratio:Float):RGB	= 
 			RGB(
 				r	= math blend (this.r, that.r, ratio),

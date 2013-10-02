@@ -97,7 +97,7 @@ object Diff {
 	}
 }
 
-case class Diff[T](deltas:Seq[Delta[T]]) {
+final case class Diff[T](deltas:Seq[Delta[T]]) {
 	def patch(seq:Seq[T]):Seq[T]	= {
 		val out	= mutable.ArrayBuffer(seq:_*)
 		deltas foreach {

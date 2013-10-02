@@ -18,7 +18,7 @@ object MilliInstant {
 	val dateBijection	= Bijection[MilliInstant,Date](_.toDate, MilliInstant.fromDate)
 }
 
-case class MilliInstant(millis:Long) extends Ordered[MilliInstant] {
+final case class MilliInstant(millis:Long) extends Ordered[MilliInstant] {
 	// def + (that:MilliInstant):MilliDuration		= MilliDuration(this.millis + that.millis)
 	def - (that:MilliInstant):MilliDuration		= MilliDuration(this.millis - that.millis)
 	

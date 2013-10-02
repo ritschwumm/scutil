@@ -19,7 +19,6 @@ object PLens {
 				Some(Store(bijection write s, bijection.read))
 			}
 			
-	// TODO check for correctness
 	def always[T]:PLens[Option[T],T]	=
 			Marshaller.always[T].asPLens
 		
@@ -27,15 +26,34 @@ object PLens {
 			identity[T] sum identity[T]
 }
 
-case class PLens[S,T](on:S=>Option[Store[S,T]]) {
+final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 	def get(s:S):Option[T]	= on(s) map { _.get }
 	
 	def put(s:S, t:T):Option[S]	= on(s) map { _ put t }
 	def putter(t:T):PEndo[S]	= put(_, t)
 	
-	def modify(s:S, func:Endo[T]):Option[S]	= on(s) map { _ mod func }
+	def modify(s:S, func:Endo[T]):Option[S]	= on(s) map { _ modify func }
 	def modifier(func:Endo[T]):PEndo[S]		= modify(_, func)
 	
+	def modifyOpt(s:S, func:PEndo[T]):Option[S]	=
+			for {
+				store	<- on(s)
+				value	<- func(store.get)
+			}
+			yield store put value
+			
+	def modifierOpt(func:PEndo[T]):PEndo[S]	= modifyOpt(_, func)
+	
+	/** symbolic alias for andThen */
+	@inline
+	def >=>[U](that:PLens[T,U]):PLens[S,U]	=
+			this andThen that
+		
+	/** symbolic alias for compose */
+	@inline
+	def <=<[R](that:PLens[R,S]):PLens[R,T]	=
+			this compose that
+		
 	def compose[R](that:PLens[R,S]):PLens[R,T]	=
 			that andThen this
 		
@@ -58,15 +76,16 @@ case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 				it => on(bijection write it) map { _ map bijection.read }
 			}
 		
+	def xmapContainerInverse[R](bijection:Bijection[S,R]):PLens[R,T]	=
+			xmapContainer(bijection.inverse)
+		
 	def xmapValue[U](bijection:Bijection[T,U]):PLens[S,U]	=
 			PLens { s =>
 				on(s) map { _ xmapValue bijection }
 			}
 			
 	def xmapValueInverse[U](bijection:Bijection[U,T]):PLens[S,U]	=
-			PLens { s =>
-				on(s) map { _ xmapValueInverse bijection }
-			}
+			xmapValue(bijection.inverse)
 			
 	def over[R](store:Option[Store[R,S]]):Option[Store[R,T]]	=
 			for {

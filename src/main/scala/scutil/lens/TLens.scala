@@ -27,15 +27,25 @@ object TLens {
 			identity[T] sum identity[T]
 }
 
-case class TLens[S,T](on:S=>Store[S,T]) {
+final case class TLens[S,T](on:S=>Store[S,T]) {
 	def get(s:S):T	= on(s).get
 	
 	def put(s:S, t:T):S		= on(s) put t
 	def putter(t:T):Endo[S]	= put(_, t)
 	
-	def modify(s:S, func:Endo[T]):S		= on(s) mod func
+	def modify(s:S, func:Endo[T]):S		= on(s) modify func
 	def modifier(func:Endo[T]):Endo[S]	= modify(_, func)
 	
+	/** symbolic alias for andThen */
+	@inline
+	def >=>[U](that:TLens[T,U]):TLens[S,U]	=
+			this andThen that
+		
+	/** symbolic alias for compose */
+	@inline
+	def <=<[R](that:TLens[R,S]):TLens[R,T]	=
+			this compose that
+		
 	def compose[R](that:TLens[R,S]):TLens[R,T]	=
 			that andThen this
 		
@@ -54,16 +64,16 @@ case class TLens[S,T](on:S=>Store[S,T]) {
 				on(bijection write r) map bijection.read
 			}
 		
-	// TODO shouldn't this use the bijection the other way round?
+	def xmapContainerInverse[R](bijection:Bijection[S,R]):TLens[R,T]	=
+			xmapContainer(bijection.inverse)
+		
 	def xmapValue[U](bijection:Bijection[T,U]):TLens[S,U]	=
 			TLens { s =>
 				on(s) xmapValue bijection
 			}
 			
 	def xmapValueInverse[U](bijection:Bijection[U,T]):TLens[S,U]	=
-			TLens { s =>
-				on(s) xmapValueInverse bijection
-			}
+			xmapValue(bijection.inverse)
 			
 	def over[R](store:Store[R,S]):Store[R,T]	=
 			this on store.get compose store

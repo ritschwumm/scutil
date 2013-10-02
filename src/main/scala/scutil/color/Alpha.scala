@@ -5,7 +5,7 @@ import scala.math._
 import scutil.math
 
 /** value range is 0..1 */
-case class Alpha(a:Float) {
+final case class Alpha(a:Float) {
 	def blend(that:Alpha, ratio:Float):Alpha	= 
 			Alpha(math blend (this.a, that.a, ratio))
 	
