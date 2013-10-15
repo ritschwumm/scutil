@@ -4,7 +4,10 @@ import java.io._
 import java.nio.charset.Charset
 
 import scutil.lang._
-import scutil.Implicits._
+import scutil.pimp.AnyImplicits._
+import scutil.pimp.ReaderImplicits._
+import scutil.pimp.InputStreamImplicits._
+import scutil.pimp.DisposableConversions._
 import scutil.io.Files
 import scutil.time.MilliInstant
 import scutil.platform.SystemProperties
@@ -38,7 +41,7 @@ final class FileExt(delegate:File) {
 	def /+(path:Seq[String]):File	= (path foldLeft delegate) { new File(_,_) }
 	
 	/** get the parent File the scala way */
-	def parentFileOption:Option[File]	= 
+	def parentOption:Option[File]	= 
 			Option(delegate.getParentFile)
 			
 	/** get all parent Files starting with the immediate parent and ending with the directory root */
@@ -56,40 +59,6 @@ final class FileExt(delegate:File) {
 	def modifyName(func:String=>String):File =
 			new File(delegate.getParentFile, func(delegate.getName))
 	
-	/** copy this File over another */
-	def copyTo(to:File, force:Boolean=false) {
-		 if (!to.exists) {
-		 	to.createNewFile()
-		 }
-		 new FileInputStream(delegate).getChannel use { source =>
-			 new FileOutputStream(to).getChannel use { target =>
-			 	 var position	= 0L
-			 	 while (position < source.size) {
-			 	 	 position	+= (target transferFrom (source, 0, source.size-position))
-				 }
-				 if (force) {
-				 	 target force true
-				 }
-			 }
-		 }
-	}
-	
-	/** delete all children and the file itself */
-	def deleteRecursive() {
-		def recurse(file:File) {
-			val deleted	= file.delete()
-			// NOTE this prevents deletion of the contents of symlinked directories
-			if (!deleted && file.isDirectory) {
-				val list	= file.listFiles
-				if (list != null) {
-					list foreach recurse
-				}
-				file.delete()
-			}
-		}
-		recurse(delegate)
-	}
-
 	//------------------------------------------------------------------------------
 	//## directory only
 	
@@ -132,8 +101,8 @@ final class FileExt(delegate:File) {
 	//------------------------------------------------------------------------------
 	//## file only: complete read
 	
-	def readBytes():Array[Byte]				= withInputStream { _ readFully () }
-	def writeBytes(bytes:Array[Byte]):Unit	= withOutputStream { _ write bytes }
+	def readBytes():Array[Byte]				= withInputStream	{ _ readFully ()	}
+	def writeBytes(bytes:Array[Byte]):Unit	= withOutputStream	{ _ write bytes		}
 	
 	def readString(charset:Charset):String					= withReader(charset) { _ readFully () }
 	def writeString(charset:Charset, string:String):Unit	= withWriter(charset) { _ write string }
@@ -150,6 +119,43 @@ final class FileExt(delegate:File) {
 				}
 			}
 			
+	//------------------------------------------------------------------------------
+	//## manipulation
+	
+	/** copy this File over another */
+	def copyTo(to:File, force:Boolean=false) {
+		 if (!to.exists) {
+		 	to.createNewFile()
+		 }
+		 new FileInputStream(delegate).getChannel use { source =>
+			 new FileOutputStream(to).getChannel use { target =>
+			 	 var position	= 0L
+			 	 while (position < source.size) {
+			 	 	 position	+= (target transferFrom (source, 0, source.size-position))
+				 }
+				 if (force) {
+				 	 target force true
+				 }
+			 }
+		 }
+	}
+	
+	/** delete all children and the file itself */
+	def deleteRecursive() {
+		def recurse(file:File) {
+			val deleted	= file.delete()
+			// NOTE this prevents deletion of the contents of symlinked directories
+			if (!deleted && file.isDirectory) {
+				val list	= file.listFiles
+				if (list != null) {
+					list foreach recurse
+				}
+				file.delete()
+			}
+		}
+		recurse(delegate)
+	}
+	
 	//------------------------------------------------------------------------------
 	//## temp
 	

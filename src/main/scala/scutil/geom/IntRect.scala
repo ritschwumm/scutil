@@ -22,7 +22,7 @@ final case class IntRect(x:IntSpan, y:IntSpan) {
 	def bottom:Int	= y.end
 	
 	def width:Int	= x.size
-	def height:Int	= x.size
+	def height:Int	= y.size
 	
 	def topLeft:IntPoint		= IntPoint(x.start,	y.start)
 	def topRight:IntPoint		= IntPoint(x.end,	y.start)
