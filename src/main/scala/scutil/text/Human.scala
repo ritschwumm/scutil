@@ -8,83 +8,125 @@ object Human {
 	private val one		= BigDecimal(1)
 	
 	//------------------------------------------------------------------------------
+	//## convenience functions
+	
+	def fullBinary(value:BigDecimal):String	=
+			full(table.binary, value)
+		
+	def fullDecimal(value:BigDecimal):String	=
+			full(table.decimal, value)
+	
+	def fullMilliTime(value:BigDecimal):String	=
+			full(table.milliTime, value)
+		
+	def roundedBinary(commaDigits:Int, value:BigDecimal):String	=
+			rounded(table.binary, commaDigits, value)
+		
+	def roundedDecimal(commaDigits:Int, value:BigDecimal):String	=
+			rounded(table.decimal, commaDigits, value)
+		
+	def roundedMilliTime(commaDigits:Int, value:BigDecimal):String	=
+			rounded(table.milliTime, commaDigits, value)
+		
+	//------------------------------------------------------------------------------
+	//## full unit sequence
 	
 	/** format with all units, but leave out the biggest zero-valued */
-	def full(munit:MUnit, value:BigDecimal):String	=
-			decompose(munit, value) map { case (v,l) => v.toString + l } mkString " "
+	def full(ulist:UnitList, value:BigDecimal):String	=
+			decompose(ulist, value) map { case (v,l) => v.toString + l } mkString " "
 	
 	/** value/label pairs starting at the biggest non-zero unit */
-	private def decompose(munit:MUnit, value:BigDecimal):List[(BigDecimal,String)]	=
-			if (value != zero)	decomposeReverse1(munit, value).reverse dropWhile (_._1 == zero)
-			else				List((value, munit.label))
+	private def decompose(ulist:UnitList, value:BigDecimal):List[(BigDecimal,String)]	=
+			if (value != zero)	decomposeReverse1(ulist, value).reverse dropWhile (_._1 == zero)
+			else				List((value, ulist.label))
 
 	/** value/label pairs starting at the smallest unit */
-	private def decomposeReverse1(munit:MUnit, value:BigDecimal):List[(BigDecimal,String)]	=
-			munit cata (
-					label => List((value, label)),
-					(label, divisor, bigger) => {
-						val (div, mod)	= value /% divisor
-						(mod, label) :: decomposeReverse1(bigger, div)
-					})
+	private def decomposeReverse1(ulist:UnitList, value:BigDecimal):List[(BigDecimal,String)]	=
+			ulist match {
+				case LastUnit(label)	=>
+					List((value, label))
+				case NextUnit(label, divisor, bigger)	=>
+					val (div, mod)	= value /% divisor
+					(mod, label) :: decomposeReverse1(bigger, div)
+			}
 			
 	//------------------------------------------------------------------------------
+	//## rounded to top-level unit
 	
 	/** rounded to the biggest possible unit */
-	def rounded(munit:MUnit, commaDigits:Int, value:BigDecimal):String	= {
-		val (parts,label)	= biggestNonZero(munit, value)
-		val sfmt			= "%." + commaDigits + "f" + label
-		val sval			= value / parts
-		sfmt format sval
+	def rounded(ulist:UnitList, commaDigits:Int, value:BigDecimal):String	= {
+		val (parts, label)	= biggestNonZero(ulist, value)
+		s"%.${commaDigits}f${label}" format (value / parts)
 	}
 			
-	/** returns the MUnit's number of units and label */
-	private def biggestNonZero(munit:MUnit, value:BigDecimal, size:BigDecimal = one):(BigDecimal,String)	=
-			munit cata (
-					label	=> (size, label),
-					(label, divisor, bigger) => {
-						if (value < divisor)	(size, label)
-						else					biggestNonZero(bigger, value / divisor, size * divisor)
-					})
+	/** returns the UnitList's number of units and label */
+	@tailrec
+	private def biggestNonZero(ulist:UnitList, value:BigDecimal, size:BigDecimal = one):(BigDecimal,String)	=
+			ulist match {
+				case LastUnit(label)	=> 
+					(size, label)
+				case NextUnit(label, divisor, bigger)	=>
+					if (value < divisor)	(size, label)
+					else					biggestNonZero(bigger, value / divisor, size * divisor)
+			}
 					
 	//------------------------------------------------------------------------------
-			
-	sealed trait MUnit {
+	//## list of units and divisors
+	
+	sealed trait UnitList {
 		def label:String
-		def cata[T](last:String=>T, next:(String,BigDecimal,MUnit)=>T):T	=
-				this match {
-					case LastMUnit(label)					=> last(label)
-					case NextMUnit(label, divisor, bigger)	=> next(label, divisor, bigger)
-				}
 	}
-	case class NextMUnit(label:String, divisor:BigDecimal, bigger:MUnit)	extends MUnit
-	case class LastMUnit(label:String)										extends MUnit
+	case class NextUnit(label:String, divisor:BigDecimal, bigger:UnitList)	extends UnitList
+	case class LastUnit(label:String)										extends UnitList
 	
-	val binaryTable:MUnit	=
-			NextMUnit("", 	1024,
-			NextMUnit("k",	1024,
-			NextMUnit("M",	1024,
-			NextMUnit("G",	1024,
-			NextMUnit("T",	1024,
-			NextMUnit("P",	1024,
-			NextMUnit("E",	1024,
-			NextMUnit("Z",	1024,
-			LastMUnit("Y")))))))))
+	//------------------------------------------------------------------------------
+	//## builder syntax
+	
+	object syntax {
+		val unit	= new {
+			def of(name:String):LastUnit	= LastUnit(name)
+		}
 		
-	val decimalTable:MUnit	=
-			NextMUnit("", 	1000,
-			NextMUnit("k",	1000,
-			NextMUnit("M",	1000,
-			NextMUnit("G",	1000,
-			NextMUnit("T",	1000,
-			NextMUnit("P",	1000,
-			NextMUnit("E",	1000,
-			NextMUnit("Z",	1000,
-			LastMUnit("Y")))))))))
+		implicit class UnitListExt(ulist:UnitList) {
+			def has(divisor:BigDecimal)	= new {
+				def of(name:String):UnitList	= NextUnit(name, divisor, ulist)
+			}
+		}
+	}
 	
-	val milliTimeTable:MUnit	=
-			NextMUnit("ms",	1000,
-			NextMUnit("s",	60,
-			NextMUnit("m",	60,
-			NextMUnit("h",	24,
-			LastMUnit("d")))))
+	//------------------------------------------------------------------------------
+	//## predefined tables
+	
+	object table {
+		import syntax._
+		
+		val binary:UnitList	=
+				unit	of "Y"	has 
+				1024	of "Z"	has
+				1024	of "E"	has
+				1024	of "P"	has
+				1024	of "T"	has
+				1024	of "G"	has
+				1024	of "M"	has
+				1024	of "k"	has
+				1024	of ""
+			
+		val decimal:UnitList	=
+				unit	of "Y"	has 
+				1000	of "Z"	has
+				1000	of "E"	has
+				1000	of "P"	has
+				1000	of "T"	has
+				1000	of "G"	has
+				1000	of "M"	has
+				1000	of "k"	has
+				1000	of ""
+		
+		val milliTime:UnitList	=
+				unit	of "d"	has 
+				24		of "h"	has
+				60		of "m"	has
+				60		of "s"	has
+				1000	of "ms"
+	}
 }

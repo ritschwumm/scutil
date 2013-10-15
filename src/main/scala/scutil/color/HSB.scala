@@ -4,10 +4,8 @@ import java.awt.Color
 
 import scala.math._
 
-import scutil.math
-
 object HSB {
-	val white	= HSB(1,1,1)
+	val white	= HSB(0,0,1)
 	val black	= HSB(0,0,0)
 	
 	def fromColor(color:Color):HSB	= (RGB fromColor color).toHSB
@@ -16,13 +14,6 @@ object HSB {
 
 /** value range is 0..1 */
 final case class HSB(h:Float, s:Float, b:Float) {
-	def blend(that:HSB, ratio:Float):HSB	= 
-			HSB(
-				h	= math blend (this.h, that.h, ratio),
-				s	= math blend (this.s, that.s, ratio),
-				b	= math blend (this.b, that.b, ratio)
-			)
-	
 	def diff(that:HSB):Float	=
 			diff3(that) / 3f
 			
@@ -31,6 +22,9 @@ final case class HSB(h:Float, s:Float, b:Float) {
 			abs(this.s - that.s) +
 			abs(this.b - that.b)
 	
+	def withAlpha(alpha:Alpha):HSBA	=
+			HSBA(this, alpha)
+		
 	def toRGB:RGB	= {
 		if (s == 0)	return RGB(b, b, b)
 		

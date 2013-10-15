@@ -59,7 +59,8 @@ trait IoImplicits
 		
 object GuiImplicits extends GuiImplicits				
 trait GuiImplicits
-		extends	ComponentImplicits
+		extends	ColorImplicits
+		with	ComponentImplicits
 		with	ContainerImplicits
 		with	DimensionImplicits
 		with	GraphicsImplicits

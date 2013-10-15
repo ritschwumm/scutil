@@ -30,17 +30,17 @@ trait DefaultLogHandler extends LogHandler {
 		more
 	}
 	
+	def header(event:LogEvent):Seq[String]	=
+			Vector(event.level.name, s"[${now}]", event.location.name + ":" + event.location.line)
+	
+	def now:String	=
+			MilliInstant.now.toISO8601
+		
 	def messages(elements:Seq[Any]):Seq[String]	=
 			elements collect { case x if !x.isInstanceOf[Throwable] => x.toString }
 		
 	def throwables(elements:Seq[Any]):Seq[Throwable]	=
 			elements collect { case x:Throwable => x }
-	
-	def header(event:LogEvent):Seq[String]	=
-			Vector(event.level.name, s"[${now}]", event.location.toString)
-	
-	def now:String	=
-			MilliInstant.now.toISO8601
 		
 	def trace(t:Throwable):String	= {
 		val	sw	= new StringWriter

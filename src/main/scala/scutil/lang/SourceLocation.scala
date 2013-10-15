@@ -8,23 +8,21 @@ object SourceLocation {
 	 
 	def sourceLocationImpl(c:Context):c.Expr[SourceLocation]	= {
 		import c.universe._
-		
-		val pos		= c.macroApplication.pos
-		val name	= pos.source.file.name	// pos.source.file.file.getName
-		val line	= pos.line				// pos.point
-		
+		val pos	= c.macroApplication.pos
+		// NOTE pos.column expands tab chars as 8 columns
 		reify { 
 			SourceLocation(
-				(c literal name).splice,
-				(c literal line).splice
+				// pos.source.file.file.getName
+				// (c literal pos.source.file.path).splice,
+				(c literal pos.source.file.name).splice,
+				// (c literal (pos pointOrElse -1)).splice,
+				(c literal pos.line).splice
 			) 
 		}
 	}
 }
 
 final case class SourceLocation(
-	name:String, 
+	name:String,
 	line:Int
-) {
-	override def toString:String	= name + ":" + line
-}
+)

@@ -103,11 +103,23 @@ final class OptionExt[T](delegate:Option[T]) {
 				case None		=> Win(win)
 			} 
 	
+	/** delegate is traversable (in the haskell sense), Option is an idiom. */
+	def sequenceOption[U](implicit ev:T=>Option[U]):Option[Option[U]]	=
+			traverseOption(identity[U])
+		
+	/** delegate is traversable (in the haskell sense), Option is an idiom. */
+	def traverseOption[U,V](func:U=>V)(implicit ev:T=>Option[U]):Option[Option[V]]	=
+			delegate map ev match {
+				case Some(Some(x))	=> Some(Some(func(x)))
+				case Some(None)		=> None
+				case None			=> Some(None)
+			}
+		
 	/** delegate is traversable (in the haskell sense), Tried is an idiom. */
 	def sequenceTried[F,W](implicit ev:T=>Tried[F,W]):Tried[F,Option[W]]	=
 			traverseTried(identity[W])
 		
-	/** delegate is traversable (in the haskell sense), Option is an idiom. */
+	/** delegate is traversable (in the haskell sense), Tried is an idiom. */
 	def traverseTried[F,W,V](func:W=>V)(implicit ev:T=>Tried[F,W]):Tried[F,Option[V]]	=
 			delegate map ev match {
 				case Some(Win(x))	=> Win(Some(func(x)))

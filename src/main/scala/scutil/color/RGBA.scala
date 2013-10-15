@@ -1,13 +1,25 @@
 package scutil.color
 
+import java.lang.{ Integer => JInteger }
+import java.util.regex.Pattern
 import java.awt.Color
 
-import scala.math._
-
 object RGBA {
+	val transparentBlack	= RGBA(RGB.black, Alpha.transparent)
+	val transparentWhite	= RGBA(RGB.white, Alpha.transparent)
+	
+	private val patternHex	= Pattern compile "[0-9a-fA-F]{8}"
+	
+	def parseHex(s:String):Option[RGBA]	=
+			if ((patternHex matcher s).matches) {
+				val Seq(r,g,b,a)	= (s grouped 2 map { it => (JInteger parseInt (it, 16)) / 255f }).toSeq
+				Some(RGBA(RGB(r,g,b),Alpha(a)))
+			}
+			else None
+			
 	def fromColor(color:Color):RGBA	= {
-		val Array(r, g, b, a)	= color getRGBComponents null
-		RGBA(RGB(r, g, b), Alpha(a))
+		val Array(r,g,b,a)	= color getRGBComponents null
+		RGBA(RGB(r,g,b), Alpha(a))
 	}
 	
 	def toColor(rbga:RGBA):Color	= rbga.toColor
@@ -32,12 +44,6 @@ final case class RGBA(rgb:RGB, alpha:Alpha) {
 	def g	= rgb.g
 	def b	= rgb.b
 	def a	= alpha.a
-	
-	def blend(that:RGBA, ratio:Float):RGBA	= 
-			RGBA(
-				rgb		= this.rgb		blend (that.rgb,	ratio),
-				alpha	= this.alpha	blend (that.alpha,	ratio)
-			)
 	
 	def diff(that:RGBA):Float	= 
 			(	(this.rgb	diff3	that.rgb) +

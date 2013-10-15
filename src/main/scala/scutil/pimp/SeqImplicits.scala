@@ -87,6 +87,14 @@ final class SeqExt[T](delegate:Seq[T]) {
 		return None
 	}
 	
+	def tailOption:Option[Seq[T]]	=
+			if (delegate.nonEmpty)	Some(delegate.tail)
+			else					None
+	
+	def initOption:Option[Seq[T]]	=
+			if (delegate.nonEmpty)	Some(delegate.init)
+			else					None
+	
 	/** get item at index and the Seq without that element if possible */
 	def extractAt(index:Int):Option[(T,Seq[T])]	=
 			delegate lift index map { it =>

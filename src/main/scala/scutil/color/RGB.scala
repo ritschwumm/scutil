@@ -1,44 +1,43 @@
 package scutil.color
 
+import java.lang.{ Integer => JInteger }
+import java.util.regex.Pattern
 import java.awt.Color
 
 import scala.math._
-
-import scutil.lang._
-import scutil.Implicits._
-import scutil.math
 
 object RGB {
 	val white	= RGB(1,1,1)
 	val black	= RGB(0,0,0)
 	
+	private val patternHex	= Pattern compile "[0-9a-fA-F]{6}"
+	
 	def parseHex(s:String):Option[RGB]	=
-			s guardBy hexString map decodeHex
-		
-	val hexString:Predicate[String]	= 
-			_ matches "[0-9a-fA-F]{6}"
-		
-	/** throws an Exception when !hexString(s) */
-	def decodeHex(s:String):RGB	=
-			fromColor(Color decode ("#" + s))
+			if ((patternHex matcher s).matches) {
+				val Seq(r,g,b)	= (s grouped 2 map { it => (JInteger parseInt (it, 16))/ 255f }).toSeq
+				Some(RGB(r,g,b))
+			}
+			else None
 		
 	def fromColor(color:Color):RGB	= {
-		val Array(r, g, b, a)	= color getRGBComponents null
-		RGB(r, g, b)
+		val Array(r,g,b,a)	= color getRGBComponents null
+		RGB(r,g,b)
 	}
 	
 	def toColor(rbg:RGB):Color	= rbg.toColor
+	
+	def fromIntRGB(argb:Int):RGB	=
+			RGB(
+				r	= ((argb >> 16) & 0xff) / 255f,
+				g	= ((argb >>  8) & 0xff) / 255f,
+				b	= ((argb >>  0) & 0xff) / 255f
+			)
+			
+	def toIntARGB(rbg:RGB):Int	= rbg.toIntRGB
 }
 
 /** value range is 0..1 */
 final case class RGB(r:Float, g:Float, b:Float) {
-	def blend(that:RGB, ratio:Float):RGB	= 
-			RGB(
-				r	= math blend (this.r, that.r, ratio),
-				g	= math blend (this.g, that.g, ratio),
-				b	= math blend (this.b, that.b, ratio)
-			)
-	
 	def diff(that:RGB):Float	= 
 			diff3(that) / 3f
 			
@@ -77,4 +76,9 @@ final case class RGB(r:Float, g:Float, b:Float) {
 	
 	def toColor:Color	= 
 			new Color(r, g, b)
+		
+	def toIntRGB:Int	= 
+			(((r * 255).toInt) << 16) |
+			(((g * 255).toInt) <<  8) |
+			(((b * 255).toInt) <<  0)
 }

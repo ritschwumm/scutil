@@ -78,9 +78,6 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](delegate:CC[T]) {
 	def mapBy[S](key:T=>S):Map[S,T]	=
 			(delegate map { it => (key(it), it) }).toMap
 			
-	// NOTE these should be generalized to other AFs, not just Option and Tried
-	// NOTE supplying pure and flatMap of a Monad would work, too!
-	
 	/** like flatten, but avoiding the dubious Option=>Iterable implicit */
 	def collapse[U](implicit ev:PFunction[T,U], cbf:CanBuildFrom[CC[T],U,CC[U]]):CC[U]	= {
 		val builder	= cbf()
@@ -91,6 +88,9 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](delegate:CC[T]) {
 		}
 		builder.result
 	}
+	
+	// NOTE these should be generalized to other AFs, not just Option and Tried
+	// NOTE supplying pure and flatMap of a Monad would work, too!
 	
 	/** delegate is traversable (in the haskell sense), Option is an idiom. */
 	def sequenceOption[U](implicit ev:PFunction[T,U], cbf:CanBuildFrom[CC[T],U,CC[U]]):Option[CC[U]]	=
@@ -110,7 +110,7 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](delegate:CC[T]) {
 	def sequenceTried[F,W](implicit ev:T=>Tried[F,W], cbf:CanBuildFrom[CC[T],W,CC[W]]):Tried[F,CC[W]]	=
 			traverseTried(identity[W])
 		
-	/** delegate is traversable (in the haskell sense), Option is an idiom. */
+	/** delegate is traversable (in the haskell sense), Tried is an idiom. */
 	def traverseTried[F,W,V](func:W=>V)(implicit ev:T=>Tried[F,W], cbf:CanBuildFrom[CC[T],V,CC[V]]):Tried[F,CC[V]]	= {
 		val builder	= cbf()
 		delegate map ev foreach {
@@ -122,7 +122,7 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](delegate:CC[T]) {
 	
 	/** all Fails if there is at least one, else all Wins */
 	def validateTried[F,W](implicit ev:T=>Tried[F,W], cbf1:CanBuildFrom[CC[T],F,CC[F]], cbf2:CanBuildFrom[CC[T],W,CC[W]]):Tried[CC[F],CC[W]]	= {
-		val (fails,wins)	= splitTried
+		val (fails, wins)	= splitTried
 		if (fails.isEmpty)	Win(wins)
 		else				Fail(fails)
 	}
