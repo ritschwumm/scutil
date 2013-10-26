@@ -5,12 +5,12 @@ import scala.annotation.tailrec
 object ListImplicits extends ListImplicits
 
 trait ListImplicits {
-	implicit def toListExt[T](delegate:List[T])	= new ListExt(delegate)
+	implicit def toListExt[T](peer:List[T])	= new ListExt(peer)
 }
 
-final class ListExt[T](delegate:List[T]) {
+final class ListExt[T](peer:List[T]) {
 	def cata[U](nil: =>U, cons:(T,List[T])=>U):U =
-			delegate match {
+			peer match {
 				case head :: tail	=> cons(head, tail)
 				case Nil			=> nil
 			}
@@ -29,6 +29,6 @@ final class ListExt[T](delegate:List[T]) {
 				case _									=> (prefix.reverse, list1, list2)
 			}
 		}
-		loop(Nil, delegate, other)
+		loop(Nil, peer, other)
 	}
 }

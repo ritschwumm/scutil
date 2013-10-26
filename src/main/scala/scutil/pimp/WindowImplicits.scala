@@ -8,13 +8,13 @@ import scutil.geom._
 object WindowImplicits extends WindowImplicits
 
 trait WindowImplicits {
-	implicit def toWindowExt(delegate:Window):WindowExt	= new WindowExt(delegate)
+	implicit def toWindowExt(peer:Window):WindowExt	= new WindowExt(peer)
 }
 	
-final class WindowExt(delegate:Window) {
+final class WindowExt(peer:Window) {
 	def restrictToScreen() {
-		val frame	= IntRect fromAwtRectangle delegate.getBounds
-		val screen	= IntRect fromAwtRectangle delegate.getGraphicsConfiguration.getBounds
-		delegate setBounds (frame restrictTo screen).toAwtRectangle
+		val frame	= IntRect fromAwtRectangle peer.getBounds
+		val screen	= IntRect fromAwtRectangle peer.getGraphicsConfiguration.getBounds
+		peer setBounds (frame restrictTo screen).toAwtRectangle
 	}
 }

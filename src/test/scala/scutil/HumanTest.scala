@@ -24,7 +24,6 @@ class HumanTest extends Specification {
 			Human roundedDecimal (2, 47110815) mustEqual "47.11M"
 		}
 		
-		
 		"full decode multiple milli time units" in {
 			Human fullMilliTime 47110815L mustEqual "13h 5m 10s 815ms"
 		}

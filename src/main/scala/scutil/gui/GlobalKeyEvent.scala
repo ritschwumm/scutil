@@ -7,24 +7,15 @@ import scutil.lang._
 
 object GlobalKeyEvent {
 	def connect(handler:KeyEvent=>Boolean):Disposable = {
-		val dispatcher	= new KeyEventDispatcher {
-			def dispatchKeyEvent(ev:KeyEvent):Boolean	= handler(ev)
-		}
-		{
-			install(dispatcher)
-		}
+		val dispatcher	= 
+				new KeyEventDispatcher {
+					def dispatchKeyEvent(ev:KeyEvent):Boolean	= handler(ev)
+				}
+		val focusManager	= KeyboardFocusManager.getCurrentKeyboardFocusManager
+		// addKeyEventPostProcessor
+		focusManager addKeyEventDispatcher dispatcher
 		disposable {
-			uninstall(dispatcher)
+			focusManager removeKeyEventDispatcher dispatcher
 		}
 	}
-	
-	private def install(dispatcher:KeyEventDispatcher) {
-		KeyboardFocusManager.getCurrentKeyboardFocusManager addKeyEventDispatcher dispatcher
-	}
-	
-	private def uninstall(dispatcher:KeyEventDispatcher) {
-		KeyboardFocusManager.getCurrentKeyboardFocusManager removeKeyEventDispatcher dispatcher
-	}
-	
-	// KeyboardFocusManager.getCurrentKeyboardFocusManager addKeyEventPostProcessor
 }

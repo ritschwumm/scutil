@@ -7,65 +7,65 @@ import scutil.geom._
 object PointImplicits extends PointImplicits
 
 trait PointImplicits {
-	implicit def toPointExt(delegate:Point):PointExt	= new PointExt(delegate)
+	implicit def toPointExt(peer:Point):PointExt	= new PointExt(peer)
 }
 	
-final class PointExt(delegate:Point) {
+final class PointExt(peer:Point) {
 	def unary_- :Point			= new Point(
-			-delegate.x,
-			-delegate.y)
+			-peer.x,
+			-peer.y)
 			
 	def +(that:Point):Point	=  new Point(
-			delegate.x + that.x,
-			delegate.y + that.y)
+			peer.x + that.x,
+			peer.y + that.y)
 	
 	def -(that:Point):Point	=  new Point(
-			delegate.x	- that.x,
-			delegate.y	- that.y)
+			peer.x	- that.x,
+			peer.y	- that.y)
 			
 	def *(that:Point):Point	=  new Point(
-			delegate.x  * that.x,
-			delegate.y	* that.y)
+			peer.x  * that.x,
+			peer.y	* that.y)
 			
 	def /(that:Point):Point	=  new Point(
-			delegate.x / that.x,
-			delegate.y / that.y)
+			peer.x / that.x,
+			peer.y / that.y)
 			
 	/*
 	def *(factor:Int):Point	=  new Point(
-			delegate.x  * factor,
-			delegate.y * factor)
+			peer.x  * factor,
+			peer.y * factor)
 			
 	def /(factor:Int):Point	=  new Point(
-			delegate.x / factor,
-			delegate.y / factor)
+			peer.x / factor,
+			peer.y / factor)
 	*/
 
 	//------------------------------------------------------------------------------
 			
 	def moveBy(dimension:Dimension):Point	= new Point(
-			delegate.x + dimension.width,
-			delegate.y + dimension.height)
+			peer.x + dimension.width,
+			peer.y + dimension.height)
 			
 	def sizeTo(that:Point):Dimension		= new Dimension(
-			that.x - delegate.x,
-			that.y - delegate.y)
+			that.x - peer.x,
+			that.y - peer.y)
 	
 	def rectangleTo(that:Point):Rectangle	= new Rectangle(
-			delegate.x,
-			delegate.y,
-			that.x-delegate.x,
-			that.y-delegate.y)
+			peer.x,
+			peer.y,
+			that.x - peer.x,
+			that.y - peer.y)
 	
 	def rectangleWith(dimension:Dimension):Rectangle	= 
-			new Rectangle(delegate, dimension)
+			new Rectangle(peer, dimension)
 			
 	//------------------------------------------------------------------------------
 			
 	def toDimension:Dimension	= new Dimension(
-			delegate.x,
-			delegate.y)
+			peer.x,
+			peer.y)
 			
 	def toIntPoint:IntPoint	=
-			IntPoint fromAwtPoint delegate
+			IntPoint fromAwtPoint peer
 }

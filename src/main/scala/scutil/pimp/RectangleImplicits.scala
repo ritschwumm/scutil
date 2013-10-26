@@ -7,34 +7,34 @@ import scutil.geom._
 object RectangleImplicits extends RectangleImplicits
 
 trait RectangleImplicits {
-	implicit def toRectangleExt(delegate:Rectangle):RectangleExt	= new RectangleExt(delegate)
+	implicit def toRectangleExt(peer:Rectangle):RectangleExt	= new RectangleExt(peer)
 }
 	
-final class RectangleExt(delegate:Rectangle) {
+final class RectangleExt(peer:Rectangle) {
 	def topLeft:Point		= new Point(
-			delegate.x,
-			delegate.y)
+			peer.x,
+			peer.y)
 	
 	def topRight:Point		= new Point(
-			delegate.x + delegate.width,
-			delegate.y)
+			peer.x + peer.width,
+			peer.y)
 			
 	def bottomLeft:Point	= new Point(
-			delegate.x,
-			delegate.y + delegate.height)
+			peer.x,
+			peer.y + peer.height)
 			
 	def bottomRight:Point	= new Point(
-			delegate.x + delegate.width,
-			delegate.y + delegate.height)
+			peer.x + peer.width,
+			peer.y + peer.height)
 			
 	//------------------------------------------------------------------------------
 			
 	def inset(insets:Insets):Rectangle	= new Rectangle(
-			delegate.x + insets.left,
-			delegate.y + insets.top,
-			delegate.width	- insets.left	- insets.right,
-			delegate.height	- insets.top	- insets.bottom)
+			peer.x + insets.left,
+			peer.y + insets.top,
+			peer.width	- insets.left	- insets.right,
+			peer.height	- insets.top	- insets.bottom)
 			
 	def toIntRect:IntRect	=
-			IntRect fromAwtRectangle delegate
+			IntRect fromAwtRectangle peer
 }

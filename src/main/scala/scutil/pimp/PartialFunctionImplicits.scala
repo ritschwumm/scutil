@@ -7,32 +7,32 @@ import scutil.lang.PFunction
 object PartialFunctionImplicits extends PartialFunctionImplicits
 
 trait PartialFunctionImplicits {
-	implicit def toPartialFunctionExt[S,T](delegate:PartialFunction[S,T])	= new PartialFunctionExt[S,T](delegate)
+	implicit def toPartialFunctionExt[S,T](peer:PartialFunction[S,T])	= new PartialFunctionExt[S,T](peer)
 }
 
-final class PartialFunctionExt[S,T](delegate:PartialFunction[S,T]) {
+final class PartialFunctionExt[S,T](peer:PartialFunction[S,T]) {
 	def orDefault(value: =>T):S=>T	=
 			orAlways(constant(value))
 		
 	def orAlways(func:S=>T):S=>T	= it =>
-			if (delegate isDefinedAt it)	delegate(it) 
-			else							func(it)
+			if (peer isDefinedAt it)	peer(it) 
+			else						func(it)
 		
 	def andThenFixed[U](that:PartialFunction[T,U]):PartialFunction[S,U]	=
 			new PartialFunction[S,U] {
-				def isDefinedAt(it:S):Boolean	= (delegate isDefinedAt it) && (that isDefinedAt delegate(it))
-				def apply(it:S):U				= that(delegate(it))
+				def isDefinedAt(it:S):Boolean	= (peer isDefinedAt it) && (that isDefinedAt peer(it))
+				def apply(it:S):U				= that(peer(it))
 			}
 	
 	def composeFixed[R](that:PartialFunction[R,S]):PartialFunction[R,T]	=
 			new PartialFunction[R,T] {
-				def isDefinedAt(it:R):Boolean	= (that isDefinedAt it) && (delegate isDefinedAt that(it))
-				def apply(it:R):T				= delegate(that(it))
+				def isDefinedAt(it:R):Boolean	= (that isDefinedAt it) && (peer isDefinedAt that(it))
+				def apply(it:R):T				= peer(that(it))
 			}
 	
 	def toPFunction:PFunction[S,T]	=
-			delegate.lift
+			peer.lift
 		
 	def toExtractor:Extractor[S,T]	=
-			Extractor(delegate.lift)
+			Extractor(peer.lift)
 }

@@ -7,11 +7,11 @@ import scala.collection.mutable
 object ReaderImplicits extends ReaderImplicits
 
 trait ReaderImplicits {
-    implicit def toReaderExt(delegate:Reader)	= new ReaderExt(delegate)
+    implicit def toReaderExt(peer:Reader)	= new ReaderExt(peer)
 }
 
 /** utility methods for Reader objects */ 
-final class ReaderExt(delegate:Reader) {
+final class ReaderExt(peer:Reader) {
 	val blockSize	= 16384
 	
 	/** read as much into the buffer as possible, return how much */
@@ -19,7 +19,7 @@ final class ReaderExt(delegate:Reader) {
 		val length	= buffer.length
 		var offset	= 0
 		while (offset < length) {
-			val	read	= delegate read (buffer, offset, length-offset)
+			val	read	= peer read (buffer, offset, length-offset)
 			if (read == -1)	return offset
 			offset	+= read
 		}
@@ -32,7 +32,7 @@ final class ReaderExt(delegate:Reader) {
 		val out		= new StringBuilder
 		var	running	= true
 		while (running) {
-			val len	= delegate read buffer
+			val len	= peer read buffer
 			if (len != -1)	out appendAll (buffer, 0, len)
 			else			running	= false
 		}
@@ -43,7 +43,7 @@ final class ReaderExt(delegate:Reader) {
 	def skipExactly(count:Long):Long	= {
 		var done	= 0L
 		while (done < count) {
-			val len	= delegate skip (count - done)
+			val len	= peer skip (count - done)
 			if (len == -1)	return done
 			done	+= len
 		}
@@ -55,7 +55,7 @@ final class ReaderExt(delegate:Reader) {
 		val	buffer	= new Array[Char](blockSize)
 		var running	= true
 		while (true) {
-			val len = delegate read buffer
+			val len = peer read buffer
 			if (len == -1)	running	= false
 		}
 	}
@@ -65,7 +65,7 @@ final class ReaderExt(delegate:Reader) {
 		val	buffer	= new Array[Char](blockSize)
 		var running	= true
 		while (running) {
-			val	len	= delegate read buffer
+			val	len	= peer read buffer
 			if (len != -1)	out write (buffer, 0, len)
 			else			running	= false
 		}
@@ -75,7 +75,7 @@ final class ReaderExt(delegate:Reader) {
 	
 	// TODO should take a line separator argument
 	def readLines():Seq[String]	= {
-		val in		= new BufferedReader(delegate)
+		val in		= new BufferedReader(peer)
 		val buffer	= new mutable.ArrayBuffer[String]
 		var running	= true
 		while (running) {
@@ -83,6 +83,6 @@ final class ReaderExt(delegate:Reader) {
 			if (line != null)	buffer	+= line
 			else				running	= false
 		}
-		buffer
+		buffer.toVector
 	}
 }

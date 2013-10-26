@@ -3,17 +3,17 @@ package scutil.pimp
 import java.awt.{ List=>AwtList, _ }
 import javax.swing._
 
-import RectangleImplicits._
+import scutil.pimp.RectangleImplicits._
 
 object RootPaneContainerImplicits extends RootPaneContainerImplicits
 
 trait RootPaneContainerImplicits {
-	implicit def toRootPaneContainerExt(delegate:RootPaneContainer):RootPaneContainerExt	= new RootPaneContainerExt(delegate)
+	implicit def toRootPaneContainerExt(peer:RootPaneContainer):RootPaneContainerExt	= new RootPaneContainerExt(peer)
 }
 	
-final class RootPaneContainerExt(delegate:RootPaneContainer) {
+final class RootPaneContainerExt(peer:RootPaneContainer) {
 	def setCenterContent(child:Component) {
-		val content	= delegate.getContentPane
+		val content	= peer.getContentPane
 		content setLayout	new BorderLayout
 		content add			(child, BorderLayout.CENTER)
 	}

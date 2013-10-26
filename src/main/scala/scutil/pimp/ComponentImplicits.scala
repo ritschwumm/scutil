@@ -8,22 +8,22 @@ import javax.swing.event._
 import scutil.lang._
 import scutil.geom._
 
-import RectangleImplicits._
+import scutil.pimp.RectangleImplicits._
 
 object ComponentImplicits extends ComponentImplicits
 
 trait ComponentImplicits {
-	implicit def toComponentExt(delegate:Component):ComponentExt	= new ComponentExt(delegate)
+	implicit def toComponentExt(peer:Component):ComponentExt	= new ComponentExt(peer)
 }
 	
-final class ComponentExt(delegate:Component) {
+final class ComponentExt(peer:Component) {
 	/** the nearest Window in the ancestor chain, including this component itself */
 	def windowSelfOrAncestor:Option[Window]	= 
-			windowSelfOrAncestor(delegate)
+			windowSelfOrAncestor(peer)
 	
 	/** the nearest Window in the ancestor chain, excluding this component itself */
 	def windowAncestor:Option[Window]	=
-			windowSelfOrAncestor(delegate.getParent)
+			windowSelfOrAncestor(peer.getParent)
 	
 	private def windowSelfOrAncestor(here:Component):Option[Window]	=
 			here match {
@@ -34,23 +34,23 @@ final class ComponentExt(delegate:Component) {
 	
 	/** get the parent Container the scala way */
 	def parentOption:Option[Container]	=
-			Option(delegate.getParent)
+			Option(peer.getParent)
 		
 	/** get all parent Containers starting with the immediate parent and ending with the component root */
 	def parentChain:List[Container]	= 
 			Lists unfoldRightSimple (
-					delegate,
+					peer,
 					(it:Component) => Option(it.getParent))
 		
     /** sets minimum, preferred and maximum size of a {@link Component} */
 	def setAllSizes(size:Dimension) {
-		delegate setMinimumSize	size
-		delegate setMaximumSize	size
-		delegate setPreferredSize	size
+		peer setMinimumSize		size
+		peer setMaximumSize		size
+		peer setPreferredSize	size
 	}
 	
 	def outerRectangle:Rectangle =
-			new Rectangle(delegate.getSize)
+			new Rectangle(peer.getSize)
 			
 	def underMousePointer:Boolean	= {
 		val	pi	= MouseInfo.getPointerInfo
@@ -61,7 +61,7 @@ final class ComponentExt(delegate:Component) {
 	/*
 	def underMouseEvent(ev:MouseEvent):Boolean = {
 		val	within	= containsScreenLocation(ev.getLocationOnScreen)
-		val parent	= SwingUtilities isDescendingFrom (delegate, ev.getComponent)
+		val parent	= SwingUtilities isDescendingFrom (peer, ev.getComponent)
 		val exited	= ev.getID() == MouseEvent.MOUSE_EXITED
 		within && !(parent && exited)
 	}
@@ -69,9 +69,9 @@ final class ComponentExt(delegate:Component) {
 	
 	def containsScreenLocation(screenLocation:Point):Boolean = {
 		val localPosition	= new Point(screenLocation)
-		SwingUtilities convertPointFromScreen (localPosition, delegate)
+		SwingUtilities convertPointFromScreen (localPosition, peer)
 		
-		val localBounds		= SwingUtilities getLocalBounds delegate
+		val localBounds		= SwingUtilities getLocalBounds peer
 		localBounds contains localPosition
 	}
 	
@@ -98,8 +98,8 @@ final class ComponentExt(delegate:Component) {
 	*/
 	
 	def getIntBounds:IntRect	=
-			IntRect fromAwtRectangle delegate.getBounds
+			IntRect fromAwtRectangle peer.getBounds
 		
 	def setIntBounds(rect:IntRect):Unit	=
-			delegate setBounds rect.toAwtRectangle
+			peer setBounds rect.toAwtRectangle
 }

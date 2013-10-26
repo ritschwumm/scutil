@@ -45,7 +45,7 @@ object BigRational {
 	
 	/** parse the output of #toString */
 	def parse(s:String):Option[BigRational] = 
-			s splitAround '/' match {
+			s splitAroundChar '/' match {
 				case Seq(num, den)	=> 
 					try { Some(new BigRational(new JBigInteger(num), new JBigInteger(den))) }
 					catch { case e:NumberFormatException	=> None }
@@ -159,11 +159,6 @@ final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extend
 	
 	//------------------------------------------------------------------------------
 	//## conversion
-	
-	/*
-	def toBigDecimal(scale:Int, roundingMode:RoundingMode):JBigDecimal =
-			new JBigDecimal(numerator) divide (new JBigDecimal(denominator), scale, roundingMode)
-	*/
 	
 	def toBigDecimal(mathContext:MathContext):JBigDecimal =
 			new JBigDecimal(numerator) divide (new JBigDecimal(denominator), mathContext)

@@ -16,25 +16,25 @@ import scutil.lang._
 object DisposableConversions extends DisposableConversions 
 	
 trait DisposableConversions {
-	implicit def DisposableForCloseable			(delegate:Closeable)		= Disposable(delegate.close)
+	implicit def DisposableForCloseable			(peer:Closeable)		= Disposable(peer.close)
 	
-	implicit def DisposableForSocket			(delegate:Socket)			= Disposable(delegate.close)
-	implicit def DisposableForServerSocket		(delegate:ServerSocket)		= Disposable(delegate.close)
-	implicit def DisposableForDatagramSocket	(delegate:DatagramSocket)	= Disposable(delegate.close)
+	implicit def DisposableForSocket			(peer:Socket)			= Disposable(peer.close)
+	implicit def DisposableForServerSocket		(peer:ServerSocket)		= Disposable(peer.close)
+	implicit def DisposableForDatagramSocket	(peer:DatagramSocket)	= Disposable(peer.close)
 	
-	implicit def DisposableForChannel			(delegate:Channel)			= Disposable(delegate.close)
-	implicit def DisposableForSelector			(delegate:Selector)			= Disposable(delegate.close)
-	implicit def DisposableForFileLock			(delegate:FileLock)			= Disposable(delegate.release)
+	implicit def DisposableForChannel			(peer:Channel)			= Disposable(peer.close)
+	implicit def DisposableForSelector			(peer:Selector)			= Disposable(peer.close)
+	implicit def DisposableForFileLock			(peer:FileLock)			= Disposable(peer.release)
 
-	implicit def DisposableForConnection		(delegate:Connection)		= Disposable(delegate.close)
-	implicit def DisposableForResultSet			(delegate:ResultSet)		= Disposable(delegate.close)
-	implicit def DisposableForStatement			(delegate:Statement)		= Disposable(delegate.close)
+	implicit def DisposableForConnection		(peer:Connection)		= Disposable(peer.close)
+	implicit def DisposableForResultSet			(peer:ResultSet)		= Disposable(peer.close)
+	implicit def DisposableForStatement			(peer:Statement)		= Disposable(peer.close)
 	
-	implicit def DisposableForLock				(delegate:Lock)				= Disposable(delegate.unlock)
+	implicit def DisposableForLock				(peer:Lock)				= Disposable(peer.unlock)
 	
-	// implicit def DisposableForXMLDecoder		(delegate:XMLDecoder)		= Disposable(delegate.close)
-	// implicit def DisposableForXMLEncoder		(delegate:XMLEncoder)		= Disposable(delegate.close)
-	implicit def DisposableForScanner			(delegate:Scanner)			= Disposable(delegate.close)
-	implicit def DisposableForImageInputStream	(delegate:ImageInputStream)	= Disposable(delegate.close)
-	implicit def DisposableForGraphics			(delegate:Graphics)			= Disposable(delegate.dispose)
+	// implicit def DisposableForXMLDecoder		(peer:XMLDecoder)		= Disposable(peer.close)
+	// implicit def DisposableForXMLEncoder		(peer:XMLEncoder)		= Disposable(peer.close)
+	implicit def DisposableForScanner			(peer:Scanner)			= Disposable(peer.close)
+	implicit def DisposableForImageInputStream	(peer:ImageInputStream)	= Disposable(peer.close)
+	implicit def DisposableForGraphics			(peer:Graphics)			= Disposable(peer.dispose)
 }

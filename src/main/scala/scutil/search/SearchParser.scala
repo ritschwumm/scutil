@@ -1,5 +1,6 @@
 package scutil.search
 
+import scutil.lang._
 import scutil.Implicits._
 
 /** 
@@ -16,16 +17,23 @@ selects String who match a pattern with the following syntax:
 */
 object SearchParser {
 	def parse(pattern:String):SearchPattern	= {
-		val (negative,positive)	= pattern.trim splitAround ' ' filter { _.nonEmpty } map parseHit partition { _._1 }
-		SearchPattern(positive map { _._2 }, negative map { _._2 })
+		val (neg, pos)	= pattern.trim splitAroundChar ' ' filter { _.nonEmpty } map parseHit partition { _._1 }
+		SearchPattern(
+			pos map { _._2 }, 
+			neg map { _._2 }
+		)
 	}
 	
-	private def parseHit(descriptor1:String):(Boolean,SearchToken) = {
-		val (exclude,descriptor2)	= descriptor1 cutPrefix "-" filter { _.nonEmpty} cata ((false, descriptor1),	(true, _))
-		val (start,descriptor3)		= descriptor2 cutPrefix "|" filter { _.nonEmpty} cata ((false, descriptor2),	(true, _))
-		val (end,descriptor4)		= descriptor3 cutSuffix "|" filter { _.nonEmpty} cata ((false, descriptor3),	(true, _))
-		val caseInsensitive			= descriptor4 == descriptor4.toLowerCase
-		
-		(exclude, SearchToken(descriptor4, caseInsensitive, start, end))
+	private def parseHit(descriptor:String):(Boolean,SearchToken) = {
+		val (exclude,	a)	= scan(descriptor,	_ cutPrefix "-")
+		val (start,		b)	= scan(a,			_ cutPrefix "|")
+		val (end,		c)	= scan(b,			_ cutSuffix "|")
+		val noCase			= c == c.toLowerCase
+		(exclude, SearchToken(c, noCase, start, end))
+	}
+	
+	private def scan(s:String, func:String=>Option[String]):(Boolean,String)	= {
+		val t	= func(s) filter { _.nonEmpty } toWin s
+		(t.isWin, t.merge)
 	}
 }

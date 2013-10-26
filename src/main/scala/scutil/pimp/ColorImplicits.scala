@@ -7,16 +7,16 @@ import java.awt.{ List=>AwtList, _ }
 object ColorImplicits extends ColorImplicits
 
 trait ColorImplicits {
-	implicit def toColorExt(delegate:Color):ColorExt	= new ColorExt(delegate)
+	implicit def toColorExt(peer:Color):ColorExt	= new ColorExt(peer)
 }
 	
-final class ColorExt(delegate:Color) {
+final class ColorExt(peer:Color) {
 	def withAlpha(alpha:Float):Color	=
-			new Color(delegate.getRed, delegate.getGreen, delegate.getRed, alpha)
+			new Color(peer.getRed, peer.getGreen, peer.getRed, alpha)
 		
 	def withoutAlpha:Color	=
-			new Color(delegate.getRed, delegate.getGreen, delegate.getRed)
+			new Color(peer.getRed, peer.getGreen, peer.getRed)
 		
-	def toRGB:RGB	= RGB	fromColor delegate
-	def toRGBA:RGBA	= RGBA	fromColor delegate
+	def toRGB:RGB	= RGB	fromColor peer
+	def toRGBA:RGBA	= RGBA	fromColor peer
 }

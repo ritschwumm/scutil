@@ -1,5 +1,7 @@
 package scutil.text
 
+import java.util.Locale
+
 import scala.annotation.tailrec
 
 /** format (positive) numbers in a human readable way */
@@ -56,9 +58,9 @@ object Human {
 	/** rounded to the biggest possible unit */
 	def rounded(ulist:UnitList, commaDigits:Int, value:BigDecimal):String	= {
 		val (parts, label)	= biggestNonZero(ulist, value)
-		s"%.${commaDigits}f${label}" format (value / parts)
+		s"%.${commaDigits}f${label}" formatLocal (Locale.US, value / parts)
 	}
-			
+  
 	/** returns the UnitList's number of units and label */
 	@tailrec
 	private def biggestNonZero(ulist:UnitList, value:BigDecimal, size:BigDecimal = one):(BigDecimal,String)	=

@@ -9,18 +9,19 @@ import scutil.time.MilliInstant
 object DateImplicits extends DateImplicits
 
 trait DateImplicits {
-	implicit def toDateExt(delegate:Date) = new DateExt(delegate)
+	implicit def toDateExt(peer:Date) = new DateExt(peer)
 }
 
-final class DateExt(delegate:Date) {
+final class DateExt(peer:Date) {
 	def format(fmt:String):String	= 
-			new SimpleDateFormat(fmt) format delegate
+			new SimpleDateFormat(fmt) format peer
 	
 	def format(fmt:String, tz:TimeZone):String	= {
 		val df	= new SimpleDateFormat(fmt)
 		df setTimeZone tz
-		df format delegate
+		df format peer
 	}
 	
-	def toMilliInstant:MilliInstant	= MilliInstant fromDate delegate
+	def toMilliInstant:MilliInstant	= 
+			MilliInstant fromDate peer
 }

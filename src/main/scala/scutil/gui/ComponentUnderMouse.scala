@@ -12,7 +12,11 @@ import javax.swing.SwingUtilities
 import scala.collection.mutable
 
 import scutil.lang._
-import scutil.log._
+import scutil.time._
+
+object ComponentUnderMouse {
+	private val testCycle	= MilliDuration(100)
+}
 
 /** 
 get notifications whenever the mouse moves over a Component or leaves it.
@@ -20,8 +24,6 @@ in contrast to simple mouseEnter/mouseExit events this works when the mouse
 moves fast or something is dragged over the component.
 */
 final class ComponentUnderMouse(onError:(String,Exception)=>Unit) {
-	private val TEST_CYCLE	= 100	// millis
-	
 	private type Callback	= Effect[Boolean]
  	
 	private var entries	= new mutable.WeakHashMap[Component,Entry]
@@ -118,7 +120,7 @@ final class ComponentUnderMouse(onError:(String,Exception)=>Unit) {
 	private val testThread	= new Thread {
 		override def run() {
 			while (true) {
-				Thread sleep TEST_CYCLE
+				Thread sleep ComponentUnderMouse.testCycle.millis
 				SwingUtilities invokeLater new Runnable {
 					def run() {
 						try {

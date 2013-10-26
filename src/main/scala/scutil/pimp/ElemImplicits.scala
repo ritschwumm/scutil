@@ -5,11 +5,11 @@ import scala.xml.Elem
 object ElemImplicits extends ElemImplicits
 
 trait ElemImplicits {
-	implicit def toElemExt(delegate:Elem) = new ElemExt(delegate)
+	implicit def toElemExt(peer:Elem) = new ElemExt(peer)
 }
 
-final class ElemExt(delegate:Elem) {
+final class ElemExt(peer:Elem) {
 	def toStringWithDeclaration:String	= 
 			"""<?xml version="1.0" encoding="utf-8"?>""" + "\n" + 
-			delegate
+			peer
 }

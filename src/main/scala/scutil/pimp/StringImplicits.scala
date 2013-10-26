@@ -14,10 +14,10 @@ import scutil.lang._
 object StringImplicits extends StringImplicits
 
 trait StringImplicits {
-	implicit def toStringExt(delegate:String) = new StringExt(delegate)
+	implicit def toStringExt(peer:String) = new StringExt(peer)
 }
 
-final class StringExt(delegate:String) {
+final class StringExt(peer:String) {
 	def toBooleanOption:Option[Boolean]	= toNumberOption(_.toBoolean)
 	def toByteOption:Option[Byte]		= toNumberOption(_.toByte)
 	def toShortOption:Option[Short]		= toNumberOption(_.toShort)
@@ -38,65 +38,53 @@ final class StringExt(delegate:String) {
 	def toDoubleTried:Tried[NumberFormatException,Double]	= toNumberTried(JDouble.parseDouble)
 		
 	private def toNumberTried[T](func:String=>T):Tried[NumberFormatException,T]	=
-			try { Win(func(delegate)) }
+			try { Win(func(peer)) }
 			catch { case e:NumberFormatException => Fail(e) }
 	
 	//------------------------------------------------------------------------------
 	
 	def guardNonEmpty:Option[String]	= 
-			if (delegate.nonEmpty)	Some(delegate)
-			else					None 
+			if (peer.nonEmpty)	Some(peer)
+			else				None 
 	
-	def cutPrefix(prefix:String):Option[String] =
-			if (delegate startsWith prefix)	Some(delegate substring prefix.length)
-			else							None
-				
-	def cutSuffix(suffix:String):Option[String] = 
-			if (delegate endsWith suffix)	Some(delegate substring (0, delegate.length-suffix.length))
-			else							None
+	//------------------------------------------------------------------------------
 		
-	def providePrefix(prefix:String):String	=
-			if (delegate startsWith prefix)	delegate
-			else							prefix + delegate
+	def cutPrefix(prefix:String):Option[String] =
+			if (peer startsWith prefix)	Some(peer substring prefix.length)
+			else						None
+				
+	def cutSuffix(suffix:String):Option[String] =
+			if (peer endsWith suffix)	Some(peer substring (0, peer.length - suffix.length))
+			else						None
+		
+	def pastePrefix(prefix:String):Option[String] =
+			if (peer startsWith prefix)	None
+			else						Some(prefix + peer)
 	
-	def provideSuffix(suffix:String):String	=
-			if (delegate endsWith suffix)	delegate
-			else							delegate + suffix
+	def pasteSuffix(suffix:String):Option[String] =
+			if (peer endsWith suffix)	None
+			else						Some(peer + suffix)
 	
-	/** excludes the separator chars themselves */
-	def splitAround(separator:Char):Seq[String] = {
+	//------------------------------------------------------------------------------
+	
+	/** excludes the separator char itself */
+	def splitAroundChar(separator:Char):Seq[String] =
+			splitAroundString(separator.toString)
+	
+	/** excludes the separator string itself */
+	def splitAroundString(separator:String):Seq[String] = {
 		val	out	= new mutable.ArrayBuffer[String]
-		var pos	= 0
-		while (true) {
-			val	index	= delegate indexOf (separator, pos)
-			if (index == -1) {
-				out	+= delegate substring pos
-				return out
-			}
-			else {
-				out	+= delegate substring (pos, index)
-				pos	= index + 1
-			}
-		}
-		neverComesHere
-	}
-	
-	/** excludes the separator strings themselves */
-	def splitAround(separator:String):Seq[String] = {
-		val	out	= new mutable.ArrayBuffer[String]
-		var pos	= 0
-		while (true) {
-			val	index	= delegate indexOf (separator, pos)
-			if (index == -1) {
-				out	+= delegate substring pos
-				return out
-			}
-			else {
-				out	+= delegate substring (pos, index)
-				pos	= index + separator.length
-			}
-		}
-		neverComesHere
+		@scala.annotation.tailrec
+		def loop(pos:Int):Seq[String]	=
+				peer indexOf (separator, pos) match {
+					case -1 =>
+						out	+= peer substring pos
+						out.toVector
+					case index	=>
+						out	+= peer substring (pos, index)
+						loop(index + separator.length)
+				}
+		loop(0)
 	}
 	
 	/*
@@ -106,51 +94,55 @@ final class StringExt(delegate:String) {
 			case -1	=> s :: accu
 			case n	=> unfold(s substring (0,n), (s substring (n+1)) :: accu)
 		}
-		unfold(delegate, Nil)
+		unfold(peer, Nil)
 	}
 	*/
 	
-	/** like splitAt, but None for indizes outside the String's boundaries */
+	/** like splitAt, but None for indices outside the String's boundaries */
 	def splitAtIndex(index:Int):Option[(String,String)]	=
-			if (index >= 0 && index <= delegate.length)	Some((delegate substring (0,index), delegate substring index))
-			else										None
+			if (index >= 0 && index <= peer.length)	Some((peer substring (0,index), peer substring index))
+			else									None
 			
 	/** before index and after index excluding the index itself */
 	def splitAroundIndex(index:Int):Option[(String,String)]	=
-			if (index >= 0 && index < delegate.length)	Some((delegate substring (0,index), delegate substring index+1))
-			else										None
+			if (index >= 0 && index < peer.length)	Some((peer substring (0,index), peer substring index+1))
+			else									None
 	
 	/** exludes the separator char itself */
 	def splitAroundFirst(separator:Char):Option[(String,String)] =
-			splitAroundIndex(delegate indexOf separator)
+			splitAroundIndex(peer indexOf separator)
 		
 	/** exludes the separator char itself */
 	def splitAroundLast(separator:Char):Option[(String,String)] =
-			splitAroundIndex(delegate lastIndexOf separator)
+			splitAroundIndex(peer lastIndexOf separator)
 		
+	//------------------------------------------------------------------------------
+	
 	/** like indexOf, but None if not found */
 	def indexOfOption(ch:Int, fromIndex:Int=0)	=
-			delegate indexOf (ch, fromIndex) match {
+			peer indexOf (ch, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)
 			}
 			
 	/** like lastIndexOf, but None if not found */
-	def lastIndexOfOption(ch:Int, fromIndex:Int=delegate.length-1)	=
-			delegate lastIndexOf (ch, fromIndex) match {
+	def lastIndexOfOption(ch:Int, fromIndex:Int=peer.length-1)	=
+			peer lastIndexOf (ch, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)
 			}
 	
+	//------------------------------------------------------------------------------
+	
 	/** quote to use as a literal in a Regex */
-	def quoteRegex:String	= Pattern quote delegate
+	def quoteRegex:String	= Pattern quote peer
 	
 	/** quote to use within a character class in a Regex */
 	def quoteCharacterClass:String	= {
 		val b	= new StringBuilder
 		var i	= 0
-		while (i < delegate.length) {
-			delegate charAt i match {
+		while (i < peer.length) {
+			peer charAt i match {
 				case '\\'	=> b append "\\\\"
 				case '-'	=> b append "\\-"
 				case '^'	=> b append "\\^"
@@ -167,8 +159,8 @@ final class StringExt(delegate:String) {
 	def quoteXML(quot:Boolean = false, apos:Boolean = false):String	= {
 		val b	= new StringBuilder
 		var i	= 0
-		while (i < delegate.length) {
-			delegate charAt i match {
+		while (i < peer.length) {
+			peer charAt i match {
 				case '<'			=> b append "&lt;"
 				case '>'			=> b append "&gt;"
 				case '&'			=> b append "&amp;"

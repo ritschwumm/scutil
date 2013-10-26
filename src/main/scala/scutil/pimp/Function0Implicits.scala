@@ -7,19 +7,19 @@ import scutil.lang.Disposable
 object Function0Implicits extends Function0Implicits
 
 trait Function0Implicits {
-	implicit def toFunction0Ext[T](delegate:Function0[T]) = new Function0Ext[T](delegate)
+	implicit def toFunction0Ext[T](peer:Function0[T]) = new Function0Ext[T](peer)
 }
 
-final class Function0Ext[T](delegate:Function0[T]) {
+final class Function0Ext[T](peer:Function0[T]) {
 	def asRunnable:Runnable = 
 			new Runnable {
 				def run() {
-					delegate()
+					peer()
 				}
 			}
 	
 	def asCallable:Callable[T]	=
 			new Callable[T] {
-				def call() = delegate()
+				def call() = peer()
 			}
 }

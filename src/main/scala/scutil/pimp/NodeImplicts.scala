@@ -5,9 +5,9 @@ import scala.xml._
 object NodeImplicits extends NodeImplicits
 
 trait NodeImplicits {
-    implicit def toNodeExt(delegate:Node)	= new NodeExt(delegate)
+    implicit def toNodeExt(peer:Node)	= new NodeExt(peer)
 }
 
-final class NodeExt(delegate:Node) {
-	def toXhtml:String	= Xhtml toXhtml delegate
+final class NodeExt(peer:Node) {
+	def toXhtml:String	= Xhtml toXhtml peer
 }

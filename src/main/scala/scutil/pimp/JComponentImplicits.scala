@@ -5,22 +5,22 @@ import java.awt.event._
 import javax.swing._
 import javax.swing.event._
 
-import RectangleImplicits._
-import RootPaneContainerImplicits._
+import scutil.pimp.RectangleImplicits._
+import scutil.pimp.RootPaneContainerImplicits._
 
 object JComponentImplicits extends JComponentImplicits
 
 trait JComponentImplicits {
-	implicit def toJComponentExt(delegate:JComponent):JComponentExt	= new JComponentExt(delegate)
+	implicit def toJComponentExt(peer:JComponent):JComponentExt	= new JComponentExt(peer)
 }
 	
-final class JComponentExt(delegate:JComponent) {
+final class JComponentExt(peer:JComponent) {
 	def innerRectangle:Rectangle	= 
-			new Rectangle(delegate.getSize()) inset delegate.getInsets
+			new Rectangle(peer.getSize()) inset peer.getInsets
 			
 	def displayInFrame(size:(Int,Int), onClose:()=>Boolean=()=>true):JFrame = {
 		val	frame	= new JFrame
-		frame setCenterContent	delegate
+		frame setCenterContent	peer
 		frame setVisible		true
 		frame setSize			(size._1, size._2)
 		/*

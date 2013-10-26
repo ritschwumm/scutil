@@ -15,11 +15,11 @@ import scutil.platform.SystemProperties
 object FileImplicits extends FileImplicits
 
 trait FileImplicits {
-    implicit def toFileExt(delegate:File)	= new FileExt(delegate)
+    implicit def toFileExt(peer:File)	= new FileExt(peer)
 }
 
 /** utility methods for java File objects */ 
-final class FileExt(delegate:File) {
+final class FileExt(peer:File) {
 	private implicit def mkFileFilter(predicate:File=>Boolean) =
 			new PredicateFileFilter(predicate)
 	
@@ -28,54 +28,54 @@ final class FileExt(delegate:File) {
 	
 	/** time of last modification as an MilliInstant, returns MilliInstant.zero for non-existing files */
 	def lastModifiedMilliInstant:MilliInstant	= 
-			MilliInstant(delegate.lastModified)
+			MilliInstant(peer.lastModified)
 	
-	/** whether the delegate is newer than another file. if the other file does not exist it counts as newer */ 
+	/** whether the peer is newer than another file. if the other file does not exist it counts as newer */ 
 	def newerThan(that:File):Boolean	=
-			delegate.exists && (!that.exists || delegate.lastModified > that.lastModified)
+			peer.exists && (!that.exists || peer.lastModified > that.lastModified)
 	
 	/** add a component to this Files's path */
-	def /(name:String):File 		= new File(delegate, name)
+	def /(name:String):File 		= new File(peer, name)
 	
 	/** add multiple components to this Files's path */
-	def /+(path:Seq[String]):File	= (path foldLeft delegate) { new File(_,_) }
+	def /+(path:Seq[String]):File	= (path foldLeft peer) { new File(_,_) }
 	
 	/** get the parent File the scala way */
 	def parentOption:Option[File]	= 
-			Option(delegate.getParentFile)
+			Option(peer.getParentFile)
 			
 	/** get all parent Files starting with the immediate parent and ending with the directory root */
 	def parentChain:List[File]	= 
 			Lists unfoldRightSimple (
-					delegate,
+					peer,
 					(it:File) => Option(it.getParentFile))
 					
 	/** Some existing file, or None */
 	def guardExists:Option[File] =
-			if (delegate.exists)	Some(delegate)
-			else					None
+			if (peer.exists)	Some(peer)
+			else				None
 
 	/** map only the name of this File */
 	def modifyName(func:String=>String):File =
-			new File(delegate.getParentFile, func(delegate.getName))
+			new File(peer.getParentFile, func(peer.getName))
 	
 	//------------------------------------------------------------------------------
 	//## directory only
 	
 	/** list files in this directory */
 	def children:Option[Seq[File]] =
-			Option(delegate.listFiles) map { _.toSeq }
+			Option(peer.listFiles) map { _.toVector }
 			
 	/** list files in this directory matching a predicate */
 	def childrenWhere(predicate:File=>Boolean):Option[Seq[File]] =
-			Option(delegate listFiles predicate) map { _.toSeq }
+			Option(peer listFiles predicate) map { _.toVector }
 		
 	/** the path upwards from another File to this File */
 	def containsRecursive(that:File):Option[Seq[String]]	= {
 		def loop(test:File, path:Seq[String]):Option[Seq[String]]	=
-					 if (test == null)		None
-				else if (test == delegate)	Some(path)
-				else						loop(test.getParentFile, test.getName +: path)
+					 if (test == null)	None
+				else if (test == peer)	Some(path)
+				else					loop(test.getParentFile, test.getName +: path)
 		loop(that, Seq.empty)
 	}
 			
@@ -84,19 +84,19 @@ final class FileExt(delegate:File) {
 	
 	/** execute a closure with an InputStream reading from this File */
 	def withInputStream[T](code:(FileInputStream=>T)):T	=
-			new FileInputStream(delegate) use code
+			new FileInputStream(peer) use code
 	
 	/** execute a closure with an OutputStream writing into this File */
 	def withOutputStream[T](code:(FileOutputStream=>T)):T	=
-			new FileOutputStream(delegate) use code
+			new FileOutputStream(peer) use code
 			
 	/** execute a closure with a Reader reading from this File */
 	def withReader[T](charset:Charset)(code:(InputStreamReader=>T)):T	=
-			new InputStreamReader(new FileInputStream(delegate), charset) use code
+			new InputStreamReader(new FileInputStream(peer), charset) use code
 	
 	/** execute a closure with a Writer writing into this File */
 	def withWriter[T](charset:Charset)(code:(OutputStreamWriter=>T)):T	=
-			new OutputStreamWriter(new FileOutputStream(delegate), charset) use code
+			new OutputStreamWriter(new FileOutputStream(peer), charset) use code
 
 	//------------------------------------------------------------------------------
 	//## file only: complete read
@@ -127,7 +127,7 @@ final class FileExt(delegate:File) {
 		 if (!to.exists) {
 		 	to.createNewFile()
 		 }
-		 new FileInputStream(delegate).getChannel use { source =>
+		 new FileInputStream(peer).getChannel use { source =>
 			 new FileOutputStream(to).getChannel use { target =>
 			 	 var position	= 0L
 			 	 while (position < source.size) {
@@ -142,18 +142,18 @@ final class FileExt(delegate:File) {
 	
 	/** delete all children and the file itself */
 	def deleteRecursive() {
-		def recurse(file:File) {
+		def loop(file:File) {
 			val deleted	= file.delete()
 			// NOTE this prevents deletion of the contents of symlinked directories
 			if (!deleted && file.isDirectory) {
 				val list	= file.listFiles
 				if (list != null) {
-					list foreach recurse
+					list foreach loop
 				}
 				file.delete()
 			}
 		}
-		recurse(delegate)
+		loop(peer)
 	}
 	
 	//------------------------------------------------------------------------------
@@ -162,13 +162,13 @@ final class FileExt(delegate:File) {
 	/** create a temp file within this directory */
 	def createTempFile(prefix:String, suffix:String = null):File	= {
 		require(prefix.length >= 3, "prefix must be at least 3 characters long")
-		File createTempFile (prefix, suffix, delegate)
+		File createTempFile (prefix, suffix, peer)
 	}
 	
 	/** create a temp directory within this directory */
 	def createTempDirectory(prefix:String, suffix:String = null):File	= {
 		require(prefix.length >= 3, "prefix must be at least 3 characters long")
-		val	file	= File createTempFile (prefix, suffix, delegate)
+		val	file	= File createTempFile (prefix, suffix, peer)
 		require(file.delete(),	"cannot delete temp file: " + file)
 		require(file.mkdir(),	"cannot create temp directory: " + file)
 		file

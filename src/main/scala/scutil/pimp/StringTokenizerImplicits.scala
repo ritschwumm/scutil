@@ -5,13 +5,13 @@ import java.util.StringTokenizer
 object StringTokenizerImplicits extends StringTokenizerImplicits
 
 trait StringTokenizerImplicits {
-    implicit def toStringTokenizerExt(delegate:StringTokenizer)	= new StringTokenizerExt(delegate)
+    implicit def toStringTokenizerExt(peer:StringTokenizer)	= new StringTokenizerExt(peer)
 }
 
-final class StringTokenizerExt(delegate:StringTokenizer) {
+final class StringTokenizerExt(peer:StringTokenizer) {
 	def asIterator:Iterator[String]	=
 			new Iterator[String] {
-				def hasNext	= delegate.hasMoreTokens
-				def next	= delegate.nextToken
+				def hasNext	= peer.hasMoreTokens
+				def next	= peer.nextToken
 			}
 }

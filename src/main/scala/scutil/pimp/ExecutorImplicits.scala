@@ -9,20 +9,20 @@ import scutil.lang._
 object ExecutorImplicits extends ExecutorImplicits
 
 trait ExecutorImplicits {
-	implicit def toExecutorExt(delegate:Executor)	= new ExecutorExt(delegate)
+	implicit def toExecutorExt(peer:Executor)	= new ExecutorExt(peer)
 }
 
-final class ExecutorExt(delegate:Executor) {
+final class ExecutorExt(peer:Executor) {
 	/** transports Exceptions (but not every Throwable) to the user of the value */
 	def withResult[T](job:Thunk[T]):Thunk[T] = {
 		val	out	= new SyncVar[Tried[Exception,T]]
-		delegate(thunk { out put (Tried catchException job()) })
+		peer(thunk { out put (Tried catchException job()) })
 		thunk { out.get.throwException }
 	}
 	
 	def asJava:JExecutor	= new JExecutor {
 		def execute(command:Runnable) {
-			delegate(command.run)
+			peer(command.run)
 		}
 	}
 }

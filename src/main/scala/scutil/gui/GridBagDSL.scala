@@ -75,23 +75,23 @@ object GridBagDSL {
 	def AloneAlone(hgap:Int, vgap:Int):Insets	= new Insets(0,		0,		0,		0)
 }
 	
-final class GridBagDSL(delegate:GridBagConstraints) {
+final class GridBagDSL(peer:GridBagConstraints) {
 	import GridBagDSL._
 	
-	def pos(x:GridBagConstraintsPosition, y:GridBagConstraintsPosition):GridBagConstraints	= modify { c => c.gridx		= x.v;	c.gridy			= y.v	}
-	def size(x:GridBagConstraintsSize, y:GridBagConstraintsSize):GridBagConstraints			= modify { c => c.gridwidth	= x.v;	c.gridheight	= y.v	}
-	def weight(x:Double, y:Double):GridBagConstraints										= modify { c => c.weightx	= x;	c.weighty		= y		}
-	def ipad(x:Int, y:Int):GridBagConstraints												= modify { c => c.ipadx		= x; 	c.ipady			= y 	}
+	def pos(x:GridBagConstraintsPosition, y:GridBagConstraintsPosition):GridBagConstraints	= modified { c => c.gridx		= x.v;	c.gridy			= y.v	}
+	def size(x:GridBagConstraintsSize, y:GridBagConstraintsSize):GridBagConstraints			= modified { c => c.gridwidth	= x.v;	c.gridheight	= y.v	}
+	def weight(x:Double, y:Double):GridBagConstraints										= modified { c => c.weightx		= x;	c.weighty		= y		}
+	def ipad(x:Int, y:Int):GridBagConstraints												= modified { c => c.ipadx		= x; 	c.ipady			= y 	}
 	
-	def anchor(v:GridBagConstraintsAnchor):GridBagConstraints								= modify { c => c.anchor	= v.v	}
-	def fill(v:GridBagConstraintsFill):GridBagConstraints									= modify { c => c.fill		= v.v	}
+	def anchor(v:GridBagConstraintsAnchor):GridBagConstraints								= modified { c => c.anchor	= v.v	}
+	def fill(v:GridBagConstraintsFill):GridBagConstraints									= modified { c => c.fill	= v.v	}
 	
-	def insets(v:Insets):GridBagConstraints													= modify { c => c.insets	= v.clone.asInstanceOf[Insets]			}
-	def insetsTLBR(top:Int, left:Int, bottom:Int, right:Int):GridBagConstraints				= modify { c => c.insets	= new Insets(top, left, bottom, right)	}
+	def insets(v:Insets):GridBagConstraints													= modified { c => c.insets	= v.clone.asInstanceOf[Insets]			}
+	def insetsTLBR(top:Int, left:Int, bottom:Int, right:Int):GridBagConstraints				= modified { c => c.insets	= new Insets(top, left, bottom, right)	}
 	
-	def modify(effect:GridBagConstraints=>Unit):GridBagConstraints =
+	def modified(effect:GridBagConstraints=>Unit):GridBagConstraints =
 			cloned |>> effect
 	
 	def cloned:GridBagConstraints	= 
-			delegate.clone.asInstanceOf[GridBagConstraints]
+			peer.clone.asInstanceOf[GridBagConstraints]
 }

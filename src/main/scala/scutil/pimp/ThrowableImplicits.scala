@@ -5,14 +5,14 @@ import java.io._
 object ThrowableImplicits extends ThrowableImplicits
 
 trait ThrowableImplicits {
-    implicit def toThrowableExt(delegate:Throwable)	= new ThrowableExt(delegate)
+    implicit def toThrowableExt(peer:Throwable)	= new ThrowableExt(peer)
 }
 
-final class ThrowableExt(delegate:Throwable) {
+final class ThrowableExt(peer:Throwable) {
 	def stackTrace:String	= {
 		val	sw	= new StringWriter
 		val pw	= new PrintWriter(sw)
-		delegate printStackTrace pw
+		peer printStackTrace pw
 		sw.toString
 	}
 }

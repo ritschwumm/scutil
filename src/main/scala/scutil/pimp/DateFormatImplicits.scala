@@ -10,10 +10,10 @@ import scutil.lang._
 object DateFormatImplicits extends DateFormatImplicits
 
 trait DateFormatImplicits {
-    implicit def toDateFormatExt(delegate:DateFormat)	= new DateFormatExt(delegate)
+    implicit def toDateFormatExt(peer:DateFormat)	= new DateFormatExt(peer)
 }
 
-final class DateFormatExt(delegate:DateFormat) {
+final class DateFormatExt(peer:DateFormat) {
 	def asMarshaller:Marshaller[Date,String]	= Marshaller(
 			it => cloned format it, 
 			it => catching(classOf[ParseException]) opt {
@@ -26,5 +26,5 @@ final class DateFormatExt(delegate:DateFormat) {
 	
 	/** DateFormat is not threadsafe, cloning helps */
 	def cloned:DateFormat	= 
-			delegate.clone.asInstanceOf[DateFormat]
+			peer.clone.asInstanceOf[DateFormat]
 }

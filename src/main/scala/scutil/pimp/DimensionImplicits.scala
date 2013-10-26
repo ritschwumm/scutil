@@ -7,46 +7,46 @@ import scutil.geom._
 object DimensionImplicits extends DimensionImplicits
 
 trait DimensionImplicits {
-	implicit def toDimensionExt(delegate:Dimension):DimensionExt	= new DimensionExt(delegate)
+	implicit def toDimensionExt(peer:Dimension):DimensionExt	= new DimensionExt(peer)
 }
 	
-final class DimensionExt(delegate:Dimension) {
+final class DimensionExt(peer:Dimension) {
 	def unary_- :Dimension			= new Dimension(
-			-delegate.width,
-			-delegate.height)
+			-peer.width,
+			-peer.height)
 			
 	def +(that:Dimension):Dimension	=  new Dimension(
-			delegate.width  + that.width,
-			delegate.height + that.height)
+			peer.width  + that.width,
+			peer.height + that.height)
 	
 	def -(that:Dimension):Dimension	=  new Dimension(
-			delegate.width	- that.width,
-			delegate.height	- that.height)
+			peer.width	- that.width,
+			peer.height	- that.height)
 			
 	def *(that:Dimension):Dimension	=  new Dimension(
-			delegate.width  * that.width,
-			delegate.height * that.height)
+			peer.width  * that.width,
+			peer.height * that.height)
 			
 	def /(that:Dimension):Dimension	=  new Dimension(
-			delegate.width  / that.width,
-			delegate.height / that.height)
+			peer.width  / that.width,
+			peer.height / that.height)
 			
 	/*
 	def *(factor:Int):Dimension	=  new Dimension(
-			delegate.width  * factor,
-			delegate.height * factor)
+			peer.width  * factor,
+			peer.height * factor)
 			
 	def /(factor:Int):Dimension	=  new Dimension(
-			delegate.width  / factor,
-			delegate.height / factor)
+			peer.width  / factor,
+			peer.height / factor)
 	*/
 	
 	//------------------------------------------------------------------------------
 			
 	def toPoint:Point	= new Point(
-			delegate.width,
-			delegate.height)
+			peer.width,
+			peer.height)
 			
 	def toIntPoint:IntPoint	=
-			IntPoint fromAwtDimension delegate
+			IntPoint fromAwtDimension peer
 }

@@ -15,12 +15,12 @@ object Diff {
 
 	private def equalsMethod[T](a:T, b:T):Boolean	= a == b
 	
-	// TODO only compare from the first different element to the last different element
-	def apply[T](a:Seq[T], b:Seq[T], equal:(T,T)=>Boolean = equalsMethod[T] _):Diff[T] = {
+	// BETTER only compare from the first different element to the last different element
+	def compile[T](a:Seq[T], b:Seq[T], equal:(T,T)=>Boolean = equalsMethod[T] _):Diff[T] = {
 		val n	= a.length
 		val m	= b.length
 		
-		val S	= Array.ofDim[Int](n+1, m+1)
+		val S	= Array.ofDim[Int]		(n+1, m+1)
 		val R	= Array.ofDim[Direction](n+1, m+1)
 
 		// It is important to use to, not until.  
@@ -64,7 +64,7 @@ object Diff {
 		var pos		= S(n)(m) - 1
 		
 		// Trace the backtracking matrix.
-		var diffs	= List.empty[Delta[T]]
+		var diffs	= Vector.empty[Delta[T]]
 		var ii	= n
 		var jj	= m
 		while (ii > 0 || jj > 0) {
@@ -74,10 +74,10 @@ object Diff {
 					jj		-= 1
 				case Up =>
 					ii		-= 1
-					diffs	::= Remove(ii, a(ii))
+					diffs	+:= Remove(ii, a(ii))
 				case Left =>
 					jj		-= 1
-					diffs	::= Include(jj, b(jj))
+					diffs	+:= Include(jj, b(jj))
 				case Neither =>
 					// nothing to do here
 			}
@@ -104,6 +104,6 @@ final case class Diff[T](deltas:Seq[Delta[T]]) {
 			case Include(index, element)	=> out insert (index, element)
 			case Remove(index, element)		=> out remove index
 		}
-		out
+		out.toVector
 	}		
 }

@@ -7,12 +7,12 @@ import scutil.lang._
 object RegexImplicits extends RegexImplicits
 
 trait RegexImplicits {
-    implicit def toRegexExt(delegate:Regex)	= new RegexExt(delegate)
+    implicit def toRegexExt(peer:Regex)	= new RegexExt(peer)
 }
 
-final class RegexExt(delegate:Regex) {
+final class RegexExt(peer:Regex) {
 	def matches(s:CharSequence):Boolean	= 
-			(delegate.pattern matcher s).matches
+			(peer.pattern matcher s).matches
 	
 	def asMarshaller:Marshaller[String,String]	= 
 			Marshaller guarded matches

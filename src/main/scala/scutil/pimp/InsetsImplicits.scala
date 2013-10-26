@@ -5,37 +5,37 @@ import java.awt.{ List=>AwtList, _ }
 object InsetsImplicits extends InsetsImplicits
 
 trait InsetsImplicits {
-	implicit def toInsetsExt(delegate:Insets):InsetsExt	= new InsetsExt(delegate)
+	implicit def toInsetsExt(peer:Insets):InsetsExt	= new InsetsExt(peer)
 }
 	
-final class InsetsExt(delegate:Insets) {
+final class InsetsExt(peer:Insets) {
 	def unary_! :Insets			= new Insets(
-			-delegate.top,
-			-delegate.left,
-			-delegate.bottom,
-			-delegate.right)
+			-peer.top,
+			-peer.left,
+			-peer.bottom,
+			-peer.right)
 			
 	def +(that:Insets):Insets	= new Insets(
-			delegate.top	+ that.top,
-			delegate.left	+ that.left,
-			delegate.bottom	+ that.bottom,
-			delegate.right	+ that.right)
+			peer.top	+ that.top,
+			peer.left	+ that.left,
+			peer.bottom	+ that.bottom,
+			peer.right	+ that.right)
 			
 	def -(that:Insets):Insets	= new Insets(
-			delegate.top	- that.top,
-			delegate.left	- that.left,
-			delegate.bottom	- that.bottom,
-			delegate.right	- that.right)
+			peer.top	- that.top,
+			peer.left	- that.left,
+			peer.bottom	- that.bottom,
+			peer.right	- that.right)
 			
 	def *(factor:Int):Insets	= new Insets(
-			delegate.top	* factor,
-			delegate.left	* factor,
-			delegate.bottom	* factor,
-			delegate.right	* factor)
+			peer.top	* factor,
+			peer.left	* factor,
+			peer.bottom	* factor,
+			peer.right	* factor)
 			
 	def /(factor:Int):Insets	= new Insets(
-			delegate.top	/ factor,
-			delegate.left	/ factor,
-			delegate.bottom	/ factor,
-			delegate.right	/ factor)
+			peer.top	/ factor,
+			peer.left	/ factor,
+			peer.bottom	/ factor,
+			peer.right	/ factor)
 }
