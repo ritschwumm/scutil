@@ -106,15 +106,26 @@ sealed trait Tried[+F,+W] {
 	def withSwapped[FX,WX](func:Tried[W,F]=>Tried[WX,FX]):Tried[FX,WX]	=
 			func(swap).swap
 		
+	//------------------------------------------------------------------------------
+	
 	def bimap[FX,WX](failFunc:F=>FX, winFunc:W=>WX):Tried[FX,WX]	=
 			cata(failFunc andThen Fail.apply, winFunc andThen Win.apply)
+		
+	def mapFail[FX](func:F=>FX):Tried[FX,W]	=
+			cata(func andThen Fail.apply, Win.apply)
+		
+	def flatMapFail[FX,WW>:W](func:F=>Tried[FX,WW]):Tried[FX,WW]	=
+			cata(func, Win.apply)
 	
 	//------------------------------------------------------------------------------
 	
 	def getOrElse[WW>:W](that: =>WW):WW	= 
 			cata(_ => that, identity)
 		
-	def getOrError(s:String):W	=
+	def getOrRescue[WW>:W](func:F=>WW):WW	= 
+			cata(func, identity)
+		
+	def getOrError(s: =>String):W	=
 			getOrElse(sys error s) 
 		
 	def orElse[FF>:F,WW>:W](that: =>Tried[FF,WW]):Tried[FF,WW]	= 
@@ -128,10 +139,13 @@ sealed trait Tried[+F,+W] {
 	def reject[FF>:F](func:PFunction[W,FF]):Tried[FF,W]	=
 			cata(Fail.apply, it => func(it) map Fail.apply getOrElse Win(it))
 		
-	def filterOr[FF>:F](func:W=>Boolean, fail:FF):Tried[FF,W]	=
+	def guardByOr[FF>:F](func:Predicate[W], fail: =>FF):Tried[FF,W]	=
 			cata(Fail.apply, it => if (func(it)) Win(it) else Fail(fail))
 			
-	def mapOr[FF>:F,WW](func:PFunction[W,WW], fail:FF):Tried[FF,WW]	=
+	def preventByOr[FF>:F](func:Predicate[W], fail: =>FF):Tried[FF,W]	=
+			cata(Fail.apply, it => if (!func(it)) Win(it) else Fail(fail))
+			
+	def collapseOr[FF>:F,WW](func:PFunction[W,WW], fail:FF):Tried[FF,WW]	=
 			cata(Fail.apply, it => func(it) map Win.apply getOrElse Fail(fail))
 		
 	def collectOr[FF>:F,WW](func:PartialFunction[W,WW], fail:FF):Tried[FF,WW]	=

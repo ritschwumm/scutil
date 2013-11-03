@@ -6,6 +6,7 @@ import java.sql._
 import java.nio.channels._
 import java.util.concurrent.locks.Lock
 import java.util.Scanner
+import java.util.TimerTask
 import javax.imageio.stream.ImageInputStream
 import java.awt.Graphics
 // import java.beans.XMLEncoder
@@ -37,4 +38,5 @@ trait DisposableConversions {
 	implicit def DisposableForScanner			(peer:Scanner)			= Disposable(peer.close)
 	implicit def DisposableForImageInputStream	(peer:ImageInputStream)	= Disposable(peer.close)
 	implicit def DisposableForGraphics			(peer:Graphics)			= Disposable(peer.dispose)
+	implicit def DisposableTimerTask			(peer:TimerTask)		= Disposable(peer.cancel)
 }

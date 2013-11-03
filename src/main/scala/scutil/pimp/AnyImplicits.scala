@@ -121,6 +121,14 @@ final class AnyExt[T](peer:T) {
 	/** pair with function applied */
 	def secondBy[U](func:T=>U):(U,T)	=
 			(func(peer), peer)
+		
+	/** pair with another value */
+	def firstWith[U](that:U):(T,U)	=
+			(peer, that)
+
+	/** pair with function applied */
+	def secondWith[U](that:U):(U,T)	=
+			(that, peer)
 	
 	/** pair with itself */ 
 	def duplicate:(T,T)	= (peer, peer)

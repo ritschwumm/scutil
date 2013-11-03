@@ -9,6 +9,9 @@ trait ThrowableImplicits {
 }
 
 final class ThrowableExt(peer:Throwable) {
+	def causeOption:Option[Throwable]	=
+			Option(peer.getCause)
+		
 	def stackTrace:String	= {
 		val	sw	= new StringWriter
 		val pw	= new PrintWriter(sw)
