@@ -1,13 +1,14 @@
 package scutil.lang
 
-import scala.util.control.Exception._
-
 object Bijection {
 	def identity[T]:Bijection[T,T]	= 
 			Bijection(Predef.identity, Predef.identity)
 }
 
 final case class Bijection[S,T](write:S=>T, read:T=>S) {
+	def lift(func:Endo[T]):Endo[S]	=
+			write andThen func andThen read
+		
 	def inverse:Bijection[T,S]	= 
 			Bijection(read, write)
 	

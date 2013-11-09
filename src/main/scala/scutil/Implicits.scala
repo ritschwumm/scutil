@@ -22,6 +22,7 @@ trait LangImplicits
 		with	Function0Implicits
 		with	Function1Implicits
 		with	Function2Implicits
+		with	HomogenousPairImplicits
 		with	IteratorImplicits
 		with	ListImplicits
 		with	MapImplicits

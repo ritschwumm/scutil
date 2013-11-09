@@ -135,4 +135,7 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 					)
 				}
 			}
+			
+	def orElse(that:PLens[S,T]):PLens[S,T]	=
+			PLens(this.on orElse that.on)
 }

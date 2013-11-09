@@ -19,6 +19,10 @@ final class PairExt[T1,T2](peer:Pair[T1,T2]) {
 	
 	/** apply binary function to elements */
 	def combineWith[U](func:(T1,T2)=>U):U	= func(peer._1, peer._2)
+	
+	/** map both elements */
+	def bimap[U1,U2](func1:T1=>U1, func2:T2=>U2):(U1,U2)	=
+			(func1(peer._1), func2(peer._2))
 }
 
 /** comonad, see Either's LeftProjection which is a monad */
