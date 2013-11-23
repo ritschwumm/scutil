@@ -2,6 +2,7 @@ package scutil.log
 
 import java.io._
 
+import scutil.lang.SourceLocation
 import scutil.time._
 
 object DefaultLogHandler extends DefaultLogHandler
@@ -17,35 +18,68 @@ trait DefaultLogHandler extends LogHandler {
 	
 	def print(s:String) {
 		synchronized {
-			System.err println	s
-			System.err flush	()
+			printStream println	s
+			printStream flush	()
 		}
 	}
 	
+	def printStream:PrintStream	=
+			System.err
+	
 	def format(event:LogEvent):String	= {
-		val first	= header(event) ++ messages(event.elements) mkString "\t"
-		val more	= throwables(event.elements) map trace  mkString ""
-		first +	
-		(if (more.nonEmpty) "\n" else "")	+
-		more
+		val messages	= event.elements flatMap extractMessage
+		val throwables	= event.elements flatMap extractThrowable
+		
+		val headerItems	=
+				Vector(
+					formatLevel(event.level),
+					formatInstant(event.timestamp), 
+					formatLocation(event.location)
+				)
+		val messageItems	= messages map formatMessage
+		val throwableItems	= throwables map formatThrowable
+			
+		((headerItems ++ messageItems) mkString "\t")	+
+		(if (throwableItems.nonEmpty) "\n" else "")		+
+		(throwableItems mkString "")
 	}
 	
-	def header(event:LogEvent):Seq[String]	=
-			Vector(event.level.name, s"[${now}]", event.location.name + ":" + event.location.line)
-	
-	def now:String	=
-			MilliInstant.now.toISO8601
+	def formatInstant(it:MilliInstant):String	=
+			"[" + it.toISO8601 + "]"
 		
-	def messages(elements:Seq[Any]):Seq[String]	=
-			elements collect { case x if !x.isInstanceOf[Throwable] => x.toString }
+	def formatLocation(it:SourceLocation):String	=
+			it.name + ":" + it.line
 		
-	def throwables(elements:Seq[Any]):Seq[Throwable]	=
-			elements collect { case x:Throwable => x }
+	def formatLevel(it:LogLevel):String	=
+			it match {
+				case TRACE	=> "TRACE"
+				case DEBUG	=> "DEBUG"
+				case INFO	=> "INFO"
+				case WARN	=> "WARN"
+				case ERROR	=> "ERROR"
+				case FATAL	=> "FATAL"
+			}
 		
-	def trace(t:Throwable):String	= {
+	def formatMessage(it:Any):String	=
+			if (it != null)	it.toString
+			else			"<null>"
+			
+	def formatThrowable(t:Throwable):String	= {
 		val	sw	= new StringWriter
 		val	pw	= new PrintWriter(sw)
 		t printStackTrace pw
 		sw.toString
 	}
+	
+	def extractMessage(element:Any):Option[Any]	=
+			element match {
+				case x if !x.isInstanceOf[Throwable]	=> Some(x)
+				case _									=> None
+			}
+		
+	def extractThrowable(element:Any):Option[Throwable]	=
+			element match {
+				case x:Throwable 	=> Some(x)
+				case _				=> None
+			}
 }

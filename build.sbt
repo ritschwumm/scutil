@@ -2,13 +2,13 @@ name			:= "scutil"
 
 organization	:= "de.djini"
 
-version			:= "0.33.0"
+version			:= "0.34.0"
 
 scalaVersion	:= "2.10.3"
 
 libraryDependencies	++= Seq(
 	"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "compile",
-	"org.specs2"		%%	"specs2"		% "2.2.3"				% "test"	exclude("org.scala-lang", "scala-library")
+	"org.specs2"		%%	"specs2"		% "2.3.4"				% "test"	exclude("org.scala-lang", "scala-library")
 )
 
 scalacOptions	++= Seq(

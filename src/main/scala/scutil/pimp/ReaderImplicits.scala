@@ -61,7 +61,7 @@ final class ReaderExt(peer:Reader) {
 	}
 	
 	/** copy everything */
-	def copyTo(out:Writer) {
+	def transferTo(out:Writer) {
 		val	buffer	= new Array[Char](blockSize)
 		var running	= true
 		while (running) {

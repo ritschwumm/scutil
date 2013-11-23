@@ -61,7 +61,7 @@ final class InputStreamExt(peer:InputStream) {
 	}
 	
 	/** copy everything */
-	def copyTo(out:OutputStream) {
+	def transferTo(out:OutputStream) {
 		val	buffer	= new Array[Byte](blockSize)
 		var running	= true
 		while (running) {

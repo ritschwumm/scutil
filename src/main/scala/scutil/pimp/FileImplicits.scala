@@ -49,6 +49,10 @@ final class FileExt(peer:File) {
 			Lists unfoldRightSimple (
 					peer,
 					(it:File) => Option(it.getParentFile))
+	
+	/** like parentChain but includes the starting file itself */
+	def selfAndParentChain:List[File]	=
+			peer :: parentChain
 					
 	/** Some existing file, or None */
 	def guardExists:Option[File] =
