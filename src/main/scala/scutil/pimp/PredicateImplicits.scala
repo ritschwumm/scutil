@@ -13,6 +13,11 @@ final class PredicateExt[T](peer:Predicate[T]) {
 	def && [U<:T](that:Predicate[U]):Predicate[U]	= Predicates and	(peer, that)
 	def || [U<:T](that:Predicate[U]):Predicate[U]	= Predicates or		(peer, that)
 	
+	// non-symbolic aliases
+	def not:Predicate[T]							= Predicates not	peer
+	def and[U<:T](that:Predicate[U]):Predicate[U]	= Predicates and	(peer, that)
+	def or[U<:T](that:Predicate[U]):Predicate[U]	= Predicates or		(peer, that)
+	
 	def guardOn[S<:T,U](function:S=>U):PFunction[S,U]	= 
 			it	=> if (peer(it))	Some(function(it))	else None
 			

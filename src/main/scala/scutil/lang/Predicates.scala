@@ -3,7 +3,9 @@ package scutil.lang
 import scutil.lang._
 
 object Predicates {
+	/** zero for && */
 	val constTrue:Any=>Boolean		= _ => true
+	/** zero for || */
 	val constFalse:Any=>Boolean		= _ => false
 	
 	def not[T](sub:Predicate[T]):Predicate[T]								= (it:T)	=> !sub(it)
