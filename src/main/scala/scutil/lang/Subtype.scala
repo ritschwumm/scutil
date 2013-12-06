@@ -1,10 +1,18 @@
 package scutil.lang
 
+import scala.reflect.ClassTag
+
 import scutil.lens._
 
 object Subtype {
 	def partial[Super,Sub<:Super](pfunc:PartialFunction[Super,Sub]):Subtype[Super,Sub]	=
 			Subtype(pfunc.lift)
+		
+	/** throwables have no type parameters so variance is not an issue here */
+	def throwable[E<:Throwable:ClassTag]:Subtype[Throwable,E]	=
+			Subtype partial {
+				case x:E	=> x
+			}
 }
 
 final case class Subtype[Super,Sub<:Super](downcast:PFunction[Super,Sub]) {

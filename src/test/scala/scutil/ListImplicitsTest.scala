@@ -2,7 +2,7 @@ package scutil
 
 import org.specs2.mutable._
 
-import Implicits._
+import implicits._
 
 class ListImplicitsTest extends Specification {
 	"unprefix" should {

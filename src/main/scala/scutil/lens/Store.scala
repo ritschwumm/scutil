@@ -1,7 +1,7 @@
 package scutil.lens
 
 import scutil.lang._
-import scutil.Implicits._
+import scutil.implicits._
 
 object Store {
 	def identity[T](t:T):Store[T,T]	= 

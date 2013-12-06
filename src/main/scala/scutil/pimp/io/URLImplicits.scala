@@ -4,6 +4,7 @@ import java.io._
 import java.nio.charset.Charset
 import java.net.URL
 
+import scutil.lang._
 import scutil.pimp.AnyImplicits._
 import scutil.pimp.DisposableConversions._
 
@@ -14,6 +15,8 @@ trait URLImplicits {
 }
 
 final class URLExt(peer:URL) {
+	// TODO handle IOException
+	
 	/** execute a closure with an InputStream reading from this URL */
 	def withInputStream[T](code:(InputStream=>T)):T	=
 			peer.openStream() use code
@@ -21,6 +24,10 @@ final class URLExt(peer:URL) {
 	/** execute a closure with a Reader reading from this URL */
 	def withReader[T](charset:Charset)(code:(InputStreamReader=>T)):T	=
 			new InputStreamReader(peer.openStream(), charset) use code
+		
+	def openInputStream():Tried[IOException,InputStream]	=
+			try { Win(peer.openStream()) }
+			catch { case e:IOException => Fail(e) }
 		
 	/** 
 	converts a "file://..." URL to a File without being too critical

@@ -3,7 +3,7 @@ package scutil.gui
 import java.awt.GridBagConstraints
 import java.awt.Insets
 
-import scutil.Implicits._
+import scutil.implicits._
 
 object GridBagDSL {
 	def GBC = new GridBagConstraints

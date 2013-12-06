@@ -1,6 +1,7 @@
 package scutil.pimp
 
 import java.io._
+import java.nio.charset.Charset
 
 import scala.collection.mutable
 
@@ -75,4 +76,7 @@ final class InputStreamExt(peer:InputStream) {
 	
 	def concat(that:InputStream):InputStream	=
 			new SequenceInputStream(peer, that)
+		
+	def toReader(encoding:Charset):InputStreamReader	=
+			new InputStreamReader(peer, encoding)
 }

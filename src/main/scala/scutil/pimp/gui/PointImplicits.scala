@@ -11,35 +11,33 @@ trait PointImplicits {
 }
 	
 final class PointExt(peer:Point) {
-	def unary_- :Point			= new Point(
+	def unary_- :Point	= new Point(
 			-peer.x,
 			-peer.y)
 			
-	def +(that:Point):Point	=  new Point(
+	def +(that:Point):Point	= new Point(
 			peer.x + that.x,
 			peer.y + that.y)
 	
-	def -(that:Point):Point	=  new Point(
+	def -(that:Point):Point	= new Point(
 			peer.x	- that.x,
 			peer.y	- that.y)
 			
-	def *(that:Point):Point	=  new Point(
+	def *(that:Point):Point	= new Point(
 			peer.x  * that.x,
 			peer.y	* that.y)
 			
-	def /(that:Point):Point	=  new Point(
+	def /(that:Point):Point	= new Point(
 			peer.x / that.x,
 			peer.y / that.y)
 			
-	/*
-	def *(factor:Int):Point	=  new Point(
+	def *!(factor:Int):Point	= new Point(
 			peer.x  * factor,
 			peer.y * factor)
 			
-	def /(factor:Int):Point	=  new Point(
+	def /!(factor:Int):Point	= new Point(
 			peer.x / factor,
 			peer.y / factor)
-	*/
 
 	//------------------------------------------------------------------------------
 			

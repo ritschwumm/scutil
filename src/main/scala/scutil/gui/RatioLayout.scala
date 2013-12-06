@@ -2,7 +2,7 @@ package scutil.gui
 
 import java.awt.{ List => AwtList, _ }
 
-import scutil.Implicits._
+import scutil.implicits._
 
 /** layouts two components horizontally or vertically such that the available space is divided at a fixed ratio */
 final class RatioLayout(horizontal:Boolean, gap:Int, parts:Seq[Double]) extends LayoutManager {

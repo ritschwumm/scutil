@@ -2,16 +2,16 @@ package scutil
 
 import scutil.pimp._
 
-object Implicits extends Implicits
-trait Implicits 
-		extends	LangImplicits
-		with	JavaImplicits
-		with	IoImplicits
-		with	GuiImplicits
+object implicits extends implicits
+trait implicits 
+		extends	langImplicits
+		with	javaImplicits
+		with	ioImplicits
+		with	guiImplicits
 		with	DisposableConversions
 		
-object LangImplicits extends LangImplicits
-trait LangImplicits
+object langImplicits extends langImplicits
+trait langImplicits
 		extends	AnyImplicits 
 		with	AnyRefImplicits
 		with	BooleanImplicits
@@ -41,8 +41,8 @@ trait LangImplicits
 		with	TraversableOnceImplicits
 		with	TryImplicits
 		
-object JavaImplicits extends JavaImplicits
-trait JavaImplicits
+object javaImplicits extends javaImplicits
+trait javaImplicits
 		extends	ClassImplicits
 		with	DateImplicits
 		with	DateFormatImplicits
@@ -51,15 +51,16 @@ trait JavaImplicits
 		with	StringTokenizerImplicits
 		with	ThrowableImplicits
 		
-object IoImplicits extends IoImplicits		
-trait IoImplicits
+object ioImplicits extends ioImplicits
+trait ioImplicits
 		extends	FileImplicits
 		with	InputStreamImplicits
+		with	OutputStreamImplicits
 		with	ReaderImplicits
 		with	URLImplicits
 		
-object GuiImplicits extends GuiImplicits				
-trait GuiImplicits
+object guiImplicits extends guiImplicits
+trait guiImplicits
 		extends	ColorImplicits
 		with	ComponentImplicits
 		with	ContainerImplicits

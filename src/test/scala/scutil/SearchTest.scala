@@ -3,7 +3,7 @@ package scutil
 import org.specs2.mutable._
 
 import scutil.lang._
-import scutil.Implicits._
+import scutil.implicits._
 import scutil.search._
 
 class SearchTest extends Specification {

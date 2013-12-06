@@ -1,6 +1,6 @@
 package scutil.text
 
-import scutil.Implicits._
+import scutil.implicits._
 
 object Dump {
 	def hexLines(bytesPerLine:Int, bytes:Seq[Byte]):Iterator[String]	=

@@ -12,7 +12,7 @@ import scala.xml.dtd.DocType
 import scala.xml.factory.XMLLoader
 import javax.xml.parsers.SAXParser
 
-import scutil.Implicits._
+import scutil.implicits._
 
 /*
 NOTE

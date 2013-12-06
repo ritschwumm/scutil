@@ -6,7 +6,7 @@ import scala.collection.mutable
 import scala.collection.JavaConverters._
 
 import scutil.lang._
-import scutil.Implicits._
+import scutil.implicits._
 import scutil.platform._
 
 object External {

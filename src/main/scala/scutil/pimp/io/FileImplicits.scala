@@ -87,7 +87,20 @@ final class FileExt(peer:File) {
 	}
 			
 	//------------------------------------------------------------------------------
+	//## file only: streams
+	
+	def openInputStream():Tried[FileNotFoundException,InputStream]	=
+			try { Win(new FileInputStream(peer)) }
+			catch { case e:FileNotFoundException => Fail(e) }
+			
+	def openOutputStream():Tried[FileNotFoundException,OutputStream]	=
+			try { Win(new FileOutputStream(peer)) }
+			catch { case e:FileNotFoundException => Fail(e) }
+			
+	//------------------------------------------------------------------------------
 	//## file only: resource closure
+	
+	// TODO handle IOException
 	
 	/** execute a closure with an InputStream reading from this File */
 	def withInputStream[T](code:(FileInputStream=>T)):T	=
@@ -107,6 +120,8 @@ final class FileExt(peer:File) {
 
 	//------------------------------------------------------------------------------
 	//## file only: complete read
+	
+	// TODO handle IOException
 	
 	def readBytes():Array[Byte]				= withInputStream	{ _ readFully ()	}
 	def writeBytes(bytes:Array[Byte]):Unit	= withOutputStream	{ _ write bytes		}

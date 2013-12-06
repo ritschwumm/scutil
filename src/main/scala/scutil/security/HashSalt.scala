@@ -4,8 +4,8 @@ import java.security._
 import java.text.Normalizer
 import java.nio.charset.Charset
 
-import scutil.LangImplicits._
-import scutil.JavaImplicits._
+import scutil.langImplicits._
+import scutil.javaImplicits._
 import scutil.io.Base64
 
 /*

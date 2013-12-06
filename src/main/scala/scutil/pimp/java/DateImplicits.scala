@@ -13,10 +13,7 @@ trait DateImplicits {
 }
 
 final class DateExt(peer:Date) {
-	def format(fmt:String):String	= 
-			new SimpleDateFormat(fmt) format peer
-	
-	def format(fmt:String, tz:TimeZone):String	= {
+	def format(fmt:String, tz:TimeZone = TimeZone.getDefault):String	= {
 		val df	= new SimpleDateFormat(fmt)
 		df setTimeZone tz
 		df format peer

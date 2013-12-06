@@ -1,6 +1,7 @@
 package scutil.lang
 
 import scala.util.{ Try, Success, Failure }
+import scala.reflect.ClassTag
 
 import scutil.lang._
 
@@ -17,6 +18,8 @@ object Tried {
 	def notNull[T](value:T):Tried[Null,T]	= 
 			if (value != null)	Win(value)
 			else				Fail(null)
+		
+	//------------------------------------------------------------------------------
 	
 	def catchThrowable[T](value: =>T):Tried[Throwable,T]	=
 			try { Win(value) }
@@ -25,6 +28,23 @@ object Tried {
 	def catchException[T](value: =>T):Tried[Exception,T]	=
 			try { Win(value) }
 			catch { case e:Exception => Fail(e) }
+			
+	def catchSpecific[E<:Throwable:ClassTag,T](value: =>T):Tried[E,T]	=
+			catchSubtype(Subtype.throwable[E], value)
+		
+	def catchSubtype[E<:Throwable,T](MySubtype:Subtype[Throwable,E], value: =>T):Tried[E,T]	=
+			try { Win(value) }
+			catch {
+				case MySubtype(e)	=> Fail(e)
+				case e:Throwable	=> throw e
+			}
+			
+	def catchClass[E<:Throwable,T](clazz:Class[E], value: =>T):Tried[E,T]	=
+			try { Win(value) }
+			catch { case e:Throwable =>
+				if (clazz isInstance e)	Fail(e.asInstanceOf[E])
+				else					throw e
+			}
 }
 
 /** right biased Either (with swapped type parameters), Try with parameterized error */

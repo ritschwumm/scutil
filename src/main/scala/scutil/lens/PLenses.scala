@@ -1,7 +1,7 @@
 package scutil.lens
 
 import scutil.lang._
-import scutil.Implicits._
+import scutil.implicits._
 
 object PLenses {
 	def seq[T](i:Int):PLens[Seq[T],T]	=

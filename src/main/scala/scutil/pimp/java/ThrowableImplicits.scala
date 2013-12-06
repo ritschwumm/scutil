@@ -14,8 +14,7 @@ final class ThrowableExt(peer:Throwable) {
 		
 	def stackTrace:String	= {
 		val	sw	= new StringWriter
-		val pw	= new PrintWriter(sw)
-		peer printStackTrace pw
+		peer printStackTrace new PrintWriter(sw)
 		sw.toString
 	}
 }

@@ -1,6 +1,6 @@
 package scutil.worker
 
-import scutil.Implicits._
+import scutil.implicits._
 
 /** a very simple synchronized queue */
 final class WorkerQueue[T] {

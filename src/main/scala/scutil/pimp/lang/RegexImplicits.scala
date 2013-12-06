@@ -11,9 +11,9 @@ trait RegexImplicits {
 }
 
 final class RegexExt(peer:Regex) {
-	def matches(s:CharSequence):Boolean	= 
+	def test(s:CharSequence):Boolean	= 
 			(peer.pattern matcher s).matches
 	
 	def asMarshaller:Marshaller[String,String]	= 
-			Marshaller guarded matches
+			Marshaller guarded test
 }

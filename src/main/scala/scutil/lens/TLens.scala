@@ -1,7 +1,7 @@
 package scutil.lens
 
 import scutil.lang._
-import scutil.Implicits._
+import scutil.implicits._
 
 object TLens {
 	def create[S,T](get:S=>T, put:(S,T)=>S):TLens[S,T]	=
