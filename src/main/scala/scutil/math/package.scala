@@ -2,7 +2,14 @@ package scutil
 
 import java.lang.{ Math => JMath, Long => JLong }
 
+import scala.math.Pi
+
 package object math {
+	val PiHalf		= Pi / 2
+	val PiDouble	= Pi * 2
+	
+	//------------------------------------------------------------------------------
+	
 	val Log2			= JMath log 2
 	val Log2Reciprocal	= 1.0 / Log2
 	
@@ -18,7 +25,7 @@ package object math {
 	def exp10(value:Double):Double	= JMath pow (10, value)
 	
 	// inverse to pow in the standard library
-	def logN(value:Double, base:Double):Double	= (JMath log value) / (JMath log base)
+	def logB(base:Double, value:Double):Double	= (JMath log value) / (JMath log base)
 
 	//------------------------------------------------------------------------------
 

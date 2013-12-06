@@ -7,10 +7,11 @@ import java.nio.channels._
 import java.util.concurrent.locks.Lock
 import java.util.Scanner
 import java.util.TimerTask
+import javax.imageio._
 import javax.imageio.stream.ImageInputStream
 import java.awt.Graphics
-// import java.beans.XMLEncoder
-// import java.beans.XMLDecoder
+import java.beans.XMLEncoder
+import java.beans.XMLDecoder
 
 import scutil.lang._
 
@@ -33,9 +34,11 @@ trait DisposableConversions {
 	
 	implicit def DisposableForLock				(peer:Lock)				= Disposable(peer.unlock)
 	
-	// implicit def DisposableForXMLDecoder		(peer:XMLDecoder)		= Disposable(peer.close)
-	// implicit def DisposableForXMLEncoder		(peer:XMLEncoder)		= Disposable(peer.close)
+	implicit def DisposableForXMLDecoder		(peer:XMLDecoder)		= Disposable(peer.close)
+	implicit def DisposableForXMLEncoder		(peer:XMLEncoder)		= Disposable(peer.close)
 	implicit def DisposableForScanner			(peer:Scanner)			= Disposable(peer.close)
+	implicit def DisposableForImageReader		(peer:ImageReader)		= Disposable(peer.dispose)
+	implicit def DisposableForImageWriter		(peer:ImageWriter)		= Disposable(peer.dispose)
 	implicit def DisposableForImageInputStream	(peer:ImageInputStream)	= Disposable(peer.close)
 	implicit def DisposableForGraphics			(peer:Graphics)			= Disposable(peer.dispose)
 	implicit def DisposableTimerTask			(peer:TimerTask)		= Disposable(peer.cancel)

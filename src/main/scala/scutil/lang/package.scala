@@ -24,5 +24,15 @@ package object lang {
 	def disposable(block: =>Unit):Disposable	= Disposable(task(block))
 	
 	/** tell the compiler the control flow never reaches this point */
-	def neverComesHere:Nothing	= sys error "silence! i kill you!"
+	def nothing:Nothing	= sys error "silence! i kill you!"
+	
+	//------------------------------------------------------------------------------
+	
+	/** type inference helper */
+	def taking[S]	= new FunctionTaking[S]
+	
+	final class FunctionTaking[S] {
+		@inline 
+		def apply[T](func:S=>T):S=>T	= func
+	} 
 }

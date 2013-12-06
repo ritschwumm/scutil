@@ -114,7 +114,7 @@ final class ComponentUnderMouse(onError:(String,Exception)=>Unit) {
 					}
 			}
 		}
-		neverComesHere
+		nothing
 	}
 	
 	private val testThread	= new Thread {

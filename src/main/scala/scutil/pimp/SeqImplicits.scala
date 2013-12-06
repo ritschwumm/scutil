@@ -11,6 +11,14 @@ trait SeqImplicits {
 }
 
 final class SeqExt[T](peer:Seq[T]) {
+	// aliases with low precendence
+	
+	def prepend(it:T):Seq[T]	= it +: peer
+	def append(it:T):Seq[T]		= peer :+ it
+	
+	def prependAll(it:Traversable[T]):Seq[T]	= it ++: peer
+	def appendAll(it:Traversable[T]):Seq[T]		= peer ++ it
+	
 	/** allow inserting an item at a given index if possible */
 	def insertionAt(index:Int):Option[T=>Seq[T]]	=
 			if (index >= 0 && index <= peer.size) {

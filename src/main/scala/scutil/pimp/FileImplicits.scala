@@ -29,6 +29,9 @@ final class FileExt(peer:File) {
 	/** time of last modification as an MilliInstant, returns MilliInstant.zero for non-existing files */
 	def lastModifiedMilliInstant:MilliInstant	= 
 			MilliInstant(peer.lastModified)
+		
+	def updateLastModifiedMilliInstant(it:MilliInstant):Boolean	=
+			peer setLastModified it.millis
 	
 	/** whether the peer is newer than another file. if the other file does not exist it counts as newer */ 
 	def newerThan(that:File):Boolean	=
