@@ -26,8 +26,7 @@ final class URLExt(peer:URL) {
 			new InputStreamReader(peer.openStream(), charset) use code
 		
 	def openInputStream():Tried[IOException,InputStream]	=
-			try { Win(peer.openStream()) }
-			catch { case e:IOException => Fail(e) }
+			Catch.byType[IOException] in peer.openStream()
 		
 	/** 
 	converts a "file://..." URL to a File without being too critical

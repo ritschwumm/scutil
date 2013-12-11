@@ -7,7 +7,6 @@ import java.lang.{
 import java.util.regex.Pattern
 
 import scala.collection.mutable
-import scala.util.control.Exception._
 
 import scutil.lang._
 
@@ -38,8 +37,7 @@ final class StringExt(peer:String) {
 	def toDoubleTried:Tried[NumberFormatException,Double]	= toNumberTried(JDouble.parseDouble)
 		
 	private def toNumberTried[T](func:String=>T):Tried[NumberFormatException,T]	=
-			try { Win(func(peer)) }
-			catch { case e:NumberFormatException => Fail(e) }
+			Catch.byType[NumberFormatException] in func(peer)
 	
 	//------------------------------------------------------------------------------
 	

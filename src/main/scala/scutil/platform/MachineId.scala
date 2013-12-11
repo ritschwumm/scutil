@@ -37,7 +37,7 @@ object MachineId {
 				
 		val process:Seq[Byte]	=
 				for {
-					name	<- (Tried catchException ManagementFactory.getRuntimeMXBean.getName).toVector
+					name	<- (Catch.exception in ManagementFactory.getRuntimeMXBean.getName).toVector
 					byte	<- name getBytes "utf-8"
 				}
 				yield byte

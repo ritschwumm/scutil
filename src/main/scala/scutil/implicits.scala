@@ -15,7 +15,7 @@ trait langImplicits
 		extends	AnyImplicits 
 		with	AnyRefImplicits
 		with	BooleanImplicits
-		with	CatchImplicits
+		with	ExceptionCatchImplicits
 		with	EitherImplicits
 		with	ElemImplicits
 		with	ExecutorImplicits

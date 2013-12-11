@@ -90,12 +90,10 @@ final class FileExt(peer:File) {
 	//## file only: streams
 	
 	def openInputStream():Tried[FileNotFoundException,InputStream]	=
-			try { Win(new FileInputStream(peer)) }
-			catch { case e:FileNotFoundException => Fail(e) }
+			Catch.byType[FileNotFoundException] in new FileInputStream(peer)
 			
 	def openOutputStream():Tried[FileNotFoundException,OutputStream]	=
-			try { Win(new FileOutputStream(peer)) }
-			catch { case e:FileNotFoundException => Fail(e) }
+			Catch.byType[FileNotFoundException] in new FileOutputStream(peer)
 			
 	//------------------------------------------------------------------------------
 	//## file only: resource closure

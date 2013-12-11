@@ -16,7 +16,7 @@ final class AnyExt[T](peer:T) {
 	
 	/** symbolic alias for into */
 	@inline
-	def |>[U](f:T=>U):U		= into(f)
+	def |>[U](f:T=>U):U	= into(f)
 
 	/** symbolic alias for doto */
 	@inline

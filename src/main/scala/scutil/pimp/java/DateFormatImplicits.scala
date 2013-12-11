@@ -3,8 +3,6 @@ package scutil.pimp
 import java.text._
 import java.util.Date
 
-import scala.util.control.Exception._
-
 import scutil.lang._
 
 object DateFormatImplicits extends DateFormatImplicits
@@ -14,13 +12,18 @@ trait DateFormatImplicits {
 }
 
 final class DateFormatExt(peer:DateFormat) {
-	def asMarshaller:Marshaller[Date,String]	= Marshaller(
-			it => cloned format it, 
-			it => catching(classOf[ParseException]) opt {
-				val	clone	= cloned
-				clone setLenient false
-				cloned parse it 
-			})
+	def asMarshaller:Marshaller[Date,String]	=
+			Marshaller(
+				it => cloned format it, 
+				it => 
+						Catch.byType[ParseException] 
+						.in {
+							val	clone	= cloned
+							clone setLenient false
+							cloned parse it 
+						}
+						.toOption
+			)
 			
 	// cloning should be generalized, but @see https://issues.scala-lang.org/browse/SI-3197
 	
