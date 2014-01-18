@@ -80,6 +80,8 @@ final class OptionExt[T](peer:Option[T]) {
 				case Some(cc)	=> cc
 				case None		=> cbf().result
 			}
+			
+	//------------------------------------------------------------------------------
 	
 	def someEffect(effect:T=>Unit):Option[T] = {
 		if (peer.nonEmpty) effect(peer.get)
@@ -91,17 +93,7 @@ final class OptionExt[T](peer:Option[T]) {
 		peer 
 	}
 	
-	def toWin[F](fail: =>F):Tried[F,T]	= 
-			peer match {
-				case Some(win)	=> Win(win)
-				case None		=> Fail(fail)
-			} 
-	
-	def toFail[W](win: =>W):Tried[T,W]	= 
-			peer match {
-				case Some(fail)	=> Fail(fail)
-				case None		=> Win(win)
-			} 
+	//------------------------------------------------------------------------------
 	
 	/** peer is traversable (in the haskell sense), Option is an idiom. */
 	def sequenceOption[U](implicit ev:T=>Option[U]):Option[Option[U]]	=
@@ -126,7 +118,33 @@ final class OptionExt[T](peer:Option[T]) {
 				case Some(Fail(x))	=> Fail(x)
 				case None			=> Win(None)
 			}
+			
+	/** peer is traversable (in the haskell sense), Validated is an idiom. */
+	def sequenceValidated[F,W](implicit ev:T=>Validated[F,W]):Validated[F,Option[W]]	=
+			traverseValidated(identity[W])
+		
+	/** peer is traversable (in the haskell sense), Validated is an idiom. */
+	def traverseValidated[F,W,V](func:W=>V)(implicit ev:T=>Validated[F,W]):Validated[F,Option[V]]	=
+			peer map ev match {
+				case Some(Good(x))	=> Good(Some(func(x)))
+				case Some(Bad(x))	=> Bad(x)
+				case None			=> Good(None)
+			}
+			
+	//------------------------------------------------------------------------------
 	
+	def toWin[F](fail: =>F):Tried[F,T]	=
+			Tried winOr (peer, fail)
+	
+	def toFail[W](win: =>W):Tried[T,W]	=
+			Tried failOr (peer, win)
+			
+	def toGood[F](problems: =>Nes[F]):Validated[F,T]	=
+			Validated goodOr (peer, problems)
+	
+	def toBad[ES,W](good: =>W)(implicit ev:T=>Nes[ES]):Validated[ES,W]	=
+			Validated badOr (peer map ev, good)
+		
 	def toVector:Vector[T]	= 
 			peer match {
 				case Some(x)	=> Vector(x)

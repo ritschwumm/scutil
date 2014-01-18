@@ -35,10 +35,10 @@ final class FirstProjection[T1,T2](peer:Pair[T1,T2]) {
 	def coFlatten[U,TT2>:T2](implicit ev:Pair[T1,TT2]=>U):Pair[U,TT2]	= coFlatMap(ev)
 	
 	def sequenceOption[U](implicit ev:T1=>Option[U]):Option[Pair[U,T2]]		= traverseOption(identity[U])
-	def sequenceTried[F,W](implicit ev:T1=>Tried[F,W]):Tried[F,Pair[W,T2]]	= traverseSequence(identity[W])
+	def sequenceTried[F,W](implicit ev:T1=>Tried[F,W]):Tried[F,Pair[W,T2]]	= traverseTried(identity[W])
 	
-	def traverseOption[U,V](func:U=>V)(implicit ev:T1=>Option[U]):Option[Pair[V,T2]]		= ev(peer._1) map { it => Pair(func(it), peer._2) }
-	def traverseSequence[F,W,V](func:W=>V)(implicit ev:T1=>Tried[F,W]):Tried[F,Pair[V,T2]]	= ev(peer._1) map { it => Pair(func(it), peer._2) }
+	def traverseOption[U,V](func:U=>V)(implicit ev:T1=>Option[U]):Option[Pair[V,T2]]	= ev(peer._1) map { it => Pair(func(it), peer._2) }
+	def traverseTried[F,W,V](func:W=>V)(implicit ev:T1=>Tried[F,W]):Tried[F,Pair[V,T2]]	= ev(peer._1) map { it => Pair(func(it), peer._2) }
 }
 
 /** comonad, see Either's RightProjection which is a monad */
@@ -51,8 +51,8 @@ final class SecondProjection[T1,T2](peer:Pair[T1,T2]) {
 	def coFlatten[TT1>:T1,U](implicit ev:Pair[TT1,T2]=>U):Pair[TT1,U]	= coFlatMap(ev)
 	
 	def sequenceOption[U](implicit ev:T2=>Option[U]):Option[Pair[T1,U]]		= traverseOption(identity[U])
-	def sequenceTried[F,W](implicit ev:T2=>Tried[F,W]):Tried[F,Pair[T1,W]]	= traverseSequence(identity[W])
+	def sequenceTried[F,W](implicit ev:T2=>Tried[F,W]):Tried[F,Pair[T1,W]]	= traverseTried(identity[W])
 	
-	def traverseOption[U,V](func:U=>V)(implicit ev:T2=>Option[U]):Option[Pair[T1,V]]		= ev(peer._2) map { it => Pair(peer._1, func(it)) }
-	def traverseSequence[F,W,V](func:W=>V)(implicit ev:T2=>Tried[F,W]):Tried[F,Pair[T1,V]]	= ev(peer._2) map { it => Pair(peer._1, func(it)) }
+	def traverseOption[U,V](func:U=>V)(implicit ev:T2=>Option[U]):Option[Pair[T1,V]]	= ev(peer._2) map { it => Pair(peer._1, func(it)) }
+	def traverseTried[F,W,V](func:W=>V)(implicit ev:T2=>Tried[F,W]):Tried[F,Pair[T1,V]]	= ev(peer._2) map { it => Pair(peer._1, func(it)) }
 }

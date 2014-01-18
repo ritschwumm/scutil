@@ -25,9 +25,9 @@ final class EitherExt[S,T](peer:Either[S,T]) {
 				case Right(it)	=> Success(it)
 			}
 			
-	def toTried:Tried[S,T]	= 
-			peer match {
-				case Left(it)	=> Fail(it)
-				case Right(it)	=> Win(it)
-			}
+	def toTried:Tried[S,T]	=
+			Tried fromEither peer
+			
+	def toValidated[FS](implicit ev:S=>Nes[FS]):Validated[FS,T]	=
+			Validated fromEither (peer.left map ev)
 }

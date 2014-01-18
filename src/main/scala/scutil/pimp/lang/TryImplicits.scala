@@ -23,9 +23,6 @@ final class TryExt[T](peer:Try[T]) {
 				case Failure(t)	=> Left(t)	
 			}
 	
-	def toTried:Tried[Throwable,T]	= 
-			peer match {
-				case Success(t)	=> Win(t)
-				case Failure(t)	=> Fail(t)	
-			}
+	def toTried:Tried[Throwable,T]	=
+			Tried fromTry peer
 }

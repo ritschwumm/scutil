@@ -113,6 +113,13 @@ final class AnyExt[T](peer:T) {
 				case Some(x)	=> Fail(x)
 				case None		=> Win(peer)
 			}
+			
+	/** Fail if Some else original value in Win */
+	def badBy[E](func:PFunction[T,Nes[E]]):Validated[E,T]	=
+			func(peer) match {
+				case Some(x)	=> Bad(x)
+				case None		=> Good(peer)
+			}
 				
 	/** pair with function applied */
 	def firstBy[U](func:T=>U):(T,U)	=

@@ -28,14 +28,18 @@ final class BooleanExt(peer:Boolean) {
 	def flatPrevent[T](falseValue: =>Option[T]):Option[T] =
 			if (!peer)	falseValue
 			else		None
+			
+	//------------------------------------------------------------------------------
 	
 	def either[U,V](falseLeft: =>U, trueRight: =>V):Either[U,V] =
 			if (peer)	Right(trueRight)
 			else		Left(falseLeft)
 		
 	def tried[U,V](falseFail: =>U, trueWin: =>V):Tried[U,V] =
-			if (peer)	Win(trueWin)
-			else		Fail(falseFail)
+			Tried switch (peer, falseFail, trueWin)
+		
+	def validated[E,T](falseProblems: =>Nes[E], trueGood: =>T):Validated[E,T]	=
+			Validated switch (peer, falseProblems, trueGood)
 		
 	//------------------------------------------------------------------------------
 	
@@ -50,12 +54,16 @@ final class BooleanExt(peer:Boolean) {
 			else		None
 		
 	def trueWin[U](problem: =>U):Tried[U,Unit]	=
-			if (peer)	Win(())
-			else		Fail(problem)
+			Tried winCondition (peer, problem)
 	
 	def falseWin[U](problem: =>U):Tried[U,Unit]	=
-			if (!peer)	Win(())
-			else		Fail(problem)
+			Tried failCondition (peer, problem)
+		
+	def trueValidated[E](problems: =>Nes[E]):Validated[E,Unit]	=
+			Validated goodCondition (peer, problems)
+		
+	def falseValidated[E](problems: =>Nes[E]):Validated[E,Unit]	=
+			Validated badCondition (peer, problems)
 		
 	//------------------------------------------------------------------------------
 		

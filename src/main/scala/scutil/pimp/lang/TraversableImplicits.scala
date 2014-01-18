@@ -126,4 +126,25 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 		if (fails.isEmpty)	Win(wins)
 		else				Fail(fails)
 	}
+	
+	/** peer is traversable (in the haskell sense), Validated is an idiom. */
+	def sequenceValidated[F,W](implicit ev:T=>Validated[F,W], cbf:CanBuildFrom[CC[T],W,CC[W]]):Validated[F,CC[W]]	=
+			traverseValidated(identity[W])
+		
+	/** peer is traversable (in the haskell sense), Validated is an idiom. */
+	def traverseValidated[F,W,V](func:W=>V)(implicit ev:T=>Validated[F,W], cbf:CanBuildFrom[CC[T],V,CC[V]]):Validated[F,CC[V]]	= {
+		// TODO ugly
+		val mapped		= peer map ev
+		val problems	= mapped flatMap { _.badProblems }
+		Nes fromSeq problems.toVector match {
+			case Some(es)	=> Bad(es)
+			case None		=> 
+				val builder	= cbf()
+				mapped foreach {
+					case Good(x)	=> builder	+= func(x)
+					case Bad(_)		=>
+				}
+				Good(builder.result)
+		}	
+	}
 }

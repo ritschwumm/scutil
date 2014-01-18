@@ -9,18 +9,62 @@ object Tried {
 	def win[F,W](it:W):Tried[F,W]	= Win(it)
 	def fail[F,W](it:F):Tried[F,W]	= Fail(it)
 	
-	def optional[F,W](value:Option[W], default: =>F):Tried[F,W]	=
-			value match {
-				case Some(win)	=> Win(win)
-				case None		=> Fail(default)
-			}
-			
+	//------------------------------------------------------------------------------
+	
 	def notNull[T](value:T):Tried[Null,T]	= 
 			if (value != null)	Win(value)
 			else				Fail(null)
+		
+	//------------------------------------------------------------------------------
+	
+	def fromEither[F,W](either:Either[F,W]):Tried[F,W]	=
+			either match {
+				case Left(x)	=> Fail(x)
+				case Right(x)	=> Win(x)
+			}
+			
+	def fromValidated[F,W](validated:Validated[F,W]):Tried[Nes[F],W]	=
+			validated match {
+				case Bad(x)		=> Fail(x)
+				case Good(x)	=> Win(x)
+			}
+			
+	def fromTry[F,W](tryy:Try[W]):Tried[Throwable,W]	=
+			tryy match {
+				case Failure(x)	=> Fail(x)
+				case Success(x)	=> Win(x)
+			}
+			
+	//------------------------------------------------------------------------------
+	
+	def switch[F,W](condition:Boolean, falseFail: =>F, trueWin: =>W):Tried[F,W]	=
+			if (condition)	Win(trueWin)
+			else			Fail(falseFail)
+		
+	def winOr[F,W](value:Option[W], problem: =>F):Tried[F,W]	=
+			value match {
+				case Some(x)	=> Win(x)
+				case None		=> Fail(problem)
+			}
+			
+	def failOr[F,W](problem:Option[F], value: =>W):Tried[F,W]	=
+			problem match {
+				case Some(x)	=> Fail(x)
+				case None		=> Win(value)
+			}
+			
+	def failOption[F](problem:Option[F]):Tried[F,Unit]	=
+			failOr(problem, ())
+		
+	def winCondition[F](condition:Boolean, problem: =>F):Tried[F,Unit]	=
+			if (condition)	Win(())
+			else			Fail(problem)
+		
+	def failCondition[F](condition:Boolean, problem: =>F):Tried[F,Unit]	=
+			winCondition(!condition, problem)
 }
 
-/** right biased Either (with swapped type parameters), Try with parameterized error */
+/** right biased Either, Try with parameterized error */
 sealed trait Tried[+F,+W] {
 	def cata[X](fail:F=>X, win:W=>X):X	=
 			this match {
@@ -35,26 +79,26 @@ sealed trait Tried[+F,+W] {
 	//------------------------------------------------------------------------------
 	
 	def isWin:Boolean	= 
-			cata(_ => false,  _ => true)
+			cata(Predicates.constFalse, Predicates.constTrue)
 		
 	def isFail:Boolean	=
-			cata(_ => true, _ => false)
+			!isWin
 		
 	//------------------------------------------------------------------------------
 		
-	def exists(func:W=>Boolean):Boolean	=
-			cata(_ => false, func)
+	def exists(pred:Predicate[W]):Boolean	=
+			cata(Predicates.constFalse, pred)
 		
-	def forall(func:W=>Boolean):Boolean	=
-			cata(_ => true, func)
+	def forall(pred:Predicate[W]):Boolean	=
+			cata(Predicates.constTrue, pred)
 		
 	//------------------------------------------------------------------------------
 	
 	def iterator:Iterator[W] =
 			cata(_ => Iterator.empty, Iterator.single)
 	
-	def foreach(func:W=>Unit):Unit	= 
-			cata(_ => (), func)
+	def foreach(effect:Effect[W]):Unit	= 
+			cata(_ => (), effect)
 		
 	def map[X](func:W=>X):Tried[F,X]	= 
 			cata(Fail.apply, func andThen Win.apply)
@@ -62,7 +106,7 @@ sealed trait Tried[+F,+W] {
 	def flatMap[FF>:F,X](func:W=>Tried[FF,X]):Tried[FF,X]	= 
 			cata(Fail.apply, func)
 		
-	def flatten[FF>:F,X](implicit ev: W=>Tried[FF,X]):Tried[FF,X]	=
+	def flatten[FF>:F,X](implicit ev:W=>Tried[FF,X]):Tried[FF,X]	=
 			flatMap(ev)
 	
 	/** fail on this overrides fail on that */
@@ -79,7 +123,7 @@ sealed trait Tried[+F,+W] {
 			)
 			
 	/** fail on this overrides fail on that */
-	def ap[FF>:F,X,Y](that:Tried[FF,X])(implicit ev: W=>X=>Y):Tried[FF,Y]	=
+	def ap[FF>:F,X,Y](that:Tried[FF,X])(implicit ev:W=>X=>Y):Tried[FF,Y]	=
 			cata(
 				f	=> that cata (
 					v	=> Fail(v),
@@ -112,6 +156,9 @@ sealed trait Tried[+F,+W] {
 	
 	//------------------------------------------------------------------------------
 	
+	def orElse[FF>:F,WW>:W](that: =>Tried[FF,WW]):Tried[FF,WW]	= 
+			cata(_ => that, Win.apply)
+		
 	def getOrElse[WW>:W](that: =>WW):WW	= 
 			cata(_ => that, identity)
 		
@@ -120,9 +167,6 @@ sealed trait Tried[+F,+W] {
 		
 	def getOrError(s: =>String):W	=
 			getOrElse(sys error s) 
-		
-	def orElse[FF>:F,WW>:W](that: =>Tried[FF,WW]):Tried[FF,WW]	= 
-			cata(_ => that, Win.apply)
 		
 	//------------------------------------------------------------------------------
 	
@@ -138,10 +182,10 @@ sealed trait Tried[+F,+W] {
 	def preventByOr[FF>:F](func:Predicate[W], fail: =>FF):Tried[FF,W]	=
 			cata(Fail.apply, it => if (!func(it)) Win(it) else Fail(fail))
 			
-	def collapseOr[FF>:F,WW](func:PFunction[W,WW], fail:FF):Tried[FF,WW]	=
+	def collapseOr[FF>:F,WW](func:PFunction[W,WW], fail: =>FF):Tried[FF,WW]	=
 			cata(Fail.apply, it => func(it) map Win.apply getOrElse Fail(fail))
 		
-	def collectOr[FF>:F,WW](func:PartialFunction[W,WW], fail:FF):Tried[FF,WW]	=
+	def collectOr[FF>:F,WW](func:PartialFunction[W,WW], fail: =>FF):Tried[FF,WW]	=
 			cata(Fail.apply, it => if (func isDefinedAt it) Win(func(it)) else Fail(fail))
  	 
 	//------------------------------------------------------------------------------
@@ -172,11 +216,14 @@ sealed trait Tried[+F,+W] {
 	def toEither:Either[F,W]	= 
 			cata(Left.apply, Right.apply)
 		
+	def toValidated[FS](implicit ev:F=>Nes[FS]):Validated[FS,W]	=
+			Validated fromTried (this mapFail ev)
+		
 	def toOption:Option[W]	= 
 			cata(_ => None, Some.apply)
 		
 	def toSeq:Seq[W]	= 
-			toList
+			toVector
 		
 	def toList:List[W]	= 
 			cata(_ => Nil, List(_))
