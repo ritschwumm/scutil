@@ -13,12 +13,10 @@ final case class Bijection[S,T](write:S=>T, read:T=>S) {
 			Bijection(read, write)
 	
 	/** symbolic alias for andThen */
-	@inline
 	def >=>[U](that:Bijection[T,U]):Bijection[S,U]	=
 			this andThen that
 		
 	/** symbolic alias for compose */
-	@inline
 	def <=<[R](that:Bijection[R,S]):Bijection[R,T]	= 
 			this compose that
 		

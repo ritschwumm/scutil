@@ -37,12 +37,10 @@ final case class TLens[S,T](on:S=>Store[S,T]) {
 	def modifier(func:Endo[T]):Endo[S]	= modify(_, func)
 	
 	/** symbolic alias for andThen */
-	@inline
 	def >=>[U](that:TLens[T,U]):TLens[S,U]	=
 			this andThen that
 		
 	/** symbolic alias for compose */
-	@inline
 	def <=<[R](that:TLens[R,S]):TLens[R,T]	=
 			this compose that
 		

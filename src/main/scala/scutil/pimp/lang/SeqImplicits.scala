@@ -199,4 +199,7 @@ final class SeqExt[T](peer:Seq[T]) {
 	/** equivalentSpans on a single property */
 	def equivalentSpansBy[U](extract:T=>U):Seq[Seq[T]]	=
 			equivalentSpans { extract(_) == extract(_) }
+		
+	def toNesOption:Option[Nes[T]]	=
+			Nes fromSeq peer
 }

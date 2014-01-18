@@ -2,7 +2,10 @@ package scutil
 
 import java.lang.{ Math => JMath, Long => JLong }
 
+import scala.annotation.tailrec
+
 import scala.math.Pi
+import scala.math.abs
 
 package object math {
 	val PiHalf		= Pi / 2
@@ -26,7 +29,7 @@ package object math {
 	
 	// inverse to pow in the standard library
 	def logB(base:Double, value:Double):Double	= (JMath log value) / (JMath log base)
-
+	
 	//------------------------------------------------------------------------------
 
 	def clampByte(value:Byte, minValue:Byte, maxValue:Byte):Byte	=
@@ -47,6 +50,40 @@ package object math {
 	def clampDouble(value:Double, minValue:Double, maxValue:Double):Double	=
 			if (value < minValue) minValue else if (value > maxValue) maxValue else value
 			
+	//------------------------------------------------------------------------------
+	
+	@tailrec
+	def gcdByte(a:Byte, b:Byte):Byte	=
+			if (b == 0)	abs(a).toByte
+			else		gcdByte(b, (a % b).toByte)
+			
+	@tailrec
+	def gcdShort(a:Short, b:Short):Short	=
+			if (b == 0)	abs(a).toShort
+			else		gcdShort(b, (a % b).toShort)
+		
+	@tailrec
+	def gcdInt(a:Int, b:Int):Int	=
+			if (b == 0)	abs(a)
+			else		gcdInt(b, a % b)
+		
+	@tailrec
+	def gcdLong(a:Long, b:Long):Long	=
+			if (b == 0)	abs(a)
+			else		gcdLong(b, a % b)
+		
+	def lcmByte(a:Byte, b:Byte):Byte	=
+			(abs(a * b) / gcdByte(a, b)).toByte
+		
+	def lcmShort(a:Short, b:Short):Short	=
+			(abs(a * b) / gcdShort(a, b)).toShort
+		
+	def lcmInt(a:Int, b:Int):Int	=
+			abs(a * b) / gcdInt(a, b)
+		
+	def lcmLong(a:Long, b:Long):Long	=
+			abs(a * b) / gcdLong(a, b)
+		
 	//------------------------------------------------------------------------------
 	
 	def moduloByte(value:Byte, raster:Byte):Byte ={

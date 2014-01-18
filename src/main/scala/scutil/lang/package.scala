@@ -32,7 +32,6 @@ package object lang {
 	def taking[S]	= new FunctionTaking[S]
 	
 	final class FunctionTaking[S] {
-		@inline 
 		def apply[T](func:S=>T):S=>T	= func
 	} 
 }

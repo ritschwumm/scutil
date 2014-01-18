@@ -83,7 +83,7 @@ final class FileExt(peer:File) {
 					 if (test == null)	None
 				else if (test == peer)	Some(path)
 				else					loop(test.getParentFile, test.getName +: path)
-		loop(that, Seq.empty)
+		loop(that, Vector.empty)
 	}
 			
 	//------------------------------------------------------------------------------

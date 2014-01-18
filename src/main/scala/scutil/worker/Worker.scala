@@ -46,6 +46,10 @@ final class Worker(name:String, delay:MilliDuration, task:Task, error:Effect[Exc
 		}
 	}
 	
+	def join() {
+		thread.join()
+	}
+	
 	//------------------------------------------------------------------------------
 	
 	@tailrec

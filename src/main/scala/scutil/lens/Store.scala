@@ -32,12 +32,10 @@ final case class Store[C,V](get:V, put:V=>C) {
 			xmapValue(bijection.inverse)
 		
 	/** symbolic alias for andThen */
-	@inline
 	def >=>[VV](that:Store[V,VV]):Store[C,VV]	=
 			this andThen that
 		
 	/** symbolic alias for compose */
-	@inline
 	def <=<[CC](that:Store[CC,C]):Store[CC,V]	=
 			this compose that
 		

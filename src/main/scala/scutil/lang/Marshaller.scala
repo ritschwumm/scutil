@@ -28,12 +28,10 @@ final case class Marshaller[S,T](write:S=>T, read:PFunction[T,S]) {
 	def unapply(t:T):Option[S]	= read(t)
 	
 	/** symbolic alias for andThen */
-	@inline
 	def >=>[U](that:Marshaller[T,U]):Marshaller[S,U]	=
 			this andThen that
 		
 	/** symbolic alias for compose */
-	@inline
 	def <=<[R](that:Marshaller[R,S]):Marshaller[R,T]	=
 			this compose that
 		

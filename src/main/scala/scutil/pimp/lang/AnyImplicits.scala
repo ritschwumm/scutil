@@ -15,11 +15,9 @@ final class AnyExt[T](peer:T) {
 	def boxed:AnyRef	= peer.asInstanceOf[AnyRef]
 	
 	/** symbolic alias for into */
-	@inline
 	def |>[U](f:T=>U):U	= into(f)
 
 	/** symbolic alias for doto */
-	@inline
 	def |>>(effect:T=>Unit):T	= doto(effect)
 	
 	/** apply a single unary function, just like F#'s operator or ruby's thrush */

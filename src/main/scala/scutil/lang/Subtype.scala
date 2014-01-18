@@ -23,12 +23,10 @@ final case class Subtype[Super,Sub<:Super](downcast:PFunction[Super,Sub]) {
 	def unapply(it:Super):Option[Sub]	= downcast(it)
 	
 	/** symbolic alias for andThen */
-	@inline
 	def >=>[Bottom<:Sub](that:Subtype[Sub,Bottom]):Subtype[Super,Bottom]	=
 			this andThen that
 		
 	/** symbolic alias for compose */
-	@inline
 	def <=<[Top>:Super](that:Subtype[Top,Super]):Subtype[Top,Sub]	=
 			this compose that
 	

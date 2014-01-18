@@ -45,12 +45,10 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 	def modifierOpt(func:PEndo[T]):PEndo[S]	= modifyOpt(_, func)
 	
 	/** symbolic alias for andThen */
-	@inline
 	def >=>[U](that:PLens[T,U]):PLens[S,U]	=
 			this andThen that
 		
 	/** symbolic alias for compose */
-	@inline
 	def <=<[R](that:PLens[R,S]):PLens[R,T]	=
 			this compose that
 		

@@ -22,12 +22,10 @@ final case class Extractor[S,T](read:PFunction[S,T]) {
 	def unapply(s:S):Option[T]	= read(s)
 	
 	/** symbolic alias for andThen */
-	@inline
 	def >=>[U](that:Extractor[T,U]):Extractor[S,U]	=
 			this andThen that
 		
 	/** symbolic alias for compose */
-	@inline
 	def <=<[R](that:Extractor[R,S]):Extractor[R,T]	=
 			this compose that
 		

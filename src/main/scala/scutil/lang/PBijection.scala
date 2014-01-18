@@ -17,12 +17,10 @@ final case class PBijection[S,T](write:PFunction[S,T], read:PFunction[T,S]) {
 			PBijection(read, write)
 	
 	/** symbolic alias for andThen */
-	@inline
 	def >=>[U](that:PBijection[T,U]):PBijection[S,U]	=
 			this andThen that
 		
 	/** symbolic alias for compose */
-	@inline
 	def <=<[R](that:PBijection[R,S]):PBijection[R,T]	= 
 			this compose that
 		
