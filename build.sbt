@@ -1,29 +1,31 @@
-name			:= "scutil"
-
 organization	:= "de.djini"
 
-version			:= "0.40.0"
+name			:= "scutil"
 
-scalaVersion	:= "2.10.3"
+version			:= "0.41.0"
 
-libraryDependencies	++= Seq(
-	"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "compile",
-	"org.specs2"		%%	"specs2"		% "2.3.7"				% "test"	exclude("org.scala-lang", "scala-library")
-)
+organization	in ThisBuild	:= organization.value
 
-scalacOptions	++= Seq(
-	// "-Ymacro-debug-lite",
-	"-deprecation",
-	"-unchecked",
-	"-language:implicitConversions",
-	"-language:existentials",
-	"-language:higherKinds",
-	"-language:reflectiveCalls",
-	// "-language:dynamics",
-	// "-language:postfixOps",
-	// "-language:experimental.macros",
-	"-feature",
-	"-optimize"
-)
+version			in ThisBuild	:= version.value
 
-(sourceGenerators in Compile)	<+= (sourceManaged in Compile) map Boilerplate.generate
+scalaVersion	in ThisBuild	:= "2.10.3"
+
+lazy val `scutil`	=
+		project 
+		.in			(file("."))
+		.aggregate	(`scutil-core`, `scutil-swing`, `scutil-extra`)
+		.settings	(publishArtifact := false)
+
+lazy val `scutil-core`	= 
+		project 
+		.in			(file("sub/core"))
+		
+lazy val `scutil-swing`	= 
+		project 
+		.in			(file("sub/swing"))
+		.dependsOn	(`scutil-core`)
+		
+lazy val `scutil-extra`	= 
+		project 
+		.in			(file("sub/extra"))
+		.dependsOn	(`scutil-core`)
