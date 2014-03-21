@@ -58,8 +58,8 @@ final class HashSalt(
 		val	salt		= new Array[Byte](saltSize) |>> synchronized { random.nextBytes }
 		val prepared	= prepare(raw, salt, roundCount)
 		roundCount				+ "$" + 
-		(Base64 write salt)		+ "$" +
-		(Base64 write prepared)
+		(Base64 encode salt)	+ "$" +
+		(Base64 encode prepared)
 	}
 		
 	/** check if a raw password, when cooked, matches the same password cooked before */
@@ -67,8 +67,8 @@ final class HashSalt(
 		(for {
 			Seq(r,s,p)	<- cooked splitAroundChar '$' guardBy { _.size == 3 }
 			rounds		<- r.toIntOption
-			salt		<- Base64 read s
-			prepared	<- Base64 read p
+			salt		<- Base64 decode s
+			prepared	<- Base64 decode p
 		}
 		yield {
 			prepared sameElements prepare(raw, salt, rounds)
@@ -85,7 +85,7 @@ final class HashSalt(
 	
 	private def hash(rounds:Int)(bytes:Array[Byte]):Array[Byte]	= {
 		// throws NoSuchAlgorithmException
-		val	digest	= MessageDigest getInstance hashAlgorithm
+		val digest	= MessageDigest getInstance hashAlgorithm
 		var trip	= bytes
 		var round	= 0
 		while (round < rounds) {

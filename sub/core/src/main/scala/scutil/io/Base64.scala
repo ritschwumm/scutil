@@ -39,7 +39,7 @@ object Base64 {
 	//------------------------------------------------------------------------------
 	
 	/** standard alphabet, no line feeds, adds padding */
-	def write(data:Array[Byte]):String = {
+	def encode(data:Array[Byte]):String = {
 		val	packetsSize		= data.length / 3
 		val extraSize		= data.length % 3
 		var	output			= new StringBuilder
@@ -69,7 +69,7 @@ object Base64 {
 	}
 	
 	/** standard alphabet, whitespace is ignored, padding is required */
-	def read(text:String):Option[Array[Byte]] = {
+	def decode(text:String):Option[Array[Byte]] = {
 		// TODO ignoring all whitespace input might be stupid
 		val cleanText	= text replaceAll (whitespaceRE, "")
 		if (cleanText.length == 0)	return Some(emptyOutput)
@@ -105,8 +105,8 @@ object Base64 {
 		Some(output)
 	}
 	
-	def asMarshaller:Marshaller[Array[Byte],String]	=
-			Marshaller(write, read)
+	def asPrism:Prism[String,Array[Byte]]	=
+			Prism(decode, encode)
 		
 	//------------------------------------------------------------------------------
 	//## padding helper

@@ -12,17 +12,17 @@ trait DateFormatImplicits {
 }
 
 final class DateFormatExt(peer:DateFormat) {
-	def asMarshaller:Marshaller[Date,String]	=
-			Marshaller(
-				it => cloned format it, 
+	def asPrism:Prism[String,Date]	=
+			Prism(
 				it => 
 						Catch.byType[ParseException] 
 						.in {
 							val	clone	= cloned
 							clone setLenient false
-							cloned parse it 
+							clone parse it 
 						}
-						.toOption
+						.toOption,
+				it => cloned format it
 			)
 			
 	// cloning should be generalized, but @see https://issues.scala-lang.org/browse/SI-3197

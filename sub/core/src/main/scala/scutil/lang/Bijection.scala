@@ -25,14 +25,38 @@ final case class Bijection[S,T](write:S=>T, read:T=>S) {
 	
 	def andThen[U](that:Bijection[T,U]):Bijection[S,U]	=
 			Bijection(
-					s	=> that write (this write s),
-					u	=> this read  (that read  u))
+				s	=> that write (this write s),
+				u	=> this read  (that read  u)
+			)
+					
+	def andThenPrism[U](that:Prism[T,U]):Prism[S,U]	=
+			asPrism >=> that
+					
+	def andThenPBijection[U](that:PBijection[T,U]):PBijection[S,U]	=
+			asPBijection >=> that
+					
+	def andThenTLens[U](that:TLens[T,U]):TLens[S,U]	=
+			asTLens >=> that
 			
-	def asMarshaller:Marshaller[S,T]	= 
-			Marshaller total (write, read)
+	def andThenPLens[U](that:PLens[T,U]):PLens[S,U]	=
+			asPLens >=> that
+		
+	def asPrism:Prism[S,T]	= 
+			Prism total (write, read)
 		
 	def asPBijection:PBijection[S,T]	=
 			PBijection(
-					it => Some(write(it)), 
-					it => Some(read(it)))
+				it => Some(write(it)), 
+				it => Some(read(it))
+			)
+					
+	def asTLens:TLens[S,T]	=
+			TLens { s	=>
+				Store(write(s), read)
+			}
+					
+	def asPLens:PLens[S,T]	=
+			PLens { s	=>
+				Some(Store(write(s), read))
+			}
 }

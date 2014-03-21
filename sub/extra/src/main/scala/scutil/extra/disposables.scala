@@ -9,7 +9,6 @@ import java.beans.XMLDecoder
 import scutil.lang._
 
 object disposables extends disposables 
-	
 trait disposables {
 	implicit def DisposableForConnection		(peer:Connection)		= Disposable(peer.close)
 	implicit def DisposableForResultSet			(peer:ResultSet)		= Disposable(peer.close)

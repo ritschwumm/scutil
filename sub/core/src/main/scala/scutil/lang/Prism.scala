@@ -1,0 +1,97 @@
+package scutil.lang
+
+object Prism {
+	def partial[S,T](writeFunc:PartialFunction[S,T], readFunc:T=>S):Prism[S,T] = 
+			Prism(writeFunc.lift, readFunc)
+	
+	def total[S,T](writeFunc:S=>T, readFunc:T=>S):Prism[S,T] = 
+			Prism(writeFunc andThen Some.apply, readFunc)
+			
+	def identity[T]:Prism[T,T] = 
+			total[T,T](Predef.identity[T], Predef.identity[T])
+		
+	def always[T]:Prism[Option[T],T]	=
+			Prism(Predef.identity, Some.apply)
+			
+	def guarded[T](pred:T=>Boolean):Prism[T,T]	=
+			Prism(
+				it => if (pred(it)) Some(it) else None,
+				Predef.identity
+			)
+}
+
+/** parser and unparser for some data into a side format, aka Prism' */
+final case class Prism[S,T](write:PFunction[S,T], read:T=>S) {
+	// can be used as scala function and extractor
+	def apply(t:T):S			= read(t)
+	def unapply(s:S):Option[T]	= write(s)
+	
+	def orElse(that:Prism[S,T]):Prism[S,T]	= 
+			Prism(
+				s	=> (this write s) orElse (that write s),
+				read
+			)
+					
+	/** filter the source value */
+	def cofilterBefore(pred:Predicate[S]):Prism[S,T]	=
+			Prism(
+				s	=> if (pred(s)) write(s) else None,
+				read
+			)
+			
+	/** filter the target value */
+	def cofilterAfter(pred:Predicate[T]):Prism[S,T]	=
+			Prism(
+				s	=> write(s) filter pred,
+				read
+			)
+					
+	/** symbolic alias for andThen */
+	def >=>[U](that:Prism[T,U]):Prism[S,U]	=
+			this andThen that
+		
+	/** symbolic alias for compose */
+	def <=<[R](that:Prism[R,S]):Prism[R,T]	=
+			this compose that
+		
+	def compose[R](that:Prism[R,S]):Prism[R,T]	=
+			that andThen this
+			
+	def andThen[U](that:Prism[T,U]):Prism[S,U]	=
+			Prism(
+				s	=> this write s flatMap that.write,
+				t	=> this read (that read t)
+			)
+					
+	def andThenBijection[U](that:Bijection[T,U]):Prism[S,U]	=
+			this >=> that.asPrism
+					
+	def andThenPBijection[U](that:PBijection[T,U]):PBijection[S,U]	=
+			asPBijection >=> that
+					
+	def andThenPLens[U](that:PLens[T,U]):PLens[S,U]	=
+			asPLens >=> that
+			
+	def asPBijection:PBijection[S,T]	=
+			PBijection(
+				write,
+				t => Some(read(t))
+			)
+					
+	def asPLens:PLens[S,T]	=
+			PLens { 
+				this write _ map (Store(_, this.read)) 
+			}
+		
+	def writeExtractor:Extractor[S,T]	=
+			Extractor(write)
+			
+	def toBijection(func:S=>T):Bijection[S,T]	= 
+			Bijection(
+				s => write(s) getOrElse func(s),
+				read
+			)
+					
+	def toBijectionWith(default: =>T):Bijection[S,T]	= 
+			toBijection(constant(default))
+}

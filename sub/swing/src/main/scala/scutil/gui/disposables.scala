@@ -8,7 +8,6 @@ import javax.imageio.stream.ImageInputStream
 import scutil.lang._
 
 object disposables extends disposables 
-	
 trait disposables {
 	implicit def DisposableForImageReader		(peer:ImageReader)		= Disposable(peer.dispose)
 	implicit def DisposableForImageWriter		(peer:ImageWriter)		= Disposable(peer.dispose)

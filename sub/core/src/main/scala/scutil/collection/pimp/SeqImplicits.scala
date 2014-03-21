@@ -118,7 +118,7 @@ final class SeqExt[T](peer:Seq[T]) {
 	/** get last item and rest of the Seq if possible */
 	def extractLast:Option[(T,Seq[T])]	=
 			if (peer.nonEmpty)	Some((peer.last, peer.init))
-			else					None
+			else				None
 		
 	/** map the value for a single index */
 	def updatedBy(index:Int, func:Endo[T]):Seq[T]	=

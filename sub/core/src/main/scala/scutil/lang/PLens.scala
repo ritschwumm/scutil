@@ -13,24 +13,17 @@ object PLens {
 				Some(Store trivial t)
 			}
 		
-	def bijection[S,T](bijection:Bijection[S,T]):PLens[S,T]	= 
-			PLens { s	=>
-				Some(Store(bijection write s, bijection.read))
-			}
-			
 	def always[T]:PLens[Option[T],T]	=
-			Marshaller.always[T].asPLens
+			Prism.always[T].asPLens
 		
 	def codiag[T]:PLens[Either[T,T],T]	=
 			identity[T] sum identity[T]
 }
 
 final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
-	def get(s:S):Option[T]	= on(s) map { _.get }
-	
-	def put(s:S, t:T):Option[S]	= on(s) map { _ put t }
-	def putter(t:T):PEndo[S]	= put(_, t)
-	
+	def get(s:S):Option[T]					= on(s) map { _.get }
+	def put(s:S, t:T):Option[S]				= on(s) map { _ put t }
+	def putter(t:T):PEndo[S]				= put(_, t)
 	def modify(s:S, func:Endo[T]):Option[S]	= on(s) map { _ modify func }
 	def modifier(func:Endo[T]):PEndo[S]		= modify(_, func)
 	
@@ -41,8 +34,12 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 			}
 			yield store put value
 			
-	def modifierOpt(func:PEndo[T]):PEndo[S]	= modifyOpt(_, func)
+	def modifierOpt(func:PEndo[T]):PEndo[S]	=
+			modifyOpt(_, func)
 	
+	def orElse(that:PLens[S,T]):PLens[S,T]	=
+			PLens(this.on orElse that.on)
+		
 	/** symbolic alias for andThen */
 	def >=>[U](that:PLens[T,U]):PLens[S,U]	=
 			this andThen that
@@ -68,21 +65,11 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 				}
 			}
 			
-	def xmapContainer[R](bijection:Bijection[R,S]):PLens[R,T]	=
-			PLens {
-				it => on(bijection write it) map { _ map bijection.read }
-			}
-		
-	def xmapContainerInverse[R](bijection:Bijection[S,R]):PLens[R,T]	=
-			xmapContainer(bijection.inverse)
-		
-	def xmapValue[U](bijection:Bijection[T,U]):PLens[S,U]	=
-			PLens { s =>
-				on(s) map { _ xmapValue bijection }
-			}
+	def andThenBijection[U](that:Bijection[T,U]):PLens[S,U]	=
+			this >=> that.asPLens
 			
-	def xmapValueInverse[U](bijection:Bijection[U,T]):PLens[S,U]	=
-			xmapValue(bijection.inverse)
+	def andThenTLens[U](that:TLens[T,U]):PLens[S,U]	=
+			this >=> that.asPLens
 			
 	def over[R](store:Option[Store[R,S]]):Option[Store[R,T]]	=
 			for {
@@ -132,7 +119,4 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 					)
 				}
 			}
-			
-	def orElse(that:PLens[S,T]):PLens[S,T]	=
-			PLens(this.on orElse that.on)
 }

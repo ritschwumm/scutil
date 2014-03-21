@@ -34,11 +34,14 @@ final case class Subtype[Super,Sub<:Super](downcast:PFunction[Super,Sub]) {
 	def andThen[Bottom<:Sub](that:Subtype[Sub,Bottom]):Subtype[Super,Bottom]	=
 			that compose this
 			
-	def asMarshaller:Marshaller[Sub,Super]	=
-			Marshaller(upcast, downcast)
+	def asPrism:Prism[Super,Sub]	=
+			Prism(downcast, upcast)
 		
 	def asPLens:PLens[Super,Sub]	= 
 			PLens(downcast(_) map (Store(_, upcast)))
+		
+	def asPBijection:PBijection[Super,Sub]	=
+			asPrism.asPBijection
 	
 	def downcastExtractor:Extractor[Super,Sub]	=
 			Extractor(downcast)
