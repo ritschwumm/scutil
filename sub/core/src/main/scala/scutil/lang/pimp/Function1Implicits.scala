@@ -21,4 +21,7 @@ final class Function1Ext[S,T](peer:Function1[S,T]) {
 		
 	def toPFunction:PFunction[S,T]	=
 			it => Some(peer(it))
+		
+	def toThunk(s:S):Thunk[T]	=
+			() => peer(s)
 }

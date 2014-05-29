@@ -104,6 +104,8 @@ final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extend
 					this.numerator		multiply that.denominator,
 					this.denominator	multiply that.numerator)
 	
+	def unary_- :BigRational	= negate
+		
 	/** additive inverse */
 	def negate:BigRational = 
 			if (this == BigRational.zero)	this

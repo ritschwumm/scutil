@@ -21,8 +21,7 @@ final case class MilliDuration(millis:Long) extends Ordered[MilliDuration] {
 	def + (that:MilliDuration):MilliDuration	= MilliDuration(this.millis + that.millis)
 	def - (that:MilliDuration):MilliDuration	= MilliDuration(this.millis - that.millis)
 	
-	def + (instant:MilliInstant):MilliInstant	= MilliInstant(millis + instant.millis)
-	// def - (instant:MilliInstant):MilliInstant	= MilliInstant(millis - instant.millis)
+	def +! (instant:MilliInstant):MilliInstant	= MilliInstant(millis + instant.millis)
 	
 	def / (that:MilliDuration):Long		= this.millis / that.millis
 	def % (that:MilliDuration):Long		= this.millis % that.millis

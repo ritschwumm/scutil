@@ -64,6 +64,10 @@ final class AnyExt[T](peer:T) {
 			// Some(peer) collect pf
 			// PartialFunction.condOpt(pf)(peer)
 			
+	def flatMatchOption[U](pf:PartialFunction[T,Option[U]]):Option[U] =
+			if (pf isDefinedAt peer)	pf(peer)
+			else						None
+			
 	/*
 	// NOTE works only for covariant type parameters
 	// typesafe casting

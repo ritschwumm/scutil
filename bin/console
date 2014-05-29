@@ -6,7 +6,6 @@ import java.io.File
 import scutil.lang._
 import scutil.implicits._
 import scutil.io.Files._
-import scutil.io.FixedXML
 import scutil.io.Charsets.utf_8
 import scutil.io.Base64
 import scutil.io.URIComponent
@@ -16,4 +15,4 @@ import scutil.time._
 
 initial="$(echo "$imports" | sed 's/$/\\n/' | tr -d '\n')"
 
-sbt ";set initialCommands in console := \"$initial\";console"
+sbt ";project scutil-core;set initialCommands in console := \"$initial\";console"

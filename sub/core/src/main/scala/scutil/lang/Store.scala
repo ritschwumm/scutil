@@ -9,8 +9,9 @@ object Store {
 }
 
 final case class Store[C,V](get:V, put:V=>C) {
-	def container:C				= put(get)
-	def modify(func:Endo[V]):C	= put(func(get))
+	def container:C							= put(get)
+	def modify(func:Endo[V]):C				= put(func(get))
+	def modifyOpt(func:PEndo[V]):Option[C]	= func(get) map put
 	
 	def map[CC](func:C=>CC):Store[CC,V]	=
 			Store[CC,V](

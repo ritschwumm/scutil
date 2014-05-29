@@ -22,7 +22,7 @@ final class Synchronized[T](initial:T) {
 			}
 		
 	/** returns the previous and the current value */
-	def mod(func:T=>T):(T,T)	=
+	def modify(func:T=>T):(T,T)	=
 			synchronized { 
 				val old	= value
 				value  = func(value)
@@ -30,7 +30,7 @@ final class Synchronized[T](initial:T) {
 			}
 			
 	/** change state and return something */
-	def chg[U](func:T=>(T,U)):U	=
+	def change[U](func:T=>(T,U)):U	=
 			synchronized { 
 				val (next, out)	= func(value)
 				value	= next

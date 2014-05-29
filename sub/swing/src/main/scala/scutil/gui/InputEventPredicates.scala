@@ -21,6 +21,7 @@ object InputEventPredicates {
 	val mouseWheeled:Predicate[MouseEvent]	= eventID(MouseEvent.MOUSE_WHEEL)
 	
 	val keyPressed:Predicate[KeyEvent]		= eventID(KeyEvent.KEY_PRESSED)
+	val keyTyped:Predicate[KeyEvent]		= eventID(KeyEvent.KEY_TYPED)
 	val keyReleased:Predicate[KeyEvent]		= eventID(KeyEvent.KEY_RELEASED)
 	
 	//------------------------------------------------------------------------------
