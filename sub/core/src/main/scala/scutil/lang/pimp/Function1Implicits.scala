@@ -19,6 +19,9 @@ final class Function1Ext[S,T](peer:Function1[S,T]) {
 	def unlift[X](implicit ev:PFunction[T,X]):PartialFunction[S,X]	=
 			Function unlift peer.asInstanceOf[PFunction[S,X]]
 		
+	def toPartialFunction:PartialFunction[S,T]	=
+			{ case x => peer(x) }
+		
 	def toPFunction:PFunction[S,T]	=
 			it => Some(peer(it))
 		

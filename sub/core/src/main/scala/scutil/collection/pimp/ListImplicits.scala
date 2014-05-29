@@ -21,7 +21,7 @@ final class ListExt[T](peer:List[T]) {
 		List(1,2,3,4) unprefix List(1,2,4,5)
 		==> Triple(List(1,2), List(3,4), List(4,5))
 	*/
-	def unprefix[U>:T](other:List[U]):Triple[List[U],List[U],List[U]]	= {
+	def unprefix[U>:T](other:List[U]):(List[U],List[U],List[U])	= {
 		@tailrec
 		def loop[V](prefix:List[V], list1:List[V], list2:List[V]):(List[V],List[V],List[V])	= {
 			(list1, list2) match {

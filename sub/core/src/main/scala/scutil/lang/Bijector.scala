@@ -2,33 +2,29 @@ package scutil.lang
 
 import scala.language.experimental.macros
 
-import scala.reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 import scala.reflect.runtime.universe._
 
 import scutil.implicits._
 
 /** creates bijections from the apply/unapply methods in a case classes' companion object */
 object Bijector {
-	def apply[T]	= macro BijectorImpl.apply[T]
+	def apply[T]:AnyRef	= macro BijectorImpl.compile[T]
 }
 
-private object BijectorImpl {
-	def apply[T:c1.WeakTypeTag](c1:Context):c1.Expr[Any]	=
-			(new BijectorImpl { val c:c1.type = c1 }).compile
-}
-
-private abstract class BijectorImpl extends MacroHelper {
-	val c:Context
+private final class BijectorImpl(val c:Context) {
 	import c.universe._
 		
-	//------------------------------------------------------------------------------
-	
-	def compile[T:c.WeakTypeTag]:c.Expr[Any]	= {
+	def compile[T:c.WeakTypeTag]:Tree	= {
 		val selfType:Type	= weakTypeOf[T]
 		
-		val out:Tried[String,Apply]	=
+		val out:Tried[String,Tree]	=
 				for {
-					companionSymbol	<- getCompanion(selfType.typeSymbol)
+					companionSymbol	<-
+							selfType.typeSymbol.companion
+							.preventBy	{ _ == NoSymbol }
+							.toWin		(s"unexpected NoSymbol for companion of ${selfType.typeSymbol}")
+			
 					companionType	= companionSymbol.typeSignature
 					
 					unapplySymbol	<- getDeclaration(companionType, "unapply")
@@ -59,7 +55,7 @@ private abstract class BijectorImpl extends MacroHelper {
 					applyMethods0	=
 							for {
 								method	<- applyMethods collect { case (method:MethodSymbol) => method }
-								params	<- method.paramss.singleOption
+								params	<- method.paramLists.singleOption
 							}
 							yield (
 								method, 
@@ -84,74 +80,37 @@ private abstract class BijectorImpl extends MacroHelper {
 							.toWin		(s"expected a single apply method matching unapply's types")
 							
 					(applyMethod, applySignature)	
-									= applyTmp
+								= applyTmp
 							
 					_			<- 
-							(applyMethod.paramss.size == 1) 
+							(applyMethod.paramLists.size == 1) 
 							.trueWin	(s"expected apply to have a single parameter list")
 				}
-				yield mkBijection(
-					mkWriteFunc(companionSymbol, selfType), 
-					mkReadFunc(companionSymbol, applySignature, unapplySingle)
-				)
+				yield {
+					q"""
+						scutil.lang.Bijection(
+							(it:$selfType) => $companionSymbol.unapply(it).get, 
+							${
+								if (applySignature.size == 1) {
+									q"(it:$unapplySingle) => $companionSymbol.apply(it)"
+								}
+								else {
+									val its	= 1 to applySignature.size map { i => q"it.${TermName("_"+i)}" }
+									q"(it:$unapplySingle) => $companionSymbol.apply(..$its)"
+								}
+							}
+						)
+					"""
+				}
 			
-		result(out)
+		out cata (
+			c abort (c.enclosingPosition, _),
+			c untypecheck _
+		)
 	}
-	
-	def mkBijection(writeFunc:Function, readFunc:Function):Apply =
-			// BETTER use typeApply?
-			Apply(
-				multiSelect("scutil", "lang", "Bijection", "apply"),
-				// NOTE does work at first, but lead to "value not found: Bijection" later - why?
-				// Select(reify(scutil.lang.Bijection).tree, "apply":TermName),
-				List(
-					writeFunc,
-					readFunc
-				)
-			)
 			
-	// write	unapply		call get	T=>(...)
-	def mkWriteFunc(companionSymbol:Symbol, selfType:Type):Function	=
-			Function(
-				List(
-					mkParam("it", selfType)
-				),
-				Select(
-					Apply(
-						multiSelect(companionSymbol, "unapply"),
-						List(stringIdent("it"))
-					),
-					newTermName("get")
-				)
-			)
-			
-	// read		apply		tuple input	(...)=>T
-	def mkReadFunc(companionSymbol:Symbol, applySignature:List[Type], unapplySingle:Type):Function	=
-			Function(
-				List(
-					mkParam("it", unapplySingle)
-				),
-				Apply(
-					multiSelect(companionSymbol, "apply"),
-					if (applySignature.size == 1) {
-						List(stringIdent("it"))
-					}
-					else {
-						(1 to applySignature.size).toList map { i =>
-							multiSelect("it", "_"+i)
-						}
-					}
-				)
-			)
-			
-	def getCompanion(symbol:Symbol)	=
-			symbol.companionSymbol	preventBy
-			{ _ == NoSymbol }		toWin
-			s"unexpected NoSymbol for companion of ${symbol}"
-	
-	def getDeclaration(typ:Type, name:String):Tried[String,Symbol]	=
-			typ					declaration
-			newTermName(name)	preventBy 
-			{ _ == NoSymbol }	toWin 
-			s"unexpected NoSymbol for companion declaration ${name} of type ${typ}"
+	private def getDeclaration(typ:Type, name:String):Tried[String,Symbol]	=
+			(typ decl TermName(name))
+			.preventBy	{ _ == NoSymbol }
+			.toWin		(s"unexpected NoSymbol for companion declaration ${name} of type ${typ}")
 }

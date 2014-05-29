@@ -1,9 +1,8 @@
 package scutil.lang
 
 import language.experimental.macros
-import scala.reflect.macros.Context
-
-import reflect.runtime.universe.TypeTag
+import scala.reflect.macros.blackbox.Context
+import scala.reflect.runtime.universe.TypeTag
 
 import scutil.implicits._
 	
@@ -26,46 +25,28 @@ object Fielder {
 	*/
 }
 
-private object FielderImpl {
-	def apply[T:c1.WeakTypeTag](c1:Context):c1.Expr[Fielding[T]]	=
-			(new FielderImpl { val c:c1.type = c1 }).compile
-}
-
-private abstract class FielderImpl extends MacroHelper {
-	val c:Context
+private final class FielderImpl(val c:Context) {
 	import c.universe._
 		
-	//------------------------------------------------------------------------------
-	
-	def compile[T:c.WeakTypeTag]:c.Expr[Fielding[T]]	= {
+	def compile[T:c.WeakTypeTag]:c.Tree	= {
 		val selfType:Type	= weakTypeOf[T]
     
 		val primaryCtorOpt	=
-				(selfType.declarations filter { _.isMethod } map { _.asMethod } filter { _.isPrimaryConstructor }).singleOption
+				(selfType.decls filter { _.isMethod } map { _.asMethod } filter { _.isPrimaryConstructor }).singleOption
 		
 		val names:Tried[String,Tree]	=
 				for {
-					primaryCtor		<- primaryCtorOpt					toWin s"primary constructor not found in ${selfType}"
-					paramNames		<- primaryCtor.paramss.singleOption	toWin s"primary constructor has multiple parameter lists in ${selfType}"
-					decodedNames	= paramNames map { _.name.decoded }
+					primaryCtor		<- primaryCtorOpt						toWin s"primary constructor not found in ${selfType}"
+					paramNames		<- primaryCtor.paramLists.singleOption	toWin s"primary constructor has multiple parameter lists in ${selfType}"
+					decodedNames	= paramNames map { _.name.decodedName.toString }
 				}
 				yield {
-					Apply(
-						TypeApply(
-							multiSelect("scutil", "lang", "Fielding"),
-							List(
-								TypeTree(selfType)
-							)
-						),
-						List(
-							Apply(
-								multiSelect("scala", "collection", "immutable", "Vector", "apply"),
-								decodedNames map { it => (c literal it).tree }
-							)
-						)
-					)
+					q"scutil.lang.Fielding[$selfType](scala.collection.immutable.Vector(..$decodedNames))"
 				}
 				
-		result[Fielding[T]](names)
+		names cata (
+			c abort (c.enclosingPosition, _),
+			c untypecheck _
+		)
 	}
 }

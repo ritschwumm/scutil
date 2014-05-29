@@ -2,13 +2,13 @@ organization	:= "de.djini"
 
 name			:= "scutil"
 
-version			:= "0.43.0"
+version			:= "0.44.0"
 
 organization	in ThisBuild	:= organization.value
 
 version			in ThisBuild	:= version.value
 
-scalaVersion	in ThisBuild	:= "2.10.4"
+scalaVersion	in ThisBuild	:= "2.11.0"
 
 lazy val `scutil`	=
 		project 

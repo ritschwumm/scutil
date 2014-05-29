@@ -1,24 +1,18 @@
 package scutil.lang
 
 import scala.language.experimental.macros
-import scala.reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 object SourceLocation {
 	implicit def sourceLocation:SourceLocation	= macro sourceLocationImpl
 	 
-	def sourceLocationImpl(c:Context):c.Expr[SourceLocation]	= {
+	def sourceLocationImpl(c:Context):c.Tree	= {
 		import c.universe._
 		val pos	= c.macroApplication.pos
 		// NOTE pos.column expands tab chars as 8 columns
-		reify { 
-			SourceLocation(
-				// pos.source.file.file.getName
-				// (c literal pos.source.file.path).splice,
-				(c literal pos.source.file.name).splice,
-				// (c literal (pos pointOrElse -1)).splice,
-				(c literal pos.line).splice
-			) 
-		}
+		// pos.source.file.path
+		// pos pointOrElse -1
+		q"scutil.lang.SourceLocation(${pos.source.file.name}, ${pos.line})"
 	}
 }
 

@@ -50,4 +50,10 @@ final case class Store[C,V](get:V, put:V=>C) {
 				that write get,
 				that.read andThen put
 			)
+			
+	def traverseSeq[B](implicit ev:V=>Seq[B]):Seq[Store[C,B]]	=
+			(0 until get.size).toVector flatMap { idx =>
+				// NOTE asInstanceOf is justified by the implicit evidence
+				PLenses.seq[B](idx) overTotal this.asInstanceOf[Store[C,Seq[B]]]
+			}
 }

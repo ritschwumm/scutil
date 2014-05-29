@@ -2,8 +2,7 @@ package scutil.lang
 
 import scala.language.dynamics
 import scala.language.experimental.macros
-
-import scala.reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 import scutil.implicits._
 
@@ -18,90 +17,44 @@ final class Lenser[T] extends Dynamic {
 	def applyDynamic(propName:String)()	= macro LenserImpl.applyDynamic[T]
 	*/
 	
-	def selectDynamic(propName:String)	= macro LenserImpl.selectDynamic[T]
+	def selectDynamic(propName:String):AnyRef	= macro LenserImpl.compile[T]
 }
 
-private object LenserImpl {
-	/*
-	def selectDynamic[T:c.WeakTypeTag](c:Context)(propName:c.Expr[String])	=
-	def applyDynamic[T:c.WeakTypeTag](c:Context)(propName:c.Expr[String])()	=
-	*/
-	
-	def selectDynamic[T:c1.WeakTypeTag](c1:Context)(propName:c1.Expr[String]):c1.Expr[Any]	=
-			new LenserImpl { val c:c1.type = c1 } compile propName
-}
-
-private abstract class LenserImpl extends MacroHelper {
-	val c:Context
+private final class LenserImpl(val c:Context) {
 	import c.universe._
 		
-	//------------------------------------------------------------------------------
-	
-	def compile[T:c.WeakTypeTag](propName:c.Expr[String]):c.Expr[Any]	= {
-		val targetType	= c.weakTypeOf[T]
-		
-		val out:Tried[String,Apply]	=
+	def compile[T:c.WeakTypeTag](propName:c.Tree):c.Tree	= {
+		val out:Tried[String,Tree]	=
 				for {
-					name	<- 
-							propName.tree										matchOption 
-							{ case Literal(Constant(name:String))	=> name }	toWin
-							s"unexpected propName: ${propName.tree}"
-					containerTpe	= c.weakTypeOf[T]
-					member	<-
-							containerTpe		member 
-							newTermName(name)	guardBy 
-							{ _ != NoSymbol }	toWin 
-							s"value ${name} is not a member of ${containerTpe}"
-					valueTpe	<-
-							member									typeSignatureIn
-							containerTpe							matchOption
-							{ case NullaryMethodType(tpe) => tpe }	toWin
-							s"member ${name} of ${containerTpe} is not a field"
+					name			<- 
+							propName
+							.matchOption	{ case Literal(Constant(name:String))	=> name }
+							.toWin			(s"unexpected propName: ${propName}")
+					fieldName		= TermName(name)
+					containerType	= c.weakTypeOf[T]
+					member			<-
+							(containerType member fieldName)
+							.guardBy		{ _ != NoSymbol }
+							.toWin			(s"value ${name} is not a member of ${containerType}")
+					valueType		<-
+							(member typeSignatureIn containerType)
+							.matchOption	{ case NullaryMethodType(tpe) => tpe }
+							.toWin			(s"member ${name} of ${containerType} is not a field")
 				}
-				yield mkLens("c$", containerTpe, "v$", valueTpe, name)
-				
-		result(out)
-	}
-	
-	def mkLens(containerName:TermName, containerType:Type, valueName:TermName, valueType:Type, fieldName:TermName):Apply	=
-			Apply(
-				TypeApply(
-					multiSelect("scutil", "lang", "TLens", "create"),
-					// NOTE doesn't work - why?
-					// Select(reify(scutil.lang.TLens).tree, "create":TermName),
-					List(
-						TypeTree(containerType),
-						TypeTree(valueType)
-					)
-				),
-				List(
-					mkGetFunc(containerName, containerType, fieldName),
-					mkSetFunc(containerName, containerType, valueName, valueType, fieldName)
-				)
-			)
-			
-	def mkGetFunc(containerName:TermName, containerType:Type, fieldName:TermName):Function	=
-			Function(
-				List(
-					mkParam(containerName, containerType)
-				),
-				mkAccess(containerName, fieldName)
-			)
-			
-	def mkSetFunc(containerName:TermName, containerType:Type, valueName:TermName, valueType:Type, fieldName:TermName):Function	=
-			Function(
-				List(
-					mkParam(containerName,	containerType),
-					mkParam(valueName,		valueType)
-				),
-				Apply(
-					mkAccess(containerName, "copy"),
-					List(
-						AssignOrNamedArg(
-							Ident(fieldName),
-							Ident(valueName)
+				yield {
+					val containerName	= TermName("c$")
+					val valueName		= TermName("v$")
+					q"""
+						scutil.lang.TLens.create[$containerType,$valueType](
+							($containerName:$containerType) => $containerName.$fieldName,
+							($containerName:$containerType, $valueName:$valueType) => $containerName.copy($fieldName=$valueName)
 						)
-					 )
-				)
-			)
+					"""
+				}
+				
+		out cata (
+			c abort (c.enclosingPosition, _),
+			c untypecheck _
+		)
+	}
 }

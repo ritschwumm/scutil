@@ -28,7 +28,7 @@ final class OptionExt[T](peer:Option[T]) {
 			for { f	<- func; s	<- peer } yield f(s)
 	
 	/*
-	//* the flatten method defined on Iterable is useless 
+	// the flatten method defined on Iterable is useless 
 	def flatten[U](implicit witness:PFunction[T,U]):Option[U] =
 			peer flatMap witness
 	*/
