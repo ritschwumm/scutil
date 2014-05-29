@@ -12,6 +12,8 @@ object Disposable {
 					_.dispose() 
 				}
 			}
+			
+	def allVar(subs:Disposable*):Disposable	= all(subs)
 }
 
 /** something with a destructor */

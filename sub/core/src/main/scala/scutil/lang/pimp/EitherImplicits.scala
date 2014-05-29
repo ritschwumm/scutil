@@ -19,6 +19,12 @@ final class EitherExt[S,T](peer:Either[S,T]) {
 	def leftEffect(fx:S=>Unit):Either[S,T]	= { if (peer.isLeft)  fx(peer.left.get);	peer }
 	def rightEffect(fx:T=>Unit):Either[S,T]	= { if (peer.isRight) fx(peer.right.get);	peer }
 	
+	def bimap[SS,TT](leftFunc:S=>SS, rightFunc:T=>TT):Either[SS,TT]	=
+			peer match {
+				case Left(x)	=> Left(leftFunc(x))
+				case Right(x)	=> Right(rightFunc(x))
+			}
+	
 	def toTry(implicit ev:S=>Throwable):Try[T]	= 
 			peer match {
 				case Left(it)	=> Failure(it)
