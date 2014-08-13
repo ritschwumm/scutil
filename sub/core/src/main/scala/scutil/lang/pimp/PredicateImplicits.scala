@@ -18,6 +18,8 @@ final class PredicateExt[T](peer:Predicate[T]) {
 	def and[U<:T](that:Predicate[U]):Predicate[U]	= Predicates and	(peer, that)
 	def or[U<:T](that:Predicate[U]):Predicate[U]	= Predicates or		(peer, that)
 	
+	//------------------------------------------------------------------------------
+	
 	def guardOn[S<:T,U](function:S=>U):PFunction[S,U]	= 
 			it	=> if (peer(it))	Some(function(it))	else None
 			

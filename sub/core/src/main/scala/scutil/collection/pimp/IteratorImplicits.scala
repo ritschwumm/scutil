@@ -2,6 +2,8 @@ package scutil.collection.pimp
 
 import java.util.concurrent.Callable
 
+import scutil.lang.ISeq
+
 object IteratorImplicits extends IteratorImplicits
 
 trait IteratorImplicits {
@@ -12,4 +14,6 @@ final class IteratorExt[T](peer:Iterator[T]) {
 	def nextOption:Option[T]	=
 			if (peer.hasNext)	Some(peer.next)
 			else				None
+		
+	def toISeq:ISeq[T]	= peer.toVector
 }

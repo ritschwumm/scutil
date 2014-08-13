@@ -6,14 +6,14 @@ object Disposable {
 	/** forms monoids with disposeBefore and disposeAfter */
 	val empty:Disposable	= EmptyDisposable
 	
-	def all(subs:Seq[Disposable]):Disposable	=
+	def all(subs:ISeq[Disposable]):Disposable	=
 			disposable {
 				subs foreach {
 					_.dispose() 
 				}
 			}
 			
-	def allVar(subs:Disposable*):Disposable	= all(subs)
+	def allVar(subs:Disposable*):Disposable	= all(subs.toVector)
 }
 
 /** something with a destructor */

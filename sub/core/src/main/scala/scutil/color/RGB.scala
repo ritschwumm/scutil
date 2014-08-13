@@ -13,7 +13,7 @@ object RGB {
 	
 	def parseHex(s:String):Option[RGB]	=
 			if ((patternHex matcher s).matches) {
-				val Seq(r,g,b)	= (s grouped 2 map { it => (JInteger parseInt (it, 16))/ 255f }).toSeq
+				val Seq(r,g,b)	= (s grouped 2 map { it => (JInteger parseInt (it, 16))/ 255f }).toVector
 				Some(RGB(r,g,b))
 			}
 			else None

@@ -38,8 +38,8 @@ object Validated {
 				case None		=> good(value)
 			}
 		
-	def badSeq[E](problems:Seq[E]):Validated[E,Unit]	=
-			badOr(Nes fromSeq problems, ())
+	def badISeq[E](problems:ISeq[E]):Validated[E,Unit]	=
+			badOr(Nes fromISeq problems, ())
 		
 	def badOption[E](problems:Option[Nes[E]]):Validated[E,Unit]	=
 			badOr(problems, ())
@@ -156,7 +156,7 @@ sealed trait Validated[+E,+T] {
 	def badOption:Option[Nes[E]]	=
 			cata(Some.apply, _ => None)
 			
-	def badProblems:Seq[E]	=
+	def badProblems:ISeq[E]	=
 			cata(_.toVector, _ => Vector.empty)
 				
 	//------------------------------------------------------------------------------
@@ -224,10 +224,10 @@ sealed trait Validated[+E,+T] {
 	def toOption:Option[T]	=
 			cata(_ => None, Some.apply)
 			
-	def toSeq:Seq[T]	=
+	def toISeq:ISeq[T]	=
 			toVector
 		
-	def toList:Seq[T]	=
+	def toList:List[T]	=
 			cata(_ => Nil, List(_))
 		
 	def toVector:Vector[T]	=

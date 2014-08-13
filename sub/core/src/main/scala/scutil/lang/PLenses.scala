@@ -4,11 +4,11 @@ import scutil.lang.implicits._
 import scutil.collection.implicits._
 
 object PLenses {
-	def seq[T](i:Int):PLens[Seq[T],T]	=
+	def iseq[T](i:Int):PLens[ISeq[T],T]	=
 			PLens(s => 
 				s	containsIndex
 				i	guard 
-				Store[Seq[T],T](
+				Store[ISeq[T],T](
 					s(i),
 					v => s updated (i, v)
 				)

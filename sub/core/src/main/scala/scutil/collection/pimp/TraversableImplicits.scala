@@ -1,6 +1,7 @@
 package scutil.collection.pimp
 
 import scala.collection.generic.CanBuildFrom
+import scala.collection.immutable
 
 import scutil.lang._
 
@@ -136,7 +137,7 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 		// TODO ugly
 		val mapped		= peer map ev
 		val problems	= mapped flatMap { _.badProblems }
-		Nes fromSeq problems.toVector match {
+		Nes fromISeq problems.toVector match {
 			case Some(es)	=> Bad(es)
 			case None		=> 
 				val builder	= cbf()
@@ -147,4 +148,10 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 				Good(builder.result)
 		}	
 	}
+	
+	def toISeq:ISeq[T]	=
+			peer match {
+				case x:immutable.Seq[T]	=> x
+				case x					=> x.toVector
+			}
 }

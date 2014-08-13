@@ -1,3 +1,5 @@
 package scutil.platform
 
-final case class ExternalResult(rc:Int, out:Seq[String], err:Seq[String])
+import scutil.lang.ISeq
+
+final case class ExternalResult(rc:Int, out:ISeq[String], err:ISeq[String])

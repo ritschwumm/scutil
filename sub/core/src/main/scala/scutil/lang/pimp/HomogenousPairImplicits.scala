@@ -9,8 +9,8 @@ trait HomogenousPairImplicits {
 }
 
 final class HomogenousPairExt[T](peer:Tuple2[T,T]) {
-	def toSeq:Seq[T]	=
-			Seq(peer._1, peer._2)
+	def toISeq:ISeq[T]	=
+			ISeq(peer._1, peer._2)
 	
 	def toNes:Nes[T]	= 
 			Nes multi (peer._1, peer._2)

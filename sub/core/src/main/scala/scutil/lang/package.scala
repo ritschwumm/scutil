@@ -1,6 +1,12 @@
 package scutil
 
 package object lang {
+	// use this instead of scala.collection.Seq provided in Predef
+	type ISeq[+T]	= scala.collection.immutable.Seq[T]
+	val ISeq		= scala.collection.immutable.Seq
+	
+	//------------------------------------------------------------------------------
+	
 	type Endo[T]			= T=>T
 	type Predicate[-T]		= T=>Boolean
 	

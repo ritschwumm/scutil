@@ -87,7 +87,7 @@ final class DndFileImport(handler:PFunction[IntPoint,Effect[Validated[Exception,
 			 Catch.exception in new File(new URI(uri))	mapFail Nes.single into Validated.fromTried
 	
 	private def filesFromJList(jlist:JList[File]):Validated[Exception,Nes[File]]	=
-			jlist.asScala.toSeq.toNesOption toGood badMessage(s"empty file list")
+			jlist.asScala.toISeq.toNesOption toGood badMessage(s"empty file list")
 							
 	private def filesFromURL(url:URL):Validated[Exception,Nes[File]]	=
 			url.toFile toGood badMessage(s"not a file url: ${url}") map Nes.single 

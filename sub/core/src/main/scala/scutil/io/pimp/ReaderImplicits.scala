@@ -4,6 +4,8 @@ import java.io._
 
 import scala.collection.mutable
 
+import scutil.lang.ISeq
+
 object ReaderImplicits extends ReaderImplicits
 
 trait ReaderImplicits {
@@ -74,7 +76,7 @@ final class ReaderExt(peer:Reader) {
 	//------------------------------------------------------------------------------
 	
 	// TODO should take a line separator argument
-	def readLines():Seq[String]	= {
+	def readLines():ISeq[String]	= {
 		val in		= new BufferedReader(peer)
 		val buffer	= new mutable.ArrayBuffer[String]
 		var running	= true

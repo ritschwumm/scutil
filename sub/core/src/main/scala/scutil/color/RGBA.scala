@@ -11,7 +11,7 @@ object RGBA {
 	
 	def parseHex(s:String):Option[RGBA]	=
 			if ((patternHex matcher s).matches) {
-				val Seq(r,g,b,a)	= (s grouped 2 map { it => (JInteger parseInt (it, 16)) / 255f }).toSeq
+				val Seq(r,g,b,a)	= (s grouped 2 map { it => (JInteger parseInt (it, 16)) / 255f }).toVector
 				Some(RGBA(RGB(r,g,b),Alpha(a)))
 			}
 			else None

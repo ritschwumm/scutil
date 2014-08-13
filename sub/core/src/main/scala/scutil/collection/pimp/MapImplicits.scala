@@ -9,6 +9,11 @@ trait MapImplicits {
 }
 
 final class MapExt[S,T](peer:Map[S,T]) {
+	// aliases with low precendence
+	
+	def put(key:S, value:T):Map[S,T]	= peer + (key -> value)
+	def remove(key:S):Map[S,T]			= peer - key
+	
 	/** remove an element and return it */
 	def extractAt(s:S):Option[(T,Map[S,T])]	=
 			peer get s map { t => (t, peer - s) }

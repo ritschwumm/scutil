@@ -12,7 +12,7 @@ import scutil.concurrent.Executors
 
 object External {
 	/** execute an external process. */
-	def exec(command:Seq[String], env:Map[String,String]=Map.empty, pwd:Option[File]=None, input:Seq[String]=Seq.empty):External = {
+	def exec(command:ISeq[String], env:Map[String,String]=Map.empty, pwd:Option[File]=None, input:ISeq[String]=ISeq.empty):External = {
 		val	builder	= new ProcessBuilder(command.asJava)
 		builder.environment() putAll env.asJava
 		pwd foreach { builder directory _ }
@@ -25,11 +25,11 @@ object External {
 		new External(proc, out, err)
 	}
 	
-	private def slurpLines(st:InputStream):Seq[String] = {
+	private def slurpLines(st:InputStream):ISeq[String] = {
 		new InputStreamReader(st) use { _.readLines() }
 	}
 	
-	private def spewLines(st:OutputStream, lines:Seq[String]) {
+	private def spewLines(st:OutputStream, lines:ISeq[String]) {
 		new OutputStreamWriter(st) use { writer =>
 			lines foreach { line =>
 				writer write line
@@ -42,7 +42,7 @@ object External {
 			Executors.spawn withResult thunk(task)
 }
 
-final class External(proc:Process, out:Thunk[Seq[String]], err:Thunk[Seq[String]]) {
+final class External(proc:Process, out:Thunk[ISeq[String]], err:Thunk[ISeq[String]]) {
 	/** may throw exceptions when reading stdout and stderr of the process failed  */
 	def result(destroy:Boolean):ExternalResult	= {
 		if (destroy) {

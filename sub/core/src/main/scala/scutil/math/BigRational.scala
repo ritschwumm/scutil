@@ -10,6 +10,7 @@ import java.math.{
 	RoundingMode
 }
 
+import scutil.lang.ISeq
 import scutil.text.implicits._
 
 object BigRational {
@@ -46,7 +47,7 @@ object BigRational {
 	/** parse the output of #toString */
 	def parse(s:String):Option[BigRational] = 
 			s splitAroundChar '/' match {
-				case Seq(num, den)	=> 
+				case ISeq(num, den)	=> 
 					try { Some(new BigRational(new JBigInteger(num), new JBigInteger(den))) }
 					catch { case e:NumberFormatException	=> None }
 				case _	=> None

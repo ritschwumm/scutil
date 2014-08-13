@@ -74,7 +74,7 @@ final class OptionExt[T](peer:Option[T]) {
 				case None			=> (None,		None)
 			}
 	
-	/** handy replacement for opt.toSeq.flatten abusing CanBuildFrom as a Zero typeclass */
+	/** handy replacement for opt.toISeq.flatten abusing CanBuildFrom as a Zero typeclass */
 	def flattenMany[U,CC[_]](implicit ev:T=>CC[U], cbf:CanBuildFrom[CC[U],U,CC[U]]):CC[U]	=
 			peer map ev match {
 				case Some(cc)	=> cc
@@ -145,6 +145,9 @@ final class OptionExt[T](peer:Option[T]) {
 	def toBad[ES,W](good: =>W)(implicit ev:T=>Nes[ES]):Validated[ES,W]	=
 			Validated badOr (peer map ev, good)
 		
+	def toISeq:ISeq[T]	=
+			toVector
+			
 	def toVector:Vector[T]	= 
 			peer match {
 				case Some(x)	=> Vector(x)

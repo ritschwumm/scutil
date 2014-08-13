@@ -29,7 +29,7 @@ object Prisms {
 			)
 			
 	// @see extractHead
-	def seqHead[T]:Prism[Seq[T],(T,Seq[T])]	=
+	def iseqHead[T]:Prism[ISeq[T],(T,ISeq[T])]	=
 			Prism(
 				_ match {
 					case h +: t	=> Some((h, t))
@@ -39,7 +39,7 @@ object Prisms {
 			)
 			
 	// @see extractLast
-	def seqLast[T]:Prism[Seq[T],(Seq[T],T)]	=
+	def iseqLast[T]:Prism[ISeq[T],(ISeq[T],T)]	=
 			Prism(
 				_ match {
 					case i :+ l	=> Some((i, l))
@@ -48,10 +48,10 @@ object Prisms {
 				il => il._1 :+ il._2
 			)
 	
-	def seqEmpty[T]:Prism[Seq[T],Unit]	=
+	def iseqEmpty[T]:Prism[ISeq[T],Unit]	=
 			Prism(
 				_ match {
-					case Seq()	=> Some(())
+					case ISeq()	=> Some(())
 					case _		=> None
 				},
 				_ => Vector.empty

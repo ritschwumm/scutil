@@ -5,6 +5,7 @@ import java.text.Normalizer
 import java.nio.charset.Charset
 
 import scutil.implicits._
+import scutil.lang.ISeq
 import scutil.io.Base64
 
 /*
@@ -65,7 +66,7 @@ final class HashSalt(
 	/** check if a raw password, when cooked, matches the same password cooked before */
 	def taste(raw:String, cooked:String):Boolean = {
 		(for {
-			Seq(r,s,p)	<- cooked splitAroundChar '$' guardBy { _.size == 3 }
+			ISeq(r,s,p)	<- cooked splitAroundChar '$' guardBy { _.size == 3 }
 			rounds		<- r.toIntOption
 			salt		<- Base64 decode s
 			prepared	<- Base64 decode p

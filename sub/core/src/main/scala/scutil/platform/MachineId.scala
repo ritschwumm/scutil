@@ -17,10 +17,10 @@ object MachineId {
 			(hashBytes foldLeft 0L)	{ (out, byte) => (JLong		rotateLeft (out, 8)) ^ (byte & 0xff) }
 		
 	/** provides a per-machine hash similar to how mongodb works */
-	val hashBytes:Seq[Byte]	= {
+	val hashBytes:ISeq[Byte]	= {
 		val ifaces:Vector[NetworkInterface]	= NetworkInterface.getNetworkInterfaces.asScala.toVector
 		
-		val ifaceMacs:Seq[Byte]	=
+		val ifaceMacs:ISeq[Byte]	=
 				for {
 					iface		<- ifaces
 					addr		<- (iface.getHardwareAddress:Seq[Byte]).guardNotNull.toVector
@@ -28,22 +28,22 @@ object MachineId {
 				}
 				yield byte
 				
-		val ifaceNames:Seq[Byte]	= 
+		val ifaceNames:ISeq[Byte]	= 
 				for {
 					iface	<- ifaces
 					byte	<- iface.getDisplayName getBytes "utf-8"
 				}
 				yield byte
 				
-		val process:Seq[Byte]	=
+		val process:ISeq[Byte]	=
 				for {
 					name	<- (Catch.exception in ManagementFactory.getRuntimeMXBean.getName).toVector
 					byte	<- name getBytes "utf-8"
 				}
 				yield byte
 		
-		val loader:Seq[Byte]	=
-				(System identityHashCode getClass.getClassLoader).toString getBytes "utf-8"
+		val loader:ISeq[Byte]	=
+				((System identityHashCode getClass.getClassLoader).toString getBytes "utf-8").toVector
 			
 		(ifaceMacs ++ ifaceNames ++ process ++ loader).toVector
 	}

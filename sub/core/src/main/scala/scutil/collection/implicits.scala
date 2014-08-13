@@ -6,10 +6,10 @@ object implicits extends implicits
 trait implicits 
 		extends	disposables
 		with	IteratorImplicits
+		with	ISeqImplicits
 		with	ListImplicits
 		with	MapImplicits
 		with	QueueImplicits
-		with	SeqImplicits
 		with	SetImplicits
 		with	TraversableImplicits
 		with	TraversableOnceImplicits

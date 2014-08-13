@@ -14,6 +14,14 @@ final class AnyExt[T](peer:T) {
 	/** ensure we get the java wrapper */
 	def boxed:AnyRef	= peer.asInstanceOf[AnyRef]
 	
+	/** type-invariant equality */
+	def ====[U](that:U)(implicit ev:T=:=U):Boolean	= peer == that
+	
+	/** type-invariant inequality */
+	def !===[U](that:T)(implicit ev:T=:=U):Boolean	= peer != that
+	
+	//------------------------------------------------------------------------------
+	
 	/** symbolic alias for into */
 	def |>[U](f:T=>U):U	= into(f)
 
@@ -50,11 +58,7 @@ final class AnyExt[T](peer:T) {
 		}
 	}
 	
-	/** type-invariant equality */
-	def ====[U](that:U)(implicit ev:T=:=U):Boolean	= peer == that
-	
-	/** type-invariant inequality */
-	def !===[U](that:T)(implicit ev:T=:=U):Boolean	= peer != that
+	//------------------------------------------------------------------------------
 	
 	/** match lifted to an Option */ 
 	def matchOption[U](pf:PartialFunction[T,U]):Option[U] =
@@ -67,6 +71,9 @@ final class AnyExt[T](peer:T) {
 	def flatMatchOption[U](pf:PartialFunction[T,Option[U]]):Option[U] =
 			if (pf isDefinedAt peer)	pf(peer)
 			else						None
+		
+	def matchBoolean[U](pf:PartialFunction[T,Unit]):Boolean =
+			pf isDefinedAt peer
 			
 	/*
 	// NOTE works only for covariant type parameters
@@ -77,6 +84,8 @@ final class AnyExt[T](peer:T) {
 		else						None
 	}
 	*/
+	
+	//------------------------------------------------------------------------------
 	
 	/** Some if the predicate matches, else None */
 	def guardBy(predicate:T=>Boolean):Option[T]	= 
@@ -142,16 +151,11 @@ final class AnyExt[T](peer:T) {
 	/** pair with itself */ 
 	def duplicate:(T,T)	= (peer, peer)
 	
+	//------------------------------------------------------------------------------
+	
 	/** apply until the value doesn't change any more */
-	def fixpoint(func:Endo[T]):T	= {
-		@tailrec
-		def loop(it:T):T	= {
-			val tmp	= func(it)
-			if (tmp != it)	loop(tmp)
-			else			it
-		}
-		loop(peer)
-	}
+	def fixpoint(func:Endo[T]):T	=
+			fixpointEq(func, _ == _)
 	
 	/** apply until the value doesn't change any more */
 	def fixpointEq(func:Endo[T], equal:(T,T)=>Boolean):T	= {

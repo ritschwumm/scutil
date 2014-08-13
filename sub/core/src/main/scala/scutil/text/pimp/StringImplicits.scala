@@ -66,14 +66,14 @@ final class StringExt(peer:String) {
 	//------------------------------------------------------------------------------
 	
 	/** excludes the separator char itself */
-	def splitAroundChar(separator:Char):Seq[String] =
+	def splitAroundChar(separator:Char):ISeq[String] =
 			splitAroundString(separator.toString)
 	
 	/** excludes the separator string itself */
-	def splitAroundString(separator:String):Seq[String] = {
+	def splitAroundString(separator:String):ISeq[String] = {
 		val	out	= new mutable.ArrayBuffer[String]
 		@scala.annotation.tailrec
-		def loop(pos:Int):Seq[String]	=
+		def loop(pos:Int):ISeq[String]	=
 				peer indexOf (separator, pos) match {
 					case -1 =>
 						out	+= peer substring pos

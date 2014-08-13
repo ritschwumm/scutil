@@ -5,10 +5,10 @@ import scala.reflect.macros.blackbox.Context
 import scala.reflect.runtime.universe.TypeTag
 
 import scutil.implicits._
-	
+
 object Fielder {
 	// NOTE the context bounds makes it possible to pass the type through other methods
-	def apply[T:Fielding]:Seq[String]	= implicitly[Fielding[T]].names
+	def apply[T:Fielding]:ISeq[String]	= implicitly[Fielding[T]].names
 	
 	// NOTE application is in Fielding.provide
 	// implicit def fielding[T]:Fielding[T]	= macro FielderImpl.apply[T]
@@ -16,7 +16,7 @@ object Fielder {
 	/*
 	// import scala.reflect.runtime.universe._
 	
-	def caseClassFieldNames[T:TypeTag]:Option[Seq[String]]	=
+	def caseClassFieldNames[T:TypeTag]:Option[ISeq[String]]	=
 			for {
 				primaryCtor	<- (typeOf[T].declarations filter { _.isMethod } map { _.asMethod } filter { _.isPrimaryConstructor }).singleOption
 				paramNames	<- primaryCtor.paramss.singleOption

@@ -4,133 +4,148 @@ import java.util.Locale
 
 import scala.annotation.tailrec
 
+import scutil.lang._
+import scutil.implicits._
+
 /** format (positive) numbers in a human readable way */
 object Human {
 	private val zero	= BigDecimal(0)
 	private val one		= BigDecimal(1)
 	
-	//------------------------------------------------------------------------------
-	//## convenience functions
-	
-	def fullBinary(value:BigDecimal):String	=
-			full(table.binary, value)
-		
-	def fullDecimal(value:BigDecimal):String	=
-			full(table.decimal, value)
-	
-	def fullMilliTime(value:BigDecimal):String	=
-			full(table.milliTime, value)
-		
-	def roundedBinary(commaDigits:Int, value:BigDecimal):String	=
-			rounded(table.binary, commaDigits, value)
-		
-	def roundedDecimal(commaDigits:Int, value:BigDecimal):String	=
-			rounded(table.decimal, commaDigits, value)
-		
-	def roundedMilliTime(commaDigits:Int, value:BigDecimal):String	=
-			rounded(table.milliTime, commaDigits, value)
-		
-	//------------------------------------------------------------------------------
-	//## full unit sequence
-	
-	/** format with all units, but leave out the biggest zero-valued */
-	def full(ulist:UnitList, value:BigDecimal):String	=
-			decompose(ulist, value) map { case (v,l) => v.toString + l } mkString " "
-	
-	/** value/label pairs starting at the biggest non-zero unit */
-	private def decompose(ulist:UnitList, value:BigDecimal):List[(BigDecimal,String)]	=
-			if (value != zero)	decomposeReverse1(ulist, value).reverse dropWhile (_._1 == zero)
-			else				List((value, ulist.label))
+	def multi(head:HumanUnit, tail:HumanUnit*):Human	=
+			Human(Nes(head, (tail:Traversable[HumanUnit]).toISeq))
 
-	/** value/label pairs starting at the smallest unit */
-	private def decomposeReverse1(ulist:UnitList, value:BigDecimal):List[(BigDecimal,String)]	=
-			ulist match {
-				case LastUnit(label)	=>
-					List((value, label))
-				case NextUnit(label, divisor, bigger)	=>
-					val (div, mod)	= value /% divisor
-					(mod, label) :: decomposeReverse1(bigger, div)
-			}
-			
-	//------------------------------------------------------------------------------
-	//## rounded to top-level unit
-	
-	/** rounded to the biggest possible unit */
-	def rounded(ulist:UnitList, commaDigits:Int, value:BigDecimal):String	= {
-		val (parts, label)	= biggestNonZero(ulist, value)
-		s"%.${commaDigits}f${label}" formatLocal (Locale.US, value / parts)
-	}
-  
-	/** returns the UnitList's number of units and label */
-	@tailrec
-	private def biggestNonZero(ulist:UnitList, value:BigDecimal, size:BigDecimal = one):(BigDecimal,String)	=
-			ulist match {
-				case LastUnit(label)	=> 
-					(size, label)
-				case NextUnit(label, divisor, bigger)	=>
-					if (value < divisor)	(size, label)
-					else					biggestNonZero(bigger, value / divisor, size * divisor)
-			}
-					
-	//------------------------------------------------------------------------------
-	//## list of units and divisors
-	
-	sealed trait UnitList {
-		def label:String
-	}
-	case class NextUnit(label:String, divisor:BigDecimal, bigger:UnitList)	extends UnitList
-	case class LastUnit(label:String)										extends UnitList
-	
-	//------------------------------------------------------------------------------
-	//## builder syntax
-	
-	object syntax {
-		object unit {
-			def of(name:String):LastUnit	= LastUnit(name)
-		}
-		
-		class has(ulist:UnitList, divisor:BigDecimal) {
-			def of(name:String):UnitList	= NextUnit(name, divisor, ulist)
-		}
-			
-		implicit class UnitListExt(ulist:UnitList) {
-			def has(divisor:BigDecimal)	= new has(ulist, divisor)
-		}
-	}
-	
 	//------------------------------------------------------------------------------
 	//## predefined tables
 	
-	object table {
-		import syntax._
+	val binary:Human	=
+			Human multi (
+				HumanUnit("yotta",	"Y",	one*1024*1024*1024*1024*1024*1024*1024*1024),
+				HumanUnit("zeta",	"Z",	one*1024*1024*1024*1024*1024*1024*1024),
+				HumanUnit("exa",	"E",	one*1024*1024*1024*1024*1024*1024),
+				HumanUnit("peta",	"P",	one*1024*1024*1024*1024*1024),
+				HumanUnit("tera",	"T",	one*1024*1024*1024*1024),
+				HumanUnit("giga",	"G",	one*1024*1024*1024),
+				HumanUnit("mega",	"M",	one*1024*1024),
+				HumanUnit("kilo",	"k",	one*1024),
+				HumanUnit("",		"",		one),
+				HumanUnit("milli",	"m",	one/1024),
+				HumanUnit("micro",	"µ",	one/1024/1024),
+				HumanUnit("nano",	"n",	one/1024/1024/1024/1024),
+				HumanUnit("pico",	"p",	one/1024/1024/1024/1024/1024),
+				HumanUnit("femto",	"f",	one/1024/1024/1024/1024/1024/1024),
+				HumanUnit("atto",	"a",	one/1024/1024/1024/1024/1024/1024/1024),
+				HumanUnit("zepto",	"z",	one/1024/1024/1024/1024/1024/1024/1024/1024),
+				HumanUnit("yocto",	"y",	one/1024/1024/1024/1024/1024/1024/1024/1024/1024)
+			)
+					
+	val decimal:Human	=
+			Human multi (
+				HumanUnit("yotta",	"Y",	one*1000*1000*1000*1000*1000*1000*1000*1000),
+				HumanUnit("zeta",	"Z",	one*1000*1000*1000*1000*1000*1000*1000),
+				HumanUnit("exa",	"E",	one*1000*1000*1000*1000*1000*1000),
+				HumanUnit("peta",	"P",	one*1000*1000*1000*1000*1000),
+				HumanUnit("tera",	"T",	one*1000*1000*1000*1000),
+				HumanUnit("giga",	"G",	one*1000*1000*1000),
+				HumanUnit("mega",	"M",	one*1000*1000),
+				HumanUnit("kilo",	"k",	one*1000),
+				HumanUnit("",		"",		one),
+				HumanUnit("milli",	"m",	one/1000),
+				HumanUnit("micro",	"µ",	one/1000/1000),
+				HumanUnit("nano",	"n",	one/1000/1000/1000/1000),
+				HumanUnit("pico",	"p",	one/1000/1000/1000/1000/1000),
+				HumanUnit("femto",	"f",	one/1000/1000/1000/1000/1000/1000),
+				HumanUnit("atto",	"a",	one/1000/1000/1000/1000/1000/1000/1000),
+				HumanUnit("zepto",	"z",	one/1000/1000/1000/1000/1000/1000/1000/1000),
+				HumanUnit("yocto",	"y",	one/1000/1000/1000/1000/1000/1000/1000/1000/1000)
+			)
 		
-		val binary:UnitList	=
-				unit	of "Y"	has 
-				1024	of "Z"	has
-				1024	of "E"	has
-				1024	of "P"	has
-				1024	of "T"	has
-				1024	of "G"	has
-				1024	of "M"	has
-				1024	of "k"	has
-				1024	of ""
+	val time:Human	=
+			Human multi (
+				HumanUnit("year",			"y",	one*60*60*24*365.24219052),	// tropical year
+				HumanUnit("day",			"d",	one*60*60*24),
+				HumanUnit("hour",			"h",	one*60*60),
+				HumanUnit("minute",			"m",	one*60),
+				HumanUnit("second",			"s",	one),
+				HumanUnit("millisecond",	"ms",	one/1000),
+				HumanUnit("nanosecond",		"ns",	one/1000/1000)
+			)
+				
+	val degrees:Human	=
+			Human multi (
+				HumanUnit("degree",	"°",	one),
+				HumanUnit("minute",	"'",	one/60),
+				HumanUnit("second",	"''",	one/60/60)
+			)
 			
-		val decimal:UnitList	=
-				unit	of "Y"	has 
-				1000	of "Z"	has
-				1000	of "E"	has
-				1000	of "P"	has
-				1000	of "T"	has
-				1000	of "G"	has
-				1000	of "M"	has
-				1000	of "k"	has
-				1000	of ""
+	//------------------------------------------------------------------------------
+	//## convenience functions
+	
+	val full	= HumanConfig(smallUnits = 0, decimalPlaces = 0)
+	val rounded	= HumanConfig(smallUnits = 0, maxUnits = 1, decimalPlaces = 2)
+	
+	val fullBinary:BigDecimal=>String		= binary	renderer full
+	val fullDecimal:BigDecimal=>String		= decimal	renderer full
+	val fullTime:BigDecimal=>String			= time		renderer full
+	
+	val roundedBinary:BigDecimal=>String	= binary	renderer rounded
+	val roundedDecimal:BigDecimal=>String	= decimal	renderer rounded
+	val roundedTime:BigDecimal=>String		= time		renderer rounded
 		
-		val milliTime:UnitList	=
-				unit	of "d"	has 
-				24		of "h"	has
-				60		of "m"	has
-				60		of "s"	has
-				1000	of "ms"
-	}
+	//------------------------------------------------------------------------------
+	//## more convenience functions
+	
+	val roundedDms:BigDecimal=>String	=
+			degrees renderer HumanConfig(decimalPlaces=3)
+		
+	private val millisToSeconds:Endo[BigDecimal]	=
+			_ * (time divisor 1)
+	
+	val fullMilliTime:BigDecimal=>String	=
+			millisToSeconds andThen (time renderer HumanConfig(smallUnits = 1, decimalPlaces = 0))
+		
+	val roundedMilliTime:BigDecimal=>String	=
+			millisToSeconds andThen (time renderer HumanConfig(smallUnits = 1, maxUnits = 1, decimalPlaces = 2))
 }
+
+case class Human(table:Nes[HumanUnit]) {
+	// TODO ensure table is sorted by construction
+	
+	private val smallCount	= table count { _.divisor < Human.one }
+	
+	private def smallCut(smallUnits:Int):Nes[HumanUnit]	=
+			table.reverse drop (smallCount - smallUnits) cata (Nes single table.head, _.reverse)
+		
+	//------------------------------------------------------------------------------
+	
+	def divisor(smallUnits:Int):BigDecimal	=
+			smallCut(smallUnits).last.divisor
+	
+	def renderer(config:HumanConfig):BigDecimal=>String	= {
+		val limit1	= smallCut(config.smallUnits)
+			
+		value => {
+			require(value >= Human.zero, "value must be positive or zero")
+			
+			val limit2	= limit1 dropWhile	{ _.divisor > value }	getOrElse (Nes single limit1.last)
+			val limit3	= limit2 take		config.maxUnits			getOrElse (Nes single limit2.head)
+				
+			renderRaw(limit3, config.decimalPlaces, value)
+		}
+	}
+	
+	private def renderRaw(table:Nes[HumanUnit], decimalPlaces:Int, value:BigDecimal):String	=
+			table.tailNes match {
+				case None	=> 
+					s"%.${decimalPlaces}f${table.head.short}" formatLocal (Locale.US, value / table.head.divisor)
+				case Some(tail)	=>
+					val (div, mod)	= value /% table.head.divisor
+					val prefix		= div.toBigInt.toString + table.head.short
+					if (mod == Human.zero)	prefix
+					else					prefix + " " + renderRaw(tail, decimalPlaces, mod)
+			}
+}
+
+case class HumanUnit(long:String, short:String, divisor:BigDecimal)
+case class HumanConfig(maxUnits:Int = 10000, smallUnits:Int = 10000, decimalPlaces:Int = 0)
+

@@ -39,7 +39,7 @@ final class FileExt(peer:File) {
 	def /(name:String):File 		= new File(peer, name)
 	
 	/** add multiple components to this Files's path */
-	def /+(path:Seq[String]):File	= (path foldLeft peer) { new File(_,_) }
+	def /+(path:ISeq[String]):File	= (path foldLeft peer) { new File(_,_) }
 	
 	/** get the parent File the scala way */
 	def parentOption:Option[File]	= 
@@ -72,16 +72,16 @@ final class FileExt(peer:File) {
 	//## directory only
 	
 	/** list files in this directory */
-	def children:Option[Seq[File]] =
+	def children:Option[ISeq[File]] =
 			Option(peer.listFiles) map { _.toVector }
 			
 	/** list files in this directory matching a predicate */
-	def childrenWhere(predicate:File=>Boolean):Option[Seq[File]] =
+	def childrenWhere(predicate:File=>Boolean):Option[ISeq[File]] =
 			Option(peer listFiles predicate) map { _.toVector }
 		
 	/** the path upwards from another File to this File */
-	def containsRecursive(that:File):Option[Seq[String]]	= {
-		def loop(test:File, path:Seq[String]):Option[Seq[String]]	=
+	def containsRecursive(that:File):Option[ISeq[String]]	= {
+		def loop(test:File, path:ISeq[String]):Option[ISeq[String]]	=
 					 if (test == null)	None
 				else if (test == peer)	Some(path)
 				else					loop(test.getParentFile, test.getName +: path)
@@ -130,10 +130,10 @@ final class FileExt(peer:File) {
 	def writeString(charset:Charset, string:String):Unit	= withWriter(charset) { _ write string }
 	
 	// TODO should honor a single line separator 
-	def readLines(charset:Charset):Seq[String]	= 
+	def readLines(charset:Charset):ISeq[String]	= 
 			withReader(charset) { _ readLines () }
 	// TODO should not use the platform line separator
-	def writeLines(charset:Charset, lines:Seq[String]):Unit	= 
+	def writeLines(charset:Charset, lines:ISeq[String]):Unit	= 
 			withWriter(charset) { writer => 
 				lines foreach { line => 
 					writer write line

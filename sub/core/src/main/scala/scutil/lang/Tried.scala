@@ -122,7 +122,7 @@ sealed trait Tried[+F,+W] {
 				)
 			)
 			
-	/** fail on this overrides fail on that */
+	/** fail on that overrides fail on this */
 	def ap[FF>:F,X,Y](that:Tried[FF,X])(implicit ev:W=>X=>Y):Tried[FF,Y]	=
 			cata(
 				f	=> that cata (
@@ -173,8 +173,14 @@ sealed trait Tried[+F,+W] {
 	def rescue[WW>:W](func:PFunction[F,WW]):Tried[F,WW]	=
 			cata(it => func(it) map Win.apply getOrElse Fail(it), Win.apply)
 		
+	def rescuePartial[WW>:W](func:PartialFunction[F,WW]):Tried[F,WW]	=
+			rescue(func.lift)
+		
 	def reject[FF>:F](func:PFunction[W,FF]):Tried[FF,W]	=
 			cata(Fail.apply, it => func(it) map Fail.apply getOrElse Win(it))
+		
+	def rejectPartial[FF>:F](func:PartialFunction[W,FF]):Tried[FF,W]	=
+			reject(func.lift)
 		
 	def guardByOr[FF>:F](func:Predicate[W], fail: =>FF):Tried[FF,W]	=
 			cata(Fail.apply, it => if (func(it)) Win(it) else Fail(fail))
@@ -222,7 +228,7 @@ sealed trait Tried[+F,+W] {
 	def toOption:Option[W]	= 
 			cata(_ => None, Some.apply)
 		
-	def toSeq:Seq[W]	= 
+	def toISeq:ISeq[W]	= 
 			toVector
 		
 	def toList:List[W]	= 
