@@ -4,6 +4,9 @@ object PBijection {
 	def partial[S,T](writeFunc:PartialFunction[S,T], readFunc:PartialFunction[T,S]):PBijection[S,T]	= 
 			PBijection[S,T](writeFunc.lift, readFunc.lift)
 			
+	def total[S,T](writeFunc:S=>T, readFunc:T=>S):PBijection[S,T]	= 
+			PBijection[S,T](writeFunc andThen Some.apply, readFunc andThen Some.apply)
+			
 	def identity[T]:PBijection[T,T]	= 
 			PBijection(Some.apply, Some.apply)
 			

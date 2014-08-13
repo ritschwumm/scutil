@@ -45,10 +45,7 @@ final case class Bijection[S,T](write:S=>T, read:T=>S) {
 			Prism total (write, read)
 		
 	def asPBijection:PBijection[S,T]	=
-			PBijection(
-				it => Some(write(it)), 
-				it => Some(read(it))
-			)
+			PBijection total (write, read)
 					
 	def asTLens:TLens[S,T]	=
 			TLens { s	=>
