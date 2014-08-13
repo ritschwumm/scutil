@@ -171,7 +171,7 @@ final class ISeqExt[T](peer:ISeq[T]) {
 	}
 	
 	/** optionally insert something between two items */
-	def between(func:(T,T)=>Option[T]):ISeq[T]	=
+	def insertBetween(func:(T,T)=>Option[T]):ISeq[T]	=
 			if (peer.size < 2)	peer
 			else {
 				val	out	= new immutable.VectorBuilder[T]

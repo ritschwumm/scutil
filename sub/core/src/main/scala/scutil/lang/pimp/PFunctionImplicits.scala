@@ -18,15 +18,19 @@ final class PFunctionExt[S,T](peer:PFunction[S,T]) {
 	def orElse(that:PFunction[S,T]):PFunction[S,T]	= 
 			it	=> peer(it) orElse that(it)
 		
+	/** symbolic alias for andThenFixed */
+	def >=>[U](that:PFunction[T,U]):PFunction[S,U]	=
+			this andThenFixed that
+		
+	/** symbolic alias for composeFixed */
+	def <=<[R](that:PFunction[R,S]):PFunction[R,T]	=
+			this composeFixed that
+		
 	def andThenFixed[U](that:PFunction[T,U]):PFunction[S,U]	=
 			it	=> peer(it) flatMap that
 		
-	def composeThenFixed[R](that:PFunction[R,S]):PFunction[R,T]	=
+	def composeFixed[R](that:PFunction[R,S]):PFunction[R,T]	=
 			it	=> that(it) flatMap peer
-		
-	/** make PEndo[S] to Endo[S] with getOrElse */
-	def toEndo(implicit ev:T=>S):Endo[S]	=
-			s => peer(s) map ev getOrElse s
 		
 	def toExtractor:Extractor[S,T]	=
 			Extractor(peer)

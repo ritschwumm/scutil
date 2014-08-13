@@ -37,12 +37,12 @@ final case class PBijection[S,T](write:PFunction[S,T], read:PFunction[T,S]) {
 			)
 					
 	def andThenBijection[U](that:Bijection[T,U]):PBijection[S,U]	=
-			this >=> that.asPBijection
+			this >=> that.toPBijection
 					
 	def andThenPrism[U](that:Prism[T,U]):PBijection[S,U]	=
-			this >=> that.asPBijection
+			this >=> that.toPBijection
 			
-	def asBijection:Bijection[Option[S],Option[T]]	=
+	def toBijection:Bijection[Option[S],Option[T]]	=
 			Bijection(_ flatMap write, _ flatMap read)
 			
 	def readExtractor:Extractor[T,S]	=

@@ -105,7 +105,7 @@ object Base64 {
 		Some(output)
 	}
 	
-	def asPrism:Prism[String,Array[Byte]]	=
+	def toPrism:Prism[String,Array[Byte]]	=
 			Prism(decode, encode)
 		
 	//------------------------------------------------------------------------------

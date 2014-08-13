@@ -18,6 +18,14 @@ final class PartialFunctionExt[S,T](peer:PartialFunction[S,T]) {
 			if (peer isDefinedAt it)	peer(it) 
 			else						func(it)
 		
+	/** symbolic alias for andThenFixed */
+	def >=>[U](that:PartialFunction[T,U]):PartialFunction[S,U]	=
+			this andThenFixed that
+		
+	/** symbolic alias for composeFixed */
+	def <=<[R](that:PartialFunction[R,S]):PartialFunction[R,T]	=
+			this composeFixed that
+		
 	def andThenFixed[U](that:PartialFunction[T,U]):PartialFunction[S,U]	=
 			new PartialFunction[S,U] {
 				def isDefinedAt(it:S):Boolean	= (peer isDefinedAt it) && (that isDefinedAt peer(it))

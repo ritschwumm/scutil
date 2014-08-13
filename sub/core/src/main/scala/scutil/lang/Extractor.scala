@@ -50,9 +50,9 @@ final case class Extractor[S,T](read:PFunction[S,T]) {
 	def cofilter(pred:S=>Boolean):Extractor[S,T]	= 
 			Extractor(s	=> if (pred(s))	read(s)	else None)
 			
-	def asPFunction:PFunction[S,T]	= 
+	def toPFunction:PFunction[S,T]	= 
 			s => read(s)
 	
-	def asPartialFunction:PartialFunction[S,T]	= 
+	def toPartialFunction:PartialFunction[S,T]	= 
 			Function unlift read	
 }

@@ -14,6 +14,6 @@ final class RegexExt(peer:Regex) {
 	def test(s:CharSequence):Boolean	= 
 			(peer.pattern matcher s).matches
 	
-	def asPrism:Prism[String,String]	=
+	def toPrism:Prism[String,String]	=
 			Prism guarded test
 }

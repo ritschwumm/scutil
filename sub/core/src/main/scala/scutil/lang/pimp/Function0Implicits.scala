@@ -11,14 +11,14 @@ trait Function0Implicits {
 }
 
 final class Function0Ext[T](peer:Function0[T]) {
-	def asRunnable:Runnable = 
+	def toRunnable:Runnable = 
 			new Runnable {
 				def run() {
 					peer()
 				}
 			}
 	
-	def asCallable:Callable[T]	=
+	def toCallable:Callable[T]	=
 			new Callable[T] {
 				def call() = peer()
 			}

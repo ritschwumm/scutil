@@ -14,8 +14,8 @@ trait Logging {
 		}
 		
 		def timing[T](what:String)(block: =>T)(implicit sl:SourceLocation):T	= {
-			val (out,dur)	= LogTime measure block
-			apply(what, dur.asHumanString)
+			val (out, dur)	= LogTime measure block
+			apply(what, dur.toHumanString)
 			out
 		}
 	}

@@ -9,7 +9,7 @@ import scutil.concurrent.implicits._
 
 object SwingUtil {
 	def insideEDT:Boolean		= SwingUtilities.isEventDispatchThread
-	val edtExecutor:Executor	= task	=> SwingUtilities invokeLater task.asRunnable
+	val edtExecutor:Executor	= task	=> SwingUtilities invokeLater task.toRunnable
 	
 	// transports Exceptions but not every Throwable
 	def worker[T](job: =>T):Thunk[T]	= Executors.thread	withResult thunk(job)

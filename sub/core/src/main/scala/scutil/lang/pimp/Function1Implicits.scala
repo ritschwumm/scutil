@@ -9,6 +9,14 @@ trait Function1Implicits {
 }
 
 final class Function1Ext[S,T](peer:Function1[S,T]) {
+	/** symbolic alias for andThen */
+	def >=>[U](that:Function1[T,U]):Function1[S,U]	=
+			peer andThen that
+		
+	/** symbolic alias for compose */
+	def <=<[R](that:Function1[R,S]):Function1[R,T]	=
+			peer compose that
+		
 	def partial(predicate:Predicate[S]):PartialFunction[S,T]	= 
 			new PartialFunction[S,T] {
 				def isDefinedAt(s:S):Boolean	= predicate(s)

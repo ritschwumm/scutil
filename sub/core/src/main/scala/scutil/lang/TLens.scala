@@ -49,10 +49,10 @@ final case class TLens[S,T](on:S=>Store[S,T]) {
 			}
 			
 	def andThenBijection[U](that:Bijection[T,U]):TLens[S,U]	=
-			this >=> that.asTLens
+			this >=> that.toTLens
 			
 	def andThenPLens[U](that:PLens[T,U]):PLens[S,U]	=
-			asPLens >=> that
+			toPLens >=> that
 			
 	def over[R](store:Store[R,S]):Store[R,T]	=
 			this on store.get compose store
@@ -95,6 +95,6 @@ final case class TLens[S,T](on:S=>Store[S,T]) {
 				)
 			}
 			
-	def asPLens:PLens[S,T]	=
+	def toPLens:PLens[S,T]	=
 			PLens(on andThen Some.apply)
 }

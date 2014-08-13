@@ -34,5 +34,5 @@ final case class MilliDuration(millis:Long) extends Ordered[MilliDuration] {
 	def min(that:MilliDuration):MilliDuration	= if (this < that) this else that
 	def max(that:MilliDuration):MilliDuration	= if (this > that) this else that
 	
-	def asHumanString:String	= Human fullMilliTime millis
+	def toHumanString:String	= Human fullMilliTime millis
 }

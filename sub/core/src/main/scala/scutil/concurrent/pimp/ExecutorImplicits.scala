@@ -20,7 +20,7 @@ final class ExecutorExt(peer:Executor) {
 		thunk { out.get.throwException }
 	}
 	
-	def asJava:JExecutor	= new JExecutor {
+	def toJavaExecutor:JExecutor	= new JExecutor {
 		def execute(command:Runnable) {
 			peer(command.run)
 		}

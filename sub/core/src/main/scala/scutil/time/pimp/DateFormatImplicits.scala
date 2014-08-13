@@ -12,7 +12,7 @@ trait DateFormatImplicits {
 }
 
 final class DateFormatExt(peer:DateFormat) {
-	def asPrism:Prism[String,Date]	=
+	def toPrism:Prism[String,Date]	=
 			Prism(
 				it => 
 						Catch.byType[ParseException] 

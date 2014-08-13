@@ -2,7 +2,7 @@ name	:= "scutil-core"
 
 libraryDependencies	++= Seq(
 	"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "compile",
-	"org.specs2"		%%	"specs2"		% "2.3.13"				% "test"	exclude("org.scala-lang", "scala-library") exclude("org.scala-lang", "scala-reflect")
+	"org.specs2"		%%	"specs2"		% "2.4"				% "test"	exclude("org.scala-lang", "scala-library") exclude("org.scala-lang", "scala-reflect")
 )
 
 scalacOptions	++= Seq(

@@ -16,6 +16,7 @@ trait implicits
 		with	Function2Implicits
 		with	HomogenousPairImplicits
 		with	OptionImplicits
+		with	PEndoImplicits
 		with	PFunctionImplicits
 		with	PairImplicits
 		with	PartialFunctionImplicits

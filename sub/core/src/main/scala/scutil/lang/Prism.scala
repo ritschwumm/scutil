@@ -64,21 +64,21 @@ final case class Prism[S,T](write:PFunction[S,T], read:T=>S) {
 			)
 					
 	def andThenBijection[U](that:Bijection[T,U]):Prism[S,U]	=
-			this >=> that.asPrism
+			this >=> that.toPrism
 					
 	def andThenPBijection[U](that:PBijection[T,U]):PBijection[S,U]	=
-			asPBijection >=> that
+			toPBijection >=> that
 					
 	def andThenPLens[U](that:PLens[T,U]):PLens[S,U]	=
-			asPLens >=> that
+			toPLens >=> that
 			
-	def asPBijection:PBijection[S,T]	=
+	def toPBijection:PBijection[S,T]	=
 			PBijection(
 				write,
 				t => Some(read(t))
 			)
 					
-	def asPLens:PLens[S,T]	=
+	def toPLens:PLens[S,T]	=
 			PLens { 
 				this write _ map (Store(_, this.read)) 
 			}

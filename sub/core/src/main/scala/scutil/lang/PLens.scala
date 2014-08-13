@@ -14,7 +14,7 @@ object PLens {
 			}
 		
 	def always[T]:PLens[Option[T],T]	=
-			Prism.always[T].asPLens
+			Prism.always[T].toPLens
 		
 	def codiag[T]:PLens[Either[T,T],T]	=
 			identity[T] sum identity[T]
@@ -66,10 +66,10 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 			}
 			
 	def andThenBijection[U](that:Bijection[T,U]):PLens[S,U]	=
-			this >=> that.asPLens
+			this >=> that.toPLens
 			
 	def andThenTLens[U](that:TLens[T,U]):PLens[S,U]	=
-			this >=> that.asPLens
+			this >=> that.toPLens
 			
 	def over[R](store:Option[Store[R,S]]):Option[Store[R,T]]	=
 			for {
@@ -82,7 +82,7 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 			this on store.get map { _ compose store }
 			
 	// impossible
-	// def zip[U](that:PLens[S,U]):PLens[S,(T,U)]	=
+	// def zip[U](that:PLens[S,U]):PLens[S,(T,U)]
 	
 	// ||| 
 	def sum[SS](that:PLens[SS,T]):PLens[Either[S,SS],T]	=

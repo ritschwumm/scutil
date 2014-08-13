@@ -13,9 +13,9 @@ object Executors {
 	
 	val ignore:Executor	= task	=> ()
 	val direct:Executor	= task	=> task()
-	val thread:Executor	= task	=> new Thread(task.asRunnable).start
+	val thread:Executor	= task	=> new Thread(task.toRunnable).start
 	val spawn:Executor	= task	=> Future { task() }
 	
 	// BETTER move into JExecutorImplicits ?
-	def java(executor:JExecutor):Executor	= task => executor execute task.asRunnable
+	def java(executor:JExecutor):Executor	= task => executor execute task.toRunnable
 }

@@ -148,4 +148,3 @@ case class Human(table:Nes[HumanUnit]) {
 
 case class HumanUnit(long:String, short:String, divisor:BigDecimal)
 case class HumanConfig(maxUnits:Int = 10000, smallUnits:Int = 10000, decimalPlaces:Int = 0)
-
