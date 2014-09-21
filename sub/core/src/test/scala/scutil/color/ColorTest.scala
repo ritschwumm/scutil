@@ -2,6 +2,8 @@ package scutil.color
 
 import org.specs2.mutable._
 
+import scutil.color.implicits._
+
 class ColorTest extends Specification {
 	"HexContext" should {
 		"decode a valid color" in {

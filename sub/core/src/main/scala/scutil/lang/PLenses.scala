@@ -4,6 +4,18 @@ import scutil.lang.implicits._
 import scutil.collection.implicits._
 
 object PLenses {
+	def opt[S,T](total:TLens[S,Option[T]]):PLens[S,T]	=
+			PLens { s => 
+				total get s map { t =>
+					Store[S,T](
+						t,
+						t => total put (s, Some(t))
+					)
+				}
+			}
+			
+	//------------------------------------------------------------------------------
+	
 	def iseq[T](i:Int):PLens[ISeq[T],T]	=
 			PLens { s => 
 				s	containsIndex

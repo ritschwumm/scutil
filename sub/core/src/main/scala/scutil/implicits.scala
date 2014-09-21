@@ -2,7 +2,8 @@ package scutil
 
 object implicits extends implicits
 trait implicits 
-		extends	scutil.lang.implicits
+		extends	scutil.color.implicits
+		with	scutil.lang.implicits
 		with	scutil.io.implicits
 		with	scutil.math.implicits
 		with	scutil.text.implicits

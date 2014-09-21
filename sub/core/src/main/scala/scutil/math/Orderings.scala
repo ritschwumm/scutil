@@ -3,9 +3,10 @@ package scutil.math
 import scutil.lang._
 
 object Orderings {
-	// NOTE Ordering is not contravariant for some reason
-	
-	/** treats everything as equal */
+	/**
+	treats everything as equal,
+	forms a Monoid with OrderingExt#orElse 
+	*/
 	def trivial[T]:Ordering[T]	=
 			new Ordering[T] {
 				def compare(x:T, y:T):Int	= 0

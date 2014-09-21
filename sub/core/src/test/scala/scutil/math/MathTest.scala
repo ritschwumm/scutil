@@ -4,7 +4,24 @@ import org.specs2.mutable._
 
 import scutil.{ math => Math }
 
+import scutil.math.implicits._
+
 class MathTest extends Specification {
+	"Ordering" should {
+		"be contravariant" in {
+			trait Numb
+			trait Inte extends Numb
+			
+			val i:Inte	= null
+			val n:Numb	= i
+			
+			val no:Ordering[Numb]	= null
+			val io:Ordering[Inte]	= no.vary[Inte]
+			
+			success
+		}
+	}
+	
 	"Unsigned" should {
 		"work for positive bytes" in {
 			(Math unsignedByte 1.toByte) == 1.toShort

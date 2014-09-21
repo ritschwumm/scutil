@@ -4,5 +4,4 @@ import scutil.math.pimp._
 
 object implicits extends implicits
 trait implicits
-		extends	disposables
-		with	OrderingImplicits
+		extends	OrderingImplicits

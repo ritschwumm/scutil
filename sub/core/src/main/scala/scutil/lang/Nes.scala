@@ -123,3 +123,9 @@ case class Nes[+T](head:T, tail:ISeq[T]) {
 	def toISeq:ISeq[T]	=
 			toVector
 }
+
+/** helper to allow easy construction and pattern matching */
+object VarNes {
+	def apply[T](head:T, tail:T*):Nes[T]			= Nes(head, tail.toVector)
+	def unapplySeq[T](it:Nes[T]):Option[ISeq[T]]	= Some(it.toVector)
+}

@@ -2,6 +2,8 @@ package scutil.lang
 
 object Tuples extends TuplesGenerated {
 	/*
+	// these we get from TuplesGenerated
+	
 	type LCurried4[A,B,C,D]	= (A,(B,(C,D)))
 	type RCurried4[A,B,C,D]	= (((A,B),C),D)
 	

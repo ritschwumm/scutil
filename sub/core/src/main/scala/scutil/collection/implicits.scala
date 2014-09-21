@@ -4,8 +4,7 @@ import scutil.collection.pimp._
 
 object implicits extends implicits
 trait implicits 
-		extends	disposables
-		with	IteratorImplicits
+		extends	IteratorImplicits
 		with	ISeqImplicits
 		with	ListImplicits
 		with	MapImplicits

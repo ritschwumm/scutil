@@ -1,10 +1,12 @@
 package scutil.lang
 
-object Validated {
-	def bad1[E,T](problem:E):Validated[E,T]			= bad(Nes single problem)
-	
+import scala.util.{ Try, Success, Failure }
+
+object Validated extends ValidatedGenerated {
 	def bad[E,T](problems:Nes[E]):Validated[E,T]	= Bad(problems)
 	def good[E,T](value:T):Validated[E,T]			= Good(value)
+	
+	def bad1[E,T](problem:E):Validated[E,T]			= bad(Nes single problem)
 	
 	//------------------------------------------------------------------------------
 	
@@ -20,11 +22,21 @@ object Validated {
 				case Win(x)		=> Good(x)
 			}
 			
+	def fromTry[T](tryy:Try[T]):Validated[Throwable,T]	=
+			tryy match {
+				case Failure(x)	=> Bad(Nes single x)
+				case Success(x)	=> Good(x)
+			}
+			
 	//------------------------------------------------------------------------------
 			
 	def switch[E,T](ok:Boolean, problems: =>Nes[E], value: =>T):Validated[E,T]	=
 			if (ok)	good(value)
 			else	bad(problems)
+		
+	def switch1[E,T](ok:Boolean, problem: =>E, value: =>T):Validated[E,T]	=
+			if (ok)	good(value)
+			else	bad1(problem)
 		
 	def goodOr[E,T](value:Option[T], problems: =>Nes[E]):Validated[E,T]	=
 			value match {
@@ -53,44 +65,18 @@ object Validated {
 		
 	//------------------------------------------------------------------------------
 	
-	/*
-	def map[E,S,T](func:S=>T):Validated[E,S]=>Validated[E,T]	=
-			_ map func
-		
-	def pa[E,S,T](func:Validated[E,S=>T]):Validated[E,S]=>Validated[E,T]	=
-			_ pa func
-	
-	def flatMap[E,S,T](func:S=>Validated[E,T]):Validated[E,S]=>Validated[E,T]	=
-			_ flatMap func
-	*/
-	
-	//------------------------------------------------------------------------------
-		
-	def lift2[E,S1,S2,T](func:(S1,S2)=>T):(Validated[E,S1], Validated[E,S2])=>Validated[E,T]	=
-			(s1, s2) => good(func.curried) ap s1 ap s2
-		
-	def lift3[E,S1,S2,S3,T](func:(S1,S2,S3)=>T):(Validated[E,S1], Validated[E,S2], Validated[E,S3])=>Validated[E,T]	=
-			(s1, s2, s3) => good(func.curried) ap s1 ap s2 ap s3
-		
-	def lift4[E,S1,S2,S3,S4,T](func:(S1,S2,S3,S4)=>T):(Validated[E,S1], Validated[E,S2], Validated[E,S3], Validated[E,S4])=>Validated[E,T]	=
-			(s1, s2, s3, s4) => good(func.curried) ap s1 ap s2 ap s3 ap s4
-		
-	def lift5[E,S1,S2,S3,S4,S5,T](func:(S1,S2,S3,S4,S5)=>T):(Validated[E,S1], Validated[E,S2], Validated[E,S3], Validated[E,S4], Validated[E,S5])=>Validated[E,T]	=
-			(s1, s2, s3, s4, s5) => good(func.curried) ap s1 ap s2 ap s3 ap s4 ap s5
-		
-	//------------------------------------------------------------------------------
-
 	def zip2[E,S1,S2](s1:Validated[E,S1], s2:Validated[E,S2]):Validated[E,(S1,S2)]	=
 			s1 zip s2
 		
+	/*
+	// these we get from ValidatedGenerated
+			
 	def zip3[E,S1,S2,S3](s1:Validated[E,S1], s2:Validated[E,S2], s3:Validated[E,S3]):Validated[E,(S1,S2,S3)]	=
-			s1 zip s2 zip s3 map { case ((s1, s2), s3) => (s1, s2, s3) }
+			s1 zip s2 zip s3 map Tuples.runcurry3
 		
-	def zip4[E,S1,S2,S3,S4](s1:Validated[E,S1], s2:Validated[E,S2], s3:Validated[E,S3], s4:Validated[E,S4]):Validated[E,(S1,S2,S3,S4)]	=
-			s1 zip s2 zip s3 zip s4 map { case (((s1, s2), s3), s4) => (s1, s2, s3, s4) }
-		
-	def zip5[E,S1,S2,S3,S4,S5](s1:Validated[E,S1], s2:Validated[E,S2], s3:Validated[E,S3], s4:Validated[E,S4], s5:Validated[E,S5]):Validated[E,(S1,S2,S3,S4,S5)]	=
-			s1 zip s2 zip s3 zip s4 zip s5 map { case ((((s1, s2), s3), s4), s5) => (s1, s2, s3, s4, s5) }
+	def lift2[E,S1,S2,T](func:(S1,S2)=>T):(Validated[E,S1], Validated[E,S2])=>Validated[E,T]	=
+			(s1, s2) => good(func.curried) ap s1 ap s2
+	*/
 }
 
 sealed trait Validated[+E,+T] {
@@ -138,16 +124,19 @@ sealed trait Validated[+E,+T] {
 	def map[U](func:T=>U):Validated[E,U]	=
 			cata(Bad.apply, func andThen Good.apply)
 			
+	/** note this is nort consitent with ap */
 	def flatMap[EE>:E,U](func:T=>Validated[EE,U]):Validated[EE,U]	=
 			cata(Bad.apply, func)
 			
+	/** note this is nort consitent with ap */
 	def flatten[EE>:E,U](implicit ev:T=>Validated[EE,U]):Validated[EE,U]	=
 			flatMap(ev)
 		
-	// NOTE error in that come first
+	/** error in that comes first */
 	def pa[EE>:E,U](that:Validated[EE,T=>U]):Validated[EE,U]	=
 			(that zip this) map { case (t2u, t) => t2u(t) }
 		
+	/** error in this comes first */
 	def ap[EE>:E,U,V](that:Validated[EE,U])(implicit ev:T=>U=>V):Validated[EE,V]	=
 			(this zip that) map { case (fuv, u) => fuv(u) }
 			

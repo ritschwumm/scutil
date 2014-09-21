@@ -60,14 +60,14 @@ final class OptionExt[T](peer:Option[T]) {
 				case None			=> (None,		None)
 			}
 			
-	def splitEither[U,V](implicit ev:T=>Either[U,V]):(Option[U],Option[V])	=
+	def partitionEither[U,V](implicit ev:T=>Either[U,V]):(Option[U],Option[V])	=
 			peer map ev match {
 				case Some(Left(x))	=> (Some(x),	None)
 				case Some(Right(x))	=> (None,		Some(x))
 				case None			=> (None,		None)
 			}
 	
-	def splitTried[F,W](implicit ev:T=>Tried[F,W]):(Option[F],Option[W])	=
+	def partitionTried[F,W](implicit ev:T=>Tried[F,W]):(Option[F],Option[W])	=
 			peer map ev match {
 				case Some(Fail(x))	=> (Some(x),	None)
 				case Some(Win(x))	=> (None,		Some(x))
@@ -141,9 +141,15 @@ final class OptionExt[T](peer:Option[T]) {
 			
 	def toGood[F](problems: =>Nes[F]):Validated[F,T]	=
 			Validated goodOr (peer, problems)
-	
+		
 	def toBad[ES,W](good: =>W)(implicit ev:T=>Nes[ES]):Validated[ES,W]	=
 			Validated badOr (peer map ev, good)
+		
+	def toGood1[F](problem: =>F):Validated[F,T]	=
+			Validated goodOr (peer, Nes single problem)
+		
+	def toBad1[ES,W](good: =>W)(implicit ev:T=>ES):Validated[ES,W]	=
+			Validated badOr (peer map (ev andThen Nes.single), good)
 		
 	def toISeq:ISeq[T]	=
 			toVector

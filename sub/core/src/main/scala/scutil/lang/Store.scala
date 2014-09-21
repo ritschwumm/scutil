@@ -9,10 +9,16 @@ object Store {
 }
 
 final case class Store[C,V](get:V, put:V=>C) {
+	/** aka extract */
 	def container:C							= put(get)
+	
 	def modify(func:Endo[V]):C				= put(func(get))
 	def modifyOpt(func:PEndo[V]):Option[C]	= func(get) map put
 	
+	/** aka duplicate */
+	def coFlatten:Store[Store[C,V],V]	=
+			Store(get, Store(_, put))
+		
 	def map[CC](func:C=>CC):Store[CC,V]	=
 			Store[CC,V](
 				get,
@@ -24,9 +30,6 @@ final case class Store[C,V](get:V, put:V=>C) {
 				get,
 				x => func(Store(x, put))
 			)
-		
-	def coFlatten[CC](implicit ev:Store[C,V]=>CC):Store[CC,V] =
-			coFlatMap(ev)
 		
 	/** symbolic alias for andThen */
 	def >=>[VV](that:Store[V,VV]):Store[C,VV]	=

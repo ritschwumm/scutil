@@ -5,7 +5,7 @@ import scala.reflect.ClassTag
 
 import scutil.lang._
 
-object Tried {
+object Tried extends TriedGenerated {
 	def win[F,W](it:W):Tried[F,W]	= Win(it)
 	def fail[F,W](it:F):Tried[F,W]	= Fail(it)
 	
@@ -62,6 +62,15 @@ object Tried {
 		
 	def failCondition[F](condition:Boolean, problem: =>F):Tried[F,Unit]	=
 			winCondition(!condition, problem)
+		
+	//------------------------------------------------------------------------------
+	
+	/*
+	// these we get from TriedGenerated
+			
+	def lift2[E,S1,S2,T](func:(S1,S2)=>T):(Tried[E,S1], Tried[E,S2])=>Tried[E,T]	=
+			(s1, s2) => win(func.curried) ap s1 ap s2
+	*/
 }
 
 /** right biased Either, Try with parameterized error */

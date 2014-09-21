@@ -7,7 +7,19 @@ trait OrderingImplicits {
 }
 
 final class OrderingExt[T](peer:Ordering[T]) {
-	/** alternative to the implicit (Ordering[T],Ordering[T]) => Ordering[T] in Ordering.Implicits */
+	/** Ordering should be contravariant */
+	def vary[U<:T]:Ordering[U]	=
+			new Ordering[U] {
+				def compare(x:U, y:U):Int	= {
+					val xx:T = x
+					peer compare (x, y)
+				}
+			}
+			
+	/** 
+	alternative to the implicit (Ordering[T],Ordering[T]) => Ordering[T] conversion in Ordering.Implicits,
+	forms a Monoid with Orderings#trivial
+	*/
 	def orElse[U<:T](that:Ordering[U]):Ordering[U]	=
 			new Ordering[U] {
 				def compare(x:U, y:U):Int	= {

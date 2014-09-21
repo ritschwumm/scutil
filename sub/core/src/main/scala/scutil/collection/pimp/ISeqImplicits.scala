@@ -57,6 +57,29 @@ final class ISeqExt[T](peer:ISeq[T]) {
 				)
 			}
 			else None
+			
+	/** move multiple items item from a given index to a inter-item gap of another index if possible */
+	def moveManyAt(from:Int, count:Int, to:Int):Option[ISeq[T]]	=
+			if (from >= 0 && from+count <= peer.size && to >= 0 && to <= peer.size) {
+				Some(
+					if (from < to) {
+						// move right
+						(peer slice (0,					from))				++
+						(peer slice (from	+ count,	to))				++
+						(peer slice (from,				from	+ count))	++
+						(peer slice (to,				peer.size))
+					}
+					else if (from > to) {
+						// move left
+						(peer slice (0,					to))			++
+						(peer slice (from,				from + count))	++
+						(peer slice (to,				from))			++
+						(peer slice (from	+ count,	peer.size))
+					}
+					else peer
+				)
+			}
+			else None
 	
 	/** concatenate the ISeq with itself n times */
 	def times(count:Int):ISeq[T]	=
