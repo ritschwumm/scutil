@@ -26,14 +26,14 @@ object PLenses {
 			
 	//------------------------------------------------------------------------------
 	
-	private def iseqWhere[T](pred:Predicate[T]):PLens[ISeq[T],T]	=
+	def iseqWhere[T](pred:Predicate[T]):PLens[ISeq[T],T]	=
 			PLens { items =>
 				items indexWhereOption pred flatMap {
 					PLenses iseq _ on items 
 				}
 			}
 				
-	private def iseqWhereEqual[S,T](extract:S=>T, id:T):PLens[ISeq[S],S]	=
+	def iseqWhereEqual[S,T](extract:S=>T, id:T):PLens[ISeq[S],S]	=
 			iseqWhere { it =>
 				extract(it) ==== id
 			}

@@ -92,7 +92,7 @@ private final class BijectorImpl(val c:Context) {
 								= applyTmp
 				}
 				yield {
-					//TODO fully qualified companion symbol!
+					// TODO use fully qualified companion symbol!
 					if (applySignature.size == 1)
 							q"""
 								scutil.lang.Bijection(
@@ -107,22 +107,6 @@ private final class BijectorImpl(val c:Context) {
 									($companionSymbol.apply _).tupled
 								)
 							"""
-					/*
-					q"""
-						scutil.lang.Bijection(
-							(it:$selfType) => $companionSymbol.unapply(it).get, 
-							${
-								if (applySignature.size == 1) {
-									q"(it:$unapplySingle) => $companionSymbol.apply(it)"
-								}
-								else {
-									val its	= 1 to applySignature.size map { i => q"it.${TermName("_"+i)}" }
-									q"(it:$unapplySingle) => $companionSymbol.apply(..$its)"
-								}
-							}
-						)
-					"""
-					*/
 				}
 			
 		out cata (

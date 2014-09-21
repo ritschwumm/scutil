@@ -1,6 +1,7 @@
 package scutil.io
 
 import scutil.lang._
+import scutil.text.pimp.StringImplicits._
 
 /** 
 encodes and decodes byte arrays into strings using the base64 encoding method.
@@ -9,25 +10,26 @@ encodes and decodes byte arrays into strings using the base64 encoding method.
 */
 object Base64 {
 	private val whitespaceRE	= """\s+"""
-	private val validPaddingRE	= """^[^=]+={0,2}$"""
+	
+	private val padding:Char	= '='
+	private val validPaddingRE	= "[^"+padding.toString.quoteCharacterClass+"]+" + padding.toString.quoteRegex+"{0,2}"
 	
 	// TODO allow alternate alphabet ending in "-_" 
-	private val alphabet	= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray
-	private val padding		= '='
+	private val alphabet:Array[Char]	= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray
 	
 	private val invalidFlag	= -1.toByte
 	private val paddingFlag	= -2.toByte
-	private val	decode		= {
+	private val	table:Array[Byte]	= {
 		// -1 means "invalid", -2 means "padding"
 		val out	= new Array[Byte](256)
-		for (i <- 0 until 256)					out(i)		= invalidFlag
-												out('=')	= paddingFlag
-		for ((i,v) <- alphabet.zipWithIndex)	out(i)		= v.toByte
+		for (i <- 0 until 256)					out(i)	= invalidFlag
+		for ((i, v) <- alphabet.zipWithIndex)	out(i)	= v.toByte
+		out(padding)	= paddingFlag
 		out
 	}
 	
 	private def alphabetOrPadding(it:Char):Boolean	=
-			it >= 0 && it < decode.length && decode(it) != invalidFlag
+			it >= 0 && it < table.length && table(it) != invalidFlag
 		
 	private def validInput(s:String):Boolean	=
 			(s.length % 4 == 0)				&&
@@ -88,7 +90,7 @@ object Base64 {
 		var	bitShift	= 0
 		var	akku		= 0
 		while (inputIndex < inputSize) {
-			val	value	= decode(input(inputIndex))
+			val	value	= table(input(inputIndex))
 			// ignores padding as well as invalid chars
 			if (value >= 0) {
 				bitShift	+=	6
