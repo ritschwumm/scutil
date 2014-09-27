@@ -1,5 +1,11 @@
 package scutil.collection.pimp
 
+import java.util.{
+	Map			=> JMap,
+	HashMap		=> JHashMap,
+	Collections	=> JCollections
+}
+
 import scutil.lang._
 
 object MapImplicits extends MapImplicits
@@ -68,4 +74,10 @@ final class MapExt[S,T](peer:Map[S,T]) {
 	/** map the value for a single key if it exists or insert a new value for this key */
 	def updatedByOrInserted(key:S, update:Endo[T], insert: =>T):Map[S,T]	=
 			peer + (key -> (peer get key map update getOrElse insert))
+		
+	def toJMap:JMap[S,T]	=  {
+		val out	= new JHashMap[S,T]
+		peer foreach { case (k,v) => out put (k,v) }
+		JCollections unmodifiableMap out
+	}
 }

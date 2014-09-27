@@ -20,17 +20,19 @@ package object math {
 	def log2(value:Double):Double	= (JMath log value) * Log2Reciprocal
 	def exp2(value:Double):Double	= JMath exp (value * Log2)
 	
+	def exp10(value:Double):Double	= JMath pow (10, value)
+	// def log10(value:Double):Double	= JMath log10 value
+	
+	def logB(base:Double, value:Double):Double	= (JMath log value) / (JMath log base)
+	// def expB(base:Double, value:Double):Double	= JMath pow (base, value)
+	
+	//------------------------------------------------------------------------------
+	
 	def nextPow2(it:Long):Long	=
 				 if (it == 0)	0
 			else if (it == 1)	1
 			else 				(JLong highestOneBit (it-1)) << 1
 			
-	// inverse to log10 in the standard library
-	def exp10(value:Double):Double	= JMath pow (10, value)
-	
-	// inverse to pow in the standard library
-	def logB(base:Double, value:Double):Double	= (JMath log value) / (JMath log base)
-	
 	//------------------------------------------------------------------------------
 
 	def clampByte(value:Byte, minValue:Byte, maxValue:Byte):Byte	=
@@ -53,6 +55,24 @@ package object math {
 			
 	//------------------------------------------------------------------------------
 	
+	def max3Byte(a:Byte, b:Byte, c:Byte):Byte			= (JMath max (a, JMath max (b,c))).toByte
+	def max3Short(a:Short, b:Short, c:Short):Short		= (JMath max (a, JMath max (b,c))).toShort
+	def max3Int(a:Int, b:Int, c:Int):Int				= JMath max (a, JMath max (b,c))
+	def max3Long(a:Long, b:Long, c:Long):Long			= JMath max (a, JMath max (b,c))
+	def max3Float(a:Float, b:Float, c:Float):Float		= JMath max (a, JMath max (b,c))
+	def max3Double(a:Double, b:Double, c:Double):Double	= JMath max (a, JMath max (b,c))
+		
+	//------------------------------------------------------------------------------
+
+	def min3Byte(a:Byte, b:Byte, c:Byte):Byte			= (JMath min (a, JMath min (b,c))).toByte
+	def min3Short(a:Short, b:Short, c:Short):Short		= (JMath min (a, JMath min (b,c))).toShort
+	def min3Int(a:Int, b:Int, c:Int):Int				= JMath min (a, JMath min (b,c))
+	def min3Long(a:Long, b:Long, c:Long):Long			= JMath min (a, JMath min (b,c))
+	def min3Float(a:Float, b:Float, c:Float):Float		= JMath min (a, JMath min (b,c))
+	def min3Double(a:Double, b:Double, c:Double):Double	= JMath min (a, JMath min (b,c))
+		
+	//------------------------------------------------------------------------------
+	
 	@tailrec
 	def gcdByte(a:Byte, b:Byte):Byte	=
 			if (b == 0)	abs(a).toByte
@@ -72,6 +92,8 @@ package object math {
 	def gcdLong(a:Long, b:Long):Long	=
 			if (b == 0)	abs(a)
 			else		gcdLong(b, a % b)
+		
+	//------------------------------------------------------------------------------
 		
 	def lcmByte(a:Byte, b:Byte):Byte	=
 			(abs(a * b) / gcdByte(a, b)).toByte
@@ -129,56 +151,6 @@ package object math {
 	
 	//------------------------------------------------------------------------------
 	
-	@strictfp
-	def denormalFloat(it:Float):Boolean	=
-			if (it == 0)												false
-			else if (it > -JFloat.MIN_NORMAL && it < JFloat.MIN_NORMAL)	true
-			else														false
-			
-	@strictfp
-	def denormalDouble(it:Double):Boolean	=
-			if (it == 0)													false
-			else if (it > -JDouble.MIN_NORMAL && it < JDouble.MIN_NORMAL)	true
-			else															false
-			
-	def floatBits(it:Float):(Boolean,Int,Short)	= {
-		// positive infinity	0x7f800000
-		// negative infinity	0xff800000
-		// NaN					0x7fc00000
-		val bits		= JFloat  floatToIntBits it
-		
-		// true means negative
-		val sign		= (bits & 0x80000000) != 0
-		
-		// doesn't include leading one
-		val mantissa	= bits &  0x007fffff
-		
-		// never negative, bias is 127; 0 and 255 have special meanings
-		val exponent	= ((bits & 0x7f800000) >> 23).toShort
-		
-		(sign, mantissa, exponent)
-	}
-	
-	def doubleBits(it:Double):(Boolean,Long,Short)	= {
-		// positive infinity	0x7ff0000000000000L
-		// negative infinity	0xfff0000000000000L
-		// NaN					0x7ff8000000000000L
-		val bits		= JDouble doubleToLongBits it
-		
-		// true means negative
-		val sign		= (bits & 0x8000000000000000L) != 0
-		
-		// doesn't include leading one
-		val mantissa	= bits & 0x000fffffffffffffL
-		
-		// never negative, bias is 1023; 0 and 2047 have special meanings
-		val exponent	= ((bits & 0x7ff0000000000000L) >> 52).toShort
-		
-		(sign, mantissa, exponent)
-	}
-		
-	//------------------------------------------------------------------------------
-	
 	def unsignedByte(value:Byte):Short	= (value & 0x000000ff).toShort
 	def unsignedShort(value:Short):Int	= (value & 0x0000ffff)
 	def unsignedInt(value:Int):Long		= (value & 0xffffffffL)
@@ -217,17 +189,6 @@ package object math {
 				((value << 8) & 0xff00) |
 				((value >> 8) & 0x00ff)
 			).toChar
-			
-	def swapEndianByteArray(value:Array[Byte]):Array[Byte]	= {
-		val l	= value.length
-		val	out	= new Array[Byte](l)
-		var i	= 0
-		while (i < l) {
-			out(i)	= value(l-i-1)
-			i	+= 1
-		}
-		out
-	}
 	
 	//------------------------------------------------------------------------------
 	
@@ -245,4 +206,54 @@ package object math {
 		
 	def maskTestChar(value:Char, onMask:Char, offMask:Char):Boolean = 
 			(value & (onMask | offMask)) == onMask
+		
+	//------------------------------------------------------------------------------
+	
+	@strictfp
+	def denormalFloat(it:Float):Boolean	=
+			if (it == 0)												false
+			else if (it > -JFloat.MIN_NORMAL && it < JFloat.MIN_NORMAL)	true
+			else														false
+			
+	@strictfp
+	def denormalDouble(it:Double):Boolean	=
+			if (it == 0)													false
+			else if (it > -JDouble.MIN_NORMAL && it < JDouble.MIN_NORMAL)	true
+			else															false
+			
+	def bitsOfFloat(it:Float):(Boolean,Int,Short)	= {
+		// positive infinity	0x7f800000
+		// negative infinity	0xff800000
+		// NaN					0x7fc00000
+		val bits		= JFloat  floatToIntBits it
+		
+		// true means negative
+		val sign		= (bits & 0x80000000) != 0
+		
+		// doesn't include leading one
+		val mantissa	= bits &  0x007fffff
+		
+		// never negative, bias is 127; 0 and 255 have special meanings
+		val exponent	= ((bits & 0x7f800000) >> 23).toShort
+		
+		(sign, mantissa, exponent)
+	}
+	
+	def bitsOfDouble(it:Double):(Boolean,Long,Short)	= {
+		// positive infinity	0x7ff0000000000000L
+		// negative infinity	0xfff0000000000000L
+		// NaN					0x7ff8000000000000L
+		val bits		= JDouble doubleToLongBits it
+		
+		// true means negative
+		val sign		= (bits & 0x8000000000000000L) != 0
+		
+		// doesn't include leading one
+		val mantissa	= bits & 0x000fffffffffffffL
+		
+		// never negative, bias is 1023; 0 and 2047 have special meanings
+		val exponent	= ((bits & 0x7ff0000000000000L) >> 52).toShort
+		
+		(sign, mantissa, exponent)
+	}
 }

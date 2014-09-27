@@ -1,5 +1,11 @@
 package scutil.collection.pimp
 
+import java.util.{
+	List		=> JList,
+	ArrayList	=> JArrayList,
+	Collections	=> JCollections
+}
+
 import scala.collection.immutable
 
 import scutil.lang._
@@ -234,6 +240,12 @@ final class ISeqExt[T](peer:ISeq[T]) {
 		
 	def toNesOption:Option[Nes[T]]	=
 			Nes fromISeq peer
+		
+	def toJList:JList[T]	=  {
+		val out	= new JArrayList[T]
+		peer foreach out.add
+		JCollections unmodifiableList out
+	}
 		
 	private def indexOption(index:Int):Option[Int]	=
 			if (index != -1)	Some(index)
