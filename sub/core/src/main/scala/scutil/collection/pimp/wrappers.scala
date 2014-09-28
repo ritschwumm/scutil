@@ -9,6 +9,7 @@ import scala.collection.AbstractIterator
 private[pimp] final class IteratorWrapper[T](peer:Iterator[T]) extends JIterator[T] {
 	def hasNext:Boolean	= peer.hasNext
 	def next():T		= peer.next()
+	def remove():Unit	= throw new UnsupportedOperationException()
 }
 
 private[pimp] final class IterableWrapper[T](peer:Iterable[T]) extends JIterable[T] {
