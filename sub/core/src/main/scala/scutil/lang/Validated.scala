@@ -1,6 +1,7 @@
 package scutil.lang
 
 import scala.util.{ Try, Success, Failure }
+import scala.collection.generic.CanBuildFrom
 
 object Validated extends ValidatedGenerated {
 	def bad[E,T](problems:Nes[E]):Validated[E,T]	= Bad(problems)
@@ -86,17 +87,6 @@ sealed trait Validated[+E,+T] {
 				case Good(x)	=> good(x)
 			}
 			
-	def zip[EE>:E,U](that:Validated[EE,U]):Validated[EE,(T,U)]	=
-			(this, that) match {
-				case (Good(a),	Good(b))	=> Good((a, b))
-				case (Bad(a),	Good(_))	=> Bad(a)
-				case (Good(_),	Bad(b))		=> Bad(b)
-				case (Bad(a),	Bad(b))		=> Bad(a ++ b)
-			}
-			
-	def zipWith[EE>:E,U,V](that:Validated[EE,U])(func:(T,U)=>V):Validated[EE,V]	=
-			this zip that map func.tupled
-			
 	//------------------------------------------------------------------------------
 	
 	def isGood:Boolean	=
@@ -139,6 +129,25 @@ sealed trait Validated[+E,+T] {
 	/** error in this comes first */
 	def ap[EE>:E,U,V](that:Validated[EE,U])(implicit ev:T=>U=>V):Validated[EE,V]	=
 			(this zip that) map { case (fuv, u) => fuv(u) }
+		
+	def zip[EE>:E,U](that:Validated[EE,U]):Validated[EE,(T,U)]	=
+			(this, that) match {
+				case (Good(a),	Good(b))	=> Good((a, b))
+				case (Bad(a),	Good(_))	=> Bad(a)
+				case (Good(_),	Bad(b))		=> Bad(b)
+				case (Bad(a),	Bad(b))		=> Bad(a ++ b)
+			}
+			
+	def zipWith[EE>:E,U,V](that:Validated[EE,U])(func:(T,U)=>V):Validated[EE,V]	=
+			this zip that map func.tupled
+			
+	/** handy replacement for tried.toISeq.flatten abusing CanBuildFrom as a Zero typeclass */
+	def flattenMany[U,CC[_]](implicit ev:T=>CC[U], cbf:CanBuildFrom[CC[U],U,CC[U]]):CC[U]	=
+			// toOption.flattenMany
+			this map ev match {
+				case Good(cc)	=> cc
+				case Bad(_)		=> cbf().result
+			}
 			
 	//------------------------------------------------------------------------------
 

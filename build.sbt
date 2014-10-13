@@ -2,13 +2,15 @@ organization	:= "de.djini"
 
 name			:= "scutil"
 
-version			:= "0.51.1"
+version			:= "0.52.0"
 
 organization	in ThisBuild	:= organization.value
 
 version			in ThisBuild	:= version.value
 
 scalaVersion	in ThisBuild	:= "2.11.2"
+
+resolvers		in ThisBuild	+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
 
 lazy val `scutil`	=
 		project 

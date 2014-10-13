@@ -27,8 +27,26 @@ object Boilerplate {
 			package scutil.lang
 			
 			trait TriedGenerated {
-				${2 to 22 map genLift mkString "\n"}
+				//------------------------------------------------------------------------------
+				// zip
+				${3 to 22 map genZip	mkString "\n"}
+				//------------------------------------------------------------------------------
+				// lift
+				${2 to 22 map genLift	mkString "\n"}
 			}
+			"""
+		}
+		
+		def genZip(arity:Int):String	= {
+			val idxs	= 1 to arity
+			s"""
+			def zip${arity}
+				[E,${csep(idxs map plainType)}]
+				(${(csep(idxs map wrapInput))})
+				:
+				Tried[E,(${csep(idxs map plainType)})]
+				=
+				${idxs map argValue mkString " zip "} map Tuples.runcurry${arity}
 			"""
 		}
 		
@@ -70,7 +88,11 @@ object Boilerplate {
 			package scutil.lang
 			
 			trait ValidatedGenerated {
+				//------------------------------------------------------------------------------
+				// zip
 				${3 to 22 map genZip	mkString "\n"}
+				//------------------------------------------------------------------------------
+				// lift
 				${2 to 22 map genLift	mkString "\n"}
 			}
 			"""
@@ -236,6 +258,7 @@ object Boilerplate {
 					(tpInReverse.linear mkString ("(", ",", ")"))
 					
 			s"""
+			//------------------------------------------------------------------------------
 			// arity ${arity}
 			
 			${leftType}

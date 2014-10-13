@@ -2,6 +2,7 @@ package scutil.lang
 
 import scala.util.{ Try, Success, Failure }
 import scala.reflect.ClassTag
+import scala.collection.generic.CanBuildFrom
 
 import scutil.lang._
 
@@ -65,8 +66,14 @@ object Tried extends TriedGenerated {
 		
 	//------------------------------------------------------------------------------
 	
+	def zip2[E,S1,S2](s1:Validated[E,S1], s2:Validated[E,S2]):Validated[E,(S1,S2)]	=
+			s1 zip s2
+	
 	/*
 	// these we get from TriedGenerated
+	
+	def zip3[E,S1,S2,S3](s1:Tried[E,S1], s2:Tried[E,S2], s3:Tried[E,S3]):Tried[E,(S1,S2,S3)]	=
+			s1 zip s2 zip s3 map Tuples.runcurry3
 			
 	def lift2[E,S1,S2,T](func:(S1,S2)=>T):(Tried[E,S1], Tried[E,S2])=>Tried[E,T]	=
 			(s1, s2) => win(func.curried) ap s1 ap s2
@@ -80,7 +87,9 @@ sealed trait Tried[+F,+W] {
 				case Win(x)		=> win(x)
 				case Fail(x)	=> fail(x)
 			}
-			
+	
+	//------------------------------------------------------------------------------
+		
 	/** same as cata(identity,identity) but with improved type inference */
 	def merge[U](implicit ev:this.type <:< Tried[U,U]):U	=
 			ev(this) cata (identity, identity)
@@ -143,7 +152,26 @@ sealed trait Tried[+F,+W] {
 					v	=> Win(f(v))
 				)
 			)
+			
+	def zip[FF>:F,X](that:Tried[FF,X]):Tried[FF,(W,X)]	=
+			(this, that) match {
+				case (Win(a),	Win(b))		=> Win((a, b))
+				case (Fail(a),	Win(_))		=> Fail(a)
+				case (Win(_),	Fail(b))	=> Fail(b)
+				case (Fail(a),	Fail(b))	=> Fail(a)
+			}
+			
+	def zipWith[FF>:F,X,Y](that:Tried[FF,X])(func:(W,X)=>Y):Tried[FF,Y]	=
+			this zip that map func.tupled
 		
+	/** handy replacement for tried.toISeq.flatten abusing CanBuildFrom as a Zero typeclass */
+	def flattenMany[U,CC[_]](implicit ev:W=>CC[U], cbf:CanBuildFrom[CC[U],U,CC[U]]):CC[U]	=
+			// toOption.flattenMany
+			this map ev match {
+				case Win(cc)	=> cc
+				case Fail(_)	=> cbf().result
+			}
+			
 	//------------------------------------------------------------------------------
 			
 	def swap:Tried[W,F]	= 
@@ -162,7 +190,7 @@ sealed trait Tried[+F,+W] {
 		
 	def flatMapFail[FX,WW>:W](func:F=>Tried[FX,WW]):Tried[FX,WW]	=
 			cata(func, Win.apply)
-	
+		
 	//------------------------------------------------------------------------------
 	
 	def orElse[FF>:F,WW>:W](that: =>Tried[FF,WW]):Tried[FF,WW]	= 
