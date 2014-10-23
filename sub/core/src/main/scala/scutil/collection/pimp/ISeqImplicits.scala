@@ -128,7 +128,7 @@ final class ISeqExt[T](peer:ISeq[T]) {
 			val out	= find(it)
 			if (out.isDefined)	return out
 		}
-		return None
+		None
 	}
 	
 	def tailOption:Option[ISeq[T]]	=

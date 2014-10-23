@@ -4,8 +4,8 @@ import org.specs2.mutable._
 
 import scutil.implicits._
 
-case class Foo(a:Int, b:String)
-case class Bar[T](t:T)
+final case class Foo(a:Int, b:String)
+final case class Bar[T](t:T)
 
 class LenserTest extends Specification {
 	"lenses" should {

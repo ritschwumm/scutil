@@ -2,15 +2,20 @@ organization	:= "de.djini"
 
 name			:= "scutil"
 
-version			:= "0.52.0"
+version			:= "0.53.0"
 
 organization	in ThisBuild	:= organization.value
 
 version			in ThisBuild	:= version.value
 
-scalaVersion	in ThisBuild	:= "2.11.2"
+scalaVersion	in ThisBuild	:= "2.11.3"
 
 resolvers		in ThisBuild	+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
+
+dependencyOverrides	in ThisBuild	++= Set(
+	"org.scala-lang"	% "scala-library"	% (scalaVersion in ThisBuild).value,
+	"org.scala-lang"	% "scala-reflect"	%  (scalaVersion in ThisBuild).value
+)
 
 lazy val `scutil`	=
 		project 

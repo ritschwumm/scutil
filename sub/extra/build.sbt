@@ -1,7 +1,7 @@
 name	:= "scutil-extra"
 
 libraryDependencies	++= Seq(
-	"org.scala-lang.modules"	%% "scala-xml"	% "1.0.2"	% "compile"	exclude("org.scala-lang", "scala-library")
+	"org.scala-lang.modules"	%% "scala-xml"	% "1.0.2"	% "compile"
 )
   
 scalacOptions	++= Seq(

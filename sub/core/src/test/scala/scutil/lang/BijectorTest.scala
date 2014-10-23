@@ -4,14 +4,14 @@ import org.specs2.mutable._
 
 import scutil.implicits._
 
-case class Unary(a:Int)
-case class Binary(a:Int, b:Short)
-case class Container(x:Unary)
-case class UnaryOption(a:Option[Int])
+final case class Unary(a:Int)
+final case class Binary(a:Int, b:Short)
+final case class Container(x:Unary)
+final case class UnaryOption(a:Option[Int])
 
 trait Fooz[T]
-case class Parametrized1[A](x:Fooz[A])
-case class Parametrized2[A,B](x:Fooz[A], y:Fooz[B])
+final case class Parametrized1[A](x:Fooz[A])
+final case class Parametrized2[A,B](x:Fooz[A], y:Fooz[B])
 
 object Wrapper {
 	case class Inner(t:Int)

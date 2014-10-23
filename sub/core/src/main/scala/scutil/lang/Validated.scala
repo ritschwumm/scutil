@@ -232,5 +232,5 @@ sealed trait Validated[+E,+T] {
 			cata(_ => Vector.empty, Vector(_))
 }
 
-case class Bad[E](problems:Nes[E])	extends Validated[E,Nothing]
-case class Good[T](value:T)			extends Validated[Nothing,T]
+final case class Bad[E](problems:Nes[E])	extends Validated[E,Nothing]
+final case class Good[T](value:T)			extends Validated[Nothing,T]

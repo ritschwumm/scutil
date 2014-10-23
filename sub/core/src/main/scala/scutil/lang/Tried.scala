@@ -275,5 +275,5 @@ sealed trait Tried[+F,+W] {
 			cata(_ => Vector.empty, Vector(_))
 }
 
-case class Win[F,W](value:W)	extends Tried[F,W]
-case class Fail[F,W](value:F)	extends Tried[F,W]
+final case class Win[F,W](value:W)	extends Tried[F,W]
+final case class Fail[F,W](value:F)	extends Tried[F,W]

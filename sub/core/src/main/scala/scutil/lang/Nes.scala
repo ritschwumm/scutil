@@ -20,7 +20,7 @@ object Nes {
 	}
 }
 
-case class Nes[+T](head:T, tail:ISeq[T]) {
+final case class Nes[+T](head:T, tail:ISeq[T]) {
 	def size:Int	= tail.size + 1
 	
 	def containsIndex(index:Int):Boolean	=

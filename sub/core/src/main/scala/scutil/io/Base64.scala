@@ -44,7 +44,7 @@ object Base64 {
 	def encode(data:Array[Byte]):String = {
 		val	packetsSize		= data.length / 3
 		val extraSize		= data.length % 3
-		var	output			= new StringBuilder
+		val	output			= new StringBuilder
 		var	inputIndex		= 0
 		var packetsIndex	= 0
 		while (packetsIndex < packetsSize) {
@@ -79,7 +79,7 @@ object Base64 {
 		
 		val	input		= cleanText.toCharArray
 		val	inputSize	= input.length
-		var	outputSize	=
+		val	outputSize	=
 				((inputSize + 3 ) / 4 ) * 3 - 
 				(if (input(inputSize-1) == padding) 1 else 0)	-
 				(if (input(inputSize-2) == padding) 1 else 0)

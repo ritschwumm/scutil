@@ -108,7 +108,7 @@ object Human {
 			millisToSeconds andThen (time renderer HumanConfig(smallUnits = 1, maxUnits = 1, decimalPlaces = 2))
 }
 
-case class Human(table:Nes[HumanUnit]) {
+final case class Human(table:Nes[HumanUnit]) {
 	// TODO ensure table is sorted by construction
 	
 	private val smallCount	= table count { _.divisor < Human.one }
@@ -146,5 +146,5 @@ case class Human(table:Nes[HumanUnit]) {
 			}
 }
 
-case class HumanUnit(long:String, short:String, divisor:BigDecimal)
-case class HumanConfig(maxUnits:Int = 10000, smallUnits:Int = 10000, decimalPlaces:Int = 0)
+final case class HumanUnit(long:String, short:String, divisor:BigDecimal)
+final case class HumanConfig(maxUnits:Int = 10000, smallUnits:Int = 10000, decimalPlaces:Int = 0)

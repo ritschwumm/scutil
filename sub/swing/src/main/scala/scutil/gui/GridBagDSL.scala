@@ -14,11 +14,11 @@ object GridBagDSL {
 	case object RELATIVE	extends GridBagConstraintsExtra(GridBagConstraints.RELATIVE)
 	case object REMAINDER	extends GridBagConstraintsExtra(GridBagConstraints.REMAINDER)
 	
-	final case class GridBagConstraintsPosition(val v:Int)
+	case class GridBagConstraintsPosition(val v:Int)
 	implicit def toGridBagConstraintsPosition(v:Int):GridBagConstraintsPosition				= GridBagConstraintsPosition(v)
 	implicit def toGridBagConstraintsPosition(v:RELATIVE.type):GridBagConstraintsPosition	= GridBagConstraintsPosition(v.v)
 	
-	final case class GridBagConstraintsSize(val v:Int)
+	case class GridBagConstraintsSize(val v:Int)
 	implicit def toGridBagConstraintsSize(v:Int):GridBagConstraintsSize						= GridBagConstraintsSize(v)
 	implicit def toGridBagConstraintsSize(v:RELATIVE.type):GridBagConstraintsSize			= GridBagConstraintsSize(v.v)
 	implicit def toGridBagConstraintsSize(v:REMAINDER.type):GridBagConstraintsSize			= GridBagConstraintsSize(v.v)
