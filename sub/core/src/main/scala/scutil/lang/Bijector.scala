@@ -95,14 +95,14 @@ private final class BijectorImpl(val c:Context) {
 					// TODO use fully qualified companion symbol!
 					if (applySignature.size == 1)
 							q"""
-								scutil.lang.Bijection(
+								_root_.scutil.lang.Bijection(
 									$companionSymbol.unapply _ andThen { _.get },
 									$companionSymbol.apply _
 								)
 							"""
 					else
 							q"""
-								scutil.lang.Bijection(
+								_root_.scutil.lang.Bijection(
 									$companionSymbol.unapply _ andThen { _.get },
 									($companionSymbol.apply _).tupled
 								)

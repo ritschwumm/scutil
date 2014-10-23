@@ -45,7 +45,7 @@ private final class LenserImpl(val c:Context) {
 					val containerName	= TermName("c$")
 					val valueName		= TermName("v$")
 					q"""
-						scutil.lang.TLens.create[$containerType,$valueType](
+						_root_.scutil.lang.TLens.create[$containerType,$valueType](
 							($containerName:$containerType) => $containerName.$fieldName,
 							($containerName:$containerType, $valueName:$valueType) => $containerName.copy($fieldName=$valueName)
 						)

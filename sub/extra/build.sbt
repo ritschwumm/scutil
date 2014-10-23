@@ -1,9 +1,5 @@
 name	:= "scutil-extra"
 
-libraryDependencies	++= Seq(
-	"org.scala-lang.modules"	%% "scala-xml"	% "1.0.2"	% "compile"
-)
-  
 scalacOptions	++= Seq(
 	// "-Ymacro-debug-lite",
 	"-deprecation",
@@ -17,4 +13,8 @@ scalacOptions	++= Seq(
 	// "-language:experimental.macros",
 	"-feature",
 	"-optimize"
+)
+
+libraryDependencies	++= Seq(
+	"org.scala-lang.modules"	%% "scala-xml"	% "1.0.2"	% "compile"
 )

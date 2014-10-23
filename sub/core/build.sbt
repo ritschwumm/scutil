@@ -1,10 +1,5 @@
 name	:= "scutil-core"
 
-libraryDependencies	++= Seq(
-	"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "compile",
-	"org.specs2"		%%	"specs2"		% "2.4.6"				% "test"
-)
-
 scalacOptions	++= Seq(
 	// "-Ymacro-debug-lite",
 	"-deprecation",
@@ -21,3 +16,8 @@ scalacOptions	++= Seq(
 )
 
 (sourceGenerators in Compile)	<+= (sourceManaged in Compile) map Boilerplate.generate
+
+libraryDependencies	++= Seq(
+	"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "compile",
+	"org.specs2"		%%	"specs2"		% "2.4.6"				% "test"
+)

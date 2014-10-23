@@ -14,7 +14,9 @@ object Fielder {
 	// implicit def fielding[T]:Fielding[T]	= macro FielderImpl.apply[T]
 	
 	/*
-	// import scala.reflect.runtime.universe._
+	// equivalent to apply, more or less
+	
+	import scala.reflect.runtime.universe._
 	
 	def caseClassFieldNames[T:TypeTag]:Option[ISeq[String]]	=
 			for {
@@ -41,7 +43,7 @@ private final class FielderImpl(val c:Context) {
 					decodedNames	= paramNames map { _.name.decodedName.toString }
 				}
 				yield {
-					q"scutil.lang.Fielding[$selfType](scala.collection.immutable.Vector(..$decodedNames))"
+					q"_root_.scutil.lang.Fielding[$selfType](scala.collection.immutable.Vector(..$decodedNames))"
 				}
 				
 		names cata (
