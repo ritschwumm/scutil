@@ -28,7 +28,7 @@ final class ComponentUnderMouse(onError:(String,Exception)=>Unit) {
  	
 	private var entries	= new mutable.WeakHashMap[Component,Entry]
 	
-	private case class Entry(state:Boolean, callbacks:Seq[WeakReference[Callback]])
+	private final case class Entry(state:Boolean, callbacks:Seq[WeakReference[Callback]])
 	
 	def listen(component:Component, callback:Effect[Boolean]):Disposable	= {
 		val nowUnderMouse	= underMousePointer(component)

@@ -2,13 +2,13 @@ organization	:= "de.djini"
 
 name			:= "scutil"
 
-version			:= "0.54.0"
+version			:= "0.55.0"
 
 organization	in ThisBuild	:= organization.value
 
 version			in ThisBuild	:= version.value
 
-scalaVersion	in ThisBuild	:= "2.11.2"
+scalaVersion	in ThisBuild	:= "2.11.4"
 
 conflictManager	in ThisBuild	:= ConflictManager.strict
 

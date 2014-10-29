@@ -32,4 +32,13 @@ object Text {
 		}
 		out.toString
 	}
+	
+	private val Strip	= """^\s*\|(.*)$""".r
+	
+	/**
+	similar to String's stripMargin method, this removes (optional) leading whitespace and a '|' character.
+	differently from stripMargin it ignores lines where stripping cannot be applied.
+	*/
+	def stripMarginOnly(s:String):String	= 
+			s.lines collect { case Strip(it) => it } mkString "\n"
 }

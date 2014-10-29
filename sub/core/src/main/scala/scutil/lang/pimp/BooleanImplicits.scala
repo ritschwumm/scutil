@@ -13,12 +13,12 @@ final class BooleanExt(peer:Boolean) {
 			if (peer)	trueValue
 			else		falseValue
 	
-	def guard[T](trueSome: =>T):Option[T] =
-			if (peer)	Some(trueSome)
+	def guard[T](trueValue: =>T):Option[T] =
+			if (peer)	Some(trueValue)
 			else		None
 	
-	def prevent[T](falseSome: =>T):Option[T] =
-			if (!peer)	Some(falseSome)
+	def prevent[T](falseValue: =>T):Option[T] =
+			if (!peer)	Some(falseValue)
 			else		None
 	
 	def flatGuard[T](trueValue: =>Option[T]):Option[T] = 
@@ -28,6 +28,16 @@ final class BooleanExt(peer:Boolean) {
 	def flatPrevent[T](falseValue: =>Option[T]):Option[T] =
 			if (!peer)	falseValue
 			else		None
+			
+	// BETTER generalize this
+	
+	def guardISeq[T](trueValue: =>T):ISeq[T] =
+			if (peer)	Vector(trueValue)
+			else		Vector.empty
+	
+	def preventISeq[T](falseValue: =>T):ISeq[T] =
+			if (!peer)	Vector(falseValue)
+			else		Vector.empty
 			
 	//------------------------------------------------------------------------------
 	
