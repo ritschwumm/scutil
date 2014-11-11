@@ -21,5 +21,6 @@ final class JMapExt[K,V](peer:JMap[K,V]) {
 		}
 		out
 	}
+	
 	def toMap:Map[K,V]	= toHashMap
 }

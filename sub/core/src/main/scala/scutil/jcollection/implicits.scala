@@ -9,3 +9,4 @@ trait implicits
 		with	JListImplicits
 		with	JMapImplicits
 		with	JSetImplicits
+		with	PropertiesImplicits

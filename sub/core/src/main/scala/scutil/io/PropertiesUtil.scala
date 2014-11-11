@@ -4,20 +4,17 @@ import java.io.File
 import java.net.URL
 import java.util.Properties
 
-import scala.collection.JavaConverters._
-
-import scutil.lang.implicits._
-import scutil.io.implicits._
+import scutil.implicits._
 
 object PropertiesUtil {
 	def loadURL(url:URL):Map[String,String]	=
-			toScala(loadRawURL(url))
+			loadRawURL(url).toMap
 		
 	def loadFile(file:File):Map[String,String]	=
-			toScala(loadRawFile(file))
+			loadRawFile(file).toMap
 	
 	def saveFile(file:File, it:Map[String,String]):Unit	=
-			saveRawFile(file, fromScala(it))
+			saveRawFile(file, it.toProperties)
 			
 	//------------------------------------------------------------------------------
 	
@@ -38,15 +35,5 @@ object PropertiesUtil {
 	def saveRawFile(file:File, it:Properties):Unit	=
 			file withOutputStream { st =>
 				it store (st, null)
-			}
-			
-	//------------------------------------------------------------------------------
-	
-	def toScala(it:Properties):Map[String,String]	=
-			it.asScala.toMap
-	
-	def fromScala(it:Map[String,String]):Properties	=
-			new Properties doto { out =>
-				it foreach (out.put _).tupled
 			}
 }
