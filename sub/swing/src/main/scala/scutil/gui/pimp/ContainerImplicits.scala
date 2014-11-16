@@ -1,7 +1,6 @@
 package scutil.gui.pimp
 
 import java.awt.{ List=>AwtList, _ }
-import javax.swing._
 
 object ContainerImplicits extends ContainerImplicits
 

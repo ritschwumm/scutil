@@ -14,5 +14,5 @@ final class JListExt[T](peer:JList[T]) {
 	def toVector:ISeq[T]		= toIterable.toVector
 	def toList:List[T]			= toIterable.toList
 	def toISeq:ISeq[T]			= toVector
-	def toIterable:Iterable[T]	= new JIterableWrapper(peer)
+	def toIterable:Iterable[T]	= new JIterableAsIterable(peer)
 }

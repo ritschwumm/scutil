@@ -4,8 +4,6 @@ import scala.util.{ Try, Success, Failure }
 import scala.reflect.ClassTag
 import scala.collection.generic.CanBuildFrom
 
-import scutil.lang._
-
 object Tried extends TriedGenerated {
 	def win[F,W](it:W):Tried[F,W]	= Win(it)
 	def fail[F,W](it:F):Tried[F,W]	= Fail(it)

@@ -3,8 +3,6 @@ package scutil.concurrent.pimp
 import scala.concurrent._
 import scala.util.{ Try, Success, Failure }
 
-import scutil.lang._
-
 object FutureImplicits extends FutureImplicits
 
 trait FutureImplicits {

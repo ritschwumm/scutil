@@ -15,5 +15,5 @@ trait IterableImplicits {
 final class IterableExt[T](peer:Iterable[T]) {
 	def toISeq:ISeq[T]				= peer.toVector
 	
-	def toJIterable:JIterable[T]	= new IterableWrapper(peer)
+	def toJIterable:JIterable[T]	= new IterableAsJIterable(peer)
 }

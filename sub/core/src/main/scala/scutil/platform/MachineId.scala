@@ -4,8 +4,6 @@ import java.lang.{ Integer => JInteger, Long => JLong }
 import java.lang.management.ManagementFactory
 import java.net.NetworkInterface
 
-import scala.collection.JavaConverters._
-
 import scutil.lang._
 import scutil.implicits._
 
@@ -18,7 +16,7 @@ object MachineId {
 		
 	/** provides a per-machine hash similar to how mongodb works */
 	val hashBytes:ISeq[Byte]	= {
-		val ifaces:Vector[NetworkInterface]	= NetworkInterface.getNetworkInterfaces.asScala.toVector
+		val ifaces:Vector[NetworkInterface]	= NetworkInterface.getNetworkInterfaces.toIterator.toVector
 		
 		val ifaceMacs:ISeq[Byte]	=
 				for {

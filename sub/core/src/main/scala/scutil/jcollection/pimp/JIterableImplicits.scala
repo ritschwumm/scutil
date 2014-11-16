@@ -1,6 +1,8 @@
 package scutil.jcollection.pimp
 
-import java.lang.{ Iterable => JIterable }
+import java.lang.{
+	Iterable	=> JIterable 
+}
 
 object JIterableImplicits extends JIterableImplicits
 
@@ -9,5 +11,5 @@ trait JIterableImplicits {
 }
 
 final class JIterableExt[T](peer:JIterable[T]) {
-	def toIterable:Iterable[T]	= new JIterableWrapper(peer)
+	def toIterable:Iterable[T]	= new JIterableAsIterable(peer)
 }

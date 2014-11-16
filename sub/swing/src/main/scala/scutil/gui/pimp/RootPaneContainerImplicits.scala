@@ -3,8 +3,6 @@ package scutil.gui.pimp
 import java.awt.{ List=>AwtList, _ }
 import javax.swing._
 
-import scutil.gui.pimp.RectangleImplicits._
-
 object RootPaneContainerImplicits extends RootPaneContainerImplicits
 
 trait RootPaneContainerImplicits {

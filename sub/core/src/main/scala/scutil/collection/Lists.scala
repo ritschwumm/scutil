@@ -2,8 +2,6 @@ package scutil.lang
 
 import scala.annotation.tailrec
 
-import scutil.lang._
-
 object Lists {
 	def unfoldRight[S,T](seed:S, func:PFunction[S,(S,T)]):List[T]	= 
 			func(seed) match {

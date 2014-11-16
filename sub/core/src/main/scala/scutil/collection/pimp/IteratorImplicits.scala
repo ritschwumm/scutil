@@ -1,7 +1,8 @@
 package scutil.collection.pimp
 
 import java.util.{
-	Iterator	=> JIterator
+	Iterator	=> JIterator,
+	Enumeration	=> JEnumeration
 }
 
 import scutil.lang.ISeq
@@ -17,7 +18,8 @@ final class IteratorExt[T](peer:Iterator[T]) {
 			if (peer.hasNext)	Some(peer.next)
 			else				None
 		
-	def toISeq:ISeq[T]				= peer.toVector
+	def toISeq:ISeq[T]	= peer.toVector
 	
-	def toJIterator:JIterator[T]	= new IteratorWrapper(peer)
+	def toJIterator:JIterator[T]		= new IteratorAsJIterator(peer)
+	def toJEnumeration:JEnumeration[T]	= new IteratorAsJEnumeration(peer)
 }

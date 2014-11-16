@@ -1,7 +1,5 @@
 package scutil.lang
 
-import scutil.lang._
-
 object Predicates {
 	/** zero for && */
 	val constTrue:Any=>Boolean		= _ => true

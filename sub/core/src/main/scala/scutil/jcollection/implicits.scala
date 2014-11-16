@@ -4,7 +4,8 @@ import scutil.jcollection.pimp._
 
 object implicits extends implicits
 trait implicits 
-		extends	JIteratorImplicits
+		extends	JEnumerationImplicits
+		with	JIteratorImplicits
 		with	JIterableImplicits
 		with	JListImplicits
 		with	JMapImplicits

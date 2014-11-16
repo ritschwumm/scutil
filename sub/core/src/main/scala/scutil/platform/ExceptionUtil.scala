@@ -1,7 +1,5 @@
 package scutil.platform
 
-import scutil.lang._
-
 object ExceptionUtil {
 	def logAllExceptions(onError:(Thread,Throwable)=>Unit) {
 		Thread setDefaultUncaughtExceptionHandler new LoggingUncaughtExceptionHandler(onError)

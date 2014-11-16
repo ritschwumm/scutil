@@ -1,6 +1,6 @@
 package scutil.gui
 
-import java.awt.{ List=>AwtList, _ }
+import java.awt.{ AWTEvent, Toolkit }
 import java.awt.event._
 
 import scutil.lang._

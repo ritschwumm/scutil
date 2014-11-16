@@ -2,8 +2,6 @@ package scutil.lang
 
 import org.specs2.mutable._
 
-import scutil.implicits._
-
 final case class Unary(a:Int)
 final case class Binary(a:Int, b:Short)
 final case class Container(x:Unary)

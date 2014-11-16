@@ -2,8 +2,6 @@ package scutil.io
 
 import org.specs2.mutable._
 
-import scutil.io.Charsets._
-
 class URIComponentTest extends Specification {
 	"URIComponent" should {
 		"roundtrip all usual chars" in {

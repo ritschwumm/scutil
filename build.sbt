@@ -2,7 +2,7 @@ organization	:= "de.djini"
 
 name			:= "scutil"
 
-version			:= "0.57.0"
+version			:= "0.58.0"
 
 organization	in ThisBuild	:= organization.value
 
@@ -17,6 +17,11 @@ resolvers		in ThisBuild	+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scala
 dependencyOverrides	in ThisBuild	++= Set(
 	"org.scala-lang"	% "scala-library"	% (scalaVersion in ThisBuild).value,
 	"org.scala-lang"	% "scala-reflect"	% (scalaVersion in ThisBuild).value
+)
+
+scalacOptions in ThisBuild	++= Seq(
+	"-Ywarn-unused-import",
+	"-Xfatal-warnings"
 )
 
 lazy val `scutil`	=

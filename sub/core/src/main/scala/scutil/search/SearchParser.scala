@@ -1,6 +1,5 @@
 package scutil.search
 
-import scutil.lang._
 import scutil.implicits._
 
 /** 

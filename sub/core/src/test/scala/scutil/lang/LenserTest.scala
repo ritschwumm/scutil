@@ -2,8 +2,6 @@ package scutil.lang
 
 import org.specs2.mutable._
 
-import scutil.implicits._
-
 final case class Foo(a:Int, b:String)
 final case class Bar[T](t:T)
 

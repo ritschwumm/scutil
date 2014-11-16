@@ -1,9 +1,7 @@
 package scutil.gui.pimp
 
 import java.awt.{ List=>AwtList, _ }
-import java.awt.event._
 import javax.swing._
-import javax.swing.event._
 
 import scutil.lang._
 import scutil.geom._

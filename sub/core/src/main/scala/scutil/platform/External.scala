@@ -3,18 +3,16 @@ package scutil.platform
 import java.io._
 
 import scala.collection.mutable
-import scala.collection.JavaConverters._
 
 import scutil.lang._
 import scutil.implicits._
-import scutil.platform._
 import scutil.concurrent.Executors
 
 object External {
 	/** execute an external process. */
 	def exec(command:ISeq[String], env:Map[String,String]=Map.empty, pwd:Option[File]=None, input:ISeq[String]=ISeq.empty):External = {
-		val	builder	= new ProcessBuilder(command.asJava)
-		builder.environment() putAll env.asJava
+		val	builder	= new ProcessBuilder(command.toJList)
+		builder.environment() putAll env.toJMap
 		pwd foreach { builder directory _ }
 		val proc	= builder.start()
 		

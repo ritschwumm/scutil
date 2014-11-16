@@ -1,9 +1,7 @@
 package scutil.gui.pimp
 
 import java.awt.{ List=>AwtList, _ }
-import javax.swing._
 
-import scutil.geom._
 import scutil.gui.geomConversion
 
 object WindowImplicits extends WindowImplicits

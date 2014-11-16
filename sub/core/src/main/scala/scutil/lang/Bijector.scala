@@ -3,7 +3,6 @@ package scutil.lang
 import scala.language.experimental.macros
 
 import scala.reflect.macros.whitebox.Context
-import scala.reflect.runtime.universe._
 
 import scutil.implicits._
 

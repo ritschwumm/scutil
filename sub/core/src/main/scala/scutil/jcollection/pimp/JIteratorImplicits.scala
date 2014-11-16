@@ -1,6 +1,11 @@
 package scutil.jcollection.pimp
 
-import java.util.{ Iterator => JIterator }
+import java.util.{
+	Iterator	=> JIterator,
+	Enumeration	=> JEnumeration
+}
+
+import scutil.collection.pimp.IteratorAsJEnumeration
 
 object JIteratorImplicits extends JIteratorImplicits
 
@@ -9,5 +14,6 @@ trait JIteratorImplicits {
 }
 
 final class JIteratorExt[T](peer:JIterator[T]) {
-	def toIterator:Iterator[T] = new JIteratorWrapper(peer)
+	def toIterator:Iterator[T] 			= new JIteratorAsIterator(peer)
+	def toJEnumeration:JEnumeration[T]	= new IteratorAsJEnumeration(toIterator)
 }
