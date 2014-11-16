@@ -24,4 +24,5 @@ trait implicits
 		with	PointImplicits
 		with	RectangleImplicits
 		with	RootPaneContainerImplicits
+		with	StrokeImplicits
 		with	WindowImplicits

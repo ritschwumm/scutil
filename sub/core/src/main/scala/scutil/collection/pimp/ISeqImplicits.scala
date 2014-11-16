@@ -25,62 +25,69 @@ final class ISeqExt[T](peer:ISeq[T]) {
 	def prependAll(it:Traversable[T]):ISeq[T]	= it ++: peer
 	def appendAll(it:Traversable[T]):ISeq[T]	= peer ++ it
 	
-	/** allow inserting an item at a given index if possible */
-	def insertionAt(index:Int):Option[T=>ISeq[T]]	=
-			if (index >= 0 && index <= peer.size) {
-				Some { item => peer patch (index, ISeq(item), 0) }
-			}
-			else None
+	/** whether index is a gap between elements of this ISeq */
+	def containsGap(index:Int):Boolean	=
+			index >= 0 && index <= peer.size
+		
+	/** whether index is an item in this ISeq */
+	def containsIndex(index:Int):Boolean	=
+			index >= 0 && index < peer.size
 			
 	/** insert an item at a given index if possible */
-	def insertAt(index:Int, item:T):Option[ISeq[T]]	=
-			if (index >= 0 && index <= peer.size) {
-				Some(peer patch (index, ISeq(item), 0))
+	def insertAt(gap:Int, item:T):Option[ISeq[T]]	=
+			if (containsGap(gap)) {
+				Some(peer patch (gap, ISeq(item), 0))
 			}
 			else None
 		
 	/** remove the item at a given index if possible */
 	def removeAt(index:Int):Option[ISeq[T]]	=
-			if (index >= 0 && index < peer.size) {
+			if (containsIndex(index)) {
 				Some(peer patch (index, ISeq.empty, 1))
 			}
 			else None
 		
-	/** move an item from a given index to a inter-item gap of another index if possible */
-	def moveAt(from:Int, to:Int):Option[ISeq[T]]	=
-			if (from < to-1) {
-				Some(
-					peer 
-					.patch(to,		ISeq(peer(from)),	0) 
-					.patch(from,	ISeq.empty,			1)
-				)
-			}
-			else if (from > to) {
-				Some(
-					peer 
-					.patch(from,	ISeq.empty,			1) 
-					.patch(to,		ISeq(peer(from)),	0)
-				)
+	/** move an item from a given item index to an inter-item gap */
+	def moveAt(fromIndex:Int, toGap:Int):Option[ISeq[T]]	=
+			if (containsIndex(fromIndex) && containsGap(toGap)) {
+				if (fromIndex < toGap-1) {
+					Some(
+						peer 
+						.patch(toGap,		ISeq(peer(fromIndex)),	0) 
+						.patch(fromIndex,	ISeq.empty,			1)
+					)
+				}
+				else if (fromIndex > toGap) {
+					Some(
+						peer 
+						.patch(fromIndex,	ISeq.empty,			1) 
+						.patch(toGap,		ISeq(peer(fromIndex)),	0)
+					)
+				}
+				else None
 			}
 			else None
-			
+				
 	/** move multiple items item from a given index to a inter-item gap of another index if possible */
-	def moveManyAt(from:Int, count:Int, to:Int):Option[ISeq[T]]	=
-			if (from >= 0 && from+count <= peer.size && to >= 0 && to <= peer.size) {
+	def moveManyAt(fromIndex:Int, count:Int, toGap:Int):Option[ISeq[T]]	=
+			if (
+				fromIndex	>= 0 && fromIndex+count	<= peer.size &&
+				toGap		>= 0 && toGap			<= peer.size
+			) {
 				Some(
-					if (from < to) {
+					if (fromIndex < toGap) {
 						// move right
-						(peer slice (0,					from))				++
-						(peer slice (from	+ count,	to))				++
-						(peer slice (from,				from	+ count))	++
-						(peer slice (to,				peer.size))
+						(peer slice (0,						fromIndex))				++
+						(peer slice (fromIndex	+ count,	toGap))				++
+						(peer slice (fromIndex,				fromIndex	+ count))	++
+						(peer slice (toGap,					peer.size))
 					}
-					else if (from > to) {
+					else if (fromIndex > toGap) {
 						// move left
-						(peer slice (0,					to))			++
-						(peer slice (from,				from + count))	++
-						(peer slice (to,				from))			++
-						(peer slice (from	+ count,	peer.size))
+						(peer slice (0,						toGap))			++
+						(peer slice (fromIndex,				fromIndex + count))	++
+						(peer slice (toGap,					fromIndex))			++
+						(peer slice (fromIndex	+ count,	peer.size))
 					}
 					else peer
 				)
@@ -91,10 +98,6 @@ final class ISeqExt[T](peer:ISeq[T]) {
 	def times(count:Int):ISeq[T]	=
 			(0 until count).toVector flatMap { _ => peer }
 	
-	/** true if the index designates an element of the ISeq */
-	def containsIndex(index:Int):Boolean	=
-			index >= 0 && index < peer.size
-		
 	def indexOfOption(item:T):Option[Int]	=
 			indexOption(peer indexOf item)
 		

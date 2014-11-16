@@ -54,6 +54,7 @@ final class AnyExt[T](peer:T) {
 			catch { case e:Throwable	=> 
 				if (!thrown)	throw e
 				// NOTE the exception from close has been swallowed
+				// use Throwable#addSuppressed in java 7
 			}
 		}
 	}

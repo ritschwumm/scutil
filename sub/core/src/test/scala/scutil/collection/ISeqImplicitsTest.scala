@@ -7,6 +7,9 @@ import scutil.collection.implicits._
 
 class ISeqImplicitsTest extends Specification {
 	"equivalentSpans" should {
+		def criterium(a:String, b:String):Boolean	=
+				(a charAt 0) == (b charAt 0)
+		
 		"be empty for empty input" in {
 			//(ISeq.empty[String] equivalentSpans criterium) must haveTheSameElementsAs(ISeq.empty)
 			(ISeq.empty[String] equivalentSpans criterium) mustEqual ISeq.empty
@@ -89,6 +92,33 @@ class ISeqImplicitsTest extends Specification {
 		}
 	}
 	
-	private def criterium(a:String,b:String):Boolean	=
-			(a charAt 0) == (b charAt 0)
+	"moveAt" should {
+		"fail without enough elements" in {
+			ISeq() moveAt (0,0) mustEqual None
+		}
+		
+		"move from start to end" in {
+			ISeq(1,2,3) moveAt (0,3) mustEqual Some(ISeq(2,3,1))
+		}
+		
+		"move from end to start" in {
+			ISeq(1,2,3) moveAt (2,0) mustEqual Some(ISeq(3,1,2))
+		}
+		
+		"not move to gap left" in {
+			ISeq(1,2,3,4) moveAt (1,1) mustEqual None
+		}
+		
+		"not move to gap right" in {
+			ISeq(1,2,3,4) moveAt (1,2) mustEqual None
+		}
+		
+		"move to gap further left" in {
+			ISeq(1,2,3,4) moveAt (1,0) mustEqual Some(ISeq(2,1,3,4))
+		}
+		
+		"move to gap further right" in {
+			ISeq(1,2,3,4) moveAt (1,3) mustEqual Some(ISeq(1,3,2,4))
+		}
+	}
 }
