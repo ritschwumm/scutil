@@ -85,46 +85,47 @@ final class StringExt(peer:String) {
 		loop(0)
 	}
 	
-	/*
-	def splitAround(separator:Char):List[String] = {
-		@tailrec 
-		def unfold(s:String, accu:List[String]):List[String]	= s lastIndexOf separator match {
-			case -1	=> s :: accu
-			case n	=> unfold(s substring (0,n), (s substring (n+1)) :: accu)
-		}
-		unfold(peer, Nil)
-	}
-	*/
+	//------------------------------------------------------------------------------
 	
-	/** like splitAt, but None for indices outside the String's boundaries */
-	def splitAtIndex(index:Int):Option[(String,String)]	=
-			if (index >= 0 && index <= peer.length)	Some((peer substring (0,index), peer substring index))
-			else									None
-			
-	/** before index and after index excluding the index itself */
+	/** excludes the indexed char itself */
 	def splitAroundIndex(index:Int):Option[(String,String)]	=
 			if (index >= 0 && index < peer.length)	Some((peer substring (0,index), peer substring index+1))
 			else									None
 	
-	/** exludes the separator char itself */
-	def splitAroundFirst(separator:Char):Option[(String,String)] =
+	/** excludes the separator char itself */
+	def splitAroundFirstChar(separator:Char):Option[(String,String)] =
 			splitAroundIndex(peer indexOf separator)
 		
-	/** exludes the separator char itself */
-	def splitAroundLast(separator:Char):Option[(String,String)] =
+	/** excludes the separator char itself */
+	def splitAroundLastChar(separator:Char):Option[(String,String)] =
 			splitAroundIndex(peer lastIndexOf separator)
+		
+	/** excludes the separator itself */
+	def splitAroundFirstString(separator:String):Option[(String,String)] =
+			splitAroundIndex(peer indexOf separator)
+		
+	/** excludes the separator itself */
+	def splitAroundLastString(separator:String):Option[(String,String)] =
+			splitAroundIndex(peer lastIndexOf separator)
+		
+	//------------------------------------------------------------------------------
+		
+	/** like splitAt, but None for indices outside the String's boundaries */
+	def splitAtIndex(index:Int):Option[(String,String)]	=
+			if (index >= 0 && index <= peer.length)	Some((peer substring (0,index), peer substring index))
+			else									None
 		
 	//------------------------------------------------------------------------------
 	
 	/** like indexOf, but None if not found */
-	def indexOfOption(ch:Int, fromIndex:Int=0)	=
+	def indexOfOption(ch:Int, fromIndex:Int=0):Option[Int]	=
 			peer indexOf (ch, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)
 			}
 			
 	/** like lastIndexOf, but None if not found */
-	def lastIndexOfOption(ch:Int, fromIndex:Int=peer.length-1)	=
+	def lastIndexOfOption(ch:Int, fromIndex:Int=peer.length-1):Option[Int]	=
 			peer lastIndexOf (ch, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)

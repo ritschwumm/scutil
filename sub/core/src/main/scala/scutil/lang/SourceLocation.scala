@@ -1,5 +1,7 @@
 package scutil.lang
 
+import java.io.File
+
 import scala.language.experimental.macros
 import scala.reflect.macros.whitebox.Context
 
@@ -12,11 +14,16 @@ object SourceLocation {
 		// NOTE pos.column expands tab chars as 8 columns
 		// pos.source.file.path
 		// pos pointOrElse -1
-		q"_root_.scutil.lang.SourceLocation(${pos.source.file.name}, ${pos.line})"
+		val path	=
+				Option(pos.source.file.file) map { file =>
+					(new File(".").toURI relativize file.toURI).getPath
+				}
+		q"_root_.scutil.lang.SourceLocation($path, ${pos.source.file.name}, ${pos.line})"
 	}
 }
 
 final case class SourceLocation(
+	path:Option[String],
 	name:String,
 	line:Int
 ) {

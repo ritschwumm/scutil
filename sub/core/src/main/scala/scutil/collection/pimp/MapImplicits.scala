@@ -61,10 +61,14 @@ final class MapExt[S,T](peer:Map[S,T]) {
 			}
 			
 	/** map the value for a single key */
-	def updatedBy(key:S, func:Endo[T]):Map[S,T]	=
+	def updatedByOrSelf(key:S, func:Endo[T]):Map[S,T]	=
+			updatedBy(key, func) getOrElse peer
+	
+	/** map the value for a single key */
+	def updatedBy(key:S, func:Endo[T]):Option[Map[S,T]]	=
 			peer get key match {
-				case Some(value)	=> peer + (key -> func(value))
-				case None			=> peer
+				case Some(value)	=> Some(peer + (key -> func(value)))
+				case None			=> None
 			}
 			
 	def updatedManyBy(func:(S,T)=>T):Map[S,T]	=

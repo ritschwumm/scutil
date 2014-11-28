@@ -25,6 +25,8 @@ final class ISeqExt[T](peer:ISeq[T]) {
 	def prependAll(it:Traversable[T]):ISeq[T]	= it ++: peer
 	def appendAll(it:Traversable[T]):ISeq[T]	= peer ++ it
 	
+	def lastIndex:Int	= peer.size-1
+	
 	/** whether index is a gap between elements of this ISeq */
 	def containsGap(index:Int):Boolean	=
 			index >= 0 && index <= peer.size
@@ -161,10 +163,13 @@ final class ISeqExt[T](peer:ISeq[T]) {
 	def withReverse(func:Endo[ISeq[T]]):ISeq[T]	=
 			func(peer.reverse).reverse
 		
+	def updatedByOrSelf(index:Int, func:Endo[T]):ISeq[T]	=
+			updatedBy(index, func) getOrElse peer
+	
 	/** map the value for a single index */
-	def updatedBy(index:Int, func:Endo[T]):ISeq[T]	=
-			if (index >= 0 && index < peer.size)	peer updated (index, func(peer(index)))
-			else									peer
+	def updatedBy(index:Int, func:Endo[T]):Option[ISeq[T]]	=
+			if (index >= 0 && index < peer.size)	Some(peer updated (index, func(peer(index))))
+			else									None
 
 	/** distinct with a custom equality check */ 
 	def distinctWith(same:(T,T)=>Boolean):ISeq[T] = 
