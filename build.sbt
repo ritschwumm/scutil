@@ -1,6 +1,6 @@
 organization	:= "de.djini"
 name			:= "scutil"
-version			:= "0.60.0"
+version			:= "0.61.0"
 
 organization	in ThisBuild	:= organization.value
 version			in ThisBuild	:= version.value
@@ -20,23 +20,22 @@ dependencyOverrides	in ThisBuild	++= Set(
 
 //------------------------------------------------------------------------------
 
-
 lazy val `scutil`	=
-		project 
+		project
 		.in			(file("."))
 		.aggregate	(`scutil-core`, `scutil-swing`, `scutil-extra`)
 		.settings	(publishArtifact := false)
 
-lazy val `scutil-core`	= 
-		project 
+lazy val `scutil-core`	=
+		project
 		.in			(file("sub/core"))
 		
-lazy val `scutil-swing`	= 
-		project 
+lazy val `scutil-swing`	=
+		project
 		.in			(file("sub/swing"))
 		.dependsOn	(`scutil-core`)
 		
-lazy val `scutil-extra`	= 
-		project 
+lazy val `scutil-extra`	=
+		project
 		.in			(file("sub/extra"))
 		.dependsOn	(`scutil-core`)

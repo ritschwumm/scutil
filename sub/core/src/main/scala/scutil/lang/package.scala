@@ -39,5 +39,7 @@ package object lang {
 	
 	final class FunctionTaking[S] {
 		def apply[T](func:S=>T):S=>T	= func
-	} 
+	}
+	
+	def typed[T](t : => T) {}
 }
