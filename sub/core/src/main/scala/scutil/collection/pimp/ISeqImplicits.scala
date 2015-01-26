@@ -25,7 +25,9 @@ final class ISeqExt[T](peer:ISeq[T]) {
 	def prependAll(it:Traversable[T]):ISeq[T]	= it ++: peer
 	def appendAll(it:Traversable[T]):ISeq[T]	= peer ++ it
 	
-	def lastIndex:Int	= peer.size-1
+	def lastIndex:Int		= peer.size-1
+	
+	def indices:ISeq[Int]	= 0 until peer.size
 	
 	/** whether index is a gap between elements of this ISeq */
 	def containsGap(index:Int):Boolean	=
@@ -223,8 +225,8 @@ final class ISeqExt[T](peer:ISeq[T]) {
 	/** separators go to the Left, the rest goes into Right ISeqs  */
 	def splitWhere(separator:Predicate[T]):ISeq[Either[T,ISeq[T]]] =
 			if (peer.nonEmpty) {
-				val indizes = peer.zipWithIndex collect { case (t,i) if (separator(t)) => i }
-				(-1 +: indizes) zip (indizes :+ peer.size) flatMap { case (a,b) => 
+				val indices = peer.zipWithIndex collect { case (t,i) if (separator(t)) => i }
+				(-1 +: indices) zip (indices :+ peer.size) flatMap { case (a,b) => 
 					Vector(Right(peer slice (a+1,b))) ++
 					((peer lift b) map Left.apply)
 				}

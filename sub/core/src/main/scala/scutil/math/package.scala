@@ -141,6 +141,20 @@ package object math {
 	
 	//------------------------------------------------------------------------------
 	
+	def divUpByte(value:Byte, divisor:Byte):Byte	=
+			((value + divisor - 1) / divisor).toByte
+		
+	def divUpShort(value:Short, divisor:Short):Short	=
+			((value + divisor - 1) / divisor).toShort
+		
+	def divUpInt(value:Int, divisor:Int):Int	=
+			(value + divisor - 1) / divisor
+		
+	def divUpLong(value:Long, divisor:Long):Long	=
+			(value + divisor - 1) / divisor
+		
+	//------------------------------------------------------------------------------
+	
 	/** ratio 0..1 select a..b */
 	def blendToFloat(ratio:Float, a:Float, b:Float):Float	=
 			a * (1 - ratio) + b * (0 + ratio)
