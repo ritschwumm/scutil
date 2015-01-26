@@ -1,11 +1,11 @@
 organization	:= "de.djini"
 name			:= "scutil"
-version			:= "0.61.0"
+version			:= "0.62.0"
 
 organization	in ThisBuild	:= organization.value
 version			in ThisBuild	:= version.value
 
-scalaVersion	in ThisBuild	:= "2.11.4"
+scalaVersion	in ThisBuild	:= "2.11.5"
 scalacOptions	in ThisBuild	++= Seq(
 	"-Ywarn-unused-import",
 	"-Xfatal-warnings"
