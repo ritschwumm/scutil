@@ -16,14 +16,14 @@ import scutil.implicits._
 import scutil.time._
 import scutil.gui.SwingUtil._
 
-/** 
+/**
 get notifications whenever the mouse enters or leaves a Component area.
 in contrast to simple mouseEnter/mouseExit events this works when the mouse
 moves fast or something is dragged over the component.
 */
 final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Exception)=>Unit) {
 	private type Callback	= Effect[Boolean]
- 	
+	
 	private var entries	= new mutable.WeakHashMap[Component,Entry]
 	
 	private final case class Entry(state:Boolean, callbacks:ISeq[WeakReference[Callback]]) {
@@ -47,7 +47,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 								entry.callbacks filterNot { it =>
 									val deref	= it.get
 									deref == null ||
-									deref == callback 
+									deref == callback
 								}
 						if (newCallbacks.nonEmpty)	Some(component -> Entry(entry.state, newCallbacks))
 						else						None
@@ -99,10 +99,10 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 	}
 	
 	private def convertPointFromScreen(point:Point, component:Component):Point	= {
-    	var x:Int		= point.x
-    	var y:Int		= point.y
-    	var c:Component	= component
-    	
+		var x:Int		= point.x
+		var y:Int		= point.y
+		var c:Component	= component
+
     	while (true) {
 			c match {
 				case cc @ (_:Applet | _:Window) =>
@@ -143,7 +143,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 						}
 					}
 				}
-			} 
+			}
 	testThread setName		"ComponentUnderMouse"
 	testThread setDaemon	true
 	testThread setPriority	Thread.MIN_PRIORITY

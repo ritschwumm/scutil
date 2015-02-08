@@ -7,7 +7,7 @@ import scutil.lang._
 
 object GlobalKeyEvent {
 	def connect(handler:KeyEvent=>Boolean):Disposable = {
-		val dispatcher	= 
+		val dispatcher	=
 				new KeyEventDispatcher {
 					def dispatchKeyEvent(ev:KeyEvent):Boolean	= handler(ev)
 				}

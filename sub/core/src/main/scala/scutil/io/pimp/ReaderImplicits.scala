@@ -12,7 +12,7 @@ trait ReaderImplicits {
     implicit def toReaderExt(peer:Reader)	= new ReaderExt(peer)
 }
 
-/** utility methods for Reader objects */ 
+/** utility methods for Reader objects */
 final class ReaderExt(peer:Reader) {
 	val blockSize	= 16384
 	

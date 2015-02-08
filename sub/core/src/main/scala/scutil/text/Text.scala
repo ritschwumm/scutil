@@ -12,10 +12,10 @@ object Text {
 		var i	= 0
 		while (i < text.length) {
 			text charAt i match {
-				case '\r'	=> 
+				case '\r'	=>
 					out append '\r'
 					col	= 0
-				case '\n'	=> 
+				case '\n'	=>
 					out append '\n'
 					col	= 0
 				case '\t'	=>
@@ -27,7 +27,7 @@ object Text {
 				case x	=>
 					out append x
 					col	+= 1
-			} 
+			}
 			i	+= 1
 		}
 		out.toString
@@ -39,6 +39,6 @@ object Text {
 	similar to String's stripMargin method, this removes (optional) leading whitespace and a '|' character.
 	differently from stripMargin it ignores lines where stripping cannot be applied.
 	*/
-	def stripMarginOnly(s:String):String	= 
+	def stripMarginOnly(s:String):String	=
 			s.lines collect { case Strip(it) => it } mkString "\n"
 }

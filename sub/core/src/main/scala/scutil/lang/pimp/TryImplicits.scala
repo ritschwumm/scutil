@@ -11,7 +11,7 @@ trait TryImplicits {
 }
 
 final class TryExt[T](peer:Try[T]) {
-	def cata[U](failure:Throwable=>U, success:T=>U):U	= 
+	def cata[U](failure:Throwable=>U, success:T=>U):U	=
 			peer match {
 				case Success(t)	=> success(t)
 				case Failure(t)	=> failure(t)

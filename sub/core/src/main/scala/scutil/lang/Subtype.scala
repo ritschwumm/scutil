@@ -37,7 +37,7 @@ final case class Subtype[Super,Sub<:Super](downcast:PFunction[Super,Sub]) {
 	def toPrism:Prism[Super,Sub]	=
 			Prism(downcast, upcast)
 		
-	def toPLens:PLens[Super,Sub]	= 
+	def toPLens:PLens[Super,Sub]	=
 			PLens(downcast(_) map (Store(_, upcast)))
 		
 	def toPBijection:PBijection[Super,Sub]	=

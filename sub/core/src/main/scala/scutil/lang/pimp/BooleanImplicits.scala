@@ -21,7 +21,7 @@ final class BooleanExt(peer:Boolean) {
 			if (!peer)	Some(falseValue)
 			else		None
 	
-	def flatGuard[T](trueValue: =>Option[T]):Option[T] = 
+	def flatGuard[T](trueValue: =>Option[T]):Option[T] =
 			if (peer)	trueValue
 			else		None
 	

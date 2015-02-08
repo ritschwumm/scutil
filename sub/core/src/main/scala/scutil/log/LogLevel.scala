@@ -16,7 +16,7 @@ object LogLevel {
 }
 
 sealed abstract class LogLevel extends Ordered[LogLevel] {
-	protected val severity:Int 
+	protected val severity:Int
 	
 	def compare(that:LogLevel):Int	=
 			this.severity compare that.severity

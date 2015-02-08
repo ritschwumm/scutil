@@ -3,7 +3,7 @@ package scutil.lang
 import scutil.lang.implicits._
 
 object PLens {
-	def identity[T]:PLens[T,T]	= 
+	def identity[T]:PLens[T,T]	=
 			PLens { t =>
 				Some(Store identity t)
 			}
@@ -84,9 +84,9 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 	// impossible
 	// def zip[U](that:PLens[S,U]):PLens[S,(T,U)]
 	
-	// ||| 
+	// |||
 	def sum[SS](that:PLens[SS,T]):PLens[Either[S,SS],T]	=
-			PLens { 
+			PLens {
 				_ match {
 					case Left(s)	=>
 						this on s map { store =>
@@ -106,7 +106,7 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 			}
 			
 	// ***
-	def product[SS,TT](that:PLens[SS,TT]):PLens[(S,SS),(T,TT)]	= 
+	def product[SS,TT](that:PLens[SS,TT]):PLens[(S,SS),(T,TT)]	=
 			PLens { case (s,ss)	=>
 				for {
 					thisStore	<- this on s

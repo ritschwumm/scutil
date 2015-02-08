@@ -13,9 +13,9 @@ trait SetImplicits {
 }
 
 final class SetExt[T](peer:Set[T]) {
-	def containsAll(that:Set[T]):Boolean	= (peer & that) == that 
+	def containsAll(that:Set[T]):Boolean	= (peer & that) == that
 	def containsAny(that:Set[T]):Boolean	= (peer & that).nonEmpty
-	def containsNone(that:Set[T]):Boolean	= (peer & that).isEmpty 
+	def containsNone(that:Set[T]):Boolean	= (peer & that).isEmpty
 	
 	/** pairs items only in this with items only in that */
 	def hereAndThere(that:Set[T]):(Set[T],Set[T])	=

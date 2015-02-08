@@ -22,15 +22,15 @@ final case class IntPoint(x:Int, y:Int) {
 	def scale(that:IntPoint):IntPoint	= IntPoint(this.x * that.x,	this.y * that.y)
 	def unscale(that:IntPoint):IntPoint	= IntPoint(this.x / that.x,	this.y / that.y)
 	
-	def rectTo(that:IntPoint):IntRect	= 
+	def rectTo(that:IntPoint):IntRect	=
 			IntRect(
-				IntSpan(this.x, that.x - this.x), 
+				IntSpan(this.x, that.x - this.x),
 				IntSpan(this.y, that.y - this.y)
 			)
 			
-	def rectWith(that:IntPoint):IntRect	= 
+	def rectWith(that:IntPoint):IntRect	=
 			IntRect(
-				IntSpan(this.x, that.x), 
+				IntSpan(this.x, that.x),
 				IntSpan(this.y, that.y)
 			)
 }

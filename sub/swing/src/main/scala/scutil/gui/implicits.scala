@@ -4,7 +4,7 @@ import scutil.gui.pimp._
 
 object implicits extends implicits
 
-trait implicits 
+trait implicits
 		extends	disposables
 		with	RGBImplicits
 		with	RGBAImplicits

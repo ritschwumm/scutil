@@ -9,7 +9,7 @@ trait ElemImplicits {
 }
 
 final class ElemExt(peer:Elem) {
-	def toStringWithDeclaration:String	= 
-			"""<?xml version="1.0" encoding="utf-8"?>""" + "\n" + 
-			peer
+	def toStringWithDeclaration:String	=
+			"""<?xml version="1.0" encoding="utf-8"?>""" + "\n" +
+			peer.toString
 }

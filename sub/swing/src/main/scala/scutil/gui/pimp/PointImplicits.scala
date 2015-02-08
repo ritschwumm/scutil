@@ -56,7 +56,7 @@ final class PointExt(peer:Point) {
 			that.x - peer.x,
 			that.y - peer.y)
 	
-	def rectangleWith(dimension:Dimension):Rectangle	= 
+	def rectangleWith(dimension:Dimension):Rectangle	=
 			new Rectangle(peer, dimension)
 			
 	//------------------------------------------------------------------------------

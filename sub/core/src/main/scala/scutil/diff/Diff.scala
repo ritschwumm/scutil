@@ -25,9 +25,9 @@ object Diff {
 		val S	= Array.ofDim[Int]		(n+1, m+1)
 		val R	= Array.ofDim[Direction](n+1, m+1)
 
-		// It is important to use to, not until.  
+		// It is important to use to, not until.
 		// The next two for-loops are initialization
-		for (ii <- 0 to n) {      
+		for (ii <- 0 to n) {
 			S(ii)(0) = 0
 			R(ii)(0) = Up
 		}
@@ -36,16 +36,16 @@ object Diff {
 			R(0)(jj) = Left
 		}
 
-		// This is the main dynamic programming loop that 
+		// This is the main dynamic programming loop that
 		// computes the score and backtracking arrays.
 		for {
 			ii <- 1 to n
 			jj <- 1 to m
-		} {  
+		} {
 			if (equal(a(ii-1), b(jj-1))) {
 				S(ii)(jj)	= S(ii-1)(jj-1) + 1
 				R(ii)(jj)	= UpAndLeft
-			} 
+			}
 			else {
 				S(ii)(jj)	= S(ii-1)(jj-1) + 0
 				R(ii)(jj)	= Neither

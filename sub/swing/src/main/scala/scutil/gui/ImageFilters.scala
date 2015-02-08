@@ -9,13 +9,13 @@ object ImageFilters {
 	def rgba(func:Endo[RGBA]):RGBImageFilter	=
 			new RGBAFilter(func)
 	
-	def hsba(func:Endo[HSBA]):RGBImageFilter	= 
+	def hsba(func:Endo[HSBA]):RGBImageFilter	=
 			rgba { rgba => func(rgba.toHSBA).toRGBA }
 		
-	def rgb(func:Endo[RGB]):RGBImageFilter	= 
+	def rgb(func:Endo[RGB]):RGBImageFilter	=
 			rgba { rgba => rgba copy (rgb = func(rgba.rgb)) }
 		
-	def hsb(func:Endo[HSB]):RGBImageFilter	= 
+	def hsb(func:Endo[HSB]):RGBImageFilter	=
 			hsba { hsba => hsba copy (hsb = func(hsba.hsb)) }
 }
 

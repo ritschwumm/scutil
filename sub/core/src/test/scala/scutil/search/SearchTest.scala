@@ -10,7 +10,7 @@ class SearchTest extends Specification {
 	def multi(s:String):Predicate[Iterable[String]]	= s |> SearchParser.parse |> SearchCompiler.multi
 	
 	"TokenMatcher for a single string" should {
-		"work 1"  in { single	("oo")			("foobar")	mustEqual true	} 
+		"work 1"  in { single	("oo")			("foobar")	mustEqual true	}
 		"work 2"  in { single	("|oo")			("foobar")	mustEqual false	}
 		"work 3"  in { single	("oo|")			("foobar")	mustEqual false	}
 		"work 4"  in { single	("|fo")			("foobar")	mustEqual true	}

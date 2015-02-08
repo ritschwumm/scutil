@@ -63,7 +63,7 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 			case Right(x)	=> builder2	+= x
 		}
 		(builder1.result, builder2.result)
-	} 
+	}
 	
 	def partitionTried[F,W](implicit ev:T=>Tried[F,W], cbf1:CanBuildFrom[CC[T],F,CC[F]], cbf2:CanBuildFrom[CC[T],W,CC[W]]):(CC[F],CC[W])	= {
 		val	builder1	= cbf1()
@@ -73,7 +73,7 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 			case Win(x)		=> builder2	+= x
 		}
 		(builder1.result, builder2.result)
-	} 
+	}
 	
 	/** create a map from all elements with a given function to generate the keys */
 	def mapBy[S](key:T=>S):Map[S,T]	=
@@ -139,7 +139,7 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 		val problems	= mapped flatMap { _.badProblems }
 		Nes fromISeq problems.toVector match {
 			case Some(es)	=> Bad(es)
-			case None		=> 
+			case None		=>
 				val builder	= cbf()
 				mapped foreach {
 					case Good(x)	=> builder	+= func(x)

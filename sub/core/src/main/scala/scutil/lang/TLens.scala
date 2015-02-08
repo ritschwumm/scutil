@@ -9,7 +9,7 @@ object TLens {
 				)
 			}
 			
-	def identity[T]:TLens[T,T]	= 
+	def identity[T]:TLens[T,T]	=
 			TLens(Store.identity)
 		
 	def trivial[T]:TLens[T,Unit]	=
@@ -65,9 +65,9 @@ final case class TLens[S,T](on:S=>Store[S,T]) {
 				)
 			}
 			
-	// ||| 
+	// |||
 	def sum[SS](that:TLens[SS,T]):TLens[Either[S,SS],T]	=
-			TLens { 
+			TLens {
 				_ match {
 					case Left(s)	=>
 						val store	= this on s
@@ -85,7 +85,7 @@ final case class TLens[S,T](on:S=>Store[S,T]) {
 			}
 			
 	// ***
-	def product[SS,TT](that:TLens[SS,TT]):TLens[(S,SS),(T,TT)]	= 
+	def product[SS,TT](that:TLens[SS,TT]):TLens[(S,SS),(T,TT)]	=
 			TLens { case (s,ss)	=>
 				val thisStore	= this on s
 				val thatStore	= that on ss

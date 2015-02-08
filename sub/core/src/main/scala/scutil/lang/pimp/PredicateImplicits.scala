@@ -20,7 +20,7 @@ final class PredicateExt[T](peer:Predicate[T]) {
 	
 	//------------------------------------------------------------------------------
 	
-	def guardOn[S<:T,U](function:S=>U):PFunction[S,U]	= 
+	def guardOn[S<:T,U](function:S=>U):PFunction[S,U]	=
 			it	=> if (peer(it))	Some(function(it))	else None
 			
 	def preventOn[S<:T,U](function:S=>U):PFunction[S,U]	=

@@ -1,7 +1,7 @@
 package scutil.jcollection.pimp
 
 import java.lang.{
-	Iterable	=> JIterable 
+	Iterable	=> JIterable
 }
 
 object JIterableImplicits extends JIterableImplicits

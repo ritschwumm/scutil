@@ -13,7 +13,7 @@ import java.sql.ResultSet
 
 import scutil.lang._
 
-object disposables extends disposables 
+object disposables extends disposables
 trait disposables {
 	implicit def DisposableForCloseable			(peer:Closeable)		= Disposable(peer.close)
 	

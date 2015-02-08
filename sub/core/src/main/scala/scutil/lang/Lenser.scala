@@ -26,7 +26,7 @@ private final class LenserImpl(val c:Context) {
 	def compile[T:c.WeakTypeTag](propName:c.Tree):c.Tree	= {
 		val out:Tried[String,Tree]	=
 				for {
-					name			<- 
+					name			<-
 							propName
 							.matchOption	{ case Literal(Constant(name:String))	=> name }
 							.toWin			(s"unexpected propName: ${propName}")

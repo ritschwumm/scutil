@@ -14,12 +14,12 @@ trait DateFormatImplicits {
 final class DateFormatExt(peer:DateFormat) {
 	def toPrism:Prism[String,Date]	=
 			Prism(
-				it => 
-						Catch.byType[ParseException] 
+				it =>
+						Catch.byType[ParseException]
 						.in {
 							val	clone	= cloned
 							clone setLenient false
-							clone parse it 
+							clone parse it
 						}
 						.toOption,
 				it => cloned format it
@@ -28,6 +28,6 @@ final class DateFormatExt(peer:DateFormat) {
 	// cloning should be generalized, but @see https://issues.scala-lang.org/browse/SI-3197
 	
 	/** DateFormat is not threadsafe, cloning helps */
-	def cloned:DateFormat	= 
+	def cloned:DateFormat	=
 			peer.clone.asInstanceOf[DateFormat]
 }

@@ -10,7 +10,7 @@ object Tried extends TriedGenerated {
 	
 	//------------------------------------------------------------------------------
 	
-	def notNull[T](value:T):Tried[Null,T]	= 
+	def notNull[T](value:T):Tried[Null,T]	=
 			if (value != null)	Win(value)
 			else				Fail(null)
 		
@@ -94,7 +94,7 @@ sealed trait Tried[+F,+W] {
 		
 	//------------------------------------------------------------------------------
 	
-	def isWin:Boolean	= 
+	def isWin:Boolean	=
 			cata(Predicates.constFalse, Predicates.constTrue)
 		
 	def isFail:Boolean	=
@@ -113,20 +113,20 @@ sealed trait Tried[+F,+W] {
 	def iterator:Iterator[W] =
 			cata(_ => Iterator.empty, Iterator.single)
 	
-	def foreach(effect:Effect[W]):Unit	= 
+	def foreach(effect:Effect[W]):Unit	=
 			cata(_ => (), effect)
 		
-	def map[X](func:W=>X):Tried[F,X]	= 
+	def map[X](func:W=>X):Tried[F,X]	=
 			cata(Fail.apply, func andThen Win.apply)
 		
-	def flatMap[FF>:F,X](func:W=>Tried[FF,X]):Tried[FF,X]	= 
+	def flatMap[FF>:F,X](func:W=>Tried[FF,X]):Tried[FF,X]	=
 			cata(Fail.apply, func)
 		
 	def flatten[FF>:F,X](implicit ev:W=>Tried[FF,X]):Tried[FF,X]	=
 			flatMap(ev)
 	
 	/** fail on this overrides fail on that */
-	def pa[FF>:F,X](that:Tried[FF,W=>X]):Tried[FF,X]	= 
+	def pa[FF>:F,X](that:Tried[FF,W=>X]):Tried[FF,X]	=
 			cata(
 				v	=> that cata (
 					f	=> Fail(f),
@@ -172,7 +172,7 @@ sealed trait Tried[+F,+W] {
 			
 	//------------------------------------------------------------------------------
 			
-	def swap:Tried[W,F]	= 
+	def swap:Tried[W,F]	=
 			cata(Win.apply,	Fail.apply)
 		
 	def withSwapped[FX,WX](func:Tried[W,F]=>Tried[WX,FX]):Tried[FX,WX]	=
@@ -191,17 +191,17 @@ sealed trait Tried[+F,+W] {
 		
 	//------------------------------------------------------------------------------
 	
-	def orElse[FF>:F,WW>:W](that: =>Tried[FF,WW]):Tried[FF,WW]	= 
+	def orElse[FF>:F,WW>:W](that: =>Tried[FF,WW]):Tried[FF,WW]	=
 			cata(_ => that, Win.apply)
 		
-	def getOrElse[WW>:W](that: =>WW):WW	= 
+	def getOrElse[WW>:W](that: =>WW):WW	=
 			cata(_ => that, identity)
 		
-	def getOrRescue[WW>:W](func:F=>WW):WW	= 
+	def getOrRescue[WW>:W](func:F=>WW):WW	=
 			cata(func, identity)
 		
 	def getOrError(s: =>String):W	=
-			getOrElse(sys error s) 
+			getOrElse(sys error s)
 		
 	//------------------------------------------------------------------------------
 	
@@ -228,7 +228,7 @@ sealed trait Tried[+F,+W] {
 		
 	def collectOr[FF>:F,WW](func:PartialFunction[W,WW], fail: =>FF):Tried[FF,WW]	=
 			cata(Fail.apply, it => if (func isDefinedAt it) Win(func(it)) else Fail(fail))
- 	 
+ 	
 	//------------------------------------------------------------------------------
 		
 	def throwThrowable(implicit ev:F=>Throwable):W	=
@@ -254,22 +254,22 @@ sealed trait Tried[+F,+W] {
 	def toTry(implicit ev:F=>Throwable):Try[W]	=
 			cata(Failure(_), Success(_))
 	
-	def toEither:Either[F,W]	= 
+	def toEither:Either[F,W]	=
 			cata(Left.apply, Right.apply)
 		
 	def toValidated[FS](implicit ev:F=>Nes[FS]):Validated[FS,W]	=
 			Validated fromTried (this mapFail ev)
 		
-	def toOption:Option[W]	= 
+	def toOption:Option[W]	=
 			cata(_ => None, Some.apply)
 		
-	def toISeq:ISeq[W]	= 
+	def toISeq:ISeq[W]	=
 			toVector
 		
-	def toList:List[W]	= 
+	def toList:List[W]	=
 			cata(_ => Nil, List(_))
 		
-	def toVector:Vector[W]	= 
+	def toVector:Vector[W]	=
 			cata(_ => Vector.empty, Vector(_))
 }
 

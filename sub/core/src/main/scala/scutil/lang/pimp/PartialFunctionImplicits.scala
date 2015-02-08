@@ -15,7 +15,7 @@ final class PartialFunctionExt[S,T](peer:PartialFunction[S,T]) {
 			orAlways(constant(value))
 		
 	def orAlways(func:S=>T):S=>T	= it =>
-			if (peer isDefinedAt it)	peer(it) 
+			if (peer isDefinedAt it)	peer(it)
 			else						func(it)
 		
 	/** symbolic alias for andThenFixed */

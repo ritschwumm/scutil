@@ -15,7 +15,7 @@ final class PFunctionExt[S,T](peer:PFunction[S,T]) {
 	def orAlways(that:Function[S,T]):Function1[S,T]	=
 			it	=> peer(it) getOrElse that(it)
 						
-	def orElse(that:PFunction[S,T]):PFunction[S,T]	= 
+	def orElse(that:PFunction[S,T]):PFunction[S,T]	=
 			it	=> peer(it) orElse that(it)
 		
 	/** symbolic alias for andThenFixed */

@@ -3,7 +3,7 @@ package scutil.jcollection
 import scutil.jcollection.pimp._
 
 object implicits extends implicits
-trait implicits 
+trait implicits
 		extends	ConcurrentLinkedQueueImplicits
 		with	JEnumerationImplicits
 		with	JIteratorImplicits

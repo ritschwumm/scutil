@@ -32,7 +32,7 @@ private final class FielderImpl(val c:Context) {
 		
 	def compile[T:c.WeakTypeTag]:c.Tree	= {
 		val selfType:Type	= weakTypeOf[T]
-    
+
 		val primaryCtorOpt	=
 				(selfType.decls filter { _.isMethod } map { _.asMethod } filter { _.isPrimaryConstructor }).singleOption
 		

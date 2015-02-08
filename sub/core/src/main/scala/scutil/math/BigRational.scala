@@ -1,7 +1,7 @@
 package scutil.math
 
-import java.lang.{ 
-	Number	=> JNumber 
+import java.lang.{
+	Number	=> JNumber
 }
 import java.math.{
 	BigDecimal	=> JBigDecimal,
@@ -21,33 +21,33 @@ object BigRational {
 	
 	//------------------------------------------------------------------------------
 	
-	def apply(numerator:JBigInteger, denominator:JBigInteger):BigRational = 
+	def apply(numerator:JBigInteger, denominator:JBigInteger):BigRational =
 			new BigRational(numerator, denominator)
 			
-	def apply(numerator:JBigDecimal):BigRational = 
+	def apply(numerator:JBigDecimal):BigRational =
 			new BigRational(
 					numerator.unscaledValue,
 					(JBigDecimal.ONE scaleByPowerOfTen numerator.scale).toBigInteger)
 					
-	def apply(numerator:Long, denominator:Long):BigRational = 
+	def apply(numerator:Long, denominator:Long):BigRational =
 			new BigRational(
 					JBigInteger valueOf numerator,
 					JBigInteger valueOf denominator)
 					
-	def apply(numerator:Long):BigRational = 
+	def apply(numerator:Long):BigRational =
 			new BigRational(
 					JBigInteger valueOf numerator,
 					JBigInteger.ONE)
 					
-	def unapply(self:BigRational):Option[(JBigInteger,JBigInteger)] = 
+	def unapply(self:BigRational):Option[(JBigInteger,JBigInteger)] =
 			Some((self.numerator, self.denominator))
 					
 	//------------------------------------------------------------------------------
 	
 	/** parse the output of #toString */
-	def parse(s:String):Option[BigRational] = 
+	def parse(s:String):Option[BigRational] =
 			s splitAroundChar '/' match {
-				case ISeq(num, den)	=> 
+				case ISeq(num, den)	=>
 					try { Some(new BigRational(new JBigInteger(num), new JBigInteger(den))) }
 					catch { case e:NumberFormatException	=> None }
 				case _	=> None
@@ -64,7 +64,7 @@ final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extend
 		 (
 			(	if (_denominator.signum == -1)	_numerator.negate
 				else							_numerator
-			) divide gcd, 
+			) divide gcd,
 			_denominator.abs divide gcd
 		)
 	}
@@ -108,21 +108,21 @@ final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extend
 	def unary_- :BigRational	= negate
 		
 	/** additive inverse */
-	def negate:BigRational = 
+	def negate:BigRational =
 			if (this == BigRational.zero)	this
 			else new BigRational(
-					numerator.negate, 
+					numerator.negate,
 					denominator)
 
 	/** multiplicative inverse */
 	def reciprocal:BigRational =
 			if (this == BigRational.zero)	this
 			else new BigRational(
-					denominator, 
+					denominator,
 					numerator)
 	
 	/** absolute value */
-	def abs:BigRational = 
+	def abs:BigRational =
 			if (signum >= 0)	this
 			else				negate
 
@@ -136,7 +136,7 @@ final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extend
 		val	both	= numerator divideAndRemainder denominator
 		(both(0), both(1))
 	}
-	 
+	
 	//------------------------------------------------------------------------------
 	//## comparison
 	
@@ -147,17 +147,17 @@ final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extend
 			if (this == that)	0
 			else 				(this.numerator multiply that.denominator) compareTo (that.numerator multiply this.denominator)
 	
-	override def equals(that:Any)	= 
+	override def equals(that:Any)	=
 			that match {
-				case x:BigRational	=> this equalsTo x 
+				case x:BigRational	=> this equalsTo x
 				case _				=> false
 			}
 			
-	def equalsTo(that:BigRational):Boolean = 
-			this.numerator		== that.numerator	&& 
+	def equalsTo(that:BigRational):Boolean =
+			this.numerator		== that.numerator	&&
 			this.denominator	== that.denominator
 			
-	override def hashCode: Int 	= 
+	override def hashCode: Int 	=
 			numerator.hashCode ^ denominator.hashCode
 	
 	//------------------------------------------------------------------------------
@@ -166,7 +166,7 @@ final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extend
 	def toBigDecimal(mathContext:MathContext):JBigDecimal =
 			new JBigDecimal(numerator) divide (new JBigDecimal(denominator), mathContext)
 			
-	// TODO weak 
+	// TODO weak
 	override def doubleValue:Double	= numerator.doubleValue / denominator.doubleValue
 	override def floatValue:Float	= numerator.floatValue  / denominator.floatValue
 	override def intValue:Int		= scala.math.round(doubleValue).toInt

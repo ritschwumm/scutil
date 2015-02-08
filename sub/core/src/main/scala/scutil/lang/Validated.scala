@@ -177,7 +177,7 @@ sealed trait Validated[+E,+T] {
 			cata(func, identity)
 		
 	def getOrError(s: =>String):T	=
-			getOrElse(sys error s) 
+			getOrElse(sys error s)
 		
 	//------------------------------------------------------------------------------
 	

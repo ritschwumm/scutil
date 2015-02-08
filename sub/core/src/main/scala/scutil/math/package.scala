@@ -42,7 +42,7 @@ package object math {
 			if (value < minValue) minValue else if (value > maxValue) maxValue else value
 			
 	def clampInt(value:Int, minValue:Int, maxValue:Int):Int	=
-			if (value < minValue) minValue else if (value > maxValue) maxValue else value                    
+			if (value < minValue) minValue else if (value > maxValue) maxValue else value
 		
 	def clampLong(value:Long, minValue:Long, maxValue:Long):Long	=
 			if (value < minValue) minValue else if (value > maxValue) maxValue else value
@@ -176,7 +176,7 @@ package object math {
 	
 	//------------------------------------------------------------------------------
 	
-	def swapEndianShort(value:Short):Short	= 
+	def swapEndianShort(value:Short):Short	=
 			(
 				((value << 8) & 0xff00) |
 				((value >> 8) & 0x00ff)
@@ -198,7 +198,7 @@ package object math {
 			((value <<  8) & 0x000000ff00000000L)	|
 			((value >>  8) & 0x00000000ff000000L)
 			
-	def swapEndianChar(value:Char):Char	= 
+	def swapEndianChar(value:Char):Char	=
 			(
 				((value << 8) & 0xff00) |
 				((value >> 8) & 0x00ff)
@@ -206,19 +206,19 @@ package object math {
 	
 	//------------------------------------------------------------------------------
 	
-	def maskTestByte(value:Byte, onMask:Byte, offMask:Byte):Boolean = 
+	def maskTestByte(value:Byte, onMask:Byte, offMask:Byte):Boolean =
 			(value & (onMask | offMask)) == onMask
 		
-	def maskTestShort(value:Short, onMask:Short, offMask:Short):Boolean = 
+	def maskTestShort(value:Short, onMask:Short, offMask:Short):Boolean =
 			(value & (onMask | offMask)) == onMask
 		
-	def maskTestInt(value:Int, onMask:Int, offMask:Int):Boolean = 
+	def maskTestInt(value:Int, onMask:Int, offMask:Int):Boolean =
 			(value & (onMask | offMask)) == onMask
 		
-	def maskTestLong(value:Long, onMask:Long, offMask:Long):Boolean = 
+	def maskTestLong(value:Long, onMask:Long, offMask:Long):Boolean =
 			(value & (onMask | offMask)) == onMask
 		
-	def maskTestChar(value:Char, onMask:Char, offMask:Char):Boolean = 
+	def maskTestChar(value:Char, onMask:Char, offMask:Char):Boolean =
 			(value & (onMask | offMask)) == onMask
 		
 	//------------------------------------------------------------------------------

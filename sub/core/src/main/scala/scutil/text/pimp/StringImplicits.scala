@@ -3,7 +3,7 @@ package scutil.text.pimp
 import java.lang.{
 	Byte => JByte, Short => JShort, Integer => JInt, Long => JLong,
 	Float => JFloat, Double => JDouble, Boolean => JBoolean
-} 
+}
 import java.util.regex.Pattern
 
 import scala.collection.mutable
@@ -41,9 +41,9 @@ final class StringExt(peer:String) {
 	
 	//------------------------------------------------------------------------------
 	
-	def guardNonEmpty:Option[String]	= 
+	def guardNonEmpty:Option[String]	=
 			if (peer.nonEmpty)	Some(peer)
-			else				None 
+			else				None
 	
 	//------------------------------------------------------------------------------
 		

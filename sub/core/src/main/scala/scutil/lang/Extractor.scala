@@ -10,10 +10,10 @@ object Extractor {
 	def guarding[T](pred:Predicate[T]):Extractor[T,T]	=
 			Extractor(it => if (pred(it)) Some(it) else None)
 			
-	def identity[T]:Extractor[T,T]	= 
+	def identity[T]:Extractor[T,T]	=
 			Extractor(Some.apply)
 			
-	def trivial[T]:Extractor[T,Any]	= 
+	def trivial[T]:Extractor[T,Any]	=
 			Extractor(constant(None))
 }
 	
@@ -36,7 +36,7 @@ final case class Extractor[S,T](read:PFunction[S,T]) {
 			Extractor(s => this read s flatMap that.read)
 	
 	def orElse(that:Extractor[S,T]):Extractor[S,T]	=
-			Extractor(s	=> (this read s) orElse (that read s)) 
+			Extractor(s	=> (this read s) orElse (that read s))
 			
 	def map[U](func:T=>U):Extractor[S,U]	=
 			Extractor(s => read(s) map func)
@@ -44,15 +44,15 @@ final case class Extractor[S,T](read:PFunction[S,T]) {
 	def contraMap[R](func:R=>S):Extractor[R,T]	=
 			Extractor(func andThen read)
 		
-	def filter(pred:T=>Boolean):Extractor[S,T]	= 
+	def filter(pred:T=>Boolean):Extractor[S,T]	=
 			Extractor(s	=> read(s) filter pred)
 		
-	def cofilter(pred:S=>Boolean):Extractor[S,T]	= 
+	def cofilter(pred:S=>Boolean):Extractor[S,T]	=
 			Extractor(s	=> if (pred(s))	read(s)	else None)
 			
-	def toPFunction:PFunction[S,T]	= 
+	def toPFunction:PFunction[S,T]	=
 			s => read(s)
 	
-	def toPartialFunction:PartialFunction[S,T]	= 
+	def toPartialFunction:PartialFunction[S,T]	=
 			Function unlift read	
 }

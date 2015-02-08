@@ -11,7 +11,7 @@ trait RegexImplicits {
 }
 
 final class RegexExt(peer:Regex) {
-	def test(s:CharSequence):Boolean	= 
+	def test(s:CharSequence):Boolean	=
 			(peer.pattern matcher s).matches
 	
 	def toPrism:Prism[String,String]	=

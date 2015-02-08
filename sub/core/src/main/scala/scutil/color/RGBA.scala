@@ -37,7 +37,7 @@ final case class RGBA(rgb:RGB, alpha:Alpha) {
 	def b	= rgb.b
 	def a	= alpha.a
 	
-	def diff(that:RGBA):Float	= 
+	def diff(that:RGBA):Float	=
 			(	(this.rgb	diff3	that.rgb) +
 				(this.alpha	diff	that.alpha)
 			) / 4f
@@ -45,7 +45,7 @@ final case class RGBA(rgb:RGB, alpha:Alpha) {
 	def toHSBA:HSBA =
 			HSBA(rgb.toHSB, alpha)
 	
-	def toIntARGB:Int	= 
+	def toIntARGB:Int	=
 			(((alpha.a	* 255).toInt) << 24) |
 			(((rgb.r	* 255).toInt) << 16) |
 			(((rgb.g	* 255).toInt) <<  8) |

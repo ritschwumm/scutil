@@ -28,7 +28,7 @@ final class RatioLayout(horizontal:Boolean, gap:Int, parts:Seq[Double]) extends 
 	private def allGaps(count:Int):Int	=
 			gap * (count-1)
 		
-	// TODO find a better way to calculate this 
+	// TODO find a better way to calculate this
 	def preferredLayoutSize(c:Container):Dimension	=
 			minimumLayoutSize(c)
 		
@@ -59,9 +59,9 @@ final class RatioLayout(horizontal:Boolean, gap:Int, parts:Seq[Double]) extends 
 		val size:Dimension	= c.getSize
 		val insets:Insets	= c.getInsets
 		val bounds:Rectangle	= new Rectangle(
-				insets.left, 
-				insets.bottom, 
-				size.width	- insets.left	- insets.right, 
+				insets.left,
+				insets.bottom,
+				size.width	- insets.left	- insets.right,
 				size.height - insets.top	- insets.bottom)
 				
 		val start	= dir rectangleLocation	bounds

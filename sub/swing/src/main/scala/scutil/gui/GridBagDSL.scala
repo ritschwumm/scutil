@@ -92,6 +92,6 @@ final class GridBagDSL(peer:GridBagConstraints) {
 	def modified(effect:GridBagConstraints=>Unit):GridBagConstraints =
 			cloned |>> effect
 	
-	def cloned:GridBagConstraints	= 
+	def cloned:GridBagConstraints	=
 			peer.clone.asInstanceOf[GridBagConstraints]
 }

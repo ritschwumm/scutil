@@ -40,7 +40,7 @@ object ListenerInstances {
 		override def dropActionChanged(ev:DropTargetDragEvent)	{ callback(ev) }
 		override def drop(ev:DropTargetDropEvent) {}
 	}
-          
+
 	//------------------------------------------------------------------------------
 	
 	def mkAdjustmentListener(callback:AdjustmentEvent=>Unit):AdjustmentListener = new AdjustmentListener {

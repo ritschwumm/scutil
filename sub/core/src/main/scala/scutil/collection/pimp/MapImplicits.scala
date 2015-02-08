@@ -27,7 +27,7 @@ final class MapExt[S,T](peer:Map[S,T]) {
 		
 	/** inverse filterKeys */
 	def filterNotKeys(pred:Predicate[S]):Map[S,T]	=
-			peer filterKeys { it => !pred(it) } 
+			peer filterKeys { it => !pred(it) }
 		
 	def partitionKeys(pred:Predicate[S]):(Map[S,T],Map[S,T])	=
 			peer partition { case (k, _)	=> pred(k) }

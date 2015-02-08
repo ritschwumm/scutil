@@ -3,7 +3,7 @@ package scutil.lang
 import scala.annotation.tailrec
 
 object Lists {
-	def unfoldRight[S,T](seed:S, func:PFunction[S,(S,T)]):List[T]	= 
+	def unfoldRight[S,T](seed:S, func:PFunction[S,(S,T)]):List[T]	=
 			func(seed) match {
 				case Some((next,out))	=> out :: unfoldRight(next, func)
 				case None				=> Nil
@@ -17,7 +17,7 @@ object Lists {
 			}
 			
 	def unfoldLeft[S,T](seed:S, func:PFunction[S,(S,T)]) = {
-		@tailrec 
+		@tailrec
 		def recurse(seed:S, accu:List[T]):List[T] = func(seed) match {
 			case Some((next,out))	=> recurse(next, out :: accu)
 			case None				=> accu
@@ -27,7 +27,7 @@ object Lists {
 	
 	// == unfoldLeft(seed, func andThen { it => (it,it) })
 	def unfoldLeftSimple[S,T<:S](seed:S, func:PFunction[S,T]) = {
-		@tailrec 
+		@tailrec
 		def recurse(seed:S, accu:List[T]):List[T] = func(seed) match {
 			case Some(next)	=> recurse(next, next :: accu)
 			case None		=> accu

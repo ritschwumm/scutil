@@ -38,7 +38,7 @@ object HashSalt {
 }
 */
 
-/** 
+/**
 hashed and salted passwords:
 hashing hides the cleartext,
 salting makes dictionary attacks more expensive,
@@ -58,7 +58,7 @@ final class HashSalt(
 	def cook(raw:String):String	= {
 		val	salt		= new Array[Byte](saltSize) |>> synchronized { random.nextBytes }
 		val prepared	= prepare(raw, salt, roundCount)
-		roundCount				+ "$" + 
+		roundCount				+ "$" +
 		(Base64 encode salt)	+ "$" +
 		(Base64 encode prepared)
 	}
@@ -78,10 +78,10 @@ final class HashSalt(
 	}
 	
 	private def prepare(raw:String, salt:Array[Byte], rounds:Int):Array[Byte]	=
-			raw 										|> 
+			raw 										|>
 			(Normalizer normalize (_, normalizerForm)) 	|>
-			(_ getBytes encoding) 						|> 
-			(salt ++ _) 								|> 
+			(_ getBytes encoding) 						|>
+			(salt ++ _) 								|>
 			hash(rounds)
 	
 	private def hash(rounds:Int)(bytes:Array[Byte]):Array[Byte]	= {

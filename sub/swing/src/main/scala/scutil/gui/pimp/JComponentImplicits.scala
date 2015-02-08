@@ -15,7 +15,7 @@ trait JComponentImplicits {
 }
 	
 final class JComponentExt(peer:JComponent) {
-	def innerRectangle:Rectangle	= 
+	def innerRectangle:Rectangle	=
 			new Rectangle(peer.getSize()) inset peer.getInsets
 			
 	def displayInFrame(size:Dimension, onClose:Thunk[Boolean] = thunk{true}):JFrame = {

@@ -20,9 +20,9 @@ object DndFileExport {
 						provider(ev.getDragOrigin.toIntPoint)
 						.map 		{ new FileTransferable(_) }
 						.foreach	{ it =>
-							ev startDrag (DragSource.DefaultCopyDrop, it) 
+							ev startDrag (DragSource.DefaultCopyDrop, it)
 						}
-					} 
+					}
 				}
 				
 		val dragSource	= DragSource.getDefaultDragSource
@@ -30,8 +30,8 @@ object DndFileExport {
 		// NOTE allowing ACTION_COPY_OR_MOVE (at least on linux) leads to a MOVE with nautilus
 		val dragGestureRecognizer	=
 				dragSource createDefaultDragGestureRecognizer (
-					target, 
-					DnDConstants.ACTION_COPY, 
+					target,
+					DnDConstants.ACTION_COPY,
 					dragGestureListener
 				)
 		
@@ -58,25 +58,25 @@ object DndFileExport {
 			}
 			
 	private final class FileTransferable(files:Nes[File]) extends Transferable {
-		def isDataFlavorSupported(flavor:DataFlavor):Boolean	= 
+		def isDataFlavorSupported(flavor:DataFlavor):Boolean	=
 				getTransferDataFlavors contains flavor
 		
 		def getTransferDataFlavors:Array[DataFlavor] =
 				exportable.toArray
 		
-		def getTransferData(flavor:DataFlavor):AnyRef	= 
+		def getTransferData(flavor:DataFlavor):AnyRef	=
 				flavor match {
 					case DndFlavors.javaFileList	=>
 						// TODO this is the only one that actually can transfer multiple files
 						files.toVector.toJList
-					case DndFlavors.uriList		=> 
+					case DndFlavors.uriList		=>
 						// NOTE this results in file:/tmp/path instead of file:///tmp/path
 						files.head.toURI.toASCIIString + "\r\n"
 					case DndFlavors.url		=>
 						// NOTE does not work on windows
 						files.head.toURI.toURL
 					case DndFlavors.binary	=>
-						// NOTE doesn't give a file name 
+						// NOTE doesn't give a file name
 						// NOTE does not work on windows
 						new FileInputStream(files.head)
 					case x	=>

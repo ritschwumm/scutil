@@ -2,7 +2,7 @@ package scutil.search
 
 import scutil.implicits._
 
-/** 
+/**
 selects String who match a pattern with the following syntax:
 <br>
 <ul>syntax
@@ -18,7 +18,7 @@ object SearchParser {
 	def parse(pattern:String):SearchPattern	= {
 		val (neg, pos)	= pattern.trim splitAroundChar ' ' filter { _.nonEmpty } map parseHit partition { _._1 }
 		SearchPattern(
-			pos map { _._2 }, 
+			pos map { _._2 },
 			neg map { _._2 }
 		)
 	}

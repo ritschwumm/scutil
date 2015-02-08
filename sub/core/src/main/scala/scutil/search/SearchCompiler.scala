@@ -18,7 +18,7 @@ object SearchCompiler {
 	
 	private def token(token:SearchToken):Predicate[String]	= {
 		val pattern	= Pattern compile (
-				(token.start cata ("", "^")) + token.text.quoteRegex + (token.end cata ("", "$")), 
+				(token.start cata ("", "^")) + token.text.quoteRegex + (token.end cata ("", "$")),
 				token.caseInsensitive cata (0, Pattern.CASE_INSENSITIVE))
 		s:String	=>
 				(pattern matcher s).find

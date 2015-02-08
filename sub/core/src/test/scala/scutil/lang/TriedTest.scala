@@ -10,35 +10,35 @@ class TriedTest extends Specification {
 	"tried" should {
 		"collect sucess if there is an implicit default available" in {
 			val input:Tried[Char,Int]		= Win(1)
-			implicit 
+			implicit
 			val default:Tried[Char,Boolean]	= Fail('a')
 			input collect { case 1 => true } mustEqual Win(true)
 		}
 		
 		"collect failure if there is an implicit default available" in {
 			val input:Tried[Char,Int]		= Win(2)
-			implicit 
+			implicit
 			val default:Tried[Char,Boolean]	= Fail('a')
 			input collect { case 1 => true } mustEqual default
 		}
 		
 		"filter sucess if there is an implicit default available" in {
 			val input:Tried[Char,Int]	= Win(1)
-			implicit 
+			implicit
 			val default:Tried[Char,Int]	= Fail('a')
 			input filter { _ == 1 } mustEqual input
 		}
 		
 		"filter failure if there is an implicit default available" in {
 			val input:Tried[Char,Int]	= Win(1)
-			implicit 
+			implicit
 			val default:Tried[Char,Int]	= Fail('a')
 			input filter { _ == 2 } mustEqual default
 		}
 		
 		"work in for-syntax using withFilter success" in {
 			val input:Tried[Char,Int]	= Win(1)
-			implicit 
+			implicit
 			val default:Tried[Char,Int]	= Fail('a')
 			val a	=
 					for {
@@ -51,7 +51,7 @@ class TriedTest extends Specification {
 		
 		"work in for-syntax using withFilter fail" in {
 			val input:Tried[Char,Int]	= Win(1)
-			implicit 
+			implicit
 			val default:Tried[Char,Int]	= Fail('a')
 			val a	=
 					for {

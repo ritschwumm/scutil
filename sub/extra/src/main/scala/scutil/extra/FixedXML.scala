@@ -49,8 +49,8 @@ object FixedXML extends XMLLoader[Elem] {
 		doc.docElem
 	}
 	
-	def saveXML(file:File, node:Node) { 
-		file writeString (encoding, node.toString) 
+	def saveXML(file:File, node:Node) {
+		file writeString (encoding, node.toString)
 	}
 	*/
 	

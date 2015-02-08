@@ -11,7 +11,7 @@ trait InputStreamImplicits {
     implicit def toInputStreamExt(peer:InputStream)	= new InputStreamExt(peer)
 }
 
-/** utility methods for InputStream objects */ 
+/** utility methods for InputStream objects */
 final class InputStreamExt(peer:InputStream) {
 	val blockSize	= 16384
 	

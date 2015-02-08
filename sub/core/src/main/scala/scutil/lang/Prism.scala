@@ -1,13 +1,13 @@
 package scutil.lang
 
 object Prism {
-	def partial[S,T](writeFunc:PartialFunction[S,T], readFunc:T=>S):Prism[S,T] = 
+	def partial[S,T](writeFunc:PartialFunction[S,T], readFunc:T=>S):Prism[S,T] =
 			Prism(writeFunc.lift, readFunc)
 	
-	def total[S,T](writeFunc:S=>T, readFunc:T=>S):Prism[S,T] = 
+	def total[S,T](writeFunc:S=>T, readFunc:T=>S):Prism[S,T] =
 			Prism(writeFunc andThen Some.apply, readFunc)
 			
-	def identity[T]:Prism[T,T] = 
+	def identity[T]:Prism[T,T] =
 			total[T,T](Predef.identity[T], Predef.identity[T])
 		
 	def always[T]:Prism[Option[T],T]	=
@@ -26,7 +26,7 @@ final case class Prism[S,T](write:PFunction[S,T], read:T=>S) {
 	def apply(t:T):S			= read(t)
 	def unapply(s:S):Option[T]	= write(s)
 	
-	def orElse(that:Prism[S,T]):Prism[S,T]	= 
+	def orElse(that:Prism[S,T]):Prism[S,T]	=
 			Prism(
 				s	=> (this write s) orElse (that write s),
 				read
@@ -79,19 +79,19 @@ final case class Prism[S,T](write:PFunction[S,T], read:T=>S) {
 			)
 					
 	def toPLens:PLens[S,T]	=
-			PLens { 
-				this write _ map (Store(_, this.read)) 
+			PLens {
+				this write _ map (Store(_, this.read))
 			}
 		
 	def writeExtractor:Extractor[S,T]	=
 			Extractor(write)
 			
-	def toBijection(func:S=>T):Bijection[S,T]	= 
+	def toBijection(func:S=>T):Bijection[S,T]	=
 			Bijection(
 				s => write(s) getOrElse func(s),
 				read
 			)
 					
-	def toBijectionWith(default: =>T):Bijection[S,T]	= 
+	def toBijectionWith(default: =>T):Bijection[S,T]	=
 			toBijection(constant(default))
 }

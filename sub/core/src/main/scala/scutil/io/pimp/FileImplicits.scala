@@ -16,7 +16,7 @@ trait FileImplicits {
     implicit def toFileExt(peer:File)	= new FileExt(peer)
 }
 
-/** utility methods for java File objects */ 
+/** utility methods for java File objects */
 final class FileExt(peer:File) {
 	private implicit def mkFileFilter(predicate:File=>Boolean) =
 			new PredicateFileFilter(predicate)
@@ -25,13 +25,13 @@ final class FileExt(peer:File) {
 	//## file and directory
 	
 	/** time of last modification as an MilliInstant, returns MilliInstant.zero for non-existing files */
-	def lastModifiedMilliInstant:MilliInstant	= 
+	def lastModifiedMilliInstant:MilliInstant	=
 			MilliInstant(peer.lastModified)
 		
 	def updateLastModifiedMilliInstant(it:MilliInstant):Boolean	=
 			peer setLastModified it.millis
 	
-	/** whether the peer is newer than another file. if the other file does not exist it counts as newer */ 
+	/** whether the peer is newer than another file. if the other file does not exist it counts as newer */
 	def newerThan(that:File):Boolean	=
 			peer.exists && (!that.exists || peer.lastModified > that.lastModified)
 	
@@ -42,11 +42,11 @@ final class FileExt(peer:File) {
 	def /+(path:ISeq[String]):File	= (path foldLeft peer) { new File(_,_) }
 	
 	/** get the parent File the scala way */
-	def parentOption:Option[File]	= 
+	def parentOption:Option[File]	=
 			Option(peer.getParentFile)
 			
 	/** get all parent Files starting with the immediate parent and ending with the directory root */
-	def parentChain:List[File]	= 
+	def parentChain:List[File]	=
 			Lists unfoldRightSimple (
 					peer,
 					(it:File) => Option(it.getParentFile))
@@ -129,13 +129,13 @@ final class FileExt(peer:File) {
 	def readString(charset:Charset):String					= withReader(charset) { _ readFully () }
 	def writeString(charset:Charset, string:String):Unit	= withWriter(charset) { _ write string }
 	
-	// TODO should honor a single line separator 
-	def readLines(charset:Charset):ISeq[String]	= 
+	// TODO should honor a single line separator
+	def readLines(charset:Charset):ISeq[String]	=
 			withReader(charset) { _ readLines () }
 	// TODO should not use the platform line separator
-	def writeLines(charset:Charset, lines:ISeq[String]):Unit	= 
-			withWriter(charset) { writer => 
-				lines foreach { line => 
+	def writeLines(charset:Charset, lines:ISeq[String]):Unit	=
+			withWriter(charset) { writer =>
+				lines foreach { line =>
 					writer write line
 					writer write SystemProperties.line.separator
 				}

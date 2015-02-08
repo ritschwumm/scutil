@@ -7,12 +7,12 @@ import scutil.lang._
 
 object GlobalAWTEvent {
 	def connect(mask:Long)(handler:AWTEvent=>Unit):Disposable = {
-		val listener	= 
+		val listener	=
 				new AWTEventListener {
 					def eventDispatched(ev:AWTEvent):Unit	= handler(ev)
 				}
 		val toolkit	= Toolkit.getDefaultToolkit
-		toolkit addAWTEventListener (listener, mask) 
+		toolkit addAWTEventListener (listener, mask)
 		disposable {
 			toolkit removeAWTEventListener listener
 		}

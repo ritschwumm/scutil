@@ -3,8 +3,8 @@ package scutil.lang
 import scutil.lang.pimp._
 
 object implicits extends implicits
-trait implicits 
-		extends	AnyImplicits 
+trait implicits
+		extends	AnyImplicits
 		with	AnyRefImplicits
 		with	BooleanImplicits
 		with	ClassImplicits

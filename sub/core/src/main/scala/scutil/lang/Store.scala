@@ -1,7 +1,7 @@
 package scutil.lang
 
 object Store {
-	def identity[T](t:T):Store[T,T]	= 
+	def identity[T](t:T):Store[T,T]	=
 			Store(t, t => t)
 		
 	def trivial[T](t:T):Store[T,Unit]	=

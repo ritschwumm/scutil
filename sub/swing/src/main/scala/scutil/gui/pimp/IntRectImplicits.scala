@@ -12,6 +12,6 @@ trait IntRectImplicits {
 }
 	
 final class IntRectExt(peer:IntRect) {
-	def toAwtRectangle:Rectangle	= 
+	def toAwtRectangle:Rectangle	=
 			geomConversion IntRect_Rectangle peer
 }

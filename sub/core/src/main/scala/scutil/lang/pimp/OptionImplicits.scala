@@ -13,7 +13,7 @@ trait OptionImplicits {
 final class OptionExt[T](peer:Option[T]) {
 	def getOrError(s:String)	= peer getOrElse (sys error s)
 		
-	def cata[X](none: => X, some:T => X):X = 
+	def cata[X](none: => X, some:T => X):X =
 		peer match {
 			case Some(x)	=> some(x)
 			case None		=> none
@@ -28,7 +28,7 @@ final class OptionExt[T](peer:Option[T]) {
 			for { f	<- func; s	<- peer } yield f(s)
 	
 	/*
-	// the flatten method defined on Iterable is useless 
+	// the flatten method defined on Iterable is useless
 	def flatten[U](implicit witness:PFunction[T,U]):Option[U] =
 			peer flatMap witness
 	*/
@@ -74,23 +74,27 @@ final class OptionExt[T](peer:Option[T]) {
 				case None			=> (None,		None)
 			}
 	
-	/** handy replacement for opt.toISeq.flatten abusing CanBuildFrom as a Zero typeclass */
-	def flattenMany[U,CC[_]](implicit ev:T=>CC[U], cbf:CanBuildFrom[CC[U],U,CC[U]]):CC[U]	=
-			peer map ev match {
+	/** handy replacement for opt.toISeq flatMap func abusing CanBuildFrom as a Zero typeclass */
+	def flatMapMany[U,CC[_]](func:T=>CC[U])(implicit cbf:CanBuildFrom[CC[U],U,CC[U]]):CC[U]	=
+			peer map func match {
 				case Some(cc)	=> cc
 				case None		=> cbf().result
 			}
+			
+	/** handy replacement for opt.toISeq.flatten abusing CanBuildFrom as a Zero typeclass */
+	def flattenMany[U,CC[_]](implicit ev:T=>CC[U], cbf:CanBuildFrom[CC[U],U,CC[U]]):CC[U]	=
+			flatMapMany(ev)
 			
 	//------------------------------------------------------------------------------
 	
 	def someEffect(effect:T=>Unit):Option[T] = {
 		if (peer.nonEmpty) effect(peer.get)
-		peer 
+		peer
 	}
 	
 	def noneEffect(effect: =>Unit):Option[T] = {
 		if (peer.isEmpty)  effect
-		peer 
+		peer
 	}
 	
 	//------------------------------------------------------------------------------
@@ -154,7 +158,7 @@ final class OptionExt[T](peer:Option[T]) {
 	def toISeq:ISeq[T]	=
 			toVector
 			
-	def toVector:Vector[T]	= 
+	def toVector:Vector[T]	=
 			peer match {
 				case Some(x)	=> Vector(x)
 				case None		=> Vector.empty

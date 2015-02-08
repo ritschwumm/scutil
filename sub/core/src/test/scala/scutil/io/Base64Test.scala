@@ -53,7 +53,7 @@ class Base64Test extends Specification {
 			val bytes	= Array[Byte](3,4,5)
 			val round	= Base64 decode (Base64 encode bytes)
 			round.get sameElements bytes must beTrue
-		}  
+		}
 		
 		"handle roundtriping 4 bytes at all" in {
 			val bytes	= Array[Byte](6,7,8,9)
@@ -64,7 +64,7 @@ class Base64Test extends Specification {
 			val bytes	= Array[Byte](6,7,8,9)
 			val round	= Base64 decode (Base64 encode bytes)
 			round.get sameElements bytes must beTrue
-		}    
+		}
 		
 		"handle roundtriping every possible byte at all" in {
 			val bytes	= possible
@@ -75,6 +75,6 @@ class Base64Test extends Specification {
 			val bytes	= possible
 			val round	= Base64 decode (Base64 encode bytes)
 			round.get sameElements bytes must beTrue
-		}    
+		}
 	}
 }

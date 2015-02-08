@@ -5,7 +5,7 @@ import scutil.collection.implicits._
 
 object PLenses {
 	def opt[S,T](total:TLens[S,Option[T]]):PLens[S,T]	=
-			PLens { s => 
+			PLens { s =>
 				total get s map { t =>
 					Store[S,T](
 						t,
@@ -17,9 +17,9 @@ object PLenses {
 	//------------------------------------------------------------------------------
 	
 	def iseq[T](i:Int):PLens[ISeq[T],T]	=
-			PLens { s => 
+			PLens { s =>
 				s	containsIndex
-				i	guard 
+				i	guard
 				Store[ISeq[T],T](
 					s(i),
 					v => s updated (i, v)
@@ -27,9 +27,9 @@ object PLenses {
 			}
 			
 	def map[K,V](k:K):PLens[Map[K,V],V]	=
-			PLens { s => 
+			PLens { s =>
 				s	contains
-				k	guard 
+				k	guard
 				Store[Map[K,V],V](
 					s(k),
 					v => s updated (k, v)
@@ -41,7 +41,7 @@ object PLenses {
 	def iseqWhere[T](pred:Predicate[T]):PLens[ISeq[T],T]	=
 			PLens { items =>
 				items indexWhereOption pred flatMap {
-					PLenses iseq _ on items 
+					PLenses iseq _ on items
 				}
 			}
 				

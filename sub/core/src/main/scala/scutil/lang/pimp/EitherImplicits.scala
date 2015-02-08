@@ -25,7 +25,7 @@ final class EitherExt[S,T](peer:Either[S,T]) {
 				case Right(x)	=> Right(rightFunc(x))
 			}
 	
-	def toTry(implicit ev:S=>Throwable):Try[T]	= 
+	def toTry(implicit ev:S=>Throwable):Try[T]	=
 			peer match {
 				case Left(it)	=> Failure(it)
 				case Right(it)	=> Success(it)

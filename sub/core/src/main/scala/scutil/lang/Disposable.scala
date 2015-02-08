@@ -9,7 +9,7 @@ object Disposable {
 	def all(subs:ISeq[Disposable]):Disposable	=
 			disposable {
 				subs foreach {
-					_.dispose() 
+					_.dispose()
 				}
 			}
 			

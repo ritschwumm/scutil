@@ -36,7 +36,7 @@ object URIComponent {
 			if (nibble < 10)	(nibble + '0'		).toChar
 			else				(nibble + 'A' - 10	).toChar
 	
-	@inline 
+	@inline
 	private def safe(byte:Int):Boolean =
 			byte >= 'a' && byte <= 'z'	||
 			byte >= 'A' && byte <= 'Z'	||

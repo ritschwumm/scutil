@@ -19,7 +19,7 @@ object TLenses {
 				(c, v)	=> if (v) c + t else c - t
 			)
 						
-	def map[K,V](k:K):TLens[Map[K,V],Option[V]]	= 
+	def map[K,V](k:K):TLens[Map[K,V],Option[V]]	=
 			TLens create (
 				_ get k,
 				(c, v)	=> v match {

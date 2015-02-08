@@ -19,6 +19,6 @@ final class DateExt(peer:Date) {
 		df format peer
 	}
 	
-	def toMilliInstant:MilliInstant	= 
+	def toMilliInstant:MilliInstant	=
 			MilliInstant fromDate peer
 }

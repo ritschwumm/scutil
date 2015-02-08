@@ -5,13 +5,13 @@ import scutil.lang._
 object Orderings {
 	/**
 	treats everything as equal,
-	forms a Monoid with OrderingExt#orElse 
+	forms a Monoid with OrderingExt#orElse
 	*/
 	def trivial[T]:Ordering[T]	=
 			new Ordering[T] {
 				def compare(x:T, y:T):Int	= 0
 			}
-	/** 
+	/**
 	useful with case classes where unapply always returns a Some,
 	fails with an Exception if None is returned.
 	*/

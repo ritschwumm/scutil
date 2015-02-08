@@ -16,7 +16,7 @@ final class StrokeExt(peer:Stroke) {
 			this andThen that
 		
 	/** symbolic alias for compose */
-	def <=<(that:Stroke):Stroke	= 
+	def <=<(that:Stroke):Stroke	=
 			this compose that
 		
 	def compose(that:Stroke):Stroke	= new CompositeStroke(peer, that)

@@ -38,21 +38,21 @@ private final class BijectorImpl(val c:Context) {
 					// List(Int)	List((Int, Short))
 					
 					// get type parameters out of the Option
-					unapplyOuts		<- 
-							unapplyReturn 
+					unapplyOuts		<-
+							unapplyReturn
 							.matchOption	{ case t@TypeRef(_, _, args) if t <:< typeOf[Option[Any]]	=> args }	
 							.toWin			(s"expected unapply TypeRef")
 							
 					// Int			(Int,Short)
 					
 					// Option has only one type parameter, which may be a product
-					unapplySingle	<- 
+					unapplySingle	<-
 							unapplyOuts
-							.singleOption 
+							.singleOption
 							.toWin	(s"expected unapply Option to contain a single value")
 							
 					unapplySignature	<-
-							unapplySingle 
+							unapplySingle
 							.matchOption	{ case t @ TypeRef(_, _, _)	=> t }
 							.toWin			(s"unexpected unapply return ${unapplySingle}")
 							
@@ -66,7 +66,7 @@ private final class BijectorImpl(val c:Context) {
 								params	<- method.paramLists.singleOption
 							}
 							yield (
-								method, 
+								method,
 								params map { _.asTerm.typeSignature }
 							)
 							
@@ -118,7 +118,7 @@ private final class BijectorImpl(val c:Context) {
 			a.size == b.size
 			/*
 			// TODO use this again
-			&& ((a zip b) forall { case (a, b) => a =:= b }) 
+			&& ((a zip b) forall { case (a, b) => a =:= b })
 			*/
 			
 	private def getDeclaration(typ:Type, name:String):Tried[String,Symbol]	=

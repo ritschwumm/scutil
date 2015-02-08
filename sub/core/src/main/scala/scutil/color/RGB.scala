@@ -30,12 +30,12 @@ object RGB {
 
 /** value range is 0..1 */
 final case class RGB(r:Float, g:Float, b:Float) {
-	def diff(that:RGB):Float	= 
+	def diff(that:RGB):Float	=
 			diff3(that) / 3f
 			
-	private[color] def diff3(that:RGB):Float	= 
+	private[color] def diff3(that:RGB):Float	=
 			abs(this.r - that.r) +
-			abs(this.g - that.g) + 
+			abs(this.g - that.g) +
 			abs(this.b - that.b)
 			
 	def withAlpha(alpha:Alpha):RGBA	=
@@ -60,13 +60,13 @@ final case class RGB(r:Float, g:Float, b:Float) {
 				else if (g == cmax)	2f + rc - bc
 				else 				4f + gc - rc
 		val	h	= hh / 6f
-		val	H	= 
+		val	H	=
 				if (h < 0)	h + 1f
 				else 		h
 		HSB(H, S, B)
 	}
 	
-	def toIntRGB:Int	= 
+	def toIntRGB:Int	=
 			(((r * 255).toInt) << 16) |
 			(((g * 255).toInt) <<  8) |
 			(((b * 255).toInt) <<  0)

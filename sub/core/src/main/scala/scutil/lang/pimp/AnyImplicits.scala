@@ -41,17 +41,17 @@ final class AnyExt[T](peer:T) {
 	def use[U](func:T=>U)(implicit ev:T=>Disposable):U = {
 		var thrown	= false
 		try {
-			func(peer) 
+			func(peer)
 		}
-		catch { case e:Throwable	=> 
+		catch { case e:Throwable	=>
 			thrown	= true
 			throw e
 		}
 		finally {
-			try { 
+			try {
 				ev(peer).dispose()
 			}
-			catch { case e:Throwable	=> 
+			catch { case e:Throwable	=>
 				if (!thrown)	throw e
 				// NOTE the exception from close has been swallowed
 				// use Throwable#addSuppressed in java 7
@@ -61,7 +61,7 @@ final class AnyExt[T](peer:T) {
 	
 	//------------------------------------------------------------------------------
 	
-	/** match lifted to an Option */ 
+	/** match lifted to an Option */
 	def matchOption[U](pf:PartialFunction[T,U]):Option[U] =
 			if (pf isDefinedAt peer)	Some(pf(peer))
 			else						None
@@ -89,15 +89,15 @@ final class AnyExt[T](peer:T) {
 	//------------------------------------------------------------------------------
 	
 	/** Some if the predicate matches, else None */
-	def guardBy(predicate:T=>Boolean):Option[T]	= 
+	def guardBy(predicate:T=>Boolean):Option[T]	=
 			if (predicate(peer)) Some(peer) else None
 			
 	/** None if the predicate matches, else Some */
-	def preventBy(predicate:T=>Boolean):Option[T]	= 
+	def preventBy(predicate:T=>Boolean):Option[T]	=
 			if (predicate(peer)) None else Some(peer)
 			
 	/** Right if the predicate matches, else Left */
-	def eitherBy(predicate:T=>Boolean):Either[T,T]	= 
+	def eitherBy(predicate:T=>Boolean):Either[T,T]	=
 			if (predicate(peer)) Right(peer) else Left(peer)
 			
 	/** Right if Some else original value in Left */
@@ -109,7 +109,7 @@ final class AnyExt[T](peer:T) {
 			func(peer) toLeft peer	
 		
 	/** Win if the predicate matches, else Fail */
-	def triedBy(predicate:T=>Boolean):Tried[T,T]	= 
+	def triedBy(predicate:T=>Boolean):Tried[T,T]	=
 			if (predicate(peer)) Win(peer) else Fail(peer)
 	
 	/** Win if Some else original value in Fail */
@@ -149,7 +149,7 @@ final class AnyExt[T](peer:T) {
 	def secondWith[U](that:U):(U,T)	=
 			(that, peer)
 	
-	/** pair with itself */ 
+	/** pair with itself */
 	def duplicate:(T,T)	= (peer, peer)
 	
 	//------------------------------------------------------------------------------
@@ -183,7 +183,7 @@ final class AnyExt[T](peer:T) {
 	/** apply until the value becomes None */
 	def rewritePartial(func:PartialFunction[T,T]):T	= {
 		@tailrec
-		def loop(it:T):T	= 
+		def loop(it:T):T	=
 				if (func isDefinedAt it)	loop(func(it))
 				else						it
 		loop(peer)

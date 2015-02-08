@@ -28,13 +28,13 @@ final class URLExt(peer:URL) {
 	def openInputStream():Tried[IOException,InputStream]	=
 			Catch.byType[IOException] in peer.openStream()
 		
-	/** 
+	/**
 	converts a "file://..." URL to a File without being too critical
 	@see http://www2.java.net/blog/2007/04/25/how-convert-javaneturl-javaiofile
 	*/
 	def toFile:Option[File]	=
 			if (peer.getProtocol == "file")	Some(
-					try { new File(peer.toURI) } 
+					try { new File(peer.toURI) }
 					catch { case _:Exception => new File(peer.getPath) })
 			else None
 }

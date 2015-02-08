@@ -1,7 +1,7 @@
 package scutil.collection.pimp
 
 import java.lang.{
-	Iterable	=> JIterable 
+	Iterable	=> JIterable
 }
 import java.util.{
 	Iterator	=> JIterator,

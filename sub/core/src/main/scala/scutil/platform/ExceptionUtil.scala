@@ -13,7 +13,7 @@ object ExceptionUtil {
 	def logAWTExceptions(onError:(Thread,Throwable)=>Unit) {
 		java6AwtHandler	= onError
 		System setProperty (
-				"sun.awt.exception.handler", 
+				"sun.awt.exception.handler",
 				classOf[Java6AWTExceptionHandler].getName)
 	}
 	
@@ -22,7 +22,7 @@ object ExceptionUtil {
 }
 
 private final class LoggingUncaughtExceptionHandler(onError:(Thread,Throwable)=>Unit) extends Thread.UncaughtExceptionHandler {
-	def uncaughtException(thread:Thread, throwable:Throwable) { 
+	def uncaughtException(thread:Thread, throwable:Throwable) {
 		onError(thread, throwable)
 	}
 }
@@ -35,7 +35,7 @@ private final class Java6AWTExceptionHandler {
 				ExceptionUtil.java6AwtHandler apply (Thread.currentThread, throwable)
 			}
 		}
-		catch {	case e:Throwable	=> 
+		catch {	case e:Throwable	=>
 			// NOTE a Throwable escaping here would cause an infinite loop
 			e.printStackTrace()
 		}

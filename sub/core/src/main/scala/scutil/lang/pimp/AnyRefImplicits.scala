@@ -20,7 +20,7 @@ final class AnyRefExt[T <: AnyRef](peer:T) {
 			else				replacement
 	
 	/** fail with an Exception if null */
-	def nullError(s: =>String):T	= 
-			if (peer != null)	peer 
+	def nullError(s: =>String):T	=
+			if (peer != null)	peer
 			else				sys error s
 }

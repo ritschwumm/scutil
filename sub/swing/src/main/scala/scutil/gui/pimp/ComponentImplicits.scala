@@ -15,7 +15,7 @@ trait ComponentImplicits {
 	
 final class ComponentExt(peer:Component) {
 	/** the nearest Window in the ancestor chain, including this component itself */
-	def windowSelfOrAncestor:Option[Window]	= 
+	def windowSelfOrAncestor:Option[Window]	=
 			windowSelfOrAncestor(peer)
 	
 	/** the nearest Window in the ancestor chain, excluding this component itself */
@@ -34,7 +34,7 @@ final class ComponentExt(peer:Component) {
 			Option(peer.getParent)
 		
 	/** get all parent Containers starting with the immediate parent and ending with the component root */
-	def parentChain:List[Container]	= 
+	def parentChain:List[Container]	=
 			Lists unfoldRightSimple (
 					peer,
 					(it:Component) => Option(it.getParent))
@@ -75,16 +75,16 @@ final class ComponentExt(peer:Component) {
 	/*
 	def componentsUnder(parent:Component, pos:Point):List[Component] =
 			if (parent.isVisible && (parent contains (pos.x,pos.y)))
-				parent :: 
+				parent ::
 				(parent match {
 					case cont:Container	=>
-						cont.getComponents 
-						.filter { _ != null } 
+						cont.getComponents
+						.filter { _ != null }
 						.toList
 						.flatMap { it =>
 							val	loc	= it.getLocation
 							componentsUnder(it, new Point(
-									pos.x - loc.x, 
+									pos.x - loc.x,
 									pos.y - loc.y))
 						}
 					case comp:Component	=>

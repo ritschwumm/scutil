@@ -9,7 +9,7 @@ class URIComponentTest extends Specification {
 			val	enc	= URIComponent encode str
 			val	dec	= URIComponent decode enc
 			dec mustEqual str
-		}   
+		}
 		"encode plus as %2B" in {
 			URIComponent encode "+" mustEqual "%2B"
 		}

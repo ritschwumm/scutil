@@ -194,7 +194,7 @@ object Boilerplate {
 					
 			val leftUncurry	=
 					methodHeader("luncurry", tpNameForward)			+ "\n" +
-					"(in:" + leftCurriedType(tpNameForward) + "):"	+ "\n" + 
+					"(in:" + leftCurriedType(tpNameForward) + "):"	+ "\n" +
 					tupleType(tpNameForward)						+ "\n" +
 					" = "											+ "\n" +
 					{
@@ -235,19 +235,19 @@ object Boilerplate {
 					
 			val leftFlip	=
 					methodHeader("lflip", tpNameForward)			+ "\n" +
-					"(in:" + leftCurriedType(tpNameForward) + "):"	+ "\n" + 
+					"(in:" + leftCurriedType(tpNameForward) + "):"	+ "\n" +
 					rightCurriedType(tpNameForward)					+ "\n" +
 					" = " 											+ "\n" +
-					methodName("rcurry", tpNameForward) 	+ "(" + 
-					methodName("luncurry", tpNameForward)	+ "(" + 
+					methodName("rcurry", tpNameForward) 	+ "(" +
+					methodName("luncurry", tpNameForward)	+ "(" +
 					"in" + "))"
 			val rightFlip	=
 					methodHeader("rflip", tpNameForward)			+ "\n" +
-					"(in:" + rightCurriedType(tpNameForward) + "):" + "\n" + 
+					"(in:" + rightCurriedType(tpNameForward) + "):" + "\n" +
 					leftCurriedType(tpNameForward)					+ "\n" +
 					" = "											+ "\n" +
-					methodName("lcurry", tpNameForward) 	+ "(" + 
-					methodName("runcurry", tpNameForward)	+ "(" + 
+					methodName("lcurry", tpNameForward) 	+ "(" +
+					methodName("runcurry", tpNameForward)	+ "(" +
 					"in" + "))"
 					
 			val reverse	=

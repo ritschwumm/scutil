@@ -33,7 +33,7 @@ trait DefaultLogHandler extends LogHandler {
 		val headerItems	=
 				Vector(
 					formatLevel(event.level),
-					formatInstant(event.timestamp), 
+					formatInstant(event.timestamp),
 					formatLocation(event.location)
 				)
 		val messageItems	= messages map formatMessage

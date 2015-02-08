@@ -56,15 +56,15 @@ final class ISeqExt[T](peer:ISeq[T]) {
 			if (containsIndex(fromIndex) && containsGap(toGap)) {
 				if (fromIndex < toGap-1) {
 					Some(
-						peer 
-						.patch(toGap,		ISeq(peer(fromIndex)),	0) 
+						peer
+						.patch(toGap,		ISeq(peer(fromIndex)),	0)
 						.patch(fromIndex,	ISeq.empty,			1)
 					)
 				}
 				else if (fromIndex > toGap) {
 					Some(
-						peer 
-						.patch(fromIndex,	ISeq.empty,			1) 
+						peer
+						.patch(fromIndex,	ISeq.empty,			1)
 						.patch(toGap,		ISeq(peer(fromIndex)),	0)
 					)
 				}
@@ -82,13 +82,13 @@ final class ISeqExt[T](peer:ISeq[T]) {
 					if (fromIndex < toGap) {
 						// move right
 						(peer slice (0,						fromIndex))				++
-						(peer slice (fromIndex	+ count,	toGap))				++
+						(peer slice (fromIndex	+ count,	toGap))					++
 						(peer slice (fromIndex,				fromIndex	+ count))	++
 						(peer slice (toGap,					peer.size))
 					}
 					else if (fromIndex > toGap) {
 						// move left
-						(peer slice (0,						toGap))			++
+						(peer slice (0,						toGap))				++
 						(peer slice (fromIndex,				fromIndex + count))	++
 						(peer slice (toGap,					fromIndex))			++
 						(peer slice (fromIndex	+ count,	peer.size))
@@ -173,8 +173,8 @@ final class ISeqExt[T](peer:ISeq[T]) {
 			if (index >= 0 && index < peer.size)	Some(peer updated (index, func(peer(index))))
 			else									None
 
-	/** distinct with a custom equality check */ 
-	def distinctWith(same:(T,T)=>Boolean):ISeq[T] = 
+	/** distinct with a custom equality check */
+	def distinctWith(same:(T,T)=>Boolean):ISeq[T] =
 			((peer foldLeft ISeq.empty[T]) { (retained:ISeq[T], candidate:T) =>
 				retained find { same(_,candidate) } match {
 					case Some(_)	=> retained
@@ -182,12 +182,12 @@ final class ISeqExt[T](peer:ISeq[T]) {
 				}
 			}).reverse
 	
-	/** distinct on a single property */ 
-	def distinctBy[U](extract:T=>U):ISeq[T] = 
+	/** distinct on a single property */
+	def distinctBy[U](extract:T=>U):ISeq[T] =
 			distinctWith { extract(_) == extract(_) }
 	
 	/** pairwise neighbors */
-	def zipTail:ISeq[(T,T)]	= 
+	def zipTail:ISeq[(T,T)]	=
 			if (peer.nonEmpty)	peer zip peer.tail
 			else				Vector.empty
 	
@@ -204,7 +204,7 @@ final class ISeqExt[T](peer:ISeq[T]) {
 	/** triple every item with its previous and next item */
 	def adjacents:ISeq[(Option[T],T,Option[T])]	= {
 		val somes	= peer map Some.apply
-		val prevs	= None +: (somes dropRight 1) 
+		val prevs	= None +: (somes dropRight 1)
 		val nexts	= (somes drop 1) :+ None
 		prevs zip peer zip nexts map Tuples.runcurry3
 	}
@@ -226,7 +226,7 @@ final class ISeqExt[T](peer:ISeq[T]) {
 	def splitWhere(separator:Predicate[T]):ISeq[Either[T,ISeq[T]]] =
 			if (peer.nonEmpty) {
 				val indices = peer.zipWithIndex collect { case (t,i) if (separator(t)) => i }
-				(-1 +: indices) zip (indices :+ peer.size) flatMap { case (a,b) => 
+				(-1 +: indices) zip (indices :+ peer.size) flatMap { case (a,b) =>
 					Vector(Right(peer slice (a+1,b))) ++
 					((peer lift b) map Left.apply)
 				}

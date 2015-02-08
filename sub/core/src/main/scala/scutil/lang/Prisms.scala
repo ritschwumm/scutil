@@ -16,7 +16,7 @@ object Prisms {
 					case h :: t		=> Some((h, t))
 					case Nil		=> None
 				},
-				ht => ht._1 :: ht._2 
+				ht => ht._1 :: ht._2
 			)
 	
 	def listNil[T]:Prism[List[T],Unit]	=

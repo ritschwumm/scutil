@@ -136,7 +136,7 @@ final case class Human(table:Nes[HumanUnit]) {
 	
 	private def renderRaw(table:Nes[HumanUnit], decimalPlaces:Int, value:BigDecimal):String	=
 			table.tailNes match {
-				case None	=> 
+				case None	=>
 					s"%.${decimalPlaces}f${table.head.short}" formatLocal (Locale.US, value / table.head.divisor)
 				case Some(tail)	=>
 					val (div, mod)	= value /% table.head.divisor

@@ -26,7 +26,7 @@ object MachineId {
 				}
 				yield byte
 				
-		val ifaceNames:ISeq[Byte]	= 
+		val ifaceNames:ISeq[Byte]	=
 				for {
 					iface	<- ifaces
 					byte	<- iface.getDisplayName getBytes "utf-8"

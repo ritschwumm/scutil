@@ -33,7 +33,7 @@ final case class IntRect(x:IntSpan, y:IntSpan) {
 	def unmove(offset:IntPoint):IntRect	= IntRect(x unmove	offset.x,	y unmove	offset.y)
 	def normalize:IntRect				= IntRect(x.normalize,			y.normalize)
 
-	def restrictTo(that:IntRect):IntRect	= 
+	def restrictTo(that:IntRect):IntRect	=
 			IntRect(
 				this.x restrictTo that.x,
 				this.y restrictTo that.y

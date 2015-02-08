@@ -17,7 +17,7 @@ final class ListExt[T](peer:List[T]) {
 			
 	/**
 	calculate common prefix and differing tails for two lists
-	usage example: 
+	usage example:
 		List(1,2,3,4) unprefix List(1,2,4,5)
 		==> Triple(List(1,2), List(3,4), List(4,5))
 	*/

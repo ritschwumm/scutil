@@ -9,7 +9,7 @@ import scutil.time._
 final class Worker(name:String, delay:MilliDuration, task:Task, error:Effect[Exception] = _ => ()) extends Disposable {
 	private val shortly	= 50.millis
 	
-	@volatile 
+	@volatile
 	private var state:WorkerState					= WorkerWaiting
 	private val queue:WorkerQueue[WorkerCommand]	= new WorkerQueue[WorkerCommand]
 			

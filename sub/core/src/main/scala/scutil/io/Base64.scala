@@ -3,10 +3,10 @@ package scutil.io
 import scutil.lang._
 import scutil.text.pimp.StringImplicits._
 
-/** 
+/**
 encodes and decodes byte arrays into strings using the base64 encoding method.
 @see RFC4648
-@see  javax.xml.bind.DatatypeConverter 
+@see  javax.xml.bind.DatatypeConverter
 */
 object Base64 {
 	private val whitespaceRE	= """\s+"""
@@ -14,7 +14,7 @@ object Base64 {
 	private val padding:Char	= '='
 	private val validPaddingRE	= "[^"+padding.toString.quoteCharacterClass+"]+" + padding.toString.quoteRegex+"{0,2}"
 	
-	// TODO allow alternate alphabet ending in "-_" 
+	// TODO allow alternate alphabet ending in "-_"
 	private val alphabet:Array[Char]	= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray
 	
 	private val invalidFlag	= -1.toByte
@@ -34,7 +34,7 @@ object Base64 {
 	private def validInput(s:String):Boolean	=
 			(s.length % 4 == 0)				&&
 			(s forall alphabetOrPadding)	&&
-			(s matches validPaddingRE) 
+			(s matches validPaddingRE)
 		
 	private val emptyOutput	= Array.empty[Byte]
 	
@@ -80,7 +80,7 @@ object Base64 {
 		val	input		= cleanText.toCharArray
 		val	inputSize	= input.length
 		val	outputSize	=
-				((inputSize + 3 ) / 4 ) * 3 - 
+				((inputSize + 3 ) / 4 ) * 3 -
 				(if (input(inputSize-1) == padding) 1 else 0)	-
 				(if (input(inputSize-2) == padding) 1 else 0)
 		val	output		= new Array[Byte](outputSize)

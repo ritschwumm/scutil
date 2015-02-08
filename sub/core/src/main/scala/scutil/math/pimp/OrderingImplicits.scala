@@ -16,7 +16,7 @@ final class OrderingExt[T](peer:Ordering[T]) {
 				}
 			}
 			
-	/** 
+	/**
 	alternative to the implicit (Ordering[T],Ordering[T]) => Ordering[T] conversion in Ordering.Implicits,
 	forms a Monoid with Orderings#trivial
 	*/
@@ -25,6 +25,6 @@ final class OrderingExt[T](peer:Ordering[T]) {
 				def compare(x:U, y:U):Int	= {
 					val	high	= peer compare (x,y)
 					if (high != 0) high else that compare (x,y)
-				} 
+				}
 			}
 }

@@ -40,15 +40,15 @@ class HumanTest extends Specification {
 		// val dms	= Human render (Human.table.degree, decimalPlaces=3)
 		
 		"properly format DMS" in {
-			Human roundedDms 360 mustEqual "360°" 
+			Human roundedDms 360 mustEqual "360°"
 		}
 		
 		"properly format DMS" in {
-			Human roundedDms 10.5 mustEqual "10° 29' 60.000''" 
+			Human roundedDms 10.5 mustEqual "10° 29' 60.000''"
 		}
 		
 		"properly format DMS" in {
-			Human roundedDms 48.125268 mustEqual "48° 7' 30.965''" 
+			Human roundedDms 48.125268 mustEqual "48° 7' 30.965''"
 		}
 	}
 }

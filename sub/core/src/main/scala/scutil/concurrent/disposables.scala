@@ -5,7 +5,7 @@ import java.util.TimerTask
 
 import scutil.lang._
 
-object disposables extends disposables 
+object disposables extends disposables
 trait disposables {
 	implicit def DisposableForLock	(peer:Lock)			= Disposable(peer.unlock)
 	implicit def DisposableTimerTask(peer:TimerTask)	= Disposable(peer.cancel)

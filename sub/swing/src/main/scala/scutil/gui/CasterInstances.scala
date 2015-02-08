@@ -392,7 +392,7 @@ object CasterInstances {
 		def addTableColumnModelListener(listener:TableColumnModelListener):Unit
 		def removeTableColumnModelListener(listener:TableColumnModelListener):Unit
 	}
-	 
+	
 	implicit def generifyTableColumnModelCaster(caster:TableColumnModelCaster):TableColumnModelCasterExt	= new TableColumnModelCasterExt(caster)
 	// NOTE a generic mk*Listener does not work because we have multiple event types here
 	final class TableColumnModelCasterExt(caster:TableColumnModelCaster) extends Caster(caster.addTableColumnModelListener, caster.removeTableColumnModelListener, sorryNotImplemented[TableColumnModelListener]) {

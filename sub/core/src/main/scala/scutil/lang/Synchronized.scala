@@ -10,12 +10,12 @@ final class Synchronized[T](initial:T) {
 	
 	def get:T	=
 			synchronized {
-				value 
+				value
 			}
 		
 	/** returns the previous value */
 	def set(value:T):T	=
-			synchronized { 
+			synchronized {
 				val old	= this.value
 				this.value  = value
 				old
@@ -23,7 +23,7 @@ final class Synchronized[T](initial:T) {
 		
 	/** returns the previous and the current value */
 	def modify(func:T=>T):(T,T)	=
-			synchronized { 
+			synchronized {
 				val old	= value
 				value  = func(value)
 				(old, value)
@@ -31,7 +31,7 @@ final class Synchronized[T](initial:T) {
 			
 	/** change state and return something */
 	def change[U](func:T=>(T,U)):U	=
-			synchronized { 
+			synchronized {
 				val (next, out)	= func(value)
 				value	= next
 				out
