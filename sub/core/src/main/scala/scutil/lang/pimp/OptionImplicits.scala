@@ -100,39 +100,64 @@ final class OptionExt[T](peer:Option[T]) {
 	//------------------------------------------------------------------------------
 	
 	/** peer is traversable (in the haskell sense), Option is an idiom. */
-	def sequenceOption[U](implicit ev:T=>Option[U]):Option[Option[U]]	=
-			traverseOption(identity[U])
+	def sequenceOption[U](implicit ev:PFunction[T,U]):Option[Option[U]]	=
+			traverseOption(ev)
 		
 	/** peer is traversable (in the haskell sense), Option is an idiom. */
-	def traverseOption[U,V](func:U=>V)(implicit ev:T=>Option[U]):Option[Option[V]]	=
-			peer map ev match {
-				case Some(Some(x))	=> Some(Some(func(x)))
-				case Some(None)		=> None
-				case None			=> Some(None)
+	def traverseOption[U](func:PFunction[T,U]):Option[Option[U]]	=
+			peer map func match {
+				case None		=> Some(None)
+				case Some(None)	=> None
+				case x			=> x
 			}
+			
+	/** peer is traversable (in the haskell sense), ISeq is an idiom. */
+	def sequenceISeq[U](implicit ev:T=>ISeq[U]):ISeq[Option[U]]	=
+			traverseISeq(ev)
+		
+	/** peer is traversable (in the haskell sense), ISeq is an idiom. */
+	def traverseISeq[U](func:T=>ISeq[U]):ISeq[Option[U]]	=
+			peer map func match {
+				case None		=> ISeq(None)
+				case Some(xs)	=> xs map Some.apply
+			}
+			
+	/** peer is traversable (in the haskell sense), ISeq is an idiom. */
+	def sequenceTraversable[CC[_]<:Traversable[U],U](implicit ev:T=>CC[U], cbf:CanBuildFrom[CC[T],Option[U],CC[Option[U]]]):CC[Option[U]]	=
+			traverseTraversable(ev)
+		
+	/** peer is traversable (in the haskell sense), ISeq is an idiom. */
+	def traverseTraversable[CC[_]<:Traversable[U],U](func:T=>CC[U])(implicit cbf:CanBuildFrom[CC[T],Option[U],CC[Option[U]]]):CC[Option[U]]	= {
+		val builder	= cbf()
+		peer map func match {
+			case None		=> builder.result
+			case Some(xs)	=> xs foreach { x => builder += Some(x) }
+		}
+		builder.result
+	}
 		
 	/** peer is traversable (in the haskell sense), Tried is an idiom. */
 	def sequenceTried[F,W](implicit ev:T=>Tried[F,W]):Tried[F,Option[W]]	=
-			traverseTried(identity[W])
+			traverseTried(ev)
 		
 	/** peer is traversable (in the haskell sense), Tried is an idiom. */
-	def traverseTried[F,W,V](func:W=>V)(implicit ev:T=>Tried[F,W]):Tried[F,Option[V]]	=
-			peer map ev match {
-				case Some(Win(x))	=> Win(Some(func(x)))
-				case Some(Fail(x))	=> Fail(x)
+	def traverseTried[F,W](func:T=>Tried[F,W]):Tried[F,Option[W]]	=
+			peer map func match {
 				case None			=> Win(None)
+				case Some(Fail(x))	=> Fail(x)
+				case Some(Win(x))	=> Win(Some(x))
 			}
 			
 	/** peer is traversable (in the haskell sense), Validated is an idiom. */
 	def sequenceValidated[F,W](implicit ev:T=>Validated[F,W]):Validated[F,Option[W]]	=
-			traverseValidated(identity[W])
+			traverseValidated(ev)
 		
 	/** peer is traversable (in the haskell sense), Validated is an idiom. */
-	def traverseValidated[F,W,V](func:W=>V)(implicit ev:T=>Validated[F,W]):Validated[F,Option[V]]	=
-			peer map ev match {
-				case Some(Good(x))	=> Good(Some(func(x)))
-				case Some(Bad(x))	=> Bad(x)
+	def traverseValidated[F,W](func:T=>Validated[F,W]):Validated[F,Option[W]]	=
+			peer map func match {
 				case None			=> Good(None)
+				case Some(Bad(x))	=> Bad(x)
+				case Some(Good(x))	=> Good(Some(x))
 			}
 			
 	//------------------------------------------------------------------------------

@@ -18,22 +18,22 @@ object PLenses {
 	
 	def iseq[T](i:Int):PLens[ISeq[T],T]	=
 			PLens { s =>
-				s	containsIndex
-				i	guard
-				Store[ISeq[T],T](
-					s(i),
-					v => s updated (i, v)
-				)
+				s lift i map { si =>
+					Store[ISeq[T],T](
+						si,
+						s updated (i, _)
+					)
+				}
 			}
 			
 	def map[K,V](k:K):PLens[Map[K,V],V]	=
 			PLens { s =>
-				s	contains
-				k	guard
-				Store[Map[K,V],V](
-					s(k),
-					v => s updated (k, v)
-				)
+				s get k map { si =>
+					Store[Map[K,V],V](
+						si,
+						s updated (k, _)
+					)
+				}
 			}
 			
 	//------------------------------------------------------------------------------

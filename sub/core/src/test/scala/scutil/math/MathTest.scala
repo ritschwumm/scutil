@@ -69,4 +69,13 @@ class MathTest extends Specification {
 			(self swapEndianLong 0x9876543210987654L)	== 0x5476981032547698L
 		}
 	}
+	
+	"modulo" should {
+		"work for positive modulos" in {
+			((-6 until 6).toVector map { (i:Int) => self moduloInt (i, 3) }) mustEqual Vector(0,1,2,0,1,2,0,1,2,0,1,2)
+		}
+		"work for negative modulos" in {
+			((-6 until 6).toVector map { (i:Int) => self moduloInt (i, -3) }) mustEqual Vector(0,-2,-1,0,-2,-1,0,-2,-1,0,-2,-1)
+		}
+	}
 }

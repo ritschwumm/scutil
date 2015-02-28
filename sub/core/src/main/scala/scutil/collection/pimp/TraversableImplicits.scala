@@ -95,13 +95,13 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 	
 	/** peer is traversable (in the haskell sense), Option is an idiom. */
 	def sequenceOption[U](implicit ev:PFunction[T,U], cbf:CanBuildFrom[CC[T],U,CC[U]]):Option[CC[U]]	=
-			traverseOption(identity[U])
+			traverseOption(ev)
 	
 	/** peer is traversable (in the haskell sense), Option is an idiom. */
-	def traverseOption[U,V](func:U=>V)(implicit ev:PFunction[T,U], cbf:CanBuildFrom[CC[T],V,CC[V]]):Option[CC[V]]	= {
+	def traverseOption[U](func:PFunction[T,U])(implicit cbf:CanBuildFrom[CC[T],U,CC[U]]):Option[CC[U]]	= {
 		val builder	= cbf()
-		peer map ev foreach {
-			case Some(x)	=> builder	+= func(x)
+		peer map func foreach {
+			case Some(x)	=> builder	+= x
 			case None		=> return None
 		}
 		Some(builder.result)
@@ -109,13 +109,13 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 			
 	/** peer is traversable (in the haskell sense), Tried is an idiom. */
 	def sequenceTried[F,W](implicit ev:T=>Tried[F,W], cbf:CanBuildFrom[CC[T],W,CC[W]]):Tried[F,CC[W]]	=
-			traverseTried(identity[W])
+			traverseTried(ev)
 		
 	/** peer is traversable (in the haskell sense), Tried is an idiom. */
-	def traverseTried[F,W,V](func:W=>V)(implicit ev:T=>Tried[F,W], cbf:CanBuildFrom[CC[T],V,CC[V]]):Tried[F,CC[V]]	= {
+	def traverseTried[F,W](func:T=>Tried[F,W])(implicit cbf:CanBuildFrom[CC[T],W,CC[W]]):Tried[F,CC[W]]	= {
 		val builder	= cbf()
-		peer map ev foreach {
-			case Win(x)		=> builder	+= func(x)
+		peer map func foreach {
+			case Win(x)		=> builder	+= x
 			case Fail(x)	=> return Fail(x)
 		}
 		Win(builder.result)
@@ -130,19 +130,19 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 	
 	/** peer is traversable (in the haskell sense), Validated is an idiom. */
 	def sequenceValidated[F,W](implicit ev:T=>Validated[F,W], cbf:CanBuildFrom[CC[T],W,CC[W]]):Validated[F,CC[W]]	=
-			traverseValidated(identity[W])
+			traverseValidated(ev)
 		
 	/** peer is traversable (in the haskell sense), Validated is an idiom. */
-	def traverseValidated[F,W,V](func:W=>V)(implicit ev:T=>Validated[F,W], cbf:CanBuildFrom[CC[T],V,CC[V]]):Validated[F,CC[V]]	= {
+	def traverseValidated[F,W](func:T=>Validated[F,W])(implicit cbf:CanBuildFrom[CC[T],W,CC[W]]):Validated[F,CC[W]]	= {
 		// TODO ugly
-		val mapped		= peer map ev
+		val mapped		= peer map func
 		val problems	= mapped flatMap { _.badProblems }
 		Nes fromISeq problems.toVector match {
 			case Some(es)	=> Bad(es)
 			case None		=>
 				val builder	= cbf()
 				mapped foreach {
-					case Good(x)	=> builder	+= func(x)
+					case Good(x)	=> builder	+= x
 					case Bad(_)		=>
 				}
 				Good(builder.result)

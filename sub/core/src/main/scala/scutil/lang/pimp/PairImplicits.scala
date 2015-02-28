@@ -34,11 +34,13 @@ final class FirstProjection[T1,T2](peer:Tuple2[T1,T2]) {
 	def coFlatMap[U,TT2>:T2](func:Tuple2[T1,TT2]=>U):Tuple2[U,TT2]			= Tuple2(func(peer),	peer._2)
 	def coFlatten[U,TT2>:T2](implicit ev:Tuple2[T1,TT2]=>U):Tuple2[U,TT2]	= coFlatMap(ev)
 	
-	def sequenceOption[U](implicit ev:T1=>Option[U]):Option[Tuple2[U,T2]]		= traverseOption(identity[U])
-	def sequenceTried[F,W](implicit ev:T1=>Tried[F,W]):Tried[F,Tuple2[W,T2]]	= traverseTried(identity[W])
+	def sequenceOption[U](implicit ev:T1=>Option[U]):Option[Tuple2[U,T2]]					= traverseOption(ev)
+	def sequenceTried[F,W](implicit ev:T1=>Tried[F,W]):Tried[F,Tuple2[W,T2]]				= traverseTried(ev)
+	def sequenceValidated[F,W](implicit ev:T1=>Validated[F,W]):Validated[F,Tuple2[W,T2]]	= traverseValidated(ev)
 	
-	def traverseOption[U,V](func:U=>V)(implicit ev:T1=>Option[U]):Option[Tuple2[V,T2]]		= ev(peer._1) map { it => Tuple2(func(it), peer._2) }
-	def traverseTried[F,W,V](func:W=>V)(implicit ev:T1=>Tried[F,W]):Tried[F,Tuple2[V,T2]]	= ev(peer._1) map { it => Tuple2(func(it), peer._2) }
+	def traverseOption[U](func:T1=>Option[U]):Option[Tuple2[U,T2]]					= func(peer._1) map { Tuple2(_, peer._2) }
+	def traverseTried[F,W](func:T1=>Tried[F,W]):Tried[F,Tuple2[W,T2]]				= func(peer._1) map { Tuple2(_, peer._2) }
+	def traverseValidated[F,W](func:T1=>Validated[F,W]):Validated[F,Tuple2[W,T2]]	= func(peer._1) map { Tuple2(_, peer._2) }
 }
 
 /** comonad, see Either's RightProjection which is a monad */
@@ -50,9 +52,11 @@ final class SecondProjection[T1,T2](peer:Tuple2[T1,T2]) {
 	def coFlatMap[TT1>:T1,U](func:Tuple2[TT1,T2]=>U):Tuple2[TT1,U]			= Tuple2(peer._1,	func(peer))
 	def coFlatten[TT1>:T1,U](implicit ev:Tuple2[TT1,T2]=>U):Tuple2[TT1,U]	= coFlatMap(ev)
 	
-	def sequenceOption[U](implicit ev:T2=>Option[U]):Option[Tuple2[T1,U]]		= traverseOption(identity[U])
-	def sequenceTried[F,W](implicit ev:T2=>Tried[F,W]):Tried[F,Tuple2[T1,W]]	= traverseTried(identity[W])
+	def sequenceOption[U](implicit ev:T2=>Option[U]):Option[Tuple2[T1,U]]					= traverseOption(ev)
+	def sequenceTried[F,W](implicit ev:T2=>Tried[F,W]):Tried[F,Tuple2[T1,W]]				= traverseTried(ev)
+	def sequenceValidated[F,W](implicit ev:T2=>Validated[F,W]):Validated[F,Tuple2[T1,W]]	= traverseValidated(ev)
 	
-	def traverseOption[U,V](func:U=>V)(implicit ev:T2=>Option[U]):Option[Tuple2[T1,V]]		= ev(peer._2) map { it => Tuple2(peer._1, func(it)) }
-	def traverseTried[F,W,V](func:W=>V)(implicit ev:T2=>Tried[F,W]):Tried[F,Tuple2[T1,V]]	= ev(peer._2) map { it => Tuple2(peer._1, func(it)) }
+	def traverseOption[U](func:T2=>Option[U]):Option[Tuple2[T1,U]]					= func(peer._2) map { Tuple2(peer._1, _) }
+	def traverseTried[F,W](func:T2=>Tried[F,W]):Tried[F,Tuple2[T1,W]]				= func(peer._2) map { Tuple2(peer._1, _) }
+	def traverseValidated[F,W](func:T2=>Validated[F,W]):Validated[F,Tuple2[T1,W]]	= func(peer._2) map { Tuple2(peer._1, _) }
 }
