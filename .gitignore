@@ -1,6 +1,5 @@
 target/
 project/boot/
-project/plugins/project/
 
-versatz/
-doc/
+/doc/
+/versatz/
