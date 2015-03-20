@@ -19,7 +19,7 @@ scalacOptions	++= Seq(
 
 libraryDependencies	++= Seq(
 	"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "compile",
-	"org.specs2"		%%	"specs2"		% "2.4.16"				% "test"
+	"org.specs2"		%%	"specs2"		% "2.4.17"				% "test"
 )
 
 //------------------------------------------------------------------------------
@@ -39,4 +39,5 @@ initialCommands in console	:= """
 	import scutil.io.URIComponent
 	import scutil.text.Human
 	import scutil.time._
+	import scutil.math._
 """

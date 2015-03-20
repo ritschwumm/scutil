@@ -43,4 +43,10 @@ class TextTest extends Specification {
 			""" mustEqual "one\ntwo"
 		}
 	}
+	
+	"regex macro" should {
+		"just work" in {
+			re".*".pattern.pattern mustEqual ".*".r.pattern.pattern
+		}
+	}
 }

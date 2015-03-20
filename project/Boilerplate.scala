@@ -8,7 +8,7 @@ object Boilerplate {
 		Vector(
 			Tried		genFile outDir,
 			Validated	genFile outDir,
-			Tuples		genFile outDir 
+			Tuples		genFile outDir
 		)
 	}
 	
@@ -70,7 +70,7 @@ object Boilerplate {
 		def argValue(idx:Int):String	= "s" + idx.toString
 		def plainInput(idx:Int):String	= argValue(idx) + ":" + plainType(idx)
 		def wrapInput(idx:Int):String	= argValue(idx) + ":" + wrapType(idx)
-		def csep(s:Seq[String]):String	= s mkString "," 
+		def csep(s:Seq[String]):String	= s mkString ","
 	}
 	
 	//------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ object Boilerplate {
 		def argValue(idx:Int):String	= "s" + idx.toString
 		def plainInput(idx:Int):String	= argValue(idx) + ":" + plainType(idx)
 		def wrapInput(idx:Int):String	= argValue(idx) + ":" + wrapType(idx)
-		def csep(s:Seq[String]):String	= s mkString "," 
+		def csep(s:Seq[String]):String	= s mkString ","
 	}
 
 	//------------------------------------------------------------------------------
@@ -169,7 +169,7 @@ object Boilerplate {
 			val leftType	= "type " + leftCurriedType(tpNameForward)	+ " = " + pairRight(tpNameForward)
 			val rightType	= "type " + rightCurriedType(tpNameForward)	+ " = " + pairLeft(tpNameForward)
 		
-			val leftCurry	= 
+			val leftCurry	=
 					methodHeader("lcurry", tpNameForward)		+ "\n" +
 					"(in:" + productType(tpNameForward) + "):"	+ "\n" +
 					leftCurriedType(tpNameForward)				+ "\n" +
@@ -180,7 +180,7 @@ object Boilerplate {
 							(tt,xx)	=> "(" + tt + "," + xx + ")"
 						)
 					)
-			val rightCurry	= 
+			val rightCurry	=
 					methodHeader("rcurry", tpNameForward)		+ "\n" +
 					"(in:" + productType(tpNameForward) + "):"	+ "\n" +
 					rightCurriedType(tpNameForward)				+ "\n" +
@@ -212,7 +212,7 @@ object Boilerplate {
 						)
 						"(" + s + ")"
 					}
-			val rightUncurry	= 
+			val rightUncurry	=
 					methodHeader("runcurry", tpNameForward)			+ "\n" +
 					"(in:" + rightCurriedType(tpNameForward) + "):"	+ "\n" +
 					tupleType(tpNameForward)						+ "\n" +
