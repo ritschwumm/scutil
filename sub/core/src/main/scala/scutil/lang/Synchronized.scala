@@ -15,22 +15,10 @@ final class Synchronized[T](initial:T) {
 		
 	/** returns the previous value */
 	def set(value:T):T	=
-			synchronized {
-				val old	= this.value
-				this.value  = value
-				old
-			}
-		
-	/** returns the previous and the current value */
-	def modify(func:T=>T):(T,T)	=
-			synchronized {
-				val old	= value
-				value  = func(value)
-				(old, value)
-			}
+			modify((value, _))
 			
 	/** change state and return something */
-	def change[U](func:T=>(T,U)):U	=
+	def modify[U](func:T=>(T,U)):U	=
 			synchronized {
 				val (next, out)	= func(value)
 				value	= next

@@ -1,5 +1,7 @@
 package scutil.lang
 
+import scutil.collection.implicits._
+
 object TLenses {
 	def pairFirst[S,T]:TLens[(S,T),S]	=
 			TLens create (
@@ -20,11 +22,5 @@ object TLenses {
 			)
 						
 	def map[K,V](k:K):TLens[Map[K,V],Option[V]]	=
-			TLens create (
-				_ get k,
-				(c, v)	=> v match {
-					case Some(v)	=> c + (k -> v)
-					case None		=> c - k
-				}
-			)
+			TLens { _ optionStoreAt k }
 }

@@ -17,24 +17,13 @@ object PLenses {
 	//------------------------------------------------------------------------------
 	
 	def iseq[T](i:Int):PLens[ISeq[T],T]	=
-			PLens { s =>
-				s lift i map { si =>
-					Store[ISeq[T],T](
-						si,
-						s updated (i, _)
-					)
-				}
-			}
+			PLens { _ storeAt i }
 			
 	def map[K,V](k:K):PLens[Map[K,V],V]	=
-			PLens { s =>
-				s get k map { si =>
-					Store[Map[K,V],V](
-						si,
-						s updated (k, _)
-					)
-				}
-			}
+			PLens { _ storeAt k }
+		
+	def nes[T](i:Int):PLens[Nes[T],T]	=
+			PLens { _ storeAt i }
 			
 	//------------------------------------------------------------------------------
 	

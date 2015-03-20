@@ -61,10 +61,6 @@ final class MapExt[S,T](peer:Map[S,T]) {
 			}
 			
 	/** map the value for a single key */
-	def updatedByOrSelf(key:S, func:Endo[T]):Map[S,T]	=
-			updatedBy(key, func) getOrElse peer
-	
-	/** map the value for a single key */
 	def updatedBy(key:S, func:Endo[T]):Option[Map[S,T]]	=
 			peer get key match {
 				case Some(value)	=> Some(peer + (key -> func(value)))
@@ -79,6 +75,20 @@ final class MapExt[S,T](peer:Map[S,T]) {
 	/** map the value for a single key if it exists or insert a new value for this key */
 	def updatedByOrInserted(key:S, update:Endo[T], insert: =>T):Map[S,T]	=
 			peer + (key -> (peer get key map update getOrElse insert))
+		
+	def storeAt(key:S):Option[Store[Map[S,T],T]]	=
+			peer get key map { item	=>
+				Store[Map[S,T],T](
+					item,
+					peer updated (key, _)
+				)
+			}
+			
+	def optionStoreAt(key:S):Store[Map[S,T],Option[T]]	=
+			Store(
+				peer get key,
+				set(key, _)
+			)
 		
 	def toJMap:JMap[S,T]	=  {
 		val out	= new JHashMap[S,T]

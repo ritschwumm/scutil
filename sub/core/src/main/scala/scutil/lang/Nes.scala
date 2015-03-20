@@ -21,6 +21,14 @@ object Nes {
 }
 
 final case class Nes[+T](head:T, tail:ISeq[T]) {
+	def last:T	=
+			if (tail.nonEmpty)	tail.last
+			else				head
+			
+	def init:ISeq[T]	=
+			if (tail.nonEmpty)	head +: tail.init
+			else				Vector(head)
+			
 	def size:Int	= tail.size + 1
 	
 	def containsIndex(index:Int):Boolean	=
@@ -33,11 +41,7 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 	def count(pred:Predicate[T]):Int	=
 			(if (pred(head)) 1 else 0) +
 			(tail count pred)
-			
-	def last:T	=
-			if (tail.nonEmpty)	tail.last
-			else				head
-			
+	
 	def drop(count:Int):Option[Nes[T]]	=
 			Nes fromISeq (toVector drop count)
 			
@@ -56,11 +60,6 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 	def initNes:Option[Nes[T]]	=
 			if (tail.isEmpty)	None
 			else				Some(Nes(head, tail.init))
-	
-	def foreach(effect:Effect[T]) {
-		effect(head)
-		tail foreach effect
-	}
 	
 	def map[U](func:T=>U):Nes[U]	=
 			Nes(func(head), tail map func)
@@ -87,14 +86,26 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 	def withReverse[U>:T](func:Endo[Nes[U]]):Nes[U]	=
 			func(reverse).reverse
 		
-	def ++[U>:T](that:Nes[U]):Nes[U]	=
+	def concat[U>:T](that:Nes[U]):Nes[U]	=
 			Nes(this.head, (this.tail :+ that.head) ++ that.tail)
+	
+	def prepend[U>:T](item:U):Nes[U]	=
+			Nes(item, toISeq)
 		
+	def append[U>:T](item:U):Nes[U]	=
+			Nes(this.head, this.tail :+ item)
+		
+	@inline
+	def ++[U>:T](that:Nes[U]):Nes[U]	=
+			this concat that
+		
+	@inline
 	def :+[U>:T](item:U):Nes[U]	=
-			Nes(head, tail :+ item)
+			this append item
 		
+	@inline
 	def +:[U>:T](item:U):Nes[U]	=
-			Nes(item, head +: tail)
+			this prepend item
 		
 	def zip[U](that:Nes[U]):Nes[(T,U)]	=
 			Nes(
@@ -113,7 +124,23 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 				(this.head, 0),
 				this.tail.zipWithIndex map { case (v,i) => (v,i+1) }
 			)
-			
+		
+	def storeAt[U>:T](index:Int):Option[Store[Nes[U],U]]	=
+			get(index) map { item =>
+				Store(
+					item,
+					(it:U) => {
+						if (index == 0)	Nes(it, tail)
+						else			Nes(head, tail updated (index-1, it))
+					}
+				)
+			}
+	
+	def foreach(effect:Effect[T]) {
+		effect(head)
+		tail foreach effect
+	}
+	
 	def toList:List[T]	=
 			head :: tail.toList
 		

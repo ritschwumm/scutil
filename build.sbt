@@ -1,6 +1,6 @@
 organization	:= "de.djini"
 name			:= "scutil"
-version			:= "0.66.0"
+version			:= "0.67.0"
 
 organization	in ThisBuild	:= organization.value
 version			in ThisBuild	:= version.value

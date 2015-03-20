@@ -14,10 +14,10 @@ final class OptionExt[T](peer:Option[T]) {
 	def getOrError(s:String)	= peer getOrElse (sys error s)
 		
 	def cata[X](none: => X, some:T => X):X =
-		peer match {
-			case Some(x)	=> some(x)
-			case None		=> none
-		}
+			peer match {
+				case Some(x)	=> some(x)
+				case None		=> none
+			}
 	
 	/** ap of the monad, <*> of the applicative functor */
 	def ap[U,V](source:Option[U])(implicit witness:T=>U=>V):Option[V] =
