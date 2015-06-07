@@ -228,7 +228,7 @@ sealed trait Tried[+F,+W] {
 		
 	def collectOr[FF>:F,WW](func:PartialFunction[W,WW], fail: =>FF):Tried[FF,WW]	=
 			cata(Fail.apply, it => if (func isDefinedAt it) Win(func(it)) else Fail(fail))
- 	
+	
 	//------------------------------------------------------------------------------
 		
 	def throwThrowable(implicit ev:F=>Throwable):W	=

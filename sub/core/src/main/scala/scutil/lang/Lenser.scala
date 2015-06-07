@@ -12,10 +12,6 @@ object Lenser {
 }
 
 final class Lenser[T] extends Dynamic {
-	/*
-	def selectDynamic(propName:String)	= macro LenserImpl.selectDynamic[T]
-	def applyDynamic(propName:String)()	= macro LenserImpl.applyDynamic[T]
-	*/
 	
 	def selectDynamic(propName:String):AnyRef	= macro LenserImpl.compile[T]
 }
@@ -40,17 +36,15 @@ private final class LenserImpl(val c:Context) {
 							(member typeSignatureIn containerType)
 							.matchOption	{ case NullaryMethodType(tpe) => tpe }
 							.toWin			(s"member ${name} of ${containerType} is not a field")
+					containerName	= TermName("c$")
+					valueName		= TermName("v$")
 				}
-				yield {
-					val containerName	= TermName("c$")
-					val valueName		= TermName("v$")
-					q"""
-						_root_.scutil.lang.TLens.create[$containerType,$valueType](
-							($containerName:$containerType) => $containerName.$fieldName,
-							($containerName:$containerType, $valueName:$valueType) => $containerName.copy($fieldName=$valueName)
-						)
-					"""
-				}
+				yield q"""
+					_root_.scutil.lang.TLens.create[$containerType,$valueType](
+						($containerName:$containerType) => $containerName.$fieldName,
+						($containerName:$containerType, $valueName:$valueType) => $containerName.copy($fieldName=$valueName)
+					)
+				"""
 				
 		out cata (
 			c abort (c.enclosingPosition, _),

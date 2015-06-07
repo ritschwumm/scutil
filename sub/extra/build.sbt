@@ -16,5 +16,5 @@ scalacOptions	++= Seq(
 )
 
 libraryDependencies	++= Seq(
-	"org.scala-lang.modules"	%% "scala-xml"	% "1.0.3"	% "compile"
+	"org.scala-lang.modules"	%% "scala-xml"	% "1.0.4"	% "compile"
 )
