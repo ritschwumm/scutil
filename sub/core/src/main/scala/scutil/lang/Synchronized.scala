@@ -25,6 +25,10 @@ final class Synchronized[T](initial:T) {
 				out
 			}
 			
+	/** change state only */
+	def update(func:Endo[T]):Unit	=
+			modify { it => (func(it), ()) }
+			
 	override def toString:String	=
 			s"Synchronized(${get})"
 }

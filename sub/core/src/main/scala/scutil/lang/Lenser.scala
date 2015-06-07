@@ -12,7 +12,6 @@ object Lenser {
 }
 
 final class Lenser[T] extends Dynamic {
-	
 	def selectDynamic(propName:String):AnyRef	= macro LenserImpl.compile[T]
 }
 
