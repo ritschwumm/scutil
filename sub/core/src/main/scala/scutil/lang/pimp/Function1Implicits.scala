@@ -9,6 +9,9 @@ trait Function1Implicits {
 }
 
 final class Function1Ext[S,T](peer:Function1[S,T]) {
+	/** symbolic alias for apply */
+	def <|(value:S):T	= peer(value)
+	
 	/** symbolic alias for andThen */
 	def >=>[U](that:Function1[T,U]):Function1[S,U]	=
 			peer andThen that

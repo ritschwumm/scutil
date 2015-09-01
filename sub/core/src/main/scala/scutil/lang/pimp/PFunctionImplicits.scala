@@ -9,8 +9,11 @@ trait PFunctionImplicits {
 }
 
 final class PFunctionExt[S,T](peer:PFunction[S,T]) {
-	def orDefault(value: =>T):Function1[S,T]	=
-			orAlways(constant(value))
+	def applyOrElse(it:S, default:T):T	=
+			peer(it) getOrElse default
+			
+	def orDefault(default: =>T):Function1[S,T]	=
+			orAlways(constant(default))
 		
 	def orAlways(that:Function[S,T]):Function1[S,T]	=
 			it	=> peer(it) getOrElse that(it)

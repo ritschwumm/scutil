@@ -21,11 +21,20 @@ object TLens {
 
 /** functional reference to a part of product type, aka Lens' */
 final case class TLens[S,T](on:S=>Store[S,T]) {
-	def get(s:S):T						= on(s).get
-	def put(s:S, t:T):S					= on(s) put t
-	def putter(t:T):Endo[S]				= put(_, t)
+	def get(s:S):T	= on(s).get
+	def getter:S=>T	= get(_)
+	
+	def put(s:S, t:T):S		= on(s) put t
+	def putter(t:T):Endo[S]	= put(_, t)
+	
 	def modify(s:S, func:Endo[T]):S		= on(s) modify func
 	def modifier(func:Endo[T]):Endo[S]	= modify(_, func)
+	
+	def modifyOpt(s:S, func:PEndo[T]):Option[S]	= on(s) modifyOpt func
+	def modifierOpt(func:PEndo[T]):PEndo[S]		= modifyOpt(_, func)
+		
+	def modifyStateful[X](s:S, func:Stateful[T,X]):(S,X)		= on(s) modifyStateful func
+	def modifierStateful[X](func:Stateful[T,X]):Stateful[S,X]	= modifyStateful(_, func)
 	
 	/** symbolic alias for andThen */
 	def >=>[U](that:TLens[T,U]):TLens[S,U]	=

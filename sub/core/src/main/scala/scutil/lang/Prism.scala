@@ -26,6 +26,21 @@ final case class Prism[S,T](write:PFunction[S,T], read:T=>S) {
 	def apply(t:T):S			= read(t)
 	def unapply(s:S):Option[T]	= write(s)
 	
+	def get(s:S):Option[T]		= write(s)
+	def getter:PFunction[S,T]	= write
+	
+	def modify(s:S, func:Endo[T]):Option[S]	= write(s) map (func andThen read)
+	def modifier(func:Endo[T]):PEndo[S]		= modify(_, func)
+		
+	def modifyOpt(s:S, func:PEndo[T]):Option[S]	= write(s) flatMap func map read
+	def modifierOpt(func:PEndo[T]):PEndo[S]		= modifyOpt(_, func)
+	
+	def modifyStateful[X](s:S, func:Stateful[T,X]):Option[(S,X)]	=
+			write(s) map func map { case (t, x) =>
+				(read(t), x)
+			}
+	def modifierStateful[X](func:Stateful[T,X]):S=>Option[(S,X)]	= modifyStateful(_, func)
+	
 	def orElse(that:Prism[S,T]):Prism[S,T]	=
 			Prism(
 				s	=> (this write s) orElse (that write s),

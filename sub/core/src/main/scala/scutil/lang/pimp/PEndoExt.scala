@@ -9,6 +9,9 @@ trait PEndoImplicits {
 }
 
 final class PEndoExt[T](peer:PEndo[T]) {
+	def applyOrOriginal(it:T):T	=
+			peer(it) getOrElse it
+		
 	def orOriginal:Endo[T]	=
-			t => peer(t) getOrElse t
+			it => peer(it) getOrElse it
 }

@@ -15,6 +15,11 @@ final case class Store[C,V](get:V, put:V=>C) {
 	def modify(func:Endo[V]):C				= put(func(get))
 	def modifyOpt(func:PEndo[V]):Option[C]	= func(get) map put
 	
+	def modifyStateful[X](func:Stateful[V,X]):(C, X)	= {
+		val (v2, side)	= func(get)
+		(put(v2), side)
+	}
+	
 	/** aka duplicate */
 	def coFlatten:Store[Store[C,V],V]	=
 			Store(get, Store(_, put))

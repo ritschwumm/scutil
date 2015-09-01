@@ -19,6 +19,8 @@ package object lang {
 	type PFunction[-S,+T]	= S=>Option[T]
 	type PEndo[T]			= T=>Option[T]
 	
+	type Stateful[T,+X]		= T=>(T,X)
+	
 	//------------------------------------------------------------------------------
 	
 	def constant[S,T](value: =>T):(S=>T)		= _ => value

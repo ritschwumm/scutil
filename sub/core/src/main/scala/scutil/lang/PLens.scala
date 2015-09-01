@@ -21,22 +21,21 @@ object PLens {
 }
 
 final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
-	def get(s:S):Option[T]					= on(s) map { _.get }
-	def put(s:S, t:T):Option[S]				= on(s) map { _ put t }
-	def putter(t:T):PEndo[S]				= put(_, t)
+	def get(s:S):Option[T]		= on(s) map { _.get }
+	def getter:PFunction[S,T]	= get(_)
+	
+	def put(s:S, t:T):Option[S]	= on(s) map { _ put t }
+	def putter(t:T):PEndo[S]	= put(_, t)
+	
 	def modify(s:S, func:Endo[T]):Option[S]	= on(s) map { _ modify func }
 	def modifier(func:Endo[T]):PEndo[S]		= modify(_, func)
 	
-	def modifyOpt(s:S, func:PEndo[T]):Option[S]	=
-			for {
-				store	<- on(s)
-				value	<- func(store.get)
-			}
-			yield store put value
-			
-	def modifierOpt(func:PEndo[T]):PEndo[S]	=
-			modifyOpt(_, func)
+	def modifyOpt(s:S, func:PEndo[T]):Option[S]	= for { store	<- on(s); value	<- func(store.get) } yield store put value
+	def modifierOpt(func:PEndo[T]):PEndo[S]		= modifyOpt(_, func)
 	
+	def modifyStateful[X](s:S, func:Stateful[T,X]):Option[(S,X)]	= on(s) map { _ modifyStateful func }
+	def modifierStateful[X](func:Stateful[T,X]):S=>Option[(S,X)]	= modifyStateful(_, func)
+			
 	def orElse(that:PLens[S,T]):PLens[S,T]	=
 			PLens(this.on orElse that.on)
 		

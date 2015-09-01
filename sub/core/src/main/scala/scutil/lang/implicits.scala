@@ -20,6 +20,7 @@ trait implicits
 		with	PairImplicits
 		with	PartialFunctionImplicits
 		with	PredicateImplicits
+		with	StatefulImplicits
 		with	StringContextImplicits
 		with	ThrowableImplicits
 		with	TryImplicits
