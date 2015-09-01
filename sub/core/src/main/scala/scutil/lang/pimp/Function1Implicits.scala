@@ -20,6 +20,15 @@ final class Function1Ext[S,T](peer:Function1[S,T]) {
 	def <=<[R](that:Function1[R,S]):Function1[R,T]	=
 			peer compose that
 		
+	def map[U](func:T=>U):S=>U	=
+			peer andThen func
+		
+	def flatMap[U](func:T=>S=>U):S=>U	=
+			s	=> func(peer(s))(s)
+		
+	def contraMap[R](func:R=>S):R=>T	=
+			peer compose func
+		
 	def partial(predicate:Predicate[S]):PartialFunction[S,T]	=
 			new PartialFunction[S,T] {
 				def isDefinedAt(s:S):Boolean	= predicate(s)
