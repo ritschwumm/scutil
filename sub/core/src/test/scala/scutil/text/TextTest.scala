@@ -39,8 +39,8 @@ class TextTest extends Specification {
 		"just work" in {
 			strip"""
 			|one
-			|two
-			""" mustEqual "one\ntwo"
+			| two
+			""" mustEqual "one\n two"
 		}
 	}
 	

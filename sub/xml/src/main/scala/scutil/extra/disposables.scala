@@ -1,4 +1,4 @@
-package scutil.extra
+package scutil.xml
 
 import java.beans.XMLEncoder
 import java.beans.XMLDecoder

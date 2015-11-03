@@ -1,4 +1,4 @@
-name	:= "scutil-extra"
+name	:= "scutil-xml"
 
 scalacOptions	++= Seq(
 	// "-Ymacro-debug-lite",

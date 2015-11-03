@@ -1,9 +1,9 @@
-package scutil.extra.pimp
+package scutil.xml.pimp
 
 import scala.collection.immutable.{ Seq => ISeq }
 import scala.xml._
 
-import scutil.extra._
+import scutil.xml._
 
 object NodeImplicits extends NodeImplicits
 

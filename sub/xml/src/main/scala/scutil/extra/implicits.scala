@@ -1,6 +1,6 @@
-package scutil.extra
+package scutil.xml
 
-import scutil.extra.pimp._
+import scutil.xml.pimp._
 
 object implicits extends implicits
 trait implicits
