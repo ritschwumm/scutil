@@ -78,4 +78,10 @@ class MathTest extends Specification {
 			((-6 until 6).toVector map { (i:Int) => self moduloInt (i, -3) }) mustEqual Vector(0,-2,-1,0,-2,-1,0,-2,-1,0,-2,-1)
 		}
 	}
+	
+	"bigrational macros " should {
+		"compile" in {
+			br"7/11" mustEqual BigRational(7,11)
+		}
+	}
 }

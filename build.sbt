@@ -1,22 +1,20 @@
-organization	:= "de.djini"
-name			:= "scutil"
-version			:= "0.71.0"
-
-organization	in ThisBuild	:= organization.value
-version			in ThisBuild	:= version.value
-
-scalaVersion	in ThisBuild	:= "2.11.7"
-scalacOptions	in ThisBuild	++= Seq(
-	"-Ywarn-unused-import",
-	"-Xfatal-warnings"
-)
-
-conflictManager	in ThisBuild	:= ConflictManager.strict
-resolvers		in ThisBuild	+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
-dependencyOverrides	in ThisBuild	++= Set(
-	"org.scala-lang"	% "scala-library"	% (scalaVersion in ThisBuild).value,
-	"org.scala-lang"	% "scala-reflect"	% (scalaVersion in ThisBuild).value
-)
+inThisBuild(Seq(
+	organization	:= "de.djini",
+	version			:= "0.72.0",
+	
+	scalaVersion	:= "2.11.7",
+	scalacOptions	++= Seq(
+		"-Ywarn-unused-import",
+		"-Xfatal-warnings"
+	),
+	
+	conflictManager	:= ConflictManager.strict,
+	resolvers		+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
+	dependencyOverrides	++= Set(
+		"org.scala-lang"	% "scala-library"	% scalaVersion.value,
+		"org.scala-lang"	% "scala-reflect"	% scalaVersion.value
+	)
+))
 
 //------------------------------------------------------------------------------
 
