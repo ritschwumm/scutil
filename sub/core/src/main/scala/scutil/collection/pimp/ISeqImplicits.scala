@@ -159,7 +159,7 @@ final class ISeqExt[T](peer:ISeq[T]) {
 				val indices = peer.zipWithIndex collect { case (t,i) if (separator(t)) => i }
 				(-1 +: indices) zip (indices :+ peer.size) flatMap { case (a,b) =>
 					Vector(Right(peer slice (a+1,b))) ++
-					((peer lift b) map Left.apply)
+					(peer lift b map Left.apply).toList
 				}
 			}
 			else Vector.empty

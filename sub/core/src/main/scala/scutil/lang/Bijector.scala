@@ -63,7 +63,7 @@ private final class BijectorImpl(val c:Context) {
 					applyMethods0	=
 							for {
 								method	<- applyMethods collect { case (method:MethodSymbol) => method }
-								params	<- method.paramLists.singleOption
+								params	<- method.paramLists.singleOption.toVector
 							}
 							yield (
 								method,

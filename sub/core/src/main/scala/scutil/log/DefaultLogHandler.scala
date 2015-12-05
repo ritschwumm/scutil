@@ -2,6 +2,7 @@ package scutil.log
 
 import java.io._
 
+import scutil.implicits._
 import scutil.lang.SourceLocation
 import scutil.time._
 
@@ -27,8 +28,8 @@ trait DefaultLogHandler extends LogHandler {
 			System.err
 	
 	def format(event:LogEvent):String	= {
-		val messages	= event.elements flatMap extractMessage
-		val throwables	= event.elements flatMap extractThrowable
+		val messages	= event.elements collapseMap extractMessage
+		val throwables	= event.elements collapseMap extractThrowable
 		
 		val headerItems	=
 				Vector(
@@ -36,8 +37,8 @@ trait DefaultLogHandler extends LogHandler {
 					formatInstant(event.timestamp),
 					formatLocation(event.location)
 				)
-		val messageItems	= messages map formatMessage
-		val throwableItems	= throwables map formatThrowable
+		val messageItems	= messages		map formatMessage
+		val throwableItems	= throwables	map formatThrowable
 			
 		((headerItems ++ messageItems) mkString "\t")	+
 		(if (throwableItems.nonEmpty) "\n" else "")		+

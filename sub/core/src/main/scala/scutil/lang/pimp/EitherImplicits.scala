@@ -16,8 +16,8 @@ final class EitherExt[S,T](peer:Either[S,T]) {
 	def leftOrError(s:String)	= peer.left		getOrElse (sys error s)
 	def rightOrError(s:String)	= peer.right	getOrElse (sys error s)
 	
-	def leftEffect(fx:S=>Unit):Either[S,T]	= { if (peer.isLeft)  fx(peer.left.get);	peer }
-	def rightEffect(fx:T=>Unit):Either[S,T]	= { if (peer.isRight) fx(peer.right.get);	peer }
+	def leftEffect(fx:S=>Unit):Either[S,T]	= { peer.left.toOption	foreach fx; peer }
+	def rightEffect(fx:T=>Unit):Either[S,T]	= { peer.right.toOption	foreach fx; peer }
 	
 	def bimap[SS,TT](leftFunc:S=>SS, rightFunc:T=>TT):Either[SS,TT]	=
 			peer match {

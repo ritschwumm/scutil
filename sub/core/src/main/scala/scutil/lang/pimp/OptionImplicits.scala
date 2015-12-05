@@ -88,7 +88,7 @@ final class OptionExt[T](peer:Option[T]) {
 	//------------------------------------------------------------------------------
 	
 	def someEffect(effect:T=>Unit):Option[T] = {
-		if (peer.nonEmpty) effect(peer.get)
+		peer foreach effect
 		peer
 	}
 	

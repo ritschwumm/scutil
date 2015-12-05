@@ -16,5 +16,7 @@ object Orderings {
 	fails with an Exception if None is returned.
 	*/
 	def bySome[S,T:Ordering](unapplyFunc:PFunction[S,T]):Ordering[S]	=
-			Ordering by (unapplyFunc andThen { _.get })
+			Ordering by (unapplyFunc andThen { it =>
+				(it fold (sys error "unexpected None"))(identity)
+			})
 }

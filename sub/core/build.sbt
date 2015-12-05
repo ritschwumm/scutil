@@ -19,7 +19,18 @@ scalacOptions	++= Seq(
 
 libraryDependencies	++= Seq(
 	"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "compile",
-	"org.specs2"		%%	"specs2-core"	% "3.6.4"				% "test"
+	"org.specs2"		%%	"specs2-core"	% "3.6.5"				% "test"
+)
+
+wartremoverErrors ++= Seq(
+	Wart.Any2StringAdd,
+	Wart.EitherProjectionPartial,
+	Wart.OptionPartial,
+	Wart.Enumeration,
+	Wart.FinalCaseClass,
+	Wart.JavaConversions,
+	Wart.Option2Iterable,
+	Wart.TryPartial
 )
 
 //------------------------------------------------------------------------------

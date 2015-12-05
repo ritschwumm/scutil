@@ -172,5 +172,5 @@ final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extend
 	override def intValue:Int		= scala.math.round(doubleValue).toInt
 	override def longValue:Long		= scala.math.round(doubleValue)
 	
-	override def toString:String	= numerator + "/" + denominator
+	override def toString:String	= numerator.toString + "/" + denominator.toString
 }

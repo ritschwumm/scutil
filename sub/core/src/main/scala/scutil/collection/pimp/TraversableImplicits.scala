@@ -19,8 +19,7 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 			if (out.isDefined)	sys error "expected exactly one element, found multiple"
 			out	= Some(it)
 		}
-		if (out.isEmpty)	sys error "expected exactly one element, found none"
-		out.get
+		(out fold (sys error "expected exactly one element, found none"))(identity)
 	}
 	
 	/** Some if the collections contains exactly one element, else None */
@@ -80,10 +79,14 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 			(peer map { it => (key(it), it) }).toMap
 			
 	/** like flatten, but avoiding the dubious Option=>Iterable implicit */
-	def collapse[U](implicit ev:PFunction[T,U], cbf:CanBuildFrom[CC[T],U,CC[U]]):CC[U]	= {
+	def collapse[U](implicit ev:PFunction[T,U], cbf:CanBuildFrom[CC[T],U,CC[U]]):CC[U]	=
+			collapseMap(ev)
+	
+	/** like flatMap, but avoiding the dubious Option=>Iterable implicit */
+	def collapseMap[U](func:PFunction[T,U])(implicit cbf:CanBuildFrom[CC[T],U,CC[U]]):CC[U]	= {
 		val builder	= cbf()
 		peer foreach {
-			ev(_) foreach {
+			func(_) foreach {
 				builder	+= _
 			}
 		}

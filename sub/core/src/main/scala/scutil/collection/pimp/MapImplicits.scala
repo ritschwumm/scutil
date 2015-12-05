@@ -50,7 +50,7 @@ final class MapExt[S,T](peer:Map[S,T]) {
 			
 	def setManyBy(func:(S,T)=>Option[T]):Map[S,T]	=
 			peer flatMap { case (k,v) =>
-				func(k, v) map { k -> _ }
+				(func(k, v) map { k -> _ }).toList
 			}
 			
 	/** set or remove the value for a single key */
