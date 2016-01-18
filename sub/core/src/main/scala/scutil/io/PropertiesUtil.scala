@@ -7,6 +7,8 @@ import java.util.Properties
 import scutil.implicits._
 
 object PropertiesUtil {
+	def empty:Properties	= new Properties
+	
 	def loadURL(url:URL):Map[String,String]	=
 			loadRawURL(url).toMap
 		

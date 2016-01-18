@@ -13,7 +13,7 @@ trait StringContextImplicits {
 }
 
 final class StringContextExt(peer:StringContext) {
-	/** provide a string interpolator "ss" that allows nothing but String in $ escapes */
+	/** provide a string interpolator "so" that allows nothing but String in $ escapes */
 	def so(args:String*):String		= peer.s(args:_*)
 	
 	/** applies Text.stripMarginOnly */

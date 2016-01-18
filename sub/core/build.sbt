@@ -19,7 +19,7 @@ scalacOptions	++= Seq(
 
 libraryDependencies	++= Seq(
 	"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "compile",
-	"org.specs2"		%%	"specs2-core"	% "3.6.5"				% "test"
+	"org.specs2"		%%	"specs2-core"	% "3.7"					% "test"
 )
 
 wartremoverErrors ++= Seq(

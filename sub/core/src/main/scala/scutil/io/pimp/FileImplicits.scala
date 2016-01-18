@@ -87,7 +87,7 @@ final class FileExt(peer:File) {
 				else					loop(test.getParentFile, test.getName +: path)
 		loop(that, Vector.empty)
 	}
-			
+	
 	//------------------------------------------------------------------------------
 	//## file only: streams
 	

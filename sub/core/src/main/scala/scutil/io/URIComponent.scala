@@ -3,11 +3,14 @@ package scutil.io
 import java.net._
 import java.nio.charset.Charset
 
-import scutil.io.Charsets.utf_8
-
 object URIComponent {
-	val charset	= utf_8
+	val utf_8	= forCharset(Charsets.utf_8)
 	
+	def forCharset(charset:Charset):URIComponent	=
+			new URIComponent(charset)
+}
+	
+final class URIComponent(charset:Charset) {
 	//------------------------------------------------------------------------------
 	//## encoding
 	
@@ -56,6 +59,7 @@ object URIComponent {
 	
 	def decode(s:String):String =
 			URLDecoder decode (
-					s replace ("+", "%2B"),
-					charset.name)
+				s replace ("+", "%2B"),
+				charset.name
+			)
 }
