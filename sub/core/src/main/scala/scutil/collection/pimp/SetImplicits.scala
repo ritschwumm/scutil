@@ -40,6 +40,24 @@ final class SetExt[T](peer:Set[T]) {
 	def mapTo[U](value:T=>U):Map[T,U]	=
 			(peer map { it => (it, value(it)) }).toMap
 		
+	/** group values by keys, both from a function */
+	def groupMap[K,V](func:T=>(K,V)):Map[K,Set[V]]	=
+			peer
+			.map		(func)
+			.groupBy	{ _._1 }
+			.map {
+				case (k, kvs) => (k, kvs map { _._2 })
+			}
+			
+	def mapMap[U,V](func:U=>V)(implicit ev:T=>Set[U]):Set[Set[V]]	=
+			peer map { _ map func }
+		
+	def flatMapMap[U,V](func:U=>V)(implicit ev:T=>Set[U]):Set[V]	=
+			peer flatMap { _ map func }
+		
+	def flatMapFlatMap[U,V](func:U=>Set[V])(implicit ev:T=>Set[U]):Set[V]	=
+			peer flatMap { _ flatMap func }
+		
 	def toSet:JSet[T]	=  {
 		val out	= new JHashSet[T]
 		peer foreach out.add

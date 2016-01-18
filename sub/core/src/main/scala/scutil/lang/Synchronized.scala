@@ -18,7 +18,7 @@ final class Synchronized[T](initial:T) {
 			modify((value, _))
 			
 	/** change state and return something */
-	def modify[U](func:T=>(T,U)):U	=
+	def modify[U](func:Stateful[T,U]):U	=
 			synchronized {
 				val (next, out)	= func(value)
 				value	= next

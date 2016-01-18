@@ -9,11 +9,15 @@ trait TraversableOnceImplicits {
 }
 
 final class TraversableOnceExt[T](peer:TraversableOnce[T]) {
+	/** like flatten, but avoiding the dubious Option=>Iterable implicit */
+	def collapseFirst[U](implicit ev:PFunction[T,U]):Option[U]	=
+			collapseMapFirst(ev)
+		
 	/**
 	return the first Some find creates from elements of this collection
 	resembles collectFirst, but uses Function1[_,Option[_]] instead of a PartialFunction[_,_]
 	*/
-	def collapseFirst[U](find:PFunction[T,U]):Option[U]	= {
+	def collapseMapFirst[U](find:PFunction[T,U]):Option[U]	= {
 		peer foreach { it =>
 			val	out	= find(it)
 			if (out.isDefined)	return out

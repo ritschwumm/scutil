@@ -64,18 +64,39 @@ final class ISeqExt[T](peer:ISeq[T]) {
 	/** like collectFirst but searching from the end to the front */		
 	def collectLast[U](pf:PartialFunction[T,U]):Option[U]	=
 			peer.reverse collectFirst pf
+		
+	def collapseLast[U](implicit ev:PFunction[T,U]):Option[U]	=
+			collapseMapLast(ev)
 	
 	// NOTE this is in TraversableImplicits
-	// def collapseFirst[U](find:PFunction[T,U]):Option[U]
+	// def collapseMapFirst[U](find:PFunction[T,U]):Option[U]
 	
 	/** like collectLast but using a PFunction */
-	def collapseLast[U](find:PFunction[T,U]):Option[U]	= {
+	def collapseMapLast[U](find:PFunction[T,U]):Option[U]	= {
 		peer.reverse foreach { it =>
 			val out	= find(it)
 			if (out.isDefined)	return out
 		}
 		None
 	}
+	
+	/** group values by keys, both from a function */
+	def groupMap[K,V](func:T=>(K,V)):Map[K,ISeq[V]]	=
+			peer
+			.map		(func)
+			.groupBy	{ _._1 }
+			.map {
+				case (k, kvs) => (k, kvs map { _._2 })
+			}
+			
+	def mapMap[U,V](func:U=>V)(implicit ev:T=>ISeq[U]):ISeq[ISeq[V]]	=
+			peer map { _ map func }
+		
+	def flatMapMap[U,V](func:U=>V)(implicit ev:T=>ISeq[U]):ISeq[V]	=
+			peer flatMap { _ map func }
+	
+	def flatMapFlatMap[U,V](func:U=>ISeq[V])(implicit ev:T=>ISeq[U]):ISeq[V]	=
+			peer flatMap { _ flatMap func }
 	
 	def tailOption:Option[ISeq[T]]	=
 			if (peer.nonEmpty)	Some(peer.tail)
@@ -116,7 +137,7 @@ final class ISeqExt[T](peer:ISeq[T]) {
 	/** distinct on a single property */
 	def distinctBy[U](extract:T=>U):ISeq[T] =
 			distinctWith { extract(_) == extract(_) }
-	
+		
 	/** pairwise neighbors */
 	def zipTail:ISeq[(T,T)]	=
 			if (peer.nonEmpty)	peer zip peer.tail
