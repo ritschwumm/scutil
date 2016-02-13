@@ -5,6 +5,7 @@ import scutil.io.pimp._
 object implicits extends implicits
 trait implicits
 		extends	disposables
+		with	CharsetImplicits
 		with	FileImplicits
 		with	InputStreamImplicits
 		with	OutputStreamImplicits

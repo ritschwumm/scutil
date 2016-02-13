@@ -48,15 +48,6 @@ final class SetExt[T](peer:Set[T]) {
 			.map {
 				case (k, kvs) => (k, kvs map { _._2 })
 			}
-			
-	def mapMap[U,V](func:U=>V)(implicit ev:T=>Set[U]):Set[Set[V]]	=
-			peer map { _ map func }
-		
-	def flatMapMap[U,V](func:U=>V)(implicit ev:T=>Set[U]):Set[V]	=
-			peer flatMap { _ map func }
-		
-	def flatMapFlatMap[U,V](func:U=>Set[V])(implicit ev:T=>Set[U]):Set[V]	=
-			peer flatMap { _ flatMap func }
 		
 	def toSet:JSet[T]	=  {
 		val out	= new JHashSet[T]

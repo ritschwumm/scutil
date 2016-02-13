@@ -88,15 +88,6 @@ final class ISeqExt[T](peer:ISeq[T]) {
 			.map {
 				case (k, kvs) => (k, kvs map { _._2 })
 			}
-			
-	def mapMap[U,V](func:U=>V)(implicit ev:T=>ISeq[U]):ISeq[ISeq[V]]	=
-			peer map { _ map func }
-		
-	def flatMapMap[U,V](func:U=>V)(implicit ev:T=>ISeq[U]):ISeq[V]	=
-			peer flatMap { _ map func }
-	
-	def flatMapFlatMap[U,V](func:U=>ISeq[V])(implicit ev:T=>ISeq[U]):ISeq[V]	=
-			peer flatMap { _ flatMap func }
 	
 	def tailOption:Option[ISeq[T]]	=
 			if (peer.nonEmpty)	Some(peer.tail)
