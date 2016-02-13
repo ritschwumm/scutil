@@ -1,18 +1,13 @@
 name	:= "scutil-xml"
 
 scalacOptions	++= Seq(
-	// "-Ymacro-debug-lite",
-	"-deprecation",
-	"-unchecked",
-	"-language:implicitConversions",
+	"-language:implicitConversions"//,
 	// "-language:existentials",
 	// "-language:higherKinds",
 	// "-language:reflectiveCalls",
 	// "-language:dynamics",
 	// "-language:postfixOps",
 	// "-language:experimental.macros",
-	"-feature",
-	"-optimize"
 )
 
 libraryDependencies	++= Seq(

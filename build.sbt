@@ -1,9 +1,13 @@
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.77.0",
+	version			:= "0.78.0",
 	
 	scalaVersion	:= "2.11.7",
 	scalacOptions	++= Seq(
+		"-deprecation",
+		"-unchecked",
+		"-feature",
+		"-optimize",
 		"-Ywarn-unused-import",
 		"-Xfatal-warnings"
 	),
@@ -21,7 +25,7 @@ inThisBuild(Seq(
 lazy val `scutil`	=
 		project
 		.in			(file("."))
-		.aggregate	(`scutil-core`, `scutil-swing`, `scutil-xml`)
+		.aggregate	(`scutil-core`, `scutil-swing`, `scutil-xml`, `scutil-uid`)
 		.settings	(publishArtifact := false)
 
 lazy val `scutil-core`	=
@@ -36,4 +40,9 @@ lazy val `scutil-swing`	=
 lazy val `scutil-xml`	=
 		project
 		.in			(file("sub/xml"))
+		.dependsOn	(`scutil-core`)
+		
+lazy val `scutil-uid`	=
+		project
+		.in			(file("sub/uid"))
 		.dependsOn	(`scutil-core`)

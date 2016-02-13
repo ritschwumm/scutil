@@ -2,17 +2,13 @@ name	:= "scutil-core"
 
 scalacOptions	++= Seq(
 	// "-Ymacro-debug-lite",
-	"-deprecation",
-	"-unchecked",
 	"-language:implicitConversions",
 	// "-language:existentials",
-	"-language:higherKinds",
+	"-language:higherKinds"//,
 	// "-language:reflectiveCalls",
 	// "-language:dynamics",
 	// "-language:postfixOps",
 	// "-language:experimental.macros",
-	"-feature",
-	"-optimize"
 )
 
 (sourceGenerators in Compile)	<+= (sourceManaged in Compile) map Boilerplate.generate

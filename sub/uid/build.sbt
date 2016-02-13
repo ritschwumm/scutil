@@ -1,7 +1,7 @@
-name	:= "scutil-swing"
+name	:= "scutil-uid"
 
 scalacOptions	++= Seq(
-	"-language:implicitConversions"//,
+	//"-language:implicitConversions",
 	// "-language:existentials",
 	// "-language:higherKinds",
 	// "-language:reflectiveCalls",
