@@ -85,8 +85,8 @@ final class ISeqExt[T](peer:ISeq[T]) {
 			peer
 			.map		(func)
 			.groupBy	{ _._1 }
-			.map {
-				case (k, kvs) => (k, kvs map { _._2 })
+			.map { case (k, kvs) =>
+				(k, kvs map { _._2 })
 			}
 	
 	def tailOption:Option[ISeq[T]]	=

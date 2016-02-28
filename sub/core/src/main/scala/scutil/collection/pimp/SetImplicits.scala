@@ -45,11 +45,11 @@ final class SetExt[T](peer:Set[T]) {
 			peer
 			.map		(func)
 			.groupBy	{ _._1 }
-			.map {
-				case (k, kvs) => (k, kvs map { _._2 })
+			.map { case (k, kvs) =>
+				(k, kvs map { _._2 })
 			}
 		
-	def toSet:JSet[T]	=  {
+	def toJSet:JSet[T]	=  {
 		val out	= new JHashSet[T]
 		peer foreach out.add
 		JCollections unmodifiableSet out

@@ -1,6 +1,7 @@
 package scutil.io
 
 import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 
 import scutil.lang._
 import scutil.platform.SystemProperties
@@ -9,15 +10,12 @@ import scutil.platform.SystemProperties
 object Charsets {
 	val platform	= Charset forName SystemProperties.file.encoding
 	
-	val	us_ascii	= Charset forName "US-ASCII"
-	
-	val	iso_8859_1	= Charset forName "ISO-8859-1"
-	//val	iso_8859_15	= Charset forName "ISO-8859-15"
-	
-	val	utf_8		= Charset forName "UTF-8"
-	val utf_16		= Charset forName "UTF-16"
-	val utf_16be	= Charset forName "UTF-16BE"
-	val utf_16le	= Charset forName "UTF-16LE"
+	val us_ascii	= StandardCharsets.US_ASCII
+	val iso_8859_1	= StandardCharsets.ISO_8859_1
+	val utf_8		= StandardCharsets.UTF_8
+	val utf_16		= StandardCharsets.UTF_16
+	val utf_16be	= StandardCharsets.UTF_16BE
+	val utf_16le	= StandardCharsets.UTF_16LE
 	
 	/** Fail when then name is illegal or the charset is not supported */
 	def byName(name:String):Tried[IllegalArgumentException,Charset]	=

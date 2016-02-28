@@ -6,7 +6,6 @@ import java.net.URL
 
 import scutil.lang._
 import scutil.lang.implicits._
-import scutil.io.disposables._
 
 object URLImplicits extends URLImplicits
 

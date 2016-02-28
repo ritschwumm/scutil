@@ -40,7 +40,7 @@ object InputEventPredicates {
 	val buttonUp1:Predicate[InputEvent]		= modifierClear(InputEvent.BUTTON1_DOWN_MASK)
 	val buttonUp2:Predicate[InputEvent]		= modifierClear(InputEvent.BUTTON2_DOWN_MASK)
 	val buttonUp3:Predicate[InputEvent]		= modifierClear(InputEvent.BUTTON3_DOWN_MASK)
-	 	
+	
 	val shiftDown:Predicate[InputEvent]		= modifierSet(InputEvent.SHIFT_DOWN_MASK)
 	val altGraphDown:Predicate[InputEvent]	= modifierSet(InputEvent.ALT_GRAPH_DOWN_MASK)
 	val altDown:Predicate[InputEvent]		= modifierSet(InputEvent.ALT_DOWN_MASK)

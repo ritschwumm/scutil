@@ -39,22 +39,26 @@ final class AnyExt[T](peer:T) {
 	
 	/** do something to us, then dispose */
 	def use[U](func:T=>U)(implicit ev:T=>Disposable):U = {
-		var thrown	= false
+		var primary:Throwable	= null
 		try {
 			func(peer)
 		}
 		catch { case e:Throwable	=>
-			thrown	= true
+			primary	= e
 			throw e
 		}
 		finally {
-			try {
-				ev(peer).dispose()
+			val disposable	= ev(peer)
+			if (primary ne null) {
+				try {
+					disposable.dispose()
+				}
+				catch { case e:Throwable	=>
+					primary addSuppressed e
+				}
 			}
-			catch { case e:Throwable	=>
-				if (!thrown)	throw e
-				// NOTE the exception from close has been swallowed
-				// use Throwable#addSuppressed in java 7
+			else {
+				disposable.dispose()
 			}
 		}
 	}

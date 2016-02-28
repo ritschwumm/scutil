@@ -4,7 +4,8 @@ import scutil.lang.pimp._
 
 object implicits extends implicits
 trait implicits
-		extends	AnyImplicits
+		extends	disposables
+		with	AnyImplicits
 		with	AnyRefImplicits
 		with	BooleanImplicits
 		with	ClassImplicits
