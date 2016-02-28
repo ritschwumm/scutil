@@ -1,7 +1,6 @@
 package scutil.lang.pimp
 
-import java.net.URL
-import java.io.InputStream
+import scutil.io.ResourceProvider
 
 object ClassImplicits extends ClassImplicits
 
@@ -10,8 +9,9 @@ trait ClassImplicits {
 }
 
 final class ClassExt[T](peer:Class[T]) {
-	def resourceOption(path:String):Option[URL]					= Option(peer getResource path)
-	def resourceAsStreamOption(path:String):Option[InputStream]	= Option(peer getResourceAsStream path)
+	// NOTE paths are relative to the class unless preceeded by a slash
+	def resources:ResourceProvider	=
+			new ResourceProvider(path => Option(peer getResource path))
 	
 	def boxed:Class[_]	= peer match {
 		case java.lang.Boolean.TYPE		=> classOf[java.lang.Boolean]

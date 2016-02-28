@@ -9,6 +9,7 @@ trait implicits
 		with	AnyRefImplicits
 		with	BooleanImplicits
 		with	ClassImplicits
+		with	ClassLoaderImplicits
 		with	ExceptionCatchImplicits
 		with	EitherImplicits
 		with	Function0Implicits

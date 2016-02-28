@@ -17,11 +17,11 @@ final class URLExt(peer:URL) {
 	// TODO handle IOException
 	
 	/** execute a closure with an InputStream reading from this URL */
-	def withInputStream[T](code:(InputStream=>T)):T	=
+	def withInputStream[T](code:InputStream=>T):T	=
 			peer.openStream() use code
 	
 	/** execute a closure with a Reader reading from this URL */
-	def withReader[T](charset:Charset)(code:(InputStreamReader=>T)):T	=
+	def withReader[T](charset:Charset)(code:InputStreamReader=>T):T	=
 			new InputStreamReader(peer.openStream(), charset) use code
 		
 	def openInputStream():Tried[IOException,InputStream]	=
