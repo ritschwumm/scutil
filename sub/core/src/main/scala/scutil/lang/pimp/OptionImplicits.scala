@@ -183,6 +183,9 @@ final class OptionExt[T](peer:Option[T]) {
 	def toISeq:ISeq[T]	=
 			toVector
 			
+	def toSet:Set[T]	=
+			toVector.toSet
+			
 	def toVector:Vector[T]	=
 			peer match {
 				case Some(x)	=> Vector(x)

@@ -95,14 +95,20 @@ private final class BijectorImpl(val c:Context) {
 					if (applySignature.size == 1)
 							q"""
 								_root_.scutil.lang.Bijection(
-									$companionSymbol.unapply _ andThen { _.get },
+									$companionSymbol.unapply _ andThen {
+										case Some(x)	=> x
+										case None		=> _root_.scala.sys error "case class unapply is expected to be total"
+									},
 									$companionSymbol.apply _
 								)
 							"""
 					else
 							q"""
 								_root_.scutil.lang.Bijection(
-									$companionSymbol.unapply _ andThen { _.get },
+									$companionSymbol.unapply _ andThen {
+										case Some(x)	=> x
+										case None		=> _root_.scala.sys error "case class unapply is expected to be total"
+									},
 									($companionSymbol.apply _).tupled
 								)
 							"""

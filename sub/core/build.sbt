@@ -41,7 +41,7 @@ initialCommands in console	:= """
 	import scutil.lang._
 	import scutil.implicits._
 	import scutil.io.Files._
-	import scutil.io.Charsets.utf_8
+	import scutil.io.Charsets.{ iso_8859_1, utf_8 }
 	import scutil.io.Base64
 	import scutil.io.URIComponent
 	import scutil.text.Human
