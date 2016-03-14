@@ -1,7 +1,6 @@
 package scutil.lang
 
 import scala.util.{ Try, Success, Failure }
-import scala.reflect.ClassTag
 import scala.collection.generic.CanBuildFrom
 
 object Tried extends TriedGenerated {

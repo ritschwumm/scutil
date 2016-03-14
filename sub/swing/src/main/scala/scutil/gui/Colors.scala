@@ -1,6 +1,6 @@
 package scutil.gui
 
-import java.awt.{ List=>AwtList, _ }
+import java.awt.Color
 
 object Colors {
 	val transparentBlack:Color	= new Color(0, 0, 0, 0)

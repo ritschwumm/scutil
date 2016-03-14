@@ -1,8 +1,6 @@
 package scutil.lang
 
-import language.experimental.macros
 import scala.reflect.macros.blackbox.Context
-import scala.reflect.runtime.universe.TypeTag
 
 import scutil.implicits._
 

@@ -2,8 +2,6 @@ package scutil.text
 
 import java.util.Locale
 
-import scala.annotation.tailrec
-
 import scutil.lang._
 import scutil.implicits._
 

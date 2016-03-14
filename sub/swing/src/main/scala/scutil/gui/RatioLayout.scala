@@ -1,6 +1,6 @@
 package scutil.gui
 
-import java.awt.{ List => AwtList, _ }
+import java.awt.{ List=>_, _ }
 
 import scutil.implicits._
 

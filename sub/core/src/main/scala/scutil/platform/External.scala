@@ -2,8 +2,6 @@ package scutil.platform
 
 import java.io._
 
-import scala.collection.mutable
-
 import scutil.lang._
 import scutil.implicits._
 import scutil.concurrent.Executors

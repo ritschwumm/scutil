@@ -7,7 +7,6 @@ import java.awt.Point
 import java.awt.Window
 import java.awt.IllegalComponentStateException
 import java.applet.Applet
-import javax.swing.SwingUtilities
 
 import scala.collection.mutable
 

@@ -1,6 +1,5 @@
 package scutil.gui
 
-import java.util.{ List => JList }
 import java.io._
 import java.awt.dnd._
 import java.awt.datatransfer._

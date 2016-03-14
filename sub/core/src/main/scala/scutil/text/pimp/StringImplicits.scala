@@ -118,14 +118,28 @@ final class StringExt(peer:String) {
 	//------------------------------------------------------------------------------
 	
 	/** like indexOf, but None if not found */
-	def indexOfOption(ch:Int, fromIndex:Int=0):Option[Int]	=
+	def indexOfString(part:String, fromIndex:Int=0):Option[Int]	=
+			peer indexOf (part, fromIndex) match {
+				case -1		=> None
+				case index	=> Some(index)
+			}
+			
+	/** like lastIndexOf, but None if not found */
+	def lastIndexOfStringOption(part:String, fromIndex:Int=peer.length-1):Option[Int]	=
+			peer lastIndexOf (part, fromIndex) match {
+				case -1		=> None
+				case index	=> Some(index)
+			}
+
+	/** like indexOf, but None if not found */
+	def indexOfCharOption(ch:Int, fromIndex:Int=0):Option[Int]	=
 			peer indexOf (ch, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)
 			}
 			
 	/** like lastIndexOf, but None if not found */
-	def lastIndexOfOption(ch:Int, fromIndex:Int=peer.length-1):Option[Int]	=
+	def lastIndexOfCharOption(ch:Int, fromIndex:Int=peer.length-1):Option[Int]	=
 			peer lastIndexOf (ch, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)

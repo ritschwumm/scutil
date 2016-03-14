@@ -8,9 +8,6 @@ import java.util.{
 	Enumeration	=> JEnumeration
 }
 
-import scala.collection.AbstractIterable
-import scala.collection.AbstractIterator
-
 final class IterableAsJIterable[T](peer:Iterable[T]) extends JIterable[T] {
 	def iterator:JIterator[T]	= new IteratorAsJIterator(peer.iterator)
 }

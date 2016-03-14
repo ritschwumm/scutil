@@ -1,8 +1,8 @@
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.80.0",
+	version			:= "0.81.0",
 	
-	scalaVersion	:= "2.11.7",
+	scalaVersion	:= "2.11.8",
 	scalacOptions	++= Seq(
 		"-deprecation",
 		"-unchecked",

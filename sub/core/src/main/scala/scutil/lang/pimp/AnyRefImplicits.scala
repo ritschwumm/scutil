@@ -1,7 +1,5 @@
 package scutil.lang.pimp
 
-import scala.reflect.Manifest
-
 object AnyRefImplicits extends AnyRefImplicits
 
 trait AnyRefImplicits {

@@ -6,8 +6,7 @@ import java.nio.charset.Charset
 import scutil.lang._
 import scutil.lang.implicits._
 import scutil.io.implicits._
-import scutil.io.Files
-import scutil.time.MilliInstant
+import scutil.time._
 import scutil.platform.SystemProperties
 
 object FileImplicits extends FileImplicits

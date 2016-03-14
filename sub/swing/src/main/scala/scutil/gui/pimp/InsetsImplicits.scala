@@ -1,6 +1,6 @@
 package scutil.gui.pimp
 
-import java.awt.{ List=>AwtList, _ }
+import java.awt.{ List=>_, _ }
 
 object InsetsImplicits extends InsetsImplicits
 

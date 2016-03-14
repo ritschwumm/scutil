@@ -41,6 +41,12 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 	def count(pred:Predicate[T]):Int	=
 			(if (pred(head)) 1 else 0) +
 			(tail count pred)
+			
+	def forall(pred:Predicate[T]):Boolean	=
+			pred(head) && (tail forall pred)
+	
+	def exists(pred:Predicate[T]):Boolean	=
+			pred(head) || (tail exists pred)
 	
 	def drop(count:Int):Option[Nes[T]]	=
 			Nes fromISeq (toVector drop count)

@@ -6,8 +6,7 @@ import java.lang.{
 import java.math.{
 	BigDecimal	=> JBigDecimal,
 	BigInteger	=> JBigInteger,
-	MathContext,
-	RoundingMode
+	MathContext
 }
 
 import scutil.lang.ISeq

@@ -1,6 +1,5 @@
 package scutil.lang.pimp
 
-import java.lang.{ Integer => JInt, Long => JLong }
 import java.math.{ BigInteger => JBigInt }
 
 import scala.reflect.macros.blackbox.Context
