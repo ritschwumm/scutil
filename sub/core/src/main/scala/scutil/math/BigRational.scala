@@ -165,11 +165,11 @@ final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extend
 	def toBigDecimal(mathContext:MathContext):JBigDecimal =
 			new JBigDecimal(numerator) divide (new JBigDecimal(denominator), mathContext)
 			
-	// TODO weak
-	override def doubleValue:Double	= numerator.doubleValue / denominator.doubleValue
-	override def floatValue:Float	= numerator.floatValue  / denominator.floatValue
-	override def intValue:Int		= scala.math.round(doubleValue).toInt
-	override def longValue:Long		= scala.math.round(doubleValue)
+	override def doubleValue:Double	= rounded.doubleValue
+	override def floatValue:Float	= rounded.floatValue
+	override def intValue:Int		= rounded.intValue
+	override def longValue:Long		= rounded.longValue
+	private def rounded:JBigDecimal	= toBigDecimal(MathContext.DECIMAL128)
 	
 	override def toString:String	= numerator.toString + "/" + denominator.toString
 }

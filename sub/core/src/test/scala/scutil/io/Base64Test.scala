@@ -2,7 +2,7 @@ package scutil.io
 
 import org.specs2.mutable._
 
-@SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
+@SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
 class Base64Test extends Specification {
 	val	possible = {
 		val	out	= new Array[Byte](256)

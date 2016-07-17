@@ -1,7 +1,11 @@
 package scutil.io
 
-import java.net._
-import java.nio.charset.Charset
+import java.nio.charset._
+
+import scala.collection.mutable
+
+import scutil.lang._
+import scutil.io.pimp.CharsetImplicits._
 
 object URIComponent {
 	val utf_8	= forCharset(Charsets.utf_8)
@@ -57,9 +61,37 @@ final class URIComponent(charset:Charset) {
 	//------------------------------------------------------------------------------
 	//## decoding
 	
-	def decode(s:String):String =
-			URLDecoder decode (
-				s replace ("+", "%2B"),
-				charset.name
-			)
+	def decode(s:String):Tried[URIComponentProblem,String]	= {
+		val b	= new mutable.ArrayBuffer[Byte]
+		var i	= 0
+		while (i<s.length) {
+			val c	= s charAt i
+			if (c >= 256)	return Fail(URIComponentInvalid(i))
+			else if (c == '%') {
+				i	+= 1
+				if (i >= s.length)	return Fail(URIComponentInvalid(i))
+				val n1	= decodeNibble(s charAt i)
+				if (n1 == -1)		return Fail(URIComponentInvalid(i))
+				
+				i	+= 1
+				if (i >= s.length)	return Fail(URIComponentInvalid(i))
+				val n2	= decodeNibble(s charAt i)
+				if (n2 == -1)		return Fail(URIComponentInvalid(i))
+				
+				b	+= ((n1 << 4) | (n2 << 0)).toByte
+				i	+= 1
+			}
+			else {
+				b	+= c.toByte
+				i	+= 1
+			}
+		}
+		charset decodeTried b.toArray mapFail URIComponentException
+	}
+	
+	private def decodeNibble(nibble:Char):Int	=
+				 if (nibble >= '0' && nibble <= '9')	nibble - '0'
+			else if (nibble >= 'a' && nibble <= 'f')	nibble - 'a' + 10
+			else if (nibble >= 'A' && nibble <= 'F')	nibble - 'A' + 10
+			else										-1
 }

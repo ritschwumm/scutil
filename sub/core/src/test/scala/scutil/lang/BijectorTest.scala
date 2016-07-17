@@ -11,7 +11,7 @@ trait Fooz[T]
 final case class Parametrized1[A](x:Fooz[A])
 final case class Parametrized2[A,B](x:Fooz[A], y:Fooz[B])
 
-@SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
+@SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
 object Wrapper {
 	final case class Inner(t:Int)
 	
@@ -20,7 +20,7 @@ object Wrapper {
 
 //------------------------------------------------------------------------------
 
-@SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
+@SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
 class BijectorTest extends Specification {
 	"bijections" should {
 		"work with unary case classes" in {

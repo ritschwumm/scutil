@@ -10,19 +10,6 @@ object Fielder {
 	
 	// NOTE application is in Fielding.provide
 	// implicit def fielding[T]:Fielding[T]	= macro FielderImpl.apply[T]
-	
-	/*
-	// equivalent to apply, more or less
-	
-	import scala.reflect.runtime.universe._
-	
-	def caseClassFieldNames[T:TypeTag]:Option[ISeq[String]]	=
-			for {
-				primaryCtor	<- (typeOf[T].declarations filter { _.isMethod } map { _.asMethod } filter { _.isPrimaryConstructor }).singleOption
-				paramNames	<- primaryCtor.paramss.singleOption
-			}
-			yield paramNames map { _.name.decoded }
-	*/
 }
 
 private final class FielderImpl(val c:Context) {
@@ -32,7 +19,11 @@ private final class FielderImpl(val c:Context) {
 		val selfType:Type	= weakTypeOf[T]
 
 		val primaryCtorOpt	=
-				(selfType.decls filter { _.isMethod } map { _.asMethod } filter { _.isPrimaryConstructor }).singleOption
+				selfType.decls
+				.filter	{ _.isMethod }
+				.map	{ _.asMethod }
+				.filter	{ _.isPrimaryConstructor }
+				.singleOption
 		
 		val names:Tried[String,Tree]	=
 				for {

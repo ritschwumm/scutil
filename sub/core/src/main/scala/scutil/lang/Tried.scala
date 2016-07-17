@@ -63,7 +63,7 @@ object Tried extends TriedGenerated {
 		
 	//------------------------------------------------------------------------------
 	
-	def zip2[E,S1,S2](s1:Validated[E,S1], s2:Validated[E,S2]):Validated[E,(S1,S2)]	=
+	def zip2[E,S1,S2](s1:Tried[E,S1], s2:Tried[E,S2]):Tried[E,(S1,S2)]	=
 			s1 zip s2
 	
 	/*

@@ -2,14 +2,29 @@ package scutil.io
 
 import org.specs2.mutable._
 
+import scutil.lang._
+
 class URIComponentTest extends Specification {
 	"URIComponent" should {
-		"roundtrip all usual chars" in {
-			val str	= 0 until 256 map { _.toChar } mkString ""
+		"roundtrip all usual chars (low)" in {
+			val str	= '\u0000' to '\ud7ff' map { _.toChar } mkString ""
 			val	enc	= URIComponent.utf_8 encode str
 			val	dec	= URIComponent.utf_8 decode enc
-			dec mustEqual str
+			dec mustEqual Win(str)
 		}
+		"roundtrip all usual chars (high)" in {
+			val str	= '\ue000' to '\uffff' map { _.toChar } mkString ""
+			val	enc	= URIComponent.utf_8 encode str
+			val	dec	= URIComponent.utf_8 decode enc
+			dec mustEqual Win(str)
+		}
+		"roundtrip chars outside the 16 bit range" in {
+			val str	= Character toChars Integer.parseInt("00010400", 16) mkString ""
+			val	enc	= URIComponent.utf_8 encode str
+			val	dec	= URIComponent.utf_8 decode enc
+			dec mustEqual Win(str)
+		}
+		
 		"encode plus as %2B" in {
 			URIComponent.utf_8 encode "+" mustEqual "%2B"
 		}
@@ -17,7 +32,7 @@ class URIComponentTest extends Specification {
 			URIComponent.utf_8 encode " " mustEqual "%20"
 		}
 		"decode plus as plus" in {
-			URIComponent.utf_8 decode "+" mustEqual "+"
+			URIComponent.utf_8 decode "+" mustEqual Win("+")
 		}
 		
 		val interestingRaw	= "~!@#$%^&*(){}[]=:/,;?+'\"\\"
@@ -28,7 +43,7 @@ class URIComponentTest extends Specification {
 		}
 		
 		"decode interesting chars just like decodeURIComponent" in {
-			URIComponent.utf_8 decode interestingCode mustEqual interestingRaw
+			URIComponent.utf_8 decode interestingCode mustEqual Win(interestingRaw)
 		}
 		
 		"encode german umlauts" in {
@@ -36,7 +51,27 @@ class URIComponentTest extends Specification {
 		}
 		
 		"decode german umlauts" in {
-			URIComponent.utf_8 decode "%C3%A4%C3%B6%C3%BC" mustEqual "äöü"
+			URIComponent.utf_8 decode "%C3%A4%C3%B6%C3%BC" mustEqual Win("äöü")
+		}
+		
+		"fail with invalid % sequences (1)" in {
+			URIComponent.utf_8 decode "%" mustEqual Fail(URIComponentInvalid((1)))
+		}
+		
+		"fail with invalid % sequences (2)" in {
+			URIComponent.utf_8 decode " %" mustEqual Fail(URIComponentInvalid((2)))
+		}
+		
+		"fail with invalid % sequences (3)" in {
+			URIComponent.utf_8 decode "%x" mustEqual Fail(URIComponentInvalid((1)))
+		}
+		
+		"fail with invalid % sequences (4)" in {
+			URIComponent.utf_8 decode "%1x" mustEqual Fail(URIComponentInvalid((2)))
+		}
+		
+		"fail with invalid % sequences (5)" in {
+			URIComponent.utf_8 decode "%%" mustEqual Fail(URIComponentInvalid((1)))
 		}
 		
 		/*

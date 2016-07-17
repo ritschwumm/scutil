@@ -6,6 +6,9 @@ object Subtype {
 	def partial[Super,Sub<:Super](pfunc:PartialFunction[Super,Sub]):Subtype[Super,Sub]	=
 			Subtype(pfunc.lift)
 		
+	def identity[T]:Subtype[T,T]	=
+			Subtype(Some.apply)
+		
 	/** throwables have no type parameters so variance is not an issue here */
 	def throwable[E<:Throwable:ClassTag]:Subtype[Throwable,E]	=
 			Subtype partial {

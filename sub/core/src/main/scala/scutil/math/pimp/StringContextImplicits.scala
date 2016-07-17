@@ -11,5 +11,5 @@ trait StringContextImplicits {
 }
 
 final class StringContextExt(peer:StringContext) {
-	def br():BigRational		= macro MathMacros.brImpl
+	def br():BigRational	= macro MathMacros.brImpl
 }
