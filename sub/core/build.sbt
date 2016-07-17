@@ -15,7 +15,7 @@ scalacOptions	++= Seq(
 
 libraryDependencies	++= Seq(
 	"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "compile",
-	"org.specs2"		%%	"specs2-core"	% "3.7.2"				% "test"
+	"org.specs2"		%%	"specs2-core"	% "3.7.3"				% "test"
 )
 
 wartremoverErrors ++= Seq(
@@ -47,4 +47,5 @@ initialCommands in console	:= """
 	import scutil.text.Human
 	import scutil.time._
 	import scutil.math._
+	import scutil.platform._
 """

@@ -80,7 +80,15 @@ object DndFileImport {
 				.flatMap			{ _.toNesOption toGood badMessage(s"empty uri list") }
 		
 		private def fileFromURI(uri:String):Validated[Exception,File]	=
-				 Catch.exception in new File(new URI(uri)) mapFail Nes.single into Validated.fromTried
+				parseFile(uri) mapFail Nes.single into Validated.fromTried
+		
+		// on el captain text/uri-list contains a file path, but new File(URI) expects an absolute URI
+		private def parseFile(s:String):Tried[Exception,File]	=
+				Catch.exception in {
+					val uri	= new URI(s)
+					if (uri.getScheme != null)	new File(uri)
+					else						new File(s)
+				}
 		
 		private def filesFromJList(jlist:JList[File]):Validated[Exception,Nes[File]]	=
 				jlist.toISeq.toNesOption toGood badMessage(s"empty file list")

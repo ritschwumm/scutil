@@ -1,7 +1,6 @@
 package scutil.collection.pimp
 
 import scala.collection.generic.CanBuildFrom
-import scala.collection.immutable
 
 import scutil.lang._
 
@@ -12,17 +11,7 @@ trait TraversableImplicits {
 }
 
 final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
-	/** get the only element of the collection or throw an Exception */
-	def single:T = {
-		var out:Option[T]	= None
-		peer foreach { it =>
-			if (out.isDefined)	sys error "expected exactly one element, found multiple"
-			out	= Some(it)
-		}
-		(out fold (sys error "expected exactly one element, found none"))(identity)
-	}
-	
-	/** Some if the collections contains exactly one element, else None */
+	/** Some if the collection contains exactly one element, else None */
 	def singleOption:Option[T]	= {
 		var out:Option[T]	= None
 		peer foreach { it =>
@@ -30,6 +19,19 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 			out	= Some(it)
 		}
 		out
+	}
+	
+	/** Fail(false) for zero elements, Win(x) for one element, Fail(true) for more */
+	def singleTried:Tried[Boolean,T] = {
+		var out:Option[T]	= None
+		peer foreach { it =>
+			if (out.isDefined)	return Fail(true)
+			out	= Some(it)
+		}
+		out match {
+			case Some(x)	=> Win(x)
+			case None		=> Fail(false)
+		}
 	}
 	
 	// NOTE these don't terminate for infinite collections!
@@ -137,7 +139,6 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 		
 	/** peer is traversable (in the haskell sense), Validated is an idiom. */
 	def traverseValidated[F,W](func:T=>Validated[F,W])(implicit cbf:CanBuildFrom[CC[T],W,CC[W]]):Validated[F,CC[W]]	= {
-		// TODO ugly
 		val mapped		= peer map func
 		val problems	= mapped flatMap { _.badProblems }
 		Nes fromISeq problems.toVector match {
@@ -154,7 +155,7 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 	
 	def toISeq:ISeq[T]	=
 			peer match {
-				case x:immutable.Seq[T]	=> x
-				case x					=> x.toVector
+				case x:ISeq[T]	=> x
+				case x			=> x.toVector
 			}
 }

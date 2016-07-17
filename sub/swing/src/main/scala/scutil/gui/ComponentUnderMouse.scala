@@ -41,7 +41,6 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 		entries	+= (component -> Entry(nowUnderMouse, newCallbacks))		
 		disposable {
 			entries	=
-					// TODO Map should have collapseMap, too
 					entries flatMap { case (component, entry) =>
 						val newCallbacks	=
 								entry.callbacks filterNot { it =>

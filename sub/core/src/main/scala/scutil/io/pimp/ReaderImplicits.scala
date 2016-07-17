@@ -75,7 +75,7 @@ final class ReaderExt(peer:Reader) {
 	
 	//------------------------------------------------------------------------------
 	
-	// TODO should take a line separator argument
+	// BETTER  use a specific line separator
 	def readLines():ISeq[String]	= {
 		val in		= new BufferedReader(peer)
 		val buffer	= new mutable.ArrayBuffer[String]

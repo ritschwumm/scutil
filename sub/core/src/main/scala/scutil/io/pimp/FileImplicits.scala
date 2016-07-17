@@ -99,7 +99,7 @@ final class FileExt(peer:File) {
 	//------------------------------------------------------------------------------
 	//## file only: resource closure
 	
-	// TODO handle IOException
+	// BETTER handle IOException
 	
 	/** execute a closure with an InputStream reading from this File */
 	def withInputStream[T](code:(FileInputStream=>T)):T	=
@@ -120,18 +120,15 @@ final class FileExt(peer:File) {
 	//------------------------------------------------------------------------------
 	//## file only: complete read
 	
-	// TODO handle IOException
-	
 	def readBytes():Array[Byte]				= withInputStream	{ _ readFully ()	}
 	def writeBytes(bytes:Array[Byte]):Unit	= withOutputStream	{ _ write bytes		}
 	
 	def readString(charset:Charset):String					= withReader(charset) { _ readFully () }
 	def writeString(charset:Charset, string:String):Unit	= withWriter(charset) { _ write string }
 	
-	// TODO should honor a single line separator
+	// BETTER  use a specific line separator
 	def readLines(charset:Charset):ISeq[String]	=
 			withReader(charset) { _ readLines () }
-	// TODO should not use the platform line separator
 	def writeLines(charset:Charset, lines:ISeq[String]):Unit	=
 			withWriter(charset) { writer =>
 				lines foreach { line =>

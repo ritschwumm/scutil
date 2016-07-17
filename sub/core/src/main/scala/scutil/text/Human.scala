@@ -106,9 +106,8 @@ object Human {
 			millisToSeconds andThen (time renderer HumanConfig(smallUnits = 1, maxUnits = 1, decimalPlaces = 2))
 }
 
+// BETTER ensure table is sorted by construction
 final case class Human(table:Nes[HumanUnit]) {
-	// TODO ensure table is sorted by construction
-	
 	private val smallCount	= table count { _.divisor < Human.one }
 	
 	private def smallCut(smallUnits:Int):Nes[HumanUnit]	=

@@ -66,7 +66,7 @@ object DndFileExport {
 		def getTransferData(flavor:DataFlavor):AnyRef	=
 				flavor match {
 					case DndFlavors.javaFileList	=>
-						// TODO this is the only one that actually can transfer multiple files
+						// NOTE this is the only one that actually can transfer multiple files
 						files.toVector.toJList
 					case DndFlavors.uriList		=>
 						// NOTE this results in file:/tmp/path instead of file:///tmp/path

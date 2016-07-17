@@ -14,8 +14,6 @@ trait URLImplicits {
 }
 
 final class URLExt(peer:URL) {
-	// TODO handle IOException
-	
 	/** execute a closure with an InputStream reading from this URL */
 	def withInputStream[T](code:InputStream=>T):T	=
 			peer.openStream() use code
