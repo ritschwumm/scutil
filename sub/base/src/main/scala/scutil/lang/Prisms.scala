@@ -1,14 +1,14 @@
 package scutil.lang
 
 object Prisms {
-	def eitherLeft[A,B]:Prism[Either[A,B],A]			= Prism(_.left.toOption,	Left.apply)
-	def eitherRight[A,B]:Prism[Either[A,B],B]			= Prism(_.right.toOption,	Right.apply)
+	def eitherLeft[A,B]:Prism[Either[A,B],A]		= Prism(_.left.toOption,	Left.apply)
+	def eitherRight[A,B]:Prism[Either[A,B],B]		= Prism(_.right.toOption,	Right.apply)
 	
-	def triedFail[A,B]:Prism[Tried[A,B],A]				= Prism(_.swap.toOption,	Fail.apply)
-	def triedWin[A,B]:Prism[Tried[A,B],B]				= Prism(_.toOption,			Win.apply)
+	def triedFail[A,B]:Prism[Tried[A,B],A]			= Prism(_.swap.toOption,	Fail.apply)
+	def triedWin[A,B]:Prism[Tried[A,B],B]			= Prism(_.toOption,			Win.apply)
 	
-	def validatedBad[A,B]:Prism[Validated[A,B],Nes[A]]	= Prism(_.badOption,		Bad.apply)
-	def validatedGood[A,B]:Prism[Validated[A,B],B]		= Prism(_.toOption,			Good.apply)
+	def validatedBad[A,B]:Prism[Validated[A,B],A]	= Prism(_.badOption,		Bad.apply)
+	def validatedGood[A,B]:Prism[Validated[A,B],B]	= Prism(_.toOption,			Good.apply)
 	
 	def listCons[T]:Prism[List[T],(T,List[T])]	=
 			Prism(

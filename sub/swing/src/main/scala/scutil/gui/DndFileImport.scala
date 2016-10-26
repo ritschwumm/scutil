@@ -14,7 +14,7 @@ import scutil.gui.implicits._
 import scutil.geom.IntPoint
 
 object DndFileImport {
-	def install(target:JComponent, consumer:PFunction[IntPoint,Effect[Validated[Exception,Nes[File]]]]):Disposable	= {
+	def install(target:JComponent, consumer:PFunction[IntPoint,Effect[Validated[Nes[Exception],Nes[File]]]]):Disposable	= {
 		target setTransferHandler new FileTransferHandler(consumer)
 		
 		disposable {
@@ -29,7 +29,7 @@ object DndFileImport {
 				DndFlavors.url
 			)
 			
-	private final class FileTransferHandler(consumer:PFunction[IntPoint,Effect[Validated[Exception,Nes[File]]]]) extends TransferHandler {
+	private final class FileTransferHandler(consumer:PFunction[IntPoint,Effect[Validated[Nes[Exception],Nes[File]]]]) extends TransferHandler {
 		override def canImport(support:TransferSupport):Boolean =
 				importEffect(support).isDefined
 	
@@ -39,7 +39,7 @@ object DndFileImport {
 					false,
 					effect => {
 						//@see http://www.davidgrant.ca/drag_drop_from_linux_kde_gnome_file_managers_konqueror_nautilus_to_java_applications
-						val extracted:Validated[Exception,Nes[File]]	=
+						val extracted:Validated[Nes[Exception],Nes[File]]	=
 								// linux
 								extractFileList[String]		(support, DndFlavors.uriList,		filesFromURIList)	orElse
 								// windows / osx
@@ -54,7 +54,7 @@ object DndFileImport {
 				
 		//------------------------------------------------------------------------------
 				
-		private def importEffect(support:TransferSupport):Option[Effect[Validated[Exception,Nes[File]]]] =
+		private def importEffect(support:TransferSupport):Option[Effect[Validated[Nes[Exception],Nes[File]]]] =
 				supportsFormat(support)	flatGuard consumer(dropIntPoint(support))
 				
 		private def supportsFormat(support:TransferSupport):Boolean =
@@ -63,7 +63,7 @@ object DndFileImport {
 		private def dropIntPoint(support:TransferSupport):IntPoint	=
 				support.getDropLocation.getDropPoint.toIntPoint
 	
-		private def extractFileList[T](support:TransferSupport, flavor:DataFlavor, extractor:T=>Validated[Exception,Nes[File]]):Option[Validated[Exception,Nes[File]]]	=
+		private def extractFileList[T](support:TransferSupport, flavor:DataFlavor, extractor:T=>Validated[Nes[Exception],Nes[File]]):Option[Validated[Nes[Exception],Nes[File]]]	=
 				support isDataFlavorSupported flavor guard {
 					extractTransferData[T](support, flavor) mapFail Nes.single into Validated.fromTried flatMap extractor
 				}
@@ -71,7 +71,7 @@ object DndFileImport {
 		private def extractTransferData[T](support:TransferSupport, flavor:DataFlavor):Tried[Exception,T]	=
 				Catch.exception in (support.getTransferable getTransferData flavor).asInstanceOf[T]
 				
-		private def filesFromURIList(uriList:String):Validated[Exception,Nes[File]]	=
+		private def filesFromURIList(uriList:String):Validated[Nes[Exception],Nes[File]]	=
 				uriList
 				.splitAroundString	("\r\n")
 				.filterNot			{ _.isEmpty			}
@@ -80,7 +80,7 @@ object DndFileImport {
 				.sequenceValidated
 				.flatMap			{ _.toNesOption toGood badMessage(s"empty uri list") }
 		
-		private def fileFromURI(uri:String):Validated[Exception,File]	=
+		private def fileFromURI(uri:String):Validated[Nes[Exception],File]	=
 				parseFile(uri) mapFail Nes.single into Validated.fromTried
 		
 		// on el captain text/uri-list contains a file path, but new File(URI) expects an absolute URI
@@ -91,10 +91,10 @@ object DndFileImport {
 					else						new File(s)
 				}
 		
-		private def filesFromJList(jlist:JList[File]):Validated[Exception,Nes[File]]	=
+		private def filesFromJList(jlist:JList[File]):Validated[Nes[Exception],Nes[File]]	=
 				jlist.toISeq.toNesOption toGood badMessage(s"empty file list")
 								
-		private def filesFromURL(url:URL):Validated[Exception,Nes[File]]	=
+		private def filesFromURL(url:URL):Validated[Nes[Exception],Nes[File]]	=
 				url.toFile toGood badMessage(s"not a file url: ${url}") map Nes.single
 			
 		//------------------------------------------------------------------------------

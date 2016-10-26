@@ -134,23 +134,20 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 	}
 	
 	/** peer is traversable (in the haskell sense), Validated is an idiom. */
-	def sequenceValidated[F,W](implicit ev:T=>Validated[F,W], cbf:CanBuildFrom[CC[T],W,CC[W]]):Validated[F,CC[W]]	=
+	def sequenceValidated[F,W](implicit ev:T=>Validated[F,W], cbf:CanBuildFrom[CC[T],W,CC[W]], cc:CanConcat[F]):Validated[F,CC[W]]	=
 			traverseValidated(ev)
 		
 	/** peer is traversable (in the haskell sense), Validated is an idiom. */
-	def traverseValidated[F,W](func:T=>Validated[F,W])(implicit cbf:CanBuildFrom[CC[T],W,CC[W]]):Validated[F,CC[W]]	= {
-		val mapped		= peer map func
-		val problems	= mapped flatMap { _.badProblems }
-		Nes fromISeq problems.toVector match {
-			case Some(es)	=> Bad(es)
-			case None		=>
-				val builder	= cbf()
-				mapped foreach {
-					case Good(x)	=> builder	+= x
-					case Bad(_)		=>
-				}
-				Good(builder.result)
-		}	
+	def traverseValidated[F,W](func:T=>Validated[F,W])(implicit cbf:CanBuildFrom[CC[T],W,CC[W]], cc:CanConcat[F]):Validated[F,CC[W]]	= {
+		var problems:Option[F]	= None
+		val builder				= cbf()
+		peer foreach { it =>
+			func(it) match {
+				case Good(x)	=> if (problems.isEmpty)	builder	+= x
+				case Bad(x)		=> problems map { p => cc concat (p,x) } orElse Some(x)
+			}
+		}
+		problems map Bad.apply getOrElse Good(builder.result)
 	}
 	
 	def toISeq:ISeq[T]	=

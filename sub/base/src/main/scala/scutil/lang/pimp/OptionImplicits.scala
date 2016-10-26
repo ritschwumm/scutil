@@ -168,17 +168,11 @@ final class OptionExt[T](peer:Option[T]) {
 	def toFail[W](win: =>W):Tried[T,W]	=
 			Tried failOr (peer, win)
 			
-	def toGood[F](problems: =>Nes[F]):Validated[F,T]	=
+	def toGood[F](problems: =>F):Validated[F,T]	=
 			Validated goodOr (peer, problems)
 		
-	def toBad[ES,W](good: =>W)(implicit ev:T=>Nes[ES]):Validated[ES,W]	=
-			Validated badOr (peer map ev, good)
-		
-	def toGood1[F](problem: =>F):Validated[F,T]	=
-			Validated goodOr (peer, Nes single problem)
-		
-	def toBad1[ES,W](good: =>W)(implicit ev:T=>ES):Validated[ES,W]	=
-			Validated badOr (peer map (ev andThen Nes.single), good)
+	def toBad[ES,W](good: =>W):Validated[T,W]	=
+			Validated badOr (peer, good)
 		
 	def toISeq:ISeq[T]	=
 			toVector

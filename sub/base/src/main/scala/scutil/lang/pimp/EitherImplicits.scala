@@ -34,6 +34,6 @@ final class EitherExt[S,T](peer:Either[S,T]) {
 	def toTried:Tried[S,T]	=
 			Tried fromEither peer
 			
-	def toValidated[FS](implicit ev:S=>Nes[FS]):Validated[FS,T]	=
-			Validated fromEither (peer.left map ev)
+	def toValidated:Validated[S,T]	=
+			Validated fromEither peer
 }

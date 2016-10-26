@@ -102,7 +102,7 @@ object Boilerplate {
 			val idxs	= 1 to arity
 			s"""
 			def zip${arity}
-				[E,${csep(idxs map plainType)}]
+				[E:CanConcat,${csep(idxs map plainType)}]
 				(${(csep(idxs map wrapInput))})
 				:
 				Validated[E,(${csep(idxs map plainType)})]
@@ -115,7 +115,7 @@ object Boilerplate {
 			val idxs	= 1 to arity
 			s"""
 			def lift${arity}
-				[E,${csep(idxs map plainType)},T]
+				[E:CanConcat,${csep(idxs map plainType)},T]
 				(func:(${csep(idxs map plainType)})=>T)
 				:
 				(${csep(idxs map wrapType)})=>Validated[E,T]

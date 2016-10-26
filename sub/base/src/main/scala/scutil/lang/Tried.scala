@@ -21,7 +21,7 @@ object Tried extends TriedGenerated {
 				case Right(x)	=> Win(x)
 			}
 			
-	def fromValidated[F,W](validated:Validated[F,W]):Tried[Nes[F],W]	=
+	def fromValidated[F,W](validated:Validated[F,W]):Tried[F,W]	=
 			validated match {
 				case Bad(x)		=> Fail(x)
 				case Good(x)	=> Win(x)
@@ -256,8 +256,8 @@ sealed trait Tried[+F,+W] {
 	def toEither:Either[F,W]	=
 			cata(Left.apply, Right.apply)
 		
-	def toValidated[FS](implicit ev:F=>Nes[FS]):Validated[FS,W]	=
-			Validated fromTried (this mapFail ev)
+	def toValidated:Validated[F,W]	=
+			Validated fromTried this
 		
 	def toOption:Option[W]	=
 			cata(_ => None, Some.apply)

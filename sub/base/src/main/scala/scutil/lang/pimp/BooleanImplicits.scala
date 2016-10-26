@@ -48,7 +48,7 @@ final class BooleanExt(peer:Boolean) {
 	def tried[U,V](falseFail: =>U, trueWin: =>V):Tried[U,V] =
 			Tried switch (peer, falseFail, trueWin)
 		
-	def validated[E,T](falseProblems: =>Nes[E], trueGood: =>T):Validated[E,T]	=
+	def validated[E,T](falseProblems: =>E, trueGood: =>T):Validated[E,T]	=
 			Validated switch (peer, falseProblems, trueGood)
 		
 	//------------------------------------------------------------------------------
@@ -69,10 +69,10 @@ final class BooleanExt(peer:Boolean) {
 	def falseWin[U](problem: =>U):Tried[U,Unit]	=
 			Tried failCondition (peer, problem)
 		
-	def trueValidated[E](problems: =>Nes[E]):Validated[E,Unit]	=
+	def trueValidated[E](problems: =>E):Validated[E,Unit]	=
 			Validated goodCondition (peer, problems)
 		
-	def falseValidated[E](problems: =>Nes[E]):Validated[E,Unit]	=
+	def falseValidated[E](problems: =>E):Validated[E,Unit]	=
 			Validated badCondition (peer, problems)
 		
 	//------------------------------------------------------------------------------
