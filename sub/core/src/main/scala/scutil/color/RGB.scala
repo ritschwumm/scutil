@@ -1,23 +1,22 @@
 package scutil.color
 
-import java.lang.{ Integer => JInteger }
-import java.util.regex.Pattern
-
 import scala.math._
+
+import scutil.lang.Hex
 
 object RGB {
 	val white	= RGB(1,1,1)
 	val black	= RGB(0,0,0)
 	
-	private val patternHex	= Pattern compile "[0-9a-fA-F]{6}"
-	
 	def parseHex(s:String):Option[RGB]	=
-			if ((patternHex matcher s).matches) {
-				val Seq(r,g,b)	= (s grouped 2 map { it => (JInteger parseInt (it, 16))/ 255f }).toVector
-				Some(RGB(r,g,b))
+			Hex bytes s collect { case Array(r,g,b)	=>
+				RGB(
+					(r & 0xff) / 255f,
+					(g & 0xff) / 255f,
+					(b & 0xff) / 255f
+				)
 			}
-			else None
-		
+			
 	def fromIntRGB(argb:Int):RGB	=
 			RGB(
 				r	= ((argb >> 16) & 0xff) / 255f,

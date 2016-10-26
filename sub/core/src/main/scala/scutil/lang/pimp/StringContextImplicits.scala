@@ -14,4 +14,7 @@ final class StringContextExt(peer:StringContext) {
 	def short():Short	= macro HexNumberMacros.shortImpl
 	def int():Int		= macro HexNumberMacros.intImpl
 	def long():Long		= macro HexNumberMacros.longImpl
+	
+	/** provide a string interpolator "so" that allows nothing but String in $ escapes */
+	def so(args:String*):String		= peer.s(args:_*)
 }

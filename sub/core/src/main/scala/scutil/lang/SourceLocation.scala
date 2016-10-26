@@ -14,14 +14,12 @@ object SourceLocation {
 		// NOTE pos.column expands tab chars as 8 columns
 		// pos.source.file.path
 		// pos pointOrElse -1
-		val path	= Option(pos.source.file.file) map filePath
+		val path	=
+				Option(pos.source.file.file) map { file =>
+					(new File(".").toURI relativize file.toURI).getPath
+				}
 		q"_root_.scutil.lang.SourceLocation($path, ${pos.source.file.name}, ${pos.line})"
 	}
-	
-	private def filePath(file:File):String	=
-			new File(".").toURI
-			.relativize	(file.toURI)
-			.getPath
 }
 
 final case class SourceLocation(

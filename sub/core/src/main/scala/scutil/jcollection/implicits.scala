@@ -12,4 +12,8 @@ trait implicits
 		with	JMapImplicits
 		with	JSetImplicits
 		with	PropertiesImplicits
-		
+		with	ISeqJCollectionSyntaxImplicits
+		with	IterableJCollectionSyntaxImplicits
+		with	IteratorJCollectionSyntaxImplicits
+		with	MapJCollectionSyntaxImplicits
+		with	SetJCollectionSyntaxImplicits

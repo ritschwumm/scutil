@@ -1,10 +1,5 @@
 package scutil.collection.pimp
 
-import java.util.{
-	Iterator	=> JIterator,
-	Enumeration	=> JEnumeration
-}
-
 import scutil.lang.ISeq
 
 object IteratorImplicits extends IteratorImplicits
@@ -19,7 +14,4 @@ final class IteratorExt[T](peer:Iterator[T]) {
 			else				None
 		
 	def toISeq:ISeq[T]	= peer.toVector
-	
-	def toJIterator:JIterator[T]		= new IteratorAsJIterator(peer)
-	def toJEnumeration:JEnumeration[T]	= new IteratorAsJEnumeration(peer)
 }

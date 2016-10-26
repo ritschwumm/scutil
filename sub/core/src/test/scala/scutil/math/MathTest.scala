@@ -22,66 +22,12 @@ class MathTest extends Specification {
 		}
 	}
 	
-	"Unsigned" should {
-		"work for positive bytes" in {
-			(self unsignedByte 1.toByte) == 1.toShort
-		}
-		"work for negative bytes" in {
-			(self unsignedByte -1.toByte) == 255.toShort
-		}
-		"work for positive shorts" in {
-			(self unsignedShort 1.toShort) == 1.toInt
-		}
-		"work for negative shorts" in {
-			(self unsignedShort -1.toShort) == 65535.toInt
-		}
-		"work for positive ints" in {
-			(self unsignedInt 1.toInt) == 1.toLong
-		}
-		"work for negative ints" in {
-			(self unsignedInt -1.toInt) == 0xffffffffL
-		}
-		"work for positive longs" in {
-			(self unsignedLong 1.toLong) == BigInt(1)
-		}
-		"work for negative longs" in {
-			(self unsignedLong -1.toLong) == BigInt("18446744073709551615")
-		}
-	}
-	
-	"swapEndian" should {
-		"work for small shorts" in {
-			(self swapEndianShort 0x1234.toShort)	== 0x3412.toShort
-		}
-		"work for big shorts" in {
-			(self swapEndianShort 0x9876.toShort)	== 0x7698.toShort
-		}
-		"work for small ints" in {
-			(self swapEndianInt 0x12345678)	== 0x78563412
-		}
-		"work for big ints" in {
-			(self swapEndianInt 0x98765432)	== 0x32547698
-		}
-		"work for small longs" in {
-			(self swapEndianLong 0x1234567890123456L)	== 0x5634129078563412L
-		}
-		"work for big longs" in {
-			(self swapEndianLong 0x9876543210987654L)	== 0x5476981032547698L
-		}
-	}
-	
 	"modulo" should {
 		"work for positive modulos" in {
 			((-6 until 6).toVector map { (i:Int) => self moduloInt (i, 3) }) mustEqual Vector(0,1,2,0,1,2,0,1,2,0,1,2)
 		}
 		"work for negative modulos" in {
 			((-6 until 6).toVector map { (i:Int) => self moduloInt (i, -3) }) mustEqual Vector(0,-2,-1,0,-2,-1,0,-2,-1,0,-2,-1)
-		}
-	}
-	
-	"bigrational macros " should {
-		"compile" in {
-			br"7/11" mustEqual BigRational(7,11)
 		}
 	}
 }

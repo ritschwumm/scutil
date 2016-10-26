@@ -1,12 +1,5 @@
 package scutil.collection.pimp
 
-import java.util.{
-	Map			=> JMap,
-	HashMap		=> JHashMap,
-	Collections	=> JCollections,
-	Properties
-}
-
 import scutil.lang._
 
 object MapImplicits extends MapImplicits
@@ -89,16 +82,4 @@ final class MapExt[S,T](peer:Map[S,T]) {
 				peer get key,
 				set(key, _)
 			)
-		
-	def toJMap:JMap[S,T]	=  {
-		val out	= new JHashMap[S,T]
-		peer foreach { case (k,v) => out put (k, v) }
-		JCollections unmodifiableMap out
-	}
-	
-	def toProperties(implicit sev:S=>String, tev:T=>String):Properties	= {
-		val out	= new Properties
-		peer foreach { case (k, v) => out setProperty (k, v) }
-		out
-	}
 }

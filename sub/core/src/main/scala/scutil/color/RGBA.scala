@@ -1,20 +1,24 @@
 package scutil.color
 
-import java.lang.{ Integer => JInteger }
-import java.util.regex.Pattern
+import scutil.lang.Hex
 
 object RGBA {
 	val transparentBlack	= RGBA(RGB.black, Alpha.transparent)
 	val transparentWhite	= RGBA(RGB.white, Alpha.transparent)
 	
-	private val patternHex	= Pattern compile "[0-9a-fA-F]{8}"
-	
 	def parseHex(s:String):Option[RGBA]	=
-			if ((patternHex matcher s).matches) {
-				val Seq(r,g,b,a)	= (s grouped 2 map { it => (JInteger parseInt (it, 16)) / 255f }).toVector
-				Some(RGBA(RGB(r,g,b),Alpha(a)))
+			Hex bytes s collect { case Array(r,g,b,a)	=>
+				RGBA(
+					RGB(
+						(r & 0xff) / 255f,
+						(g & 0xff) / 255f,
+						(b & 0xff) / 255f
+					),
+					Alpha(
+						(a & 0xff) / 255f
+					)
+				)
 			}
-			else None
 			
 	def fromIntARGB(argb:Int):RGBA	=
 			RGBA(

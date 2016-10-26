@@ -4,8 +4,5 @@ import scutil.text.pimp._
 
 object implicits extends implicits
 trait implicits
-		extends	MatcherImplicits
-		with	RegexImplicits
-		with	StringContextImplicits
-		with	StringImplicits
+		extends	StringContextImplicits
 		with	StringTokenizerImplicits

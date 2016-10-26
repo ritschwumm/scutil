@@ -1,7 +1,5 @@
 package scutil.lang.pimp
 
-import scutil.io.ResourceProvider
-
 object ClassImplicits extends ClassImplicits
 
 trait ClassImplicits {
@@ -9,10 +7,6 @@ trait ClassImplicits {
 }
 
 final class ClassExt[T](peer:Class[T]) {
-	// NOTE paths are relative to the class unless preceeded by a slash
-	def resources:ResourceProvider	=
-			new ResourceProvider(path => Option(peer getResource path))
-	
 	def boxed:Class[_]	= peer match {
 		case java.lang.Boolean.TYPE		=> classOf[java.lang.Boolean]
 		case java.lang.Character.TYPE	=> classOf[java.lang.Character]

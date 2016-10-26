@@ -1,11 +1,5 @@
 package scutil.collection.pimp
 
-import java.util.{
-	Set			=> JSet,
-	HashSet		=> JHashSet,
-	Collections	=> JCollections
-}
-
 object SetImplicits extends SetImplicits
 
 trait SetImplicits {
@@ -48,10 +42,4 @@ final class SetExt[T](peer:Set[T]) {
 			.map { case (k, kvs) =>
 				(k, kvs map { _._2 })
 			}
-		
-	def toJSet:JSet[T]	=  {
-		val out	= new JHashSet[T]
-		peer foreach out.add
-		JCollections unmodifiableSet out
-	}
 }

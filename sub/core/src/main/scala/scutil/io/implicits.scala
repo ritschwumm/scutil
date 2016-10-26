@@ -4,8 +4,7 @@ import scutil.io.pimp._
 
 object implicits extends implicits
 trait implicits
-		extends	CharsetImplicits
-		with	FileImplicits
+		extends	FileImplicits
 		with	InputStreamImplicits
 		with	OutputStreamImplicits
 		with	ReaderImplicits

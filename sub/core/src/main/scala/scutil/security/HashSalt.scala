@@ -6,7 +6,7 @@ import java.nio.charset.Charset
 
 import scutil.implicits._
 import scutil.lang.ISeq
-import scutil.io.Base64
+import scutil.codec.Base64
 
 /*
 object HashSalt {

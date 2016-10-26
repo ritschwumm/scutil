@@ -5,8 +5,6 @@ import java.util.{
 	Enumeration	=> JEnumeration
 }
 
-import scutil.collection.pimp.IteratorAsJIterator
-
 object JEnumerationImplicits extends JEnumerationImplicits
 
 trait JEnumerationImplicits {

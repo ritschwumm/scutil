@@ -9,7 +9,6 @@ trait implicits
 		with	AnyRefImplicits
 		with	BooleanImplicits
 		with	ClassImplicits
-		with	ClassLoaderImplicits
 		with	ExceptionCatchImplicits
 		with	EitherImplicits
 		with	Function0Implicits
@@ -22,8 +21,8 @@ trait implicits
 		with	PairImplicits
 		with	PartialFunctionImplicits
 		with	PredicateImplicits
-		with	RandomImplicits
 		with	StatefulImplicits
+		with	StringImplicits
 		with	StringContextImplicits
 		with	ThrowableImplicits
 		with	TryImplicits

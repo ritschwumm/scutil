@@ -1,40 +1,29 @@
 package scutil
 
-import java.lang.{ Math => JMath, Long => JLong, Float => JFloat, Double => JDouble }
-
 import scala.annotation.tailrec
-import scala.annotation.strictfp
 
-import scala.math.Pi
-import scala.math.abs
+import scala.{ math => smath }
 
 package object math {
-	val PiHalf		= Pi / 2
-	val PiDouble	= Pi * 2
+	val PiHalf		= smath.Pi / 2
+	val PiDouble	= smath.Pi * 2
 	
 	//------------------------------------------------------------------------------
 	
-	val Log2			= JMath log 2
+	val Log2			= smath log 2
 	val Log2Reciprocal	= 1.0 / Log2
 	
-	def log2(value:Double):Double	= (JMath log value) * Log2Reciprocal
-	def exp2(value:Double):Double	= JMath exp (value * Log2)
+	def log2(value:Double):Double	= (smath log value) * Log2Reciprocal
+	def exp2(value:Double):Double	= smath exp (value * Log2)
 	
-	def exp10(value:Double):Double	= JMath pow (10, value)
-	// def log10(value:Double):Double	= JMath log10 value
+	def exp10(value:Double):Double	= smath pow (10, value)
+	// def log10(value:Double):Double	= smath log10 value
 	
-	def logB(base:Double, value:Double):Double	= (JMath log value) / (JMath log base)
-	// def expB(base:Double, value:Double):Double	= JMath pow (base, value)
+	def logB(base:Double, value:Double):Double	= (smath log value) / (smath log base)
+	// def expB(base:Double, value:Double):Double	= smath pow (base, value)
 	
 	//------------------------------------------------------------------------------
 	
-	def nextPow2(it:Long):Long	=
-				 if (it == 0)	0
-			else if (it == 1)	1
-			else 				(JLong highestOneBit (it-1)) << 1
-			
-	//------------------------------------------------------------------------------
-
 	def clampByte(value:Byte, minValue:Byte, maxValue:Byte):Byte	=
 			if (value < minValue) minValue else if (value > maxValue) maxValue else value
 	
@@ -55,66 +44,66 @@ package object math {
 			
 	//------------------------------------------------------------------------------
 	
-	def max3Byte(a:Byte, b:Byte, c:Byte):Byte			= (JMath max (a, JMath max (b,c))).toByte
-	def max3Short(a:Short, b:Short, c:Short):Short		= (JMath max (a, JMath max (b,c))).toShort
-	def max3Int(a:Int, b:Int, c:Int):Int				= JMath max (a, JMath max (b,c))
-	def max3Long(a:Long, b:Long, c:Long):Long			= JMath max (a, JMath max (b,c))
-	def max3Float(a:Float, b:Float, c:Float):Float		= JMath max (a, JMath max (b,c))
-	def max3Double(a:Double, b:Double, c:Double):Double	= JMath max (a, JMath max (b,c))
+	def max3Byte(a:Byte, b:Byte, c:Byte):Byte			= (smath max (a, smath max (b,c))).toByte
+	def max3Short(a:Short, b:Short, c:Short):Short		= (smath max (a, smath max (b,c))).toShort
+	def max3Int(a:Int, b:Int, c:Int):Int				= smath max (a, smath max (b,c))
+	def max3Long(a:Long, b:Long, c:Long):Long			= smath max (a, smath max (b,c))
+	def max3Float(a:Float, b:Float, c:Float):Float		= smath max (a, smath max (b,c))
+	def max3Double(a:Double, b:Double, c:Double):Double	= smath max (a, smath max (b,c))
 		
 	//------------------------------------------------------------------------------
 
-	def min3Byte(a:Byte, b:Byte, c:Byte):Byte			= (JMath min (a, JMath min (b,c))).toByte
-	def min3Short(a:Short, b:Short, c:Short):Short		= (JMath min (a, JMath min (b,c))).toShort
-	def min3Int(a:Int, b:Int, c:Int):Int				= JMath min (a, JMath min (b,c))
-	def min3Long(a:Long, b:Long, c:Long):Long			= JMath min (a, JMath min (b,c))
-	def min3Float(a:Float, b:Float, c:Float):Float		= JMath min (a, JMath min (b,c))
-	def min3Double(a:Double, b:Double, c:Double):Double	= JMath min (a, JMath min (b,c))
+	def min3Byte(a:Byte, b:Byte, c:Byte):Byte			= (smath min (a, smath min (b,c))).toByte
+	def min3Short(a:Short, b:Short, c:Short):Short		= (smath min (a, smath min (b,c))).toShort
+	def min3Int(a:Int, b:Int, c:Int):Int				= smath min (a, smath min (b,c))
+	def min3Long(a:Long, b:Long, c:Long):Long			= smath min (a, smath min (b,c))
+	def min3Float(a:Float, b:Float, c:Float):Float		= smath min (a, smath min (b,c))
+	def min3Double(a:Double, b:Double, c:Double):Double	= smath min (a, smath min (b,c))
 		
 	//------------------------------------------------------------------------------
 	
 	@tailrec
 	def gcdByte(a:Byte, b:Byte):Byte	=
-			if (b == 0)	abs(a).toByte
+			if (b == 0)	(smath abs a).toByte
 			else		gcdByte(b, (a % b).toByte)
 			
 	@tailrec
 	def gcdShort(a:Short, b:Short):Short	=
-			if (b == 0)	abs(a).toShort
+			if (b == 0)	(smath abs a).toShort
 			else		gcdShort(b, (a % b).toShort)
 		
 	@tailrec
 	def gcdInt(a:Int, b:Int):Int	=
-			if (b == 0)	abs(a)
+			if (b == 0)	(smath abs a)
 			else		gcdInt(b, a % b)
 		
 	@tailrec
 	def gcdLong(a:Long, b:Long):Long	=
-			if (b == 0)	abs(a)
+			if (b == 0)	(smath abs a)
 			else		gcdLong(b, a % b)
 		
 	//------------------------------------------------------------------------------
 		
 	def lcmByte(a:Byte, b:Byte):Byte	=
-			(abs(a * b) / gcdByte(a, b)).toByte
+			((smath abs (a * b)) / gcdByte(a, b)).toByte
 		
 	def lcmShort(a:Short, b:Short):Short	=
-			(abs(a * b) / gcdShort(a, b)).toShort
+			((smath abs (a * b)) / gcdShort(a, b)).toShort
 		
 	def lcmInt(a:Int, b:Int):Int	=
-			abs(a * b) / gcdInt(a, b)
+			(smath abs (a * b)) / gcdInt(a, b)
 		
 	def lcmLong(a:Long, b:Long):Long	=
-			abs(a * b) / gcdLong(a, b)
+			(smath abs (a * b)) / gcdLong(a, b)
 		
 	//------------------------------------------------------------------------------
 	
-	def moduloByte(value:Byte, raster:Byte):Byte ={
+	def moduloByte(value:Byte, raster:Byte):Byte = {
 		val	raw	= value % raster
 		(if (raster < 0 && raw > 0 || raster > 0 && raw < 0)	raw + raster else raw).toByte
 	}
 	
-	def moduloShort(value:Short, raster:Short):Short ={
+	def moduloShort(value:Short, raster:Short):Short = {
 		val	raw	= value % raster
 		(if (raster < 0 && raw > 0 || raster > 0 && raw < 0)	raw + raster else raw).toShort
 	}
@@ -134,24 +123,114 @@ package object math {
 		if (raster < 0 && raw > 0 || raster > 0 && raw < 0)	raw + raster else raw
 	}
 	
-	def moduloDouble(value:Double, raster:Double):Double ={
+	def moduloDouble(value:Double, raster:Double):Double = {
 		val	raw	= value % raster
 		if (raster < 0 && raw > 0 || raster > 0 && raw < 0)	raw + raster else raw
 	}
 	
 	//------------------------------------------------------------------------------
 	
+	@deprecated("use ceilDivByte instead", "12aug16")
 	def divUpByte(value:Byte, divisor:Byte):Byte	=
 			((value + divisor - 1) / divisor).toByte
 		
+	@deprecated("use ceilDivShort instead", "12aug16")
 	def divUpShort(value:Short, divisor:Short):Short	=
 			((value + divisor - 1) / divisor).toShort
 		
+	@deprecated("use ceilDivInt instead", "12aug16")
 	def divUpInt(value:Int, divisor:Int):Int	=
 			(value + divisor - 1) / divisor
 		
+	@deprecated("use ceilDivLong instead", "12aug16")
 	def divUpLong(value:Long, divisor:Long):Long	=
 			(value + divisor - 1) / divisor
+		
+	//------------------------------------------------------------------------------
+	
+	def floorDivByte(value:Byte, raster:Byte):Byte	=
+			floorDivByte(value, raster).toByte
+
+	def roundDivByte(value:Byte, raster:Byte):Byte   =
+			roundDivByte(value, raster).toByte
+		
+	def ceilDivByte(value:Byte, raster:Byte):Byte	=
+			ceilDivInt(value, raster).toByte
+		
+	def floorDivShort(value:Short, raster:Short):Short	=
+			floorDivShort(value, raster).toShort
+
+	def roundDivShort(value:Short, raster:Short):Short   =
+			roundDivShort(value, raster).toShort
+		
+	def ceilDivShort(value:Short, raster:Short):Short	=
+			ceilDivInt(value, raster).toShort
+			
+	def floorDivInt(value:Int, raster:Int):Int	=
+			if (raster > 0) {
+				if (value >= 0) (value)					/ raster
+				else			(value - raster + 1)	/ raster
+			}
+			else if (raster < 0) {
+				if (value >= 0)	(value - raster - 1)	/ raster
+				else			(value)					/ raster
+			}
+			else throw new ArithmeticException("division by zero")
+
+	def roundDivInt(value:Int, raster:Int):Int   =
+			if (raster > 0) {
+				if (value >= 0) (value + (raster/2)) / raster
+				else            (value - (raster/2)) / raster
+			}
+			else if (raster < 0) {
+				if (value >= 0) (value - (raster/2)) / raster
+				else            (value + (raster/2)) / raster
+			}
+			else throw new ArithmeticException("division by zero")
+		
+	def ceilDivInt(value:Int, raster:Int):Int	=
+			if (raster > 0) {
+				if (value >= 0) (value + raster - 1)	/ raster
+				else			(value)					/ raster
+			}
+			else if (raster < 0) {
+				if (value >= 0) (value)					/ raster
+				else			(value+ raster + 1)		/ raster	
+			}
+			else throw new ArithmeticException("division by zero")
+			
+	def floorDivLong(value:Long, raster:Long):Long	=
+			if (raster > 0) {
+				if (value >= 0) (value)					/ raster
+				else			(value - raster + 1)	/ raster
+			}
+			else if (raster < 0) {
+				if (value >= 0)	(value - raster - 1)	/ raster
+				else			(value)					/ raster
+			}
+			else throw new ArithmeticException("division by zero")
+
+	def roundDivLong(value:Long, raster:Long):Long   =
+			if (raster > 0) {
+				if (value >= 0) (value + (raster/2)) / raster
+				else            (value - (raster/2)) / raster
+			}
+			else if (raster < 0) {
+				if (value >= 0) (value - (raster/2)) / raster
+				else            (value + (raster/2)) / raster
+			}
+			else sys error "division by zero"
+		
+	def ceilDivLong(value:Long, raster:Long):Long	=
+			if (raster > 0) {
+				if (value >= 0) (value + raster - 1)	/ raster
+				else			(value)					/ raster
+			}
+			else if (raster < 0) {
+				if (value >= 0) (value)					/ raster
+				else			(value+ raster + 1)		/ raster	
+			}
+			else throw new ArithmeticException("division by zero")
 		
 	//------------------------------------------------------------------------------
 	
@@ -162,112 +241,4 @@ package object math {
 	/** ratio 0..1 select a..b */
 	def blendToDouble(ratio:Double, a:Double, b:Double):Double	=
 			a * (1 - ratio) + b * (0 + ratio)
-	
-	//------------------------------------------------------------------------------
-	
-	def unsignedByte(value:Byte):Short	= (value & 0x000000ff).toShort
-	def unsignedShort(value:Short):Int	= (value & 0x0000ffff)
-	def unsignedInt(value:Int):Long		= (value & 0xffffffffL)
-	def unsignedLong(value:Long):BigInt	= {
-		val	tmp	= BigInt(value)
-		if (tmp >= 0)	tmp
-		else			BigInt(Long.MaxValue)*2	- tmp
-	}
-	
-	//------------------------------------------------------------------------------
-	
-	def swapEndianShort(value:Short):Short	=
-			(
-				((value << 8) & 0xff00) |
-				((value >> 8) & 0x00ff)
-			).toShort
-			
-	def swapEndianInt(value:Int):Int	=
-			((value << 24) & 0xff000000)	|
-			((value >> 24) & 0x000000ff)	|
-			((value <<  8) & 0x00ff0000)	|
-			((value >>  8) & 0x0000ff00)
-			
-	def swapEndianLong(value:Long):Long	=
-			((value << 56) & 0xff00000000000000L)	|
-			((value >> 56) & 0x00000000000000ffL)	|
-			((value << 40) & 0x00ff000000000000L)	|
-			((value >> 40) & 0x000000000000ff00L)	|
-			((value << 24) & 0x0000ff0000000000L)	|
-			((value >> 24) & 0x0000000000ff0000L)	|
-			((value <<  8) & 0x000000ff00000000L)	|
-			((value >>  8) & 0x00000000ff000000L)
-			
-	def swapEndianChar(value:Char):Char	=
-			(
-				((value << 8) & 0xff00) |
-				((value >> 8) & 0x00ff)
-			).toChar
-	
-	//------------------------------------------------------------------------------
-	
-	def maskTestByte(value:Byte, onMask:Byte, offMask:Byte):Boolean =
-			(value & (onMask | offMask)) == onMask
-		
-	def maskTestShort(value:Short, onMask:Short, offMask:Short):Boolean =
-			(value & (onMask | offMask)) == onMask
-		
-	def maskTestInt(value:Int, onMask:Int, offMask:Int):Boolean =
-			(value & (onMask | offMask)) == onMask
-		
-	def maskTestLong(value:Long, onMask:Long, offMask:Long):Boolean =
-			(value & (onMask | offMask)) == onMask
-		
-	def maskTestChar(value:Char, onMask:Char, offMask:Char):Boolean =
-			(value & (onMask | offMask)) == onMask
-		
-	//------------------------------------------------------------------------------
-	
-	@strictfp
-	def denormalFloat(it:Float):Boolean	=
-			if (it == 0)												false
-			else if (it > -JFloat.MIN_NORMAL && it < JFloat.MIN_NORMAL)	true
-			else														false
-			
-	@strictfp
-	def denormalDouble(it:Double):Boolean	=
-			if (it == 0)													false
-			else if (it > -JDouble.MIN_NORMAL && it < JDouble.MIN_NORMAL)	true
-			else															false
-			
-	def bitsOfFloat(it:Float):(Boolean,Int,Short)	= {
-		// positive infinity	0x7f800000
-		// negative infinity	0xff800000
-		// NaN					0x7fc00000
-		val bits		= JFloat  floatToIntBits it
-		
-		// true means negative
-		val sign		= (bits & 0x80000000) != 0
-		
-		// doesn't include leading one
-		val mantissa	= bits &  0x007fffff
-		
-		// never negative, bias is 127; 0 and 255 have special meanings
-		val exponent	= ((bits & 0x7f800000) >> 23).toShort
-		
-		(sign, mantissa, exponent)
-	}
-	
-	def bitsOfDouble(it:Double):(Boolean,Long,Short)	= {
-		// positive infinity	0x7ff0000000000000L
-		// negative infinity	0xfff0000000000000L
-		// NaN					0x7ff8000000000000L
-		val bits		= JDouble doubleToLongBits it
-		
-		// true means negative
-		val sign		= (bits & 0x8000000000000000L) != 0
-		
-		// doesn't include leading one
-		val mantissa	= bits & 0x000fffffffffffffL
-		
-		// never negative, bias is 1023; 0 and 2047 have special meanings
-		val exponent	= ((bits & 0x7ff0000000000000L) >> 52).toShort
-		
-		(sign, mantissa, exponent)
-	}
 }
