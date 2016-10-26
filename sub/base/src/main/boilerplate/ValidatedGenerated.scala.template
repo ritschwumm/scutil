@@ -1,0 +1,19 @@
+package scutil.lang
+
+import scutil.lang.tc._
+
+trait ValidatedGenerated {
+	//------------------------------------------------------------------------------
+	// zip
+	
+	[2..#def zip1[E:CanConcat,[#S1#,]]([#s1:Validated[E,S1]#]):Validated[E,([#S1#,])]	=
+		[#s1# zip ] map assoc.unarrow1#
+	]
+	
+	//------------------------------------------------------------------------------
+	// lift
+	
+	[2..#def lift1[E:CanConcat,[#S1#,],T](func:([#S1#,])=>T):([#Validated[E,S1]#,])=>Validated[E,T]	=
+			([#s1:Validated[E,S1]#]) => Validated good func.curried ap [#s1# ap ]#
+	]
+}

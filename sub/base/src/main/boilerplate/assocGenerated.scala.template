@@ -1,0 +1,37 @@
+package scutil.lang
+
+trait assocGenerated {
+	/** allows building tuple types with -> just like values */
+	type ->[A,B]	= (A,B)
+	
+	/** allows pattern matching on tuples constructed with -> */
+	object -> {
+		def unapply[S,T](value:(S,T)):Option[(S,T)]	= Some(value)
+	}
+	
+	//--------------------------------------------------------------------------------
+	// type
+	
+	type Arrowed1[T1]	= T1
+	
+	[2..#type Arrowed1[[#T1#,]] = ([#T1# -> ])#
+	]
+	
+	//------------------------------------------------------------------------------
+	// arrowed
+	
+	def arrow1[T1](it:(T1)):(T1)		= it
+	
+	[2..#def arrow1[[#T1#,]](it:([#T1#,])):([#T1# -> ])	=
+			[#it._1# -> ]#
+	]
+	
+	//------------------------------------------------------------------------------
+	// unarrowed
+	
+	def unarrow1[T1](it:(T1)):(T1)	= it
+	
+	[2..#def unarrow1[[#T1#,]](it:([#T1# -> ])):([#T1#,])	=
+			it match { case ([#t1# -> ]) => ([#t1#]) }#
+	]
+}

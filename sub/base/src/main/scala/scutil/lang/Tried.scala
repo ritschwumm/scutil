@@ -63,12 +63,12 @@ object Tried extends TriedGenerated {
 		
 	//------------------------------------------------------------------------------
 	
-	def zip2[E,S1,S2](s1:Tried[E,S1], s2:Tried[E,S2]):Tried[E,(S1,S2)]	=
-			s1 zip s2
-	
 	/*
 	// these we get from TriedGenerated
 	
+	def zip2[E,S1,S2](s1:Tried[E,S1], s2:Tried[E,S2]):Tried[E,(S1,S2)]	=
+			s1 zip s2
+			
 	def zip3[E,S1,S2,S3](s1:Tried[E,S1], s2:Tried[E,S2], s3:Tried[E,S3]):Tried[E,(S1,S2,S3)]	=
 			s1 zip s2 zip s3 map Tuples.runcurry3
 			

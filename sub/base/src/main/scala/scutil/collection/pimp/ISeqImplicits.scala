@@ -143,7 +143,7 @@ final class ISeqExt[T](peer:ISeq[T]) {
 		val somes	= peer map Some.apply
 		val prevs	= None +: (somes dropRight 1)
 		val nexts	= (somes drop 1) :+ None
-		prevs zip peer zip nexts map Tuples.runcurry3
+		prevs zip peer zip nexts map assoc.unarrow3
 	}
 	
 	/** optionally insert something between two items */

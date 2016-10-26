@@ -59,11 +59,11 @@ object Validated extends ValidatedGenerated {
 		
 	//------------------------------------------------------------------------------
 	
-	def zip2[E:CanConcat,S1,S2](s1:Validated[E,S1], s2:Validated[E,S2]):Validated[E,(S1,S2)]	=
-			s1 zip s2
-		
 	/*
 	// these we get from ValidatedGenerated
+	
+	def zip2[E:CanConcat,S1,S2](s1:Validated[E,S1], s2:Validated[E,S2]):Validated[E,(S1,S2)]	=
+			s1 zip s2
 			
 	def zip3[E,S1,S2,S3](s1:Validated[E,S1], s2:Validated[E,S2], s3:Validated[E,S3]):Validated[E,(S1,S2,S3)]	=
 			s1 zip s2 zip s3 map Tuples.runcurry3

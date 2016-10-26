@@ -1,0 +1,12 @@
+package scutil.lang
+
+import scutil.lang.tc._
+
+trait ConverterGenerated {
+	//------------------------------------------------------------------------------
+	// zip
+	
+	[2..#def zip1[E:CanConcat,S,[#T1#,]]([#t1:Converter[E,S,T1]#]):Converter[E,S,([#T1#,])]	=
+			Converter { it => Validated zip1 ([#t1 convert it#]) }#
+	]
+}

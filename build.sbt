@@ -1,6 +1,6 @@
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.89.0",
+	version			:= "0.90.0",
 	
 	scalaVersion	:= "2.11.8",
 	scalacOptions	++= Seq(
@@ -44,6 +44,9 @@ lazy val `scutil`	=
 
 lazy val `scutil-base`	=
 		(crossProject crossType CrossType.Pure	in	file("sub/base"))
+		.enablePlugins(
+			spray.boilerplate.BoilerplatePlugin
+		)
 		.settings(
 			scalacOptions	++= Seq(
 				// "-Ymacro-debug-lite",
@@ -55,14 +58,13 @@ lazy val `scutil-base`	=
 				// "-language:postfixOps",
 				// "-language:experimental.macros",
 			),
-			
-			(sourceGenerators in Compile)	<+= (sourceManaged in Compile) map Boilerplate.generate,
-			
+			// only here because -> leads to inliner warnings
+			(scalacOptions in Compile) := (scalacOptions in Compile).value filterNot { _ == "-Xfatal-warnings" },
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "compile",
 				"org.specs2"		%%	"specs2-core"	% "3.8.4"				% "test"
 			),
-			
+			boilerplateSource in Compile := baseDirectory.value.getParentFile / "src" / "main" / "boilerplate",
 			wartremoverErrors ++= warts,
 			
 			//------------------------------------------------------------------------------

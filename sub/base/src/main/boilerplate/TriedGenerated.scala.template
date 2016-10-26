@@ -1,0 +1,17 @@
+package scutil.lang
+
+trait TriedGenerated {
+	//------------------------------------------------------------------------------
+	// zip
+	
+	[2..#def zip1[E,[#S1#,]]([#s1:Tried[E,S1]#]):Tried[E,([#S1#,])]	=
+		[#s1# zip ] map assoc.unarrow1#
+	]
+	
+	//------------------------------------------------------------------------------
+	// lift
+	
+	[2..#def lift1[E,[#S1#,],T](func:([#S1#,])=>T):([#Tried[E,S1]#,])=>Tried[E,T]	=
+			([#s1:Tried[E,S1]#]) => Tried win func.curried ap [#s1# ap ]#
+	]
+}

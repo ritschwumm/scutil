@@ -1,9 +1,9 @@
 package scutil.lang
 
-import java.io.File
-
 import scala.language.experimental.macros
-import scala.reflect.macros.whitebox.Context
+import scala.reflect.macros.blackbox.Context
+
+import java.io.File
 
 object SourceLocation {
 	implicit def sourceLocation:SourceLocation	= macro sourceLocationImpl

@@ -68,6 +68,44 @@ trait CanMapInstances extends CanMapInstancesLow {
 			new CanMap[ ({type l[T]=Validated[S,T]})#l ] {
 				def map[A,B](func:A=>B):Validated[S,A]=>Validated[S,B]		= _ map func
 			}
+			
+	// TODO do we get this for free with FFunctionCanMap?
+	implicit def PFunctionCanMap[S]:CanMap[ ({type l[T]=PFunction[S,T]})#l ]	=
+			new CanMap[ ({type l[T]=PFunction[S,T]})#l ] {
+				def map[A,B](func:A=>B):PFunction[S,A]=>PFunction[S,B]	=
+						pf => a => pf(a) map func
+			}
+			
+	implicit def FFunctionCanMap[F[_]:CanMap,S]:CanMap[ ({type l[T]=FFunction[F,S,T]})#l ]	=
+			new CanMap[ ({type l[T]=FFunction[F,S,T]})#l ] {
+				def map[A,B](func:A=>B):FFunction[F,S,A]=>FFunction[F,S,B]	=
+						ff => a => CanMap[F] map func apply ff(a)
+			}
+			
+	implicit def StatefulCanMap[T,X]:CanMap[ ({type l[X]=Stateful[T,X]})#l ]	=
+			new CanMap[ ({type l[X]=Stateful[T,X]})#l ] {
+				def map[A,B](func:A=>B):Stateful[T,A]=>Stateful[T,B]	=
+						sfa	=> t => sfa(t) match { case (t,a) => (t,func(a)) }
+			}
+			
+	// TODO do we get this for free with FStatefulCanMap?
+	implicit def PStatefulCanMap[T,X]:CanMap[ ({type l[X]=PStateful[T,X]})#l ]	=
+			new CanMap[ ({type l[X]=PStateful[T,X]})#l ] {
+				def map[A,B](func:A=>B):PStateful[T,A]=>PStateful[T,B]	=
+						sfa	=> t => {
+							val inner:((T,A))=>(T,B) = { case (t,a) => (t,func(a)) }
+							sfa(t) map inner
+						}
+			}
+			
+	implicit def FStatefulCanMap[F[_]:CanMap,T,X]:CanMap[ ({type l[X]=FStateful[F,T,X]})#l ]	=
+			new CanMap[ ({type l[X]=FStateful[F,T,X]})#l ] {
+				def map[A,B](func:A=>B):FStateful[F,T,A]=>FStateful[F,T,B]	=
+						sfa	=> t => {
+							val inner:((T,A))=>(T,B) = { case (t,a) => (t,func(a)) }
+							CanMap[F] map inner apply sfa(t)
+						}
+			}
 }
 
 trait CanMapInstancesLow extends CanMapInstancesBottom {

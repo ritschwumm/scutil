@@ -3,7 +3,7 @@ package scutil.lang
 import scutil.base.implicits._
 import scutil.lang.tc._
 
-object Converter {
+object Converter extends ConverterGenerated {
 	def identity[E,T]:Converter[E,T,T]	=
 			Converter { it =>
 				Validated good it
@@ -36,28 +36,13 @@ object Converter {
 			
 	//------------------------------------------------------------------------------
 	
-	// TODO boilerplate
+	/*
+	// these we get from ConverterGenerated
 	
 	def zip2[E:CanConcat,S,T1,T2](d1:Converter[E,S,T1], d2:Converter[E,S,T2]):Converter[E,S,(T1,T2)]	=
-			Converter { it =>
-				Validated zip2 (d1 convert it, d2 convert it)
-			}
-				
-	def zip3[E:CanConcat,S,T1,T2,T3](d1:Converter[E,S,T1], d2:Converter[E,S,T2], d3:Converter[E,S,T3]):Converter[E,S,(T1,T2,T3)]	=
-			Converter { it =>
-				Validated zip3 (d1 convert it, d2 convert it, d3 convert it)
-			}
-			
-	def zip4[E:CanConcat,S,T1,T2,T3,T4](d1:Converter[E,S,T1], d2:Converter[E,S,T2], d3:Converter[E,S,T3], d4:Converter[E,S,T4]):Converter[E,S,(T1,T2,T3,T4)]	=
-			Converter { it =>
-				Validated zip4 (d1 convert it, d2 convert it, d3 convert it, d4 convert it)
-			}
-			
-	def zip5[E:CanConcat,S,T1,T2,T3,T4,T5](d1:Converter[E,S,T1], d2:Converter[E,S,T2], d3:Converter[E,S,T3], d4:Converter[E,S,T4], d5:Converter[E,S,T5]):Converter[E,S,(T1,T2,T3,T4,T5)]	=
-			Converter { it =>
-				Validated zip5 (d1 convert it, d2 convert it, d3 convert it, d4 convert it, d5 convert it)
-			}
-			
+			Converter { it => Validated zip2 (d1 convert it, d2 convert it) }
+	*/
+	
 	//------------------------------------------------------------------------------
 	
 	def sum[E,S,T](subs:ISeq[PFunction[S,Validated[E,T]]], bad: =>E):Converter[E,S,T]	=

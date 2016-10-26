@@ -1,2 +1,3 @@
-addSbtPlugin("org.wartremover"	% "sbt-wartremover" % "1.1.0")
-addSbtPlugin("org.scala-js"		% "sbt-scalajs"		% "0.6.11")
+addSbtPlugin("io.spray"			% "sbt-boilerplate"	% "0.6.0")
+addSbtPlugin("org.wartremover"	% "sbt-wartremover" % "1.1.1")
+addSbtPlugin("org.scala-js"		% "sbt-scalajs"		% "0.6.12")
