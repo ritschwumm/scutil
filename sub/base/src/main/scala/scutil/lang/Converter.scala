@@ -69,23 +69,23 @@ object Converter {
 }
 
 // Kleisli[Validated[E,_],S,T]
-final case class Converter[+E,-S,+T](convert:S=>Validated[E,T]) {
+final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 	def apply(s:S):Validated[E,T]	= convert(s)
 	
 	//------------------------------------------------------------------------------
 	
-	def andThen[EE>:E,U](that:Converter[EE,T,U]):Converter[EE,S,U]	=
+	def andThen[U](that:Converter[E,T,U]):Converter[E,S,U]	=
 			Converter { it =>
 				this convert it flatMap that.convert
 			}
 	
-	def compose[EE>:E,R](that:Converter[EE,R,S]):Converter[EE,R,T]	=
+	def compose[R](that:Converter[E,R,S]):Converter[E,R,T]	=
 			that andThen this
 		
-	def >=>[EE>:E,U](that:Converter[EE,T,U]):Converter[EE,S,U]	=
+	def >=>[U](that:Converter[E,T,U]):Converter[E,S,U]	=
 			this andThen that
 	
-	def <=<[EE>:E,R](that:Converter[EE,R,S]):Converter[EE,R,T]	=
+	def <=<[R](that:Converter[E,R,S]):Converter[E,R,T]	=
 			this compose that
 	
 	def map[U](func:T=>U):Converter[E,S,U]		=
@@ -93,7 +93,7 @@ final case class Converter[+E,-S,+T](convert:S=>Validated[E,T]) {
 				convert(it) map func
 			}
 			
-	def flatMap[EE>:E,SS<:S,U](func:T=>Converter[EE,SS,U]):Converter[EE,SS,U]	=
+	def flatMap[U](func:T=>Converter[E,S,U]):Converter[E,S,U]	=
 			Converter { it =>
 				this convert it map func flatMap { _ convert it }
 			}
@@ -106,44 +106,44 @@ final case class Converter[+E,-S,+T](convert:S=>Validated[E,T]) {
 	def tag[U](it:U):Converter[E,S,U]	=
 			map(constant(it))
 		
-	def pa[EE>:E:CanConcat,SS<:S,U](that:Converter[EE,SS,T=>U]):Converter[EE,SS,U]	=
+	def pa[U](that:Converter[E,S,T=>U])(implicit cc:CanConcat[E]):Converter[E,S,U]	=
 			Converter { it =>
 				(this convert it) pa (that convert it)
 			}
 	
-	def ap[EE>:E:CanConcat,SS<:S,U,V](that:Converter[EE,SS,U])(implicit ev:T=>U=>V):Converter[EE,SS,V]	=
+	def ap[U,V](that:Converter[E,S,U])(implicit ev:T=>U=>V, cc:CanConcat[E]):Converter[E,S,V]	=
 			Converter { it =>
 				(this convert it map ev) ap (that convert it)
 			}
 	
-	def zip[EE>:E,SS<:S,TX](that:Converter[EE,SS,TX])(implicit ev:CanConcat[EE]):Converter[EE,SS,(T,TX)] =
+	def zip[U](that:Converter[E,S,U])(implicit cc:CanConcat[E]):Converter[E,S,(T,U)] =
 			Converter { it	=>
 				(this convert it) zip (that convert it)
 			}
 			
-	def zipWith[EE>:E,SS<:S,TX,U](that:Converter[EE,SS,TX])(func:(T,TX)=>U)(implicit ev:CanConcat[EE]):Converter[EE,SS,U] =
+	def zipWith[U,V](that:Converter[E,S,U])(func:(T,U)=>V)(implicit cc:CanConcat[E]):Converter[E,S,V] =
 			Converter { it	=>
 				((this convert it) zipWith (that convert it))(func)
 			}
 			
-	def coZip[EE>:E,SS,TX>:T](that:Converter[EE,SS,TX]):Converter[EE,Either[S,SS],TX]	=
+	def coZip[SS](that:Converter[E,SS,T]):Converter[E,Either[S,SS],T]	=
 			Converter {
 				case Left(x)	=> this convert x
 				case Right(x)	=> that convert x
 			}
 			
-	def orElse[EE>:E:CanConcat,S1<:S,T1>:T](that:Converter[EE,S1,T1]):Converter[EE,S1,T1]	=
-			Converter { (it:S1) =>
+	def orElse(that:Converter[E,S,T])(implicit cc:CanConcat[E]):Converter[E,S,T]	=
+			Converter { (it:S) =>
 				(this convert it) orElse (that convert it)
 			}
 			
-	def either[EE>:E,SS,TT](that:Converter[EE,SS,TT]):Converter[EE,Either[S,SS],Either[T,TT]]	=
+	def either[SS,TT](that:Converter[E,SS,TT]):Converter[E,Either[S,SS],Either[T,TT]]	=
 			Converter {
 				case Left(x)	=> this convert x map (Left(_))
 				case Right(x)	=> that convert x map (Right(_))
 			}
 			
-	def pair[EE>:E,SS,TT](that:Converter[EE,SS,TT]):Converter[EE,(S,SS),(T,TT)]	=
+	def pair[SS,TT](that:Converter[E,SS,TT]):Converter[E,(S,SS),(T,TT)]	=
 			Converter { case (s,ss) =>
 				this convert s flatMap { t =>
 					that convert ss map { tt =>
@@ -171,23 +171,23 @@ final case class Converter[+E,-S,+T](convert:S=>Validated[E,T]) {
 		
 	// TODO liftTraversable
 			
-	def liftISeq[EE>:E](implicit cc:CanConcat[EE]):Converter[EE,ISeq[S],ISeq[T]]	=
+	def liftISeq(implicit cc:CanConcat[E]):Converter[E,ISeq[S],ISeq[T]]	=
 			Converter { it =>
-				it traverseValidated (convert:S=>Validated[EE,T])
+				it traverseValidated convert
 			}
 			
-	def liftList[EE>:E](implicit cc:CanConcat[EE]):Converter[EE,List[S],List[T]]	=
+	def liftList(implicit cc:CanConcat[E]):Converter[E,List[S],List[T]]	=
 			Converter { it =>
-				it traverseValidated (convert:S=>Validated[EE,T])
+				it traverseValidated convert
 			}
 			
-	def liftVector[EE>:E](implicit cc:CanConcat[EE]):Converter[EE,Vector[S],Vector[T]]	=
+	def liftVector(implicit cc:CanConcat[E]):Converter[E,Vector[S],Vector[T]]	=
 			Converter { it =>
-				it traverseValidated (convert:S=>Validated[EE,T])
+				it traverseValidated convert
 			}
 			
-	def liftSet[SS<:S,TT>:T,EE>:E](implicit cc:CanConcat[EE]):Converter[EE,Set[SS],Set[TT]]	=
+	def liftSet(implicit cc:CanConcat[E]):Converter[E,Set[S],Set[T]]	=
 			Converter { it =>
-				it traverseValidated (convert:S=>Validated[EE,T])
+				it traverseValidated convert
 			}
 }

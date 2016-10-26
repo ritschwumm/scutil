@@ -1,7 +1,10 @@
-package scutil.concurrent.pimp
+package scutil.lang.pimp
 
 import scala.concurrent._
 import scala.util.{ Try, Success, Failure }
+
+import scutil.lang._
+import scutil.lang.pimp.TryImplicits._
 
 object FutureImplicits extends FutureImplicits
 
@@ -53,4 +56,17 @@ final class FutureExt[T](peer:Future[T]) {
 			case Success(t)	=> success(t)
 		}
 	}
+	
+	//------------------------------------------------------------------------------
+	
+	/** always succeeds wrapping the original success/failure in a Tried */
+	def wrapTried(implicit executor:ExecutionContext):Future[Tried[Throwable,T]]	=
+			mapTry { it => Try(it.toTried) }
+	
+	/** succeeds for a Win, fails for a Fail */
+	def unwrapTried[X](implicit ev:T=>Tried[Throwable,X], executor:ExecutionContext):Future[X]	=
+			mapTry { _ flatMap { ev(_).toTry } }
+		
+	def mapTried[X](func:Tried[Throwable,T]=>Tried[Throwable,X])(implicit executor:ExecutionContext):Future[X]	=
+			mapTry { it => func(it.toTried).toTry }
 }

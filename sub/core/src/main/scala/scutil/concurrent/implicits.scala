@@ -6,4 +6,3 @@ object implicits extends implicits
 trait implicits
 		extends	disposables
 		with	ExecutorImplicits
-		with	FutureImplicits

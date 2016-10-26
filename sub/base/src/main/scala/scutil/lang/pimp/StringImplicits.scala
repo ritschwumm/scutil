@@ -18,6 +18,7 @@ final class StringExt(peer:String) {
 	def toLongOption:Option[Long]		= toLongTried.toOption
 	def toFloatOption:Option[Float]		= toFloatTried.toOption
 	def toDoubleOption:Option[Double]	= toDoubleTried.toOption
+	def toBigIntOption:Option[BigInt]	= toBigIntTried.toOption
 	
 	// toBoolean throws an IllegalArgumentException, not a NumberFormatException
 	def toBooleanTried:Tried[NumberFormatException,Boolean]	=
@@ -33,6 +34,7 @@ final class StringExt(peer:String) {
 	def toLongTried:Tried[NumberFormatException,Long]		= toNumberTried(_.toLong)
 	def toFloatTried:Tried[NumberFormatException,Float]		= toNumberTried(_.toFloat)
 	def toDoubleTried:Tried[NumberFormatException,Double]	= toNumberTried(_.toDouble)
+	def toBigIntTried:Tried[NumberFormatException,BigInt]	= toNumberTried(BigInt(_))
 		
 	private def toNumberTried[T](func:String=>T):Tried[NumberFormatException,T]	=
 			Catch.byType[NumberFormatException] in func(peer)
