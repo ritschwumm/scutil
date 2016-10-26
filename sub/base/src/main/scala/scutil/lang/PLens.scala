@@ -1,6 +1,7 @@
 package scutil.lang
 
 import scutil.lang.implicits._
+import scutil.lang.tc._
 
 object PLens {
 	def identity[T]:PLens[T,T]	=
@@ -30,12 +31,23 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 	def modify(s:S, func:Endo[T]):Option[S]	= on(s) map { _ modify func }
 	def modifier(func:Endo[T]):PEndo[S]		= modify(_, func)
 	
+	// TODO ssomewhat stupid
 	def modifyOpt(s:S, func:PEndo[T]):Option[S]	= for { store	<- on(s); value	<- func(store.get) } yield store put value
 	def modifierOpt(func:PEndo[T]):PEndo[S]		= modifyOpt(_, func)
 	
 	def modifyStateful[X](s:S, func:Stateful[T,X]):Option[(S,X)]	= on(s) map { _ modifyStateful func }
-	def modifierStateful[X](func:Stateful[T,X]):S=>Option[(S,X)]	= modifyStateful(_, func)
-			
+	def modifierStateful[X](func:Stateful[T,X]):PStateful[S,X]		= modifyStateful(_, func)
+	
+	//------------------------------------------------------------------------------
+
+	// BETTER use these to replace modifier
+	def modifyP(s:S):Option[Endo[T]=>S]											= on(s) map { _.modify }
+	def modifyOptP(s:S):Option[PEndo[T]=>Option[S]]								= on(s) map { _.modifyOpt }
+	def modifyPF[F[_]:CanMap](s:S):Option[FEndo[F,T]=>F[S]]						= on(s) map { _.modifyF }
+	def modifyStatefulPF[F[_]:CanMap,X](s:S):Option[FStateful[F,T,X]=>F[(S,X)]]	= on(s) map { _.modifyStatefulF }
+	
+	//------------------------------------------------------------------------------
+	
 	def orElse(that:PLens[S,T]):PLens[S,T]	=
 			PLens(this.on orElse that.on)
 		

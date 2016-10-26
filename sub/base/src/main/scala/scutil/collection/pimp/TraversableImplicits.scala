@@ -3,6 +3,7 @@ package scutil.collection.pimp
 import scala.collection.generic.CanBuildFrom
 
 import scutil.lang._
+import scutil.lang.tc._
 
 object TraversableImplicits extends TraversableImplicits
 

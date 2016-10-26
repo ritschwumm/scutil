@@ -47,7 +47,7 @@ final case class Extractor[S,T](read:PFunction[S,T]) {
 	def filter(pred:T=>Boolean):Extractor[S,T]	=
 			Extractor(s	=> read(s) filter pred)
 		
-	def cofilter(pred:S=>Boolean):Extractor[S,T]	=
+	def contraFilter(pred:S=>Boolean):Extractor[S,T]	=
 			Extractor(s	=> if (pred(s))	read(s)	else None)
 			
 	def toPFunction:PFunction[S,T]	=

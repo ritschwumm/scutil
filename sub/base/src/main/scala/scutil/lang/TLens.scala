@@ -1,5 +1,7 @@
 package scutil.lang
 
+import scutil.lang.tc._
+
 object TLens {
 	def create[S,T](get:S=>T, put:(S,T)=>S):TLens[S,T]	=
 			TLens { s =>
@@ -30,11 +32,23 @@ final case class TLens[S,T](on:S=>Store[S,T]) {
 	def modify(s:S, func:Endo[T]):S		= on(s) modify func
 	def modifier(func:Endo[T]):Endo[S]	= modify(_, func)
 	
+	// TODO ssomewhat stupid
 	def modifyOpt(s:S, func:PEndo[T]):Option[S]	= on(s) modifyOpt func
 	def modifierOpt(func:PEndo[T]):PEndo[S]		= modifyOpt(_, func)
 		
 	def modifyStateful[X](s:S, func:Stateful[T,X]):(S,X)		= on(s) modifyStateful func
 	def modifierStateful[X](func:Stateful[T,X]):Stateful[S,X]	= modifyStateful(_, func)
+	
+	//------------------------------------------------------------------------------
+	
+	// van laarhoven form
+	def modifierF[F[_]:CanMap](func:FEndo[F,T]):FEndo[F,S]	=
+			on(_) modifyF func
+	
+	def modifierStatefulF[F[_]:CanMap,X](func:FStateful[F,T,X]):FStateful[F,S,X]	=
+			on(_) modifyStatefulF func
+		
+	//------------------------------------------------------------------------------
 	
 	/** symbolic alias for andThen */
 	def >=>[U](that:TLens[T,U]):TLens[S,U]	=

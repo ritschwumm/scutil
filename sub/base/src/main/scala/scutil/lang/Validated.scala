@@ -3,6 +3,8 @@ package scutil.lang
 import scala.util.{ Try, Success, Failure }
 import scala.collection.generic.CanBuildFrom
 
+import scutil.lang.tc._
+
 object Validated extends ValidatedGenerated {
 	def good[E,T](value:T):Validated[E,T]	= Good(value)
 	def bad[E,T](problems:E):Validated[E,T]	= Bad(problems)

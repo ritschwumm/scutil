@@ -1,5 +1,7 @@
 package scutil.lang
 
+import scutil.lang.tc._
+
 object Store {
 	def identity[T](t:T):Store[T,T]	=
 			Store(t, t => t)
@@ -13,12 +15,24 @@ final case class Store[C,V](get:V, put:V=>C) {
 	def container:C							= put(get)
 	
 	def modify(func:Endo[V]):C				= put(func(get))
+	
+	// BETTER use modifyF
 	def modifyOpt(func:PEndo[V]):Option[C]	= func(get) map put
 	
-	def modifyStateful[X](func:Stateful[V,X]):(C, X)	= {
+	def modifyStateful[X](func:Stateful[V,X]):(C,X)	= {
 		val (v2, side)	= func(get)
 		(put(v2), side)
 	}
+	
+	//------------------------------------------------------------------------------
+	
+	def modifyF[F[_]:CanMap](func:FEndo[F,V]):F[C]	=
+			CanMap[F] map put apply func(get)
+		
+	def modifyStatefulF[F[_]:CanMap,X](func:FStateful[F,V,X]):F[(C,X)]	=
+			CanMap[F] map { (it:(V,X)) => (put(it._1), it._2) } apply func(get)
+	
+	//------------------------------------------------------------------------------
 	
 	/** aka duplicate */
 	def coFlatten:Store[Store[C,V],V]	=

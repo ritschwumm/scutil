@@ -41,6 +41,8 @@ final case class Prism[S,T](write:PFunction[S,T], read:T=>S) {
 			}
 	def modifierStateful[X](func:Stateful[T,X]):S=>Option[(S,X)]	= modifyStateful(_, func)
 	
+	//------------------------------------------------------------------------------
+	
 	def orElse(that:Prism[S,T]):Prism[S,T]	=
 			Prism(
 				s	=> (this write s) orElse (that write s),
@@ -48,14 +50,14 @@ final case class Prism[S,T](write:PFunction[S,T], read:T=>S) {
 			)
 					
 	/** filter the source value */
-	def cofilterBefore(pred:Predicate[S]):Prism[S,T]	=
+	def filterBefore(pred:Predicate[S]):Prism[S,T]	=
 			Prism(
 				s	=> if (pred(s)) write(s) else None,
 				read
 			)
 			
 	/** filter the target value */
-	def cofilterAfter(pred:Predicate[T]):Prism[S,T]	=
+	def filterAfter(pred:Predicate[T]):Prism[S,T]	=
 			Prism(
 				s	=> write(s) filter pred,
 				read

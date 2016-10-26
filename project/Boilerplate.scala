@@ -87,6 +87,8 @@ object Boilerplate {
 			s"""
 			package scutil.lang
 			
+			import scutil.lang.tc._
+			
 			trait ValidatedGenerated {
 				//------------------------------------------------------------------------------
 				// zip

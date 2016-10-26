@@ -7,6 +7,8 @@ package object lang {
 	
 	//------------------------------------------------------------------------------
 	
+	type Identity[T]		= T
+	
 	type Endo[T]			= T=>T
 	type Predicate[-T]		= T=>Boolean
 	
@@ -16,10 +18,15 @@ package object lang {
 	type Task				= Thunk[Unit]
 	type Executor			= Effect[Task]
 	
+	type Stateful[T,+X]		= T=>(T,X)
+	
 	type PFunction[-S,+T]	= S=>Option[T]
 	type PEndo[T]			= T=>Option[T]
+	type PStateful[T,+X]	= T=>Option[(T,X)]
 	
-	type Stateful[T,+X]		= T=>(T,X)
+	type FFunction[F[_],S,T]	= S=>F[T]
+	type FEndo[F[_],T]			= T=>F[T]
+	type FStateful[F[_],T,X]	= T=>F[(T,X)]
 	
 	//------------------------------------------------------------------------------
 	

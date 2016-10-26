@@ -5,8 +5,6 @@ import org.specs2.mutable._
 import scutil.lang.implicits._
 
 class HexNumberMacrosTest extends Specification {
-	def typed[T](t : => T) {}
-	
 	"HexNumberMacros" should {
 		"decode 00" in {
 			val it	= byte"00"

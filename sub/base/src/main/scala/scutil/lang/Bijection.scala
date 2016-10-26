@@ -18,6 +18,8 @@ final case class Bijection[S,T](write:S=>T, read:T=>S) {
 	}
 	def modifierStateful[X](func:Stateful[T,X]):Stateful[S,X]	= modifyStateful(_, func)
 		
+	//------------------------------------------------------------------------------
+	
 	def inverse:Bijection[T,S]	=
 			Bijection(read, write)
 	

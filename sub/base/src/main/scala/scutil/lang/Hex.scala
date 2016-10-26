@@ -1,6 +1,17 @@
 package scutil.lang
 
 object Hex {
+	def string(bytes:Array[Byte]):String	=
+			bytes map nibbles mkString ""
+		
+	def nibbles(it:Byte):String	=
+			(nibble charAt ((it >> 4) & 0xf)).toString	+
+			(nibble charAt ((it >> 0) & 0xf)).toString
+		
+	private val nibble	= "0123456789abcdef"
+	
+	//------------------------------------------------------------------------------
+	
 	private val invalid	= -1
 	
 	def bytes(s:String):Option[Array[Byte]]	= {
