@@ -8,7 +8,7 @@ class AssocTest extends Specification {
 	"arrow" should {
 		"construct" in {
 			val a	= "a" -> 1 -> 3L
-			a mustEqual (("a",1),3L)
+			a mustEqual ((("a",1),3L))
 		}
 		"destruct" in {
 			val a	= (("a",1),3L)

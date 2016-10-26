@@ -70,7 +70,7 @@ object Tried extends TriedGenerated {
 			s1 zip s2
 			
 	def zip3[E,S1,S2,S3](s1:Tried[E,S1], s2:Tried[E,S2], s3:Tried[E,S3]):Tried[E,(S1,S2,S3)]	=
-			s1 zip s2 zip s3 map Tuples.runcurry3
+			s1 zip s2 zip s3 map unarrow3
 			
 	def lift2[E,S1,S2,T](func:(S1,S2)=>T):(Tried[E,S1], Tried[E,S2])=>Tried[E,T]	=
 			(s1, s2) => win(func.curried) ap s1 ap s2

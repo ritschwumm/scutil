@@ -31,7 +31,7 @@ class BijectorTest extends Specification {
 		"work with binary case classes" in {
 			val value		= Binary(1,2)
 			val	bijection	= Bijector[Binary]
-			bijection write value mustEqual (1,2)
+			bijection write value mustEqual ((1,2))
 		}
 		"work with nested case classes" in {
 			val value		= Container(Unary(1))

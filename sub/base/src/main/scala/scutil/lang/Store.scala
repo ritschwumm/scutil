@@ -27,10 +27,10 @@ final case class Store[C,V](get:V, put:V=>C) {
 	//------------------------------------------------------------------------------
 	
 	def modifyF[F[_]:CanMap](func:FEndo[F,V]):F[C]	=
-			CanMap[F] map put apply func(get)
+			(CanMap[F] map func(get))(put)
 		
 	def modifyStatefulF[F[_]:CanMap,X](func:FStateful[F,V,X]):F[(C,X)]	=
-			CanMap[F] map { (it:(V,X)) => (put(it._1), it._2) } apply func(get)
+			(CanMap[F] map func(get)) { case (v,x) => (put(v), x) }
 	
 	//------------------------------------------------------------------------------
 	

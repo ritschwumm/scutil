@@ -1,17 +1,20 @@
 package scutil.io
 
 import java.io.File
+import java.io.InputStream
 import java.net.URL
+import java.net.Proxy
 import java.util.Properties
 
 import scutil.base.implicits._
 import scutil.core.implicits._
+import scutil.lang._
 
 object PropertiesUtil {
 	def empty:Properties	= new Properties
 	
-	def loadURL(url:URL):Map[String,String]	=
-			loadRawURL(url).toMap
+	def loadURL(url:URL, proxy:Option[Proxy] = None):Map[String,String]	=
+			loadRawURL(url, proxy).toMap
 		
 	def loadFile(file:File):Map[String,String]	=
 			loadRawFile(file).toMap
@@ -21,8 +24,8 @@ object PropertiesUtil {
 			
 	//------------------------------------------------------------------------------
 	
-	def loadRawURL(url:URL):Properties	=
-			url withInputStream { st =>
+	def loadRawURL(url:URL, proxy:Option[Proxy] = None):Properties	=
+			(url withInputStream proxy) { st =>
 				new Properties doto {
 					_ load st
 				}
@@ -39,4 +42,18 @@ object PropertiesUtil {
 			file withOutputStream { st =>
 				it store (st, null)
 			}
+			
+	//------------------------------------------------------------------------------
+	
+	def loadOrdered(ist:InputStream):ISeq[(String,String)]	= {
+		var out	= Vector.empty[(String,String)]
+		val p	= new Properties() {
+			override def put(key:AnyRef, value:AnyRef):AnyRef	= {
+				out	:+= (key.asInstanceOf[String] -> value.asInstanceOf[String])
+				super.put(key, value)
+			}
+		}
+		p load ist
+		out
+	}
 }

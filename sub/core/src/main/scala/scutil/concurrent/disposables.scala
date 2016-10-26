@@ -7,6 +7,6 @@ import scutil.lang._
 
 object disposables extends disposables
 trait disposables {
-	implicit def DisposableForLock	(peer:Lock)			= Disposable(peer.unlock)
-	implicit def DisposableTimerTask(peer:TimerTask)	= Disposable(peer.cancel)
+	implicit def DisposableForLock(peer:Lock):Disposable		= Disposable(peer.unlock)
+	implicit def DisposableTimerTask(peer:TimerTask):Disposable	= Disposable(peer.cancel)
 }

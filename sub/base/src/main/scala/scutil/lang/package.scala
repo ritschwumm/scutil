@@ -46,9 +46,5 @@ package object lang {
 	/** type inference helper */
 	def taking[S]	= new FunctionTaking[S]
 	
-	final class FunctionTaking[S] {
-		def apply[T](func:S=>T):S=>T	= func
-	}
-	
 	def typed[T](t : => T) {}
 }

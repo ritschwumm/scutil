@@ -2,7 +2,7 @@ package scutil.io.pimp
 
 import java.io._
 import java.nio.charset.Charset
-import java.net.URL
+import java.net._
 
 import scutil.lang._
 import scutil.lang.implicits._
@@ -15,15 +15,21 @@ trait URLImplicits {
 
 final class URLExt(peer:URL) {
 	/** execute a closure with an InputStream reading from this URL */
-	def withInputStream[T](code:InputStream=>T):T	=
-			peer.openStream() use code
+	def withInputStream[T](proxy:Option[Proxy])(code:InputStream=>T):T	=
+			openConnectionWithOptionalProxy(proxy).getInputStream() use code
 	
 	/** execute a closure with a Reader reading from this URL */
-	def withReader[T](charset:Charset)(code:InputStreamReader=>T):T	=
-			new InputStreamReader(peer.openStream(), charset) use code
+	def withReader[T](proxy:Option[Proxy], charset:Charset)(code:InputStreamReader=>T):T	=
+			new InputStreamReader(openConnectionWithOptionalProxy(proxy).getInputStream(), charset) use code
 		
-	def openInputStream():Tried[IOException,InputStream]	=
-			Catch.byType[IOException] in peer.openStream()
+	def openInputStream(proxy:Option[Proxy]):Tried[IOException,InputStream]	=
+			Catch.byType[IOException] in openConnectionWithOptionalProxy(proxy).getInputStream()
+		
+	def openConnectionWithOptionalProxy(proxy:Option[Proxy]):URLConnection	=
+			proxy match {
+				case Some(proxy)	=> peer openConnection proxy
+				case None			=> peer openConnection ()
+			}
 		
 	/**
 	converts a "file://..." URL to a File without being too critical

@@ -34,7 +34,7 @@ final class Worker(name:String, delay:MilliDuration, task:Task, error:Effect[Exc
 		queue push WorkerStop
 	}
 	
-	/** stop working, and release resources asap, die */
+	/** stop working, release resources asap, then die */
 	def dispose() {
 		queue push WorkerDie
 	}

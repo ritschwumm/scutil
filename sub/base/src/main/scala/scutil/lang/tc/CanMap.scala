@@ -6,5 +6,8 @@ object CanMap extends CanMapInstances {
 
 /** aka Functor */
 trait CanMap[F[_]] {
-	def map[A,B](func:A=>B):F[A]=>F[B]
+	def map[A,B](it:F[A])(func:A=>B):F[B]
+	
+	final def mapper[A,B](func:A=>B):F[A]=>F[B]	=
+			map(_)(func)
 }

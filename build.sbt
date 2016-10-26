@@ -1,6 +1,6 @@
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.90.0",
+	version			:= "0.91.0",
 	
 	scalaVersion	:= "2.11.8",
 	scalacOptions	++= Seq(
@@ -9,7 +9,8 @@ inThisBuild(Seq(
 		"-feature",
 		"-optimize",
 		"-Ywarn-unused-import",
-		"-Xfatal-warnings"
+		"-Xfatal-warnings",
+		"-Xlint"
 	),
 	
 	conflictManager	:= ConflictManager.strict,
@@ -61,8 +62,8 @@ lazy val `scutil-base`	=
 			// only here because -> leads to inliner warnings
 			(scalacOptions in Compile) := (scalacOptions in Compile).value filterNot { _ == "-Xfatal-warnings" },
 			libraryDependencies	++= Seq(
-				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "compile",
-				"org.specs2"		%%	"specs2-core"	% "3.8.4"				% "test"
+				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
+				"org.specs2"		%%	"specs2-core"	% "3.8.5"				% "test"
 			),
 			boilerplateSource in Compile := baseDirectory.value.getParentFile / "src" / "main" / "boilerplate",
 			wartremoverErrors ++= warts,
@@ -94,8 +95,8 @@ lazy val `scutil-core`	=
 			),
 			
 			libraryDependencies	++= Seq(
-				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "compile",
-				"org.specs2"		%%	"specs2-core"	% "3.8.4"				% "test"
+				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
+				"org.specs2"		%%	"specs2-core"	% "3.8.5"				% "test"
 			),
 			
 			wartremoverErrors ++= warts,
@@ -156,7 +157,7 @@ lazy val `scutil-xml`	=
 			),
 			
 			libraryDependencies	++= Seq(
-				"org.scala-lang.modules"	%% "scala-xml"	% "1.0.5"	% "compile"
+				"org.scala-lang.modules"	%% "scala-xml"	% "1.0.6"	% "compile"
 			),
 			
 			wartremoverErrors ++= warts

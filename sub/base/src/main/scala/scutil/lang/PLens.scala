@@ -31,7 +31,7 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 	def modify(s:S, func:Endo[T]):Option[S]	= on(s) map { _ modify func }
 	def modifier(func:Endo[T]):PEndo[S]		= modify(_, func)
 	
-	// TODO ssomewhat stupid
+	// TODO somewhat stupid
 	def modifyOpt(s:S, func:PEndo[T]):Option[S]	= for { store	<- on(s); value	<- func(store.get) } yield store put value
 	def modifierOpt(func:PEndo[T]):PEndo[S]		= modifyOpt(_, func)
 	
@@ -130,4 +130,7 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 					)
 				}
 			}
+			
+	def toTLens(default: =>Store[S,T]):TLens[S,T]	=
+			TLens { on(_) getOrElse default }
 }
