@@ -1,6 +1,6 @@
 package scutil.worker
 
-import scutil.implicits._
+import scutil.base.implicits._
 import scutil.lang.ISeq
 
 /** a very simple synchronized queue */

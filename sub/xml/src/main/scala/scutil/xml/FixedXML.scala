@@ -12,8 +12,9 @@ import scala.xml.dtd.DocType
 import scala.xml.factory.XMLLoader
 import javax.xml.parsers.SAXParser
 
-import scutil.implicits._
-import scutil.codec.Charsets
+import scutil.base.implicits._
+import scutil.core.implicits._
+import scutil.lang.Charsets
 
 /*
 NOTE

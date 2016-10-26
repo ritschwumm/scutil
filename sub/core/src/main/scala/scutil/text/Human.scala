@@ -3,7 +3,7 @@ package scutil.text
 import java.util.Locale
 
 import scutil.lang._
-import scutil.implicits._
+import scutil.base.implicits._
 
 /** format (positive) numbers in a human readable way */
 object Human {

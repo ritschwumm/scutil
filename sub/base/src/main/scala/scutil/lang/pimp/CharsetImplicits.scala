@@ -1,4 +1,4 @@
-package scutil.codec.pimp
+package scutil.lang.pimp
 
 import java.nio._
 import java.nio.charset._

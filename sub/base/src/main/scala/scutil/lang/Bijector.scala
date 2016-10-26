@@ -4,7 +4,8 @@ import scala.language.experimental.macros
 
 import scala.reflect.macros.whitebox.Context
 
-import scutil.implicits._
+import scutil.lang.implicits._
+import scutil.collection.implicits._
 
 /** creates bijections from the apply/unapply methods in a case classes' companion object */
 object Bijector {

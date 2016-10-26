@@ -4,7 +4,8 @@ import java.io.File
 import java.net.URL
 import java.util.Properties
 
-import scutil.implicits._
+import scutil.base.implicits._
+import scutil.core.implicits._
 
 object PropertiesUtil {
 	def empty:Properties	= new Properties

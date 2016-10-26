@@ -2,7 +2,8 @@ package scutil.lang
 
 import scala.reflect.macros.blackbox.Context
 
-import scutil.implicits._
+import scutil.lang.implicits._
+import scutil.collection.implicits._
 
 object Fielder {
 	// NOTE the context bounds makes it possible to pass the type through other methods

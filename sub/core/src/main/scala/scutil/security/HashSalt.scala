@@ -4,7 +4,7 @@ import java.security._
 import java.text.Normalizer
 import java.nio.charset.Charset
 
-import scutil.implicits._
+import scutil.base.implicits._
 import scutil.lang.ISeq
 import scutil.codec.Base64
 

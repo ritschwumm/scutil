@@ -3,7 +3,7 @@ package scutil.uid
 import java.nio.ByteBuffer
 
 import scutil.lang._
-import scutil.implicits._
+import scutil.base.implicits._
 
 object UidPrisms {
 	val ByteArray:Prism[Array[Byte],Uid]	=

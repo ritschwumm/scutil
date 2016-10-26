@@ -4,7 +4,7 @@ import scala.language.dynamics
 import scala.language.experimental.macros
 import scala.reflect.macros.whitebox.Context
 
-import scutil.implicits._
+import scutil.lang.implicits._
 
 /** creates lens instances for a case classes' fields */
 object Lenser {

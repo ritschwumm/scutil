@@ -2,7 +2,7 @@ package scutil.log
 
 import java.io._
 
-import scutil.implicits._
+import scutil.base.implicits._
 import scutil.lang.SourceLocation
 import scutil.time._
 

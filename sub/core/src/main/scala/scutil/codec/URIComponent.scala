@@ -5,7 +5,7 @@ import java.nio.charset._
 import scala.collection.mutable
 
 import scutil.lang._
-import scutil.codec.pimp.CharsetImplicits._
+import scutil.lang.pimp.CharsetImplicits._
 
 object URIComponent {
 	val utf_8	= forCharset(Charsets.utf_8)

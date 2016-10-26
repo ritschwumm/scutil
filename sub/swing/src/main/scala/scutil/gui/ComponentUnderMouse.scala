@@ -11,7 +11,7 @@ import java.applet.Applet
 import scala.collection.mutable
 
 import scutil.lang._
-import scutil.implicits._
+import scutil.base.implicits._
 import scutil.time._
 import scutil.gui.SwingUtil._
 

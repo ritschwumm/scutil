@@ -3,7 +3,8 @@ package scutil.search
 import java.util.regex.Pattern
 
 import scutil.lang._
-import scutil.implicits._
+import scutil.base.implicits._
+import scutil.core.implicits._
 
 object SearchCompiler {
 	def multi(pattern:SearchPattern):Predicate[Iterable[String]]	=

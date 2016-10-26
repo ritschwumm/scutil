@@ -8,6 +8,7 @@ trait implicits
 		with	AnyImplicits
 		with	AnyRefImplicits
 		with	BooleanImplicits
+		with	CharsetImplicits
 		with	ClassImplicits
 		with	ExceptionCatchImplicits
 		with	EitherImplicits

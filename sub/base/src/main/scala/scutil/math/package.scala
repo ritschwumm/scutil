@@ -130,24 +130,6 @@ package object math {
 	
 	//------------------------------------------------------------------------------
 	
-	@deprecated("use ceilDivByte instead", "12aug16")
-	def divUpByte(value:Byte, divisor:Byte):Byte	=
-			((value + divisor - 1) / divisor).toByte
-		
-	@deprecated("use ceilDivShort instead", "12aug16")
-	def divUpShort(value:Short, divisor:Short):Short	=
-			((value + divisor - 1) / divisor).toShort
-		
-	@deprecated("use ceilDivInt instead", "12aug16")
-	def divUpInt(value:Int, divisor:Int):Int	=
-			(value + divisor - 1) / divisor
-		
-	@deprecated("use ceilDivLong instead", "12aug16")
-	def divUpLong(value:Long, divisor:Long):Long	=
-			(value + divisor - 1) / divisor
-		
-	//------------------------------------------------------------------------------
-	
 	def floorDivByte(value:Byte, raster:Byte):Byte	=
 			floorDivByte(value, raster).toByte
 
