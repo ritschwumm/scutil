@@ -10,6 +10,7 @@ trait implicits
 		with	JIterableImplicits
 		with	JListImplicits
 		with	JMapImplicits
+		with	JOptionalImplicits
 		with	JSetImplicits
 		with	PropertiesImplicits
 		with	ISeqJCollectionSyntaxImplicits

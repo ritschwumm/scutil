@@ -22,7 +22,7 @@ final class ExecutorExt(peer:Executor) {
 	
 	def toJavaExecutor:JExecutor	= new JExecutor {
 		def execute(command:Runnable) {
-			peer(command.run)
+			peer(command.run _)
 		}
 	}
 }

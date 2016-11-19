@@ -58,7 +58,7 @@ final class HashSalt(
 	def cook(raw:String):String	= {
 		val	salt		= new Array[Byte](saltSize) |>> synchronized { random.nextBytes }
 		val prepared	= prepare(raw, salt, roundCount)
-		roundCount				+ "$" +
+		roundCount.toString		+ "$" +
 		(Base64 encode salt)	+ "$" +
 		(Base64 encode prepared)
 	}

@@ -1,17 +1,18 @@
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.91.0",
+	version			:= "0.92.0",
 	
-	scalaVersion	:= "2.11.8",
+	scalaVersion	:= "2.12.0",
 	scalacOptions	++= Seq(
 		"-deprecation",
 		"-unchecked",
 		"-feature",
-		"-optimize",
+		"-opt:box-unbox",
 		"-Ywarn-unused-import",
 		"-Xfatal-warnings",
 		"-Xlint"
 	),
+	scalaJSUseRhino	:= true,
 	
 	conflictManager	:= ConflictManager.strict,
 	resolvers		+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
@@ -63,7 +64,7 @@ lazy val `scutil-base`	=
 			(scalacOptions in Compile) := (scalacOptions in Compile).value filterNot { _ == "-Xfatal-warnings" },
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "3.8.5"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "3.8.6"				% "test"
 			),
 			boilerplateSource in Compile := baseDirectory.value.getParentFile / "src" / "main" / "boilerplate",
 			wartremoverErrors ++= warts,
@@ -96,7 +97,7 @@ lazy val `scutil-core`	=
 			
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "3.8.5"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "3.8.6"				% "test"
 			),
 			
 			wartremoverErrors ++= warts,

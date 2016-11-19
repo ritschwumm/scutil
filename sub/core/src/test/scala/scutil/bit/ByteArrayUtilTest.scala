@@ -20,13 +20,13 @@ class ByteArrayUtilTest extends Specification {
 			(ByteArrayUtil littleEndianLong 0x0112233445566778L)	mustEqual Array[Byte](0x78, 0x67, 0x56, 0x45, 0x34, 0x23, 0x12, 0x01)
 		}
 		"work big endian for shorts" in {
-			(ByteArrayUtil bigEndianShort 0x1234.toShort)		mustEqual Array[Byte](0x12, 0x34)
+			(ByteArrayUtil bigEndianShort 0x1234.toShort)			mustEqual Array[Byte](0x12, 0x34)
 		}
 		"work for big endian ints" in {
-			(ByteArrayUtil bigEndianInt 0x12345678)				mustEqual Array[Byte](0x12, 0x34, 0x56, 0x78)
+			(ByteArrayUtil bigEndianInt 0x12345678)					mustEqual Array[Byte](0x12, 0x34, 0x56, 0x78)
 		}
 		"work for big endian longs" in {
-			(ByteArrayUtil bigEndianLong 0x0112233445566778L)	mustEqual Array[Byte](0x01, 0x12, 0x23, 0x34, 0x45, 0x56, 0x67, 0x78)
+			(ByteArrayUtil bigEndianLong 0x0112233445566778L)		mustEqual Array[Byte](0x01, 0x12, 0x23, 0x34, 0x45, 0x56, 0x67, 0x78)
 		}
 	}
 }

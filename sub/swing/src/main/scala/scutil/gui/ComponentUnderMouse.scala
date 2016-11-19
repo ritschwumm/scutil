@@ -25,8 +25,9 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 	
 	private var entries	= new mutable.WeakHashMap[Component,Entry]
 	
-	private final case class Entry(state:Boolean, callbacks:ISeq[WeakReference[Callback]]) {
-		def referencedCallbacks:ISeq[WeakReference[Callback]]	= callbacks filterNot { _.get == null }
+	// TODO make this final again when https://issues.scala-lang.org/browse/SI-4440 is resolved
+	private sealed case class Entry(state:Boolean, callbacks:ISeq[WeakReference[Callback]]) {
+		def referencedCallbacks:ISeq[WeakReference[Callback]]	= callbacks filterNot { _.get eq null }
 	}
 	
 	/** keep a hard reference to the component and either the callback or the resulting disposable or updates will stop */
@@ -45,7 +46,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 						val newCallbacks	=
 								entry.callbacks filterNot { it =>
 									val deref	= it.get
-									deref == null ||
+									(deref eq null) ||
 									deref == callback
 								}
 						if (newCallbacks.nonEmpty)	List(component -> Entry(entry.state, newCallbacks))
@@ -70,7 +71,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 			entry			= update._2
 			callback		<- entry.callbacks
 			callbackHard	= callback.get
-			if callbackHard != null
+			if callbackHard ne null
 		} {
 			try {
 				callbackHard(entry.state)
@@ -119,7 +120,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 					x	-= c.getX
 					y	-= c.getY
 					c	= c.getParent
-					if (c == null) {
+					if (c eq null) {
 						return new Point(x, y)
 					}
 			}

@@ -187,8 +187,8 @@ final class FileExt(peer:File) {
 	def createTempDirectory(prefix:String, suffix:String = null):File	= {
 		require(prefix.length >= 3, "prefix must be at least 3 characters long")
 		val	file	= File createTempFile (prefix, suffix, peer)
-		require(file.delete(),	"cannot delete temp file: " + file)
-		require(file.mkdir(),	"cannot create temp directory: " + file)
+		require(file.delete(),	"cannot delete temp file: " + file.toString)
+		require(file.mkdir(),	"cannot create temp directory: " + file.toString)
 		file
 	}
 }

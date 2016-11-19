@@ -36,7 +36,7 @@ final class IterableAsJIterable[T](peer:Iterable[T]) extends JIterable[T] {
 final class IteratorAsJIterator[T](peer:Iterator[T]) extends JIterator[T] {
 	def hasNext:Boolean	= peer.hasNext
 	def next():T		= peer.next()
-	def remove():Unit	= throw new UnsupportedOperationException()
+	override def remove():Unit	= throw new UnsupportedOperationException()
 }
 
 final class IteratorAsJEnumeration[T](peer:Iterator[T]) extends JEnumeration[T] {

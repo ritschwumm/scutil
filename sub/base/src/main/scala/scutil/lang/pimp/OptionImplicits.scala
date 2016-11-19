@@ -1,5 +1,7 @@
 package scutil.lang.pimp
 
+import java.util.{ Optional => JOptional }
+
 import scala.collection.generic.CanBuildFrom
 
 import scutil.lang._
@@ -184,5 +186,11 @@ final class OptionExt[T](peer:Option[T]) {
 			peer match {
 				case Some(x)	=> Vector(x)
 				case None		=> Vector.empty
+			}
+			
+	def toJOptional:JOptional[T]	=
+			peer match {
+				case Some(x)	=> JOptional of x
+				case None		=> JOptional.empty[T]
 			}
 }
