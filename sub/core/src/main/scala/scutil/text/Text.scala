@@ -1,5 +1,7 @@
 package scutil.text
 
+import scutil.lang.ISeq
+
 object Text {
 	/** indent every line with a single tab */
 	def indent(prefix:String, str:String):String =
@@ -41,4 +43,30 @@ object Text {
 	*/
 	def stripMarginOnly(s:String):String	=
 			s.lines collect { case Strip(it) => it } mkString "\n"
+	
+	def table(rows:ISeq[ISeq[String]]):ISeq[String]	= {
+		val widths	= 
+				(rows foldLeft Vector.empty[Int]) { (widths, row) =>
+					widths zipAll (row map (_.length), 0, 0) map { case (a,b) => a max b }
+				}
+				
+		val lines	= rows map { cells =>
+			cells
+			.zipAll (widths, "", 0)
+			.map { case (cell, width) =>
+				cell + " " * ((width - cell.length max 0))
+			}
+			.mkString ("│", "│", "│")
+		}
+		
+		val topRuler	= widths map { width => "─" * width } mkString ("┌", "┬", "┐")
+		val midRuler	= widths map { width => "─" * width } mkString ("├", "┼", "┤")
+		val bottomRuler	= widths map { width => "─" * width } mkString ("└", "┴", "┘")
+		
+		val spersed	=
+			if (lines.isEmpty)	Vector.empty[String]
+			else				lines.flatMap(it => Vector(it, midRuler)).init
+			
+		Vector(topRuler) ++ spersed ++ Vector(bottomRuler)
+	}
 }

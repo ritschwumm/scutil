@@ -43,4 +43,17 @@ class TextTest extends Specification {
 			""" mustEqual "one\n two"
 		}
 	}
+	
+	"table helper" should {
+		"format correctly" in {
+			Text table Vector(Vector("a","bb","ccc"),Vector("ddd","cccc","e")) mustEqual
+			Vector(
+				"┌───┬────┬───┐",
+				"│a  │bb  │ccc│",
+				"├───┼────┼───┤",
+				"│ddd│cccc│e  │",
+				"└───┴────┴───┘"
+			)
+		}
+	}
 }

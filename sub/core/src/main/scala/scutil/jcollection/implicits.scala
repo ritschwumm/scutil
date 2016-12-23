@@ -1,20 +1,5 @@
 package scutil.jcollection
 
-import scutil.jcollection.pimp._
-
 object implicits extends implicits
 trait implicits
-		extends	ConcurrentLinkedQueueImplicits
-		with	JEnumerationImplicits
-		with	JIteratorImplicits
-		with	JIterableImplicits
-		with	JListImplicits
-		with	JMapImplicits
-		with	JOptionalImplicits
-		with	JSetImplicits
-		with	PropertiesImplicits
-		with	ISeqJCollectionSyntaxImplicits
-		with	IterableJCollectionSyntaxImplicits
-		with	IteratorJCollectionSyntaxImplicits
-		with	MapJCollectionSyntaxImplicits
-		with	SetJCollectionSyntaxImplicits
+		extends	extensions

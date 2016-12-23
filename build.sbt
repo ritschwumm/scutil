@@ -1,13 +1,13 @@
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.92.0",
+	version			:= "0.93.0",
 	
-	scalaVersion	:= "2.12.0",
+	scalaVersion	:= "2.12.1",
 	scalacOptions	++= Seq(
 		"-deprecation",
 		"-unchecked",
 		"-feature",
-		"-opt:box-unbox",
+		"-opt:l:project",
 		"-Ywarn-unused-import",
 		"-Xfatal-warnings",
 		"-Xlint"
@@ -20,7 +20,7 @@ inThisBuild(Seq(
 
 lazy val warts	=
 		Seq(
-			Wart.Any2StringAdd,
+			Wart.StringPlusAny,
 			Wart.EitherProjectionPartial,
 			Wart.OptionPartial,
 			Wart.Enumeration,

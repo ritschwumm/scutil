@@ -15,20 +15,23 @@ import scutil.base.implicits._
 import scutil.time._
 import scutil.gui.SwingUtil._
 
+object ComponentUnderMouse {
+	private type Callback	= Effect[Boolean]
+	
+	private final case class Entry(state:Boolean, callbacks:ISeq[WeakReference[Callback]]) {
+		def referencedCallbacks:ISeq[WeakReference[Callback]]	= callbacks filterNot { _.get eq null }
+	}
+}
+
 /**
 get notifications whenever the mouse enters or leaves a Component area.
 in contrast to simple mouseEnter/mouseExit events this works when the mouse
 moves fast or something is dragged over the component.
 */
 final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Exception)=>Unit) {
-	private type Callback	= Effect[Boolean]
+	import ComponentUnderMouse._
 	
 	private var entries	= new mutable.WeakHashMap[Component,Entry]
-	
-	// TODO make this final again when https://issues.scala-lang.org/browse/SI-4440 is resolved
-	private sealed case class Entry(state:Boolean, callbacks:ISeq[WeakReference[Callback]]) {
-		def referencedCallbacks:ISeq[WeakReference[Callback]]	= callbacks filterNot { _.get eq null }
-	}
 	
 	/** keep a hard reference to the component and either the callback or the resulting disposable or updates will stop */
 	def listen(component:Component, callback:Callback):Disposable	= {

@@ -21,17 +21,10 @@ trait Disposable {
 	def dispose():Unit
 	
 	/** forms a monoid with empty */
-	final def disposeBefore(that:Disposable):Disposable	=
+	final def and(that:Disposable):Disposable	=
 			disposable {
 				this.dispose()
 				that.dispose()
-			}
-			
-	/** forms a monoid with empty */
-	final def disposeAfter(that:Disposable):Disposable	=
-			disposable {
-				that.dispose()
-				this.dispose()
 			}
 }
 
