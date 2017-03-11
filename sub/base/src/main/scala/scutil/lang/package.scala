@@ -24,12 +24,6 @@ package object lang {
 	type PEndo[T]				= T=>Option[T]
 	type FEndo[F[_],T]			= T=>F[T]
 	
-	/*
-	type Stateful[T,+X]			= T=>(T,X)
-	type PStateful[T,+X]		= T=>Option[(T,X)]
-	type FStateful[F[_],T,X]	= T=>F[(T,X)]
-	*/
-	
 	//------------------------------------------------------------------------------
 	
 	def constant[S,T](value: =>T):(S=>T)		= _ => value
@@ -42,6 +36,10 @@ package object lang {
 	
 	/** tell the compiler the control flow never reaches this point */
 	def nothing:Nothing	= sys error "silence! i kill you!"
+	
+	//------------------------------------------------------------------------------
+	
+	type ~>[-F[_],+G[_]]	= NaturalTransformation[F,G]
 	
 	//------------------------------------------------------------------------------
 	

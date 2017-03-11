@@ -126,27 +126,21 @@ sealed trait Tried[+F,+W] {
 	def flatten[FF>:F,X](implicit ev:W=>Tried[FF,X]):Tried[FF,X]	=
 			flatMap(ev)
 	
-	/** fail on this overrides fail on that */
-	def pa[FF>:F,X](that:Tried[FF,W=>X]):Tried[FF,X]	=
-			cata(
-				v	=> that cata (
-					f	=> Fail(f),
-					f	=> Fail(v)
-				),
-				v	=> that cata (
-					f	=> Fail(f),
-					f	=> Win(f(v))
+	/** function effect first */
+	def ap[FF>:F,X,Y](that:Tried[FF,X])(implicit ev:W=>X=>Y):Tried[FF,Y]	=
+			this cata (
+				f	=> Fail(f),
+				f	=> that cata (
+					v	=> Fail(v),
+					v	=> Win(f(v))
 				)
 			)
 			
-	/** fail on that overrides fail on this */
-	def ap[FF>:F,X,Y](that:Tried[FF,X])(implicit ev:W=>X=>Y):Tried[FF,Y]	=
-			cata(
-				f	=> that cata (
-					v	=> Fail(v),
-					v	=> Fail(f)
-				),
-				f	=> that cata (
+	/** function effect first */
+	def pa[FF>:F,X](that:Tried[FF,W=>X]):Tried[FF,X]	=
+			that cata(
+				f	=> Fail(f),
+				f	=> this cata (
 					v	=> Fail(v),
 					v	=> Win(f(v))
 				)

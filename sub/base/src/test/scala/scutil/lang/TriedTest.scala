@@ -1,66 +1,28 @@
-/*
-package scutil
+package scutil.lang
 
 import org.specs2.mutable._
 
-import Implicits._
-import data._
-
 class TriedTest extends Specification {
-	"tried" should {
-		"collect sucess if there is an implicit default available" in {
-			val input:Tried[Char,Int]		= Win(1)
-			implicit
-			val default:Tried[Char,Boolean]	= Fail('a')
-			input collect { case 1 => true } mustEqual Win(true)
+	"Tried" should {
+		"do successful ap" in {
+			val func:Tried[String,Int=>Int]	= Tried win (_ * 2)
+			val value:Tried[String,Int]		= Tried win 7
+			func ap value mustEqual Win(14)
 		}
-		
-		"collect failure if there is an implicit default available" in {
-			val input:Tried[Char,Int]		= Win(2)
-			implicit
-			val default:Tried[Char,Boolean]	= Fail('a')
-			input collect { case 1 => true } mustEqual default
+		"do successful pa" in {
+			val func:Tried[String,Int=>Int]	= Tried win (_ * 2)
+			val value:Tried[String,Int]		= Tried win 7
+			value pa func mustEqual Win(14)
 		}
-		
-		"filter sucess if there is an implicit default available" in {
-			val input:Tried[Char,Int]	= Win(1)
-			implicit
-			val default:Tried[Char,Int]	= Fail('a')
-			input filter { _ == 1 } mustEqual input
+		"abort function-first in ap" in {
+			val func:Tried[String,Int=>Int]	= Tried fail "bug"
+			val value:Tried[String,Int]		= Tried fail "error"
+			func ap value mustEqual Fail("bug")
 		}
-		
-		"filter failure if there is an implicit default available" in {
-			val input:Tried[Char,Int]	= Win(1)
-			implicit
-			val default:Tried[Char,Int]	= Fail('a')
-			input filter { _ == 2 } mustEqual default
-		}
-		
-		"work in for-syntax using withFilter success" in {
-			val input:Tried[Char,Int]	= Win(1)
-			implicit
-			val default:Tried[Char,Int]	= Fail('a')
-			val a	=
-					for {
-						x:Int	<- input
-						if x == 1
-					}	
-					yield x
-			a mustEqual input
-		}
-		
-		"work in for-syntax using withFilter fail" in {
-			val input:Tried[Char,Int]	= Win(1)
-			implicit
-			val default:Tried[Char,Int]	= Fail('a')
-			val a	=
-					for {
-						x:Int	<- input
-						if x == 2
-					}	
-					yield x
-			a mustEqual default
+		"abort function-first in pa" in {
+			val func:Tried[String,Int=>Int]	= Tried fail "bug"
+			val value:Tried[String,Int]		= Tried fail "error"
+			value pa func mustEqual Fail("bug")
 		}
 	}
 }
-*/

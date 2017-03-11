@@ -1,6 +1,7 @@
 package scutil.lang
 
 import scutil.lang.tc._
+import scutil.lang.tc.syntax._
 
 object Store extends StoreInstances {
 	def identity[T](t:T):Store[T,T]	=
@@ -16,16 +17,6 @@ final case class Store[C,V](get:V, put:V=>C) {
 	
 	def modify(func:Endo[V]):C				= put(func(get))
 	
-	// BETTER use modifyF
-	def modifyOpt(func:PEndo[V]):Option[C]	= func(get) map put
-	
-	/*
-	def modifyStateful[X](func:Stateful[V,X]):(C,X)	= {
-		val (v2, side)	= func(get)
-		(put(v2), side)
-	}
-	*/
-	
 	def modifyState[X](func:State[V,X]):(C,X)	= {
 		val (v2, side)	= func run get
 		(put(v2), side)
@@ -34,11 +25,13 @@ final case class Store[C,V](get:V, put:V=>C) {
 	//------------------------------------------------------------------------------
 	
 	def modifyF[F[_]:Functor](func:FEndo[F,V]):F[C]	=
-			(Functor[F] map func(get))(put)
+			func(get) map put
+			//(Functor[F] map func(get))(put)
 		
 	/*
 	def modifyStatefulF[F[_]:Functor,X](func:FStateful[F,V,X]):F[(C,X)]	=
-			(Functor[F] map func(get)) { case (v,x) => (put(v), x) }
+			func(get) map { case (v, x) => (put(v), x) }
+			//(Functor[F] map func(get)) { case (v,x) => (put(v), x) }
 	*/
 	
 	//------------------------------------------------------------------------------

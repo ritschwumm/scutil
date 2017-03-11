@@ -32,15 +32,6 @@ final case class TLens[S,T](on:S=>Store[S,T]) {
 	def modify(s:S, func:Endo[T]):S		= on(s) modify func
 	def modifier(func:Endo[T]):Endo[S]	= modify(_, func)
 	
-	// TODO specialized modifierF
-	def modifyOpt(s:S, func:PEndo[T]):Option[S]	= on(s) modifyOpt func
-	def modifierOpt(func:PEndo[T]):PEndo[S]		= modifyOpt(_, func)
-	
-	/*
-	def modifyStateful[X](s:S, func:Stateful[T,X]):(S,X)		= on(s) modifyStateful func
-	def modifierStateful[X](func:Stateful[T,X]):Stateful[S,X]	= modifyStateful(_, func)
-	*/
-	
 	def modifyState[X](s:S, func:State[T,X]):(S,X)	= on(s) modifyState func
 	def modifierState[X](func:State[T,X]):S=>(S,X)	= modifyState(_, func)
 	

@@ -96,6 +96,22 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 		builder.result
 	}
 	
+	/** like flatten, but avoiding the dubious Option=>Iterable implicit */
+	def collapseFirst[U](implicit ev:PFunction[T,U]):Option[U]	=
+			collapseMapFirst(ev)
+		
+	/**
+	return the first Some find creates from elements of this collection
+	resembles collectFirst, but uses Function1[_,Option[_]] instead of a PartialFunction[_,_]
+	*/
+	def collapseMapFirst[U](find:PFunction[T,U]):Option[U]	= {
+		peer foreach { it =>
+			val	out	= find(it)
+			if (out.isDefined)	return out
+		}
+		None
+	}
+	
 	// NOTE these should be generalized to other AFs, not just Option and Tried
 	// NOTE supplying pure and flatMap of a Monad would work, too!
 	

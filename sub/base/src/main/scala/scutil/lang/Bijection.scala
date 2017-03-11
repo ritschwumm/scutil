@@ -9,17 +9,6 @@ final case class Bijection[S,T](write:S=>T, read:T=>S) {
 	def modify(s:S, func:Endo[T]):S		= read(func(write(s)))
 	def modifier(func:Endo[T]):Endo[S]	= modify(_, func)
 		
-	def modifyOpt(s:S, func:PEndo[T]):Option[S]	= func(write(s)) map read
-	def modifierOpt(func:PEndo[T]):PEndo[S]		= modifyOpt(_, func)
-	
-	/*
-	def modifyStateful[X](s:S, func:Stateful[T,X]):(S,X)	= {
-		val (t, x)	= func(write(s))
-		(read(t), x)
-	}
-	def modifierStateful[X](func:Stateful[T,X]):Stateful[S,X]	= modifyStateful(_, func)
-	*/
-	
 	def modifyState[X](s:S, func:State[T,X]):(S,X)	= {
 		val (t, x)	= func run write(s)
 		(read(t), x)

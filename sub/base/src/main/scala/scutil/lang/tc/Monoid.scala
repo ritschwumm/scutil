@@ -11,5 +11,8 @@ object Monoid {
 }
 
 trait Monoid[F] extends Semigroup[F] {
+	//------------------------------------------------------------------------------
+	//## own
+	
 	def empty:F
 }

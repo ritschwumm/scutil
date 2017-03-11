@@ -1,6 +1,6 @@
 package scutil.gui
 
-import java.io.{ File, IOException }
+import java.io.{ File, IOException, FileNotFoundException }
 import java.util.{ List => JList }
 import java.net.{ URI, URL }
 import java.awt.datatransfer.DataFlavor
@@ -80,15 +80,23 @@ object DndFileImport {
 				.sequenceValidated
 				.flatMap			{ _.toNesOption toGood badMessage(s"empty uri list") }
 		
-		private def fileFromURI(uri:String):Validated[Nes[Exception],File]	=
-				parseFile(uri) mapFail Nes.single into Validated.fromTried
-		
-		// on el captain text/uri-list contains a file path, but new File(URI) expects an absolute URI
-		private def parseFile(s:String):Tried[Exception,File]	=
+		// on el captain text/uri-list contains plain file path, but new File(URI) expects an absolute URI
+		private def fileFromURI(s:String):Validated[Nes[Exception],File]	=
+				(fileFromURI1(s) mapFail Nes.single into Validated.fromTried)	orElse
+				(fileFromURI2(s) mapFail Nes.single into Validated.fromTried)
+				
+		private def fileFromURI1(s:String):Tried[Exception,File]	=
 				Catch.exception in {
 					val uri	= new URI(s)
 					if (uri.getScheme != null)	new File(uri)
 					else						new File(s)
+				}
+			
+		private def fileFromURI2(s:String):Tried[Exception,File]	=
+				Catch.exception in {
+					val file	= new File(s)
+					if (!file.exists)	throw new FileNotFoundException(s"file does not exist: $file")
+					file
 				}
 		
 		private def filesFromJList(jlist:JList[File]):Validated[Nes[Exception],Nes[File]]	=

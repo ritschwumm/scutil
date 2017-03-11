@@ -12,4 +12,3 @@ trait extensions
 		with	QueueImplicits
 		with	SetImplicits
 		with	TraversableImplicits
-		with	TraversableOnceImplicits

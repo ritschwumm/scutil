@@ -17,16 +17,6 @@ final class Synchronized[T](initial:T) {
 	def set(value:T):T	=
 			modify(State setOld value)
 			
-	/*
-	// change state and return something
-	def modify[U](func:Stateful[T,U]):U	=
-			synchronized {
-				val (next, out)	= func(value)
-				value	= next
-				out
-			}
-	*/
-			
 	/** change state and return something */
 	def modify[U](state:State[T,U]):U	=
 			synchronized {

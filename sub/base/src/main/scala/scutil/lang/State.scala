@@ -28,18 +28,20 @@ final case class State[S,+T](run:S=>(S,T)) {
 				func(t).run(s2)
 			}
 			
+	/** function effect first */
 	def ap[A,B](that:State[S,A])(implicit ev:T=>(A=>B)):State[S,B]	=
 			State { s =>
 				val (s1, ab)	= this run s
-				val (s2, a)	= that run s1
+				val (s2, a)		= that run s1
 				(s2, ab(a))
 			}
 			
+	/** function effect first */
 	def pa[U](that:State[S,T=>U]):State[S,U]	=
 			State { s =>
-				val (s1, t)	= this run s
-				val (s2, u)	= that run s1
-				(s2, u(t))
+				val (s1, tu)	= that run s
+				val (s2, t)		= this run s1
+				(s2, tu(t))
 			}
 			
 	def zip[U](that:State[S,U]):State[S,(T,U)]	=

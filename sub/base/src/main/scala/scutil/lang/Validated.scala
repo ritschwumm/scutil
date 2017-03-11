@@ -107,21 +107,19 @@ sealed trait Validated[+E,+T] {
 	def map[U](func:T=>U):Validated[E,U]	=
 			cata(Bad.apply, func andThen Good.apply)
 			
-	/** note this is nort consitent with ap */
 	def flatMap[EE>:E,U](func:T=>Validated[EE,U]):Validated[EE,U]	=
 			cata(Bad.apply, func)
 			
-	/** note this is nort consitent with ap */
 	def flatten[EE>:E,U](implicit ev:T=>Validated[EE,U]):Validated[EE,U]	=
 			flatMap(ev)
 		
-	/** error in that comes first */
+	/** function effect first */
+	def ap[EE>:E:Semigroup,U,V](that:Validated[EE,U])(implicit ev:T=>U=>V):Validated[EE,V]	=
+			(this zip that) map { case (uv, u) => uv(u) }
+		
+	/** function effect first */
 	def pa[EE>:E:Semigroup,U](that:Validated[EE,T=>U]):Validated[EE,U]	=
 			(that zip this) map { case (t2u, t) => t2u(t) }
-		
-	/** error in this comes first */
-	def ap[EE>:E:Semigroup,U,V](that:Validated[EE,U])(implicit ev:T=>U=>V):Validated[EE,V]	=
-			(this zip that) map { case (fuv, u) => fuv(u) }
 		
 	def zip[EE>:E:Semigroup,U](that:Validated[EE,U]):Validated[EE,(T,U)]	=
 			(this zipWith that)((_,_))

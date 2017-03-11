@@ -74,27 +74,6 @@ trait instances extends instancesLow {
 				def map[A,B](it:FFunction[F,S,A])(func:A=>B):FFunction[F,S,B]	=
 						a => (Functor[F] map it(a))(func)
 			}
-			
-	/*
-	implicit def StatefulFunctor[T,X]:Functor[ ({type l[Y]=Stateful[T,Y]})#l ]	=
-			new Functor[ ({type l[Y]=Stateful[T,Y]})#l ] {
-				def map[A,B](it:Stateful[T,A])(func:A=>B):Stateful[T,B]	=
-						it(_) match { case (t,a) => (t,func(a)) }
-			}
-			
-	// TODO do we get this for free with FStatefulFunctor?
-	implicit def PStatefulFunctor[T,X]:Functor[ ({type l[Y]=PStateful[T,Y]})#l ]	=
-			new Functor[ ({type l[Y]=PStateful[T,Y]})#l ] {
-				def map[A,B](it:PStateful[T,A])(func:A=>B):PStateful[T,B]	=
-						it(_) map { case (t,a) => (t,func(a)) }
-			}
-			
-	implicit def FStatefulFunctor[F[_]:Functor,T,X]:Functor[ ({type l[Y]=FStateful[F,T,Y]})#l ]	=
-			new Functor[ ({type l[Y]=FStateful[F,T,Y]})#l ] {
-				def map[A,B](it:FStateful[F,T,A])(func:A=>B):FStateful[F,T,B]	=
-						t => (Functor[F] map it(t)) { case (t,a) => (t,func(a)) }
-			}
-	*/
 }
 
 trait instancesLow {
