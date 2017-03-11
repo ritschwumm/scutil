@@ -16,7 +16,7 @@ final class ExecutorExt(peer:Executor) {
 	/** transports Exceptions (but not every Throwable) to the user of the value */
 	def withResult[T](job:Thunk[T]):Thunk[T] = {
 		val	out	= new SyncVar[Tried[Exception,T]]
-		peer(thunk { out put (Catch.exception get job) })
+		val f = peer(thunk { out put (Catch.exception get job) })
 		thunk { out.get.throwException }
 	}
 	

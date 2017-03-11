@@ -35,8 +35,10 @@ object External {
 		}
 	}
 	
+	private val execute	= Executors.thread
+	
 	private def spawn[T](task: =>T):Thunk[T] =
-			Executors.spawn withResult thunk(task)
+			execute withResult thunk(task)
 }
 
 final class External(proc:Process, out:Thunk[ISeq[String]], err:Thunk[ISeq[String]]) {

@@ -5,9 +5,6 @@ import scala.reflect.macros.blackbox.Context
 import scutil.color._
 
 private final class HexColorMacros(val c:Context) {
-	// TODO do we need to call c.untypecheck here?
-	// println(c.universe.showRaw(c.prefix.tree))
-	
 	import c.universe._
 	
 	def rgbImpl():c.Tree	= {
