@@ -7,6 +7,7 @@ trait extensions
 		extends	AnyImplicits
 		with	AnyRefImplicits
 		with	BooleanImplicits
+		with	ByteArrayImplicits
 		with	CharsetImplicits
 		with	ClassImplicits
 		with	ExceptionCatchImplicits

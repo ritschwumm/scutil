@@ -1,5 +1,7 @@
 package scutil.collection.pimp
 
+import scutil.lang._
+
 object SetImplicits extends SetImplicits
 
 trait SetImplicits {
@@ -14,6 +16,14 @@ final class SetExt[T](peer:Set[T]) {
 	/** pairs items only in this with items only in that */
 	def hereAndThere(that:Set[T]):(Set[T],Set[T])	=
 			(peer -- that, that -- peer)
+		
+	def where[U](that:Set[T]):Set[Where[T,T]]	= {
+		val (here, there)	= this hereAndThere that
+		val both			= peer & that
+		(both	map { it => Where both	(it,it) })	++
+		(here	map { it => Where here	it		})	++
+		(there	map { it => Where there	it		})
+	}
 			
 	/** get one element and all other elements */
 	def extractSingleOption:Option[(T,Set[T])]	=

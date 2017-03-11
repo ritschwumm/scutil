@@ -147,15 +147,15 @@ final class ISeqExt[T](peer:ISeq[T]) {
 	}
 	
 	/** optionally insert something between two items */
-	def insertBetween(func:(T,T)=>Option[T]):ISeq[T]	=
-			if (peer.size < 2)	peer
+	def insertBetween[U](mod:T=>U, func:(T,T)=>Option[U]):ISeq[U]	=
+			if (peer.size < 2)	peer map mod
 			else {
-				val	out	= new immutable.VectorBuilder[T]
+				val	out	= new immutable.VectorBuilder[U]
 				peer zip peer.tail foreach { case (now,later) =>
-					out	+= now
+					out	+= mod(now)
 					func(now,later) foreach out.+=
 				}
-				out	+= peer.last
+				out	+= mod(peer.last)
 				out.result
 			}
 	

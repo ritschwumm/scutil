@@ -49,7 +49,7 @@ trait DefaultLogHandler extends LogHandler {
 			"[" + it.toISO8601 + "]"
 		
 	def formatLocation(it:SourceLocation):String	=
-			it.name + ":" + it.line
+			it.name + ":" + it.line.toString
 		
 	def formatLevel(it:LogLevel):String	=
 			it match {

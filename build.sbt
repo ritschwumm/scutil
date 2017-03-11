@@ -1,6 +1,6 @@
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.97.0",
+	version			:= "0.98.0",
 	
 	scalaVersion	:= "2.12.1",
 	scalacOptions	++= Seq(
@@ -64,7 +64,7 @@ lazy val `scutil-base`	=
 			(scalacOptions in Compile) := (scalacOptions in Compile).value filterNot { _ == "-Xfatal-warnings" },
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "3.8.7"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "3.8.8"				% "test"
 			),
 			boilerplateSource in Compile := baseDirectory.value.getParentFile / "src" / "main" / "boilerplate",
 			wartremoverErrors ++= warts,
@@ -97,7 +97,7 @@ lazy val `scutil-core`	=
 			
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "3.8.7"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "3.8.8"				% "test"
 			),
 			
 			wartremoverErrors ++= warts,

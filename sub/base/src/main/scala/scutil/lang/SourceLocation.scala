@@ -27,5 +27,5 @@ final case class SourceLocation(
 	name:String,
 	line:Int
 ) {
-	override def toString:String	= name + ":" + line
+	override def toString:String	= name + ":" + line.toString
 }

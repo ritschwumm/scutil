@@ -8,6 +8,13 @@ object State extends StateInstances {
 	def set[S](it:S):State[S,Unit]		= State { s => (it,			())	}
 	def setOld[S](it:S):State[S,S]		= State { s => (it,			s)	}
 	def mod[S](func:S=>S):State[S,Unit]	= State { s => (func(s),	())	}
+	def modOld[S](func:S=>S):State[S,S]	= State { s => (func(s),	s)	}
+	
+	// inference helper allowing to specifiy the state value typ while still let the reuslt type be inferred
+	def pureU[S]:StatePure[S]	= new StatePure[S]
+	final class StatePure[S] {
+		def apply[T](it:T):State[S,T]	= State pure it
+	}
 }
 
 final case class State[S,+T](run:S=>(S,T)) {
