@@ -4,8 +4,7 @@ import scutil.collection.pimp._
 
 object extensions extends extensions
 trait extensions
-		extends	IterableImplicits
-		with	IteratorImplicits
+		extends	IteratorImplicits
 		with	ISeqImplicits
 		with	ListImplicits
 		with	MapImplicits

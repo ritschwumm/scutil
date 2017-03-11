@@ -132,38 +132,44 @@ final class AnyExt[T](peer:T) {
 	
 	//------------------------------------------------------------------------------
 	
-	/** apply until the value doesn't change any more */
-	def fixpoint(func:Endo[T]):T	=
-			fixpointEq(func, _ == _)
-	
-	/** apply until the value doesn't change any more */
-	def fixpointEq(func:Endo[T], equal:(T,T)=>Boolean):T	= {
+	/** apply as long as we get another Left */
+	def tailRec[U](func:T=>Either[T,U]):U	= {
 		@tailrec
-		def loop(it:T):T	= {
-			val tmp	= func(it)
-			if (!equal(tmp,it))	loop(tmp)
-			else				it
-		}
-		loop(peer)
-	}
-	
-	/** apply until the value becomes None */
-	def rewrite(func:PEndo[T]):T	= {
-		@tailrec
-		def loop(it:T):T	=
+		def loop(it:T):U	=
 				func(it) match {
-					case Some(next)	=> loop(next)
-					case None		=> it
+					case Left(x)	=> loop(x)
+					case Right(x)	=> x
 				}
 		loop(peer)
 	}
 	
-	/** apply until the value becomes None */
-	def rewritePartial(func:PartialFunction[T,T]):T	= {
+	/** apply func and check after each step whether to continue (Left) or finish (Right) */
+	def tailFold[U,V](func:T=>U)(next:(T,U)=>Either[T,V]):V	= {
 		@tailrec
-		def loop(it:T):T	=
-				if (func isDefinedAt it)	loop(func(it))
-				else						it
+		def loop(it:T):V	= {
+			val tmp	= func(it)
+			next(it, tmp) match {
+				case Left(x)	=> loop(x)
+				case Right(x)	=> x
+			}
+		}
 		loop(peer)
 	}
+	
+	/** apply until the value doesn't change any more */
+	def fixpointEquals(func:Endo[T]):T	=
+			fixpoint(func, _ == _)
+	
+	/** apply until the value doesn't change any more */
+	def fixpoint(func:Endo[T], equal:(T,T)=>Boolean):T	=
+		tailFold[T,T](func) { (a,b) =>
+			if (equal(a,b))	Right(a)
+			else			Left(b)
+		}
+	
+	/** apply until the value becomes None */
+	def rewrite(func:PEndo[T]):T	=
+		tailFold(func) { (t, tOpt) =>
+			tOpt toLeft t
+		}
 }

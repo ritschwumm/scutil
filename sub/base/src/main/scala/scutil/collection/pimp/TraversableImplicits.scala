@@ -79,7 +79,10 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 	
 	/** create a map from all elements with a given function to generate the keys */
 	def mapBy[S](key:T=>S):Map[S,T]	=
-			(peer map { it => (key(it), it) }).toMap
+			mapToMap(it => (key(it), it))
+		
+	def mapToMap[U,V](func:T=>(U,V)):Map[U,V]	=
+			(peer map func).toMap
 			
 	/** like flatten, but avoiding the dubious Option=>Iterable implicit */
 	def collapse[U](implicit ev:PFunction[T,U], cbf:CanBuildFrom[CC[T],U,CC[U]]):CC[U]	=

@@ -26,9 +26,14 @@ trait Disposable {
 	
 	/** forms a monoid with empty */
 	final def and(that:Disposable):Disposable	=
-			disposable {
-				this.dispose()
-				that.dispose()
+			(this, that) match {
+				case (EmptyDisposable, x)	=> x
+				case (x, EmptyDisposable)	=> x
+				case (a, b) =>
+					disposable {
+						a.dispose()
+						b.dispose()
+					}
 			}
 			
 	final def toIO:IO[Unit]	=

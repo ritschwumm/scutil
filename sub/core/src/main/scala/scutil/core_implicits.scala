@@ -6,6 +6,7 @@ trait implicits
 		with	scutil.concurrent.implicits
 		with	scutil.io.implicits
 		with	scutil.jcollection.implicits
+		with	scutil.naming.implicits
 		with	scutil.number.implicits
 		with	scutil.regex.implicits
 		with	scutil.resource.implicits
