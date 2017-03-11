@@ -2,7 +2,7 @@ package scutil.lang
 
 import scutil.lang.tc._
 
-object Store {
+object Store extends StoreInstances {
 	def identity[T](t:T):Store[T,T]	=
 			Store(t, t => t)
 		
@@ -26,11 +26,11 @@ final case class Store[C,V](get:V, put:V=>C) {
 	
 	//------------------------------------------------------------------------------
 	
-	def modifyF[F[_]:CanMap](func:FEndo[F,V]):F[C]	=
-			(CanMap[F] map func(get))(put)
+	def modifyF[F[_]:Functor](func:FEndo[F,V]):F[C]	=
+			(Functor[F] map func(get))(put)
 		
-	def modifyStatefulF[F[_]:CanMap,X](func:FStateful[F,V,X]):F[(C,X)]	=
-			(CanMap[F] map func(get)) { case (v,x) => (put(v), x) }
+	def modifyStatefulF[F[_]:Functor,X](func:FStateful[F,V,X]):F[(C,X)]	=
+			(Functor[F] map func(get)) { case (v,x) => (put(v), x) }
 	
 	//------------------------------------------------------------------------------
 	
@@ -72,4 +72,11 @@ final case class Store[C,V](get:V, put:V=>C) {
 				that write get,
 				that.read andThen put
 			)
+}
+
+trait StoreInstances {
+	implicit def StoreFunctor[S]:Functor[ ({type l[T]=Store[T,S]})#l ]	=
+			new Functor[ ({type l[T]=Store[T,S]})#l ] {
+				def map[A,B](it:Store[A,S])(func:A=>B):Store[B,S]				= it map func
+			}
 }

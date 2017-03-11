@@ -41,15 +41,29 @@ final case class TLens[S,T](on:S=>Store[S,T]) {
 	
 	//------------------------------------------------------------------------------
 	
-	def modifyF[F[_]:CanMap](s:S, func:FEndo[F,T]):F[S]	=
+	def modifyF[F[_]:Functor](s:S, func:FEndo[F,T]):F[S]	=
 			modifierF(func) apply s
 	
 	// van laarhoven form
-	def modifierF[F[_]:CanMap](func:FEndo[F,T]):FEndo[F,S]	=
+	def modifierF[F[_]:Functor](func:FEndo[F,T]):FEndo[F,S]	=
 			on(_) modifyF func
 	
-	def modifierStatefulF[F[_]:CanMap,X](func:FStateful[F,T,X]):FStateful[F,S,X]	=
+	def modifierStatefulF[F[_]:Functor,X](func:FStateful[F,T,X]):FStateful[F,S,X]	=
 			on(_) modifyStatefulF func
+		
+	//------------------------------------------------------------------------------
+		
+	def inside[U](state:State[T,U]):State[S,U]	=
+			state embed this
+		
+	def getState:State[S,T]	=
+			inside(State.get)
+		
+	def setState(it:T):State[S,Unit]	=
+			inside(State set it)
+		
+	def modState(func:T=>T):State[S,Unit]	=
+			inside(State mod func)
 		
 	//------------------------------------------------------------------------------
 	

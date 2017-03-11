@@ -1,6 +1,8 @@
 package scutil.lang
 
-object Prism {
+import scutil.lang.tc._
+
+object Prism extends PrismInstances {
 	def partial[S,T](writeFunc:PartialFunction[S,T], readFunc:T=>S):Prism[S,T] =
 			Prism(writeFunc.lift, readFunc)
 	
@@ -111,4 +113,9 @@ final case class Prism[S,T](write:PFunction[S,T], read:T=>S) {
 					
 	def toBijectionWith(default: =>T):Bijection[S,T]	=
 			toBijection(constant(default))
+}
+
+trait PrismInstances {
+	implicit def PrismSemigroup[S,T]:Semigroup[Prism[S,T]]	=
+			Semigroup by (_ orElse _)
 }

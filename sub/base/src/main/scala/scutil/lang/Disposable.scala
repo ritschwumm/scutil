@@ -1,9 +1,11 @@
 package scutil.lang
 
-object Disposable {
+import scutil.lang.tc._
+
+object Disposable extends DisposableInstances {
 	def apply(todo:Task):Disposable	= new TaskDisposable(todo)
 	
-	/** forms monoids with disposeBefore and disposeAfter */
+	/** forms a monoids with and */
 	val empty:Disposable	= EmptyDisposable
 	
 	def all(subs:ISeq[Disposable]):Disposable	=
@@ -34,4 +36,8 @@ private object EmptyDisposable extends Disposable {
 
 private final class TaskDisposable(task:Task) extends Disposable {
 	def dispose() { task() }
+}
+
+trait DisposableInstances {
+	implicit def DisposableResource[T<:Disposable]:Resource[T]	= Resource by (_.dispose())
 }

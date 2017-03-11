@@ -3,7 +3,7 @@ package scutil.lang
 import scutil.base.implicits._
 import scutil.lang.tc._
 
-object Converter extends ConverterGenerated {
+object Converter extends ConverterGenerated with ConverterInstances {
 	def identity[E,T]:Converter[E,T,T]	=
 			Converter { it =>
 				Validated good it
@@ -39,7 +39,7 @@ object Converter extends ConverterGenerated {
 	/*
 	// these we get from ConverterGenerated
 	
-	def zip2[E:CanConcat,S,T1,T2](d1:Converter[E,S,T1], d2:Converter[E,S,T2]):Converter[E,S,(T1,T2)]	=
+	def zip2[E:Semigroup,S,T1,T2](d1:Converter[E,S,T1], d2:Converter[E,S,T2]):Converter[E,S,(T1,T2)]	=
 			Converter { it => Validated zip2 (d1 convert it, d2 convert it) }
 	*/
 	
@@ -91,22 +91,22 @@ final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 	def tag[U](it:U):Converter[E,S,U]	=
 			map(constant(it))
 		
-	def pa[U](that:Converter[E,S,T=>U])(implicit cc:CanConcat[E]):Converter[E,S,U]	=
+	def pa[U](that:Converter[E,S,T=>U])(implicit cc:Semigroup[E]):Converter[E,S,U]	=
 			Converter { it =>
 				(this convert it) pa (that convert it)
 			}
 	
-	def ap[U,V](that:Converter[E,S,U])(implicit ev:T=>U=>V, cc:CanConcat[E]):Converter[E,S,V]	=
+	def ap[U,V](that:Converter[E,S,U])(implicit ev:T=>U=>V, cc:Semigroup[E]):Converter[E,S,V]	=
 			Converter { it =>
 				(this convert it map ev) ap (that convert it)
 			}
 	
-	def zip[U](that:Converter[E,S,U])(implicit cc:CanConcat[E]):Converter[E,S,(T,U)] =
+	def zip[U](that:Converter[E,S,U])(implicit cc:Semigroup[E]):Converter[E,S,(T,U)] =
 			Converter { it	=>
 				(this convert it) zip (that convert it)
 			}
 			
-	def zipWith[U,V](that:Converter[E,S,U])(func:(T,U)=>V)(implicit cc:CanConcat[E]):Converter[E,S,V] =
+	def zipWith[U,V](that:Converter[E,S,U])(func:(T,U)=>V)(implicit cc:Semigroup[E]):Converter[E,S,V] =
 			Converter { it	=>
 				((this convert it) zipWith (that convert it))(func)
 			}
@@ -117,7 +117,7 @@ final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 				case Right(x)	=> that convert x
 			}
 			
-	def orElse(that:Converter[E,S,T])(implicit cc:CanConcat[E]):Converter[E,S,T]	=
+	def orElse(that:Converter[E,S,T])(implicit cc:Semigroup[E]):Converter[E,S,T]	=
 			Converter { (it:S) =>
 				(this convert it) orElse (that convert it)
 			}
@@ -156,23 +156,35 @@ final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 		
 	// TODO liftTraversable
 			
-	def liftISeq(implicit cc:CanConcat[E]):Converter[E,ISeq[S],ISeq[T]]	=
+	def liftISeq(implicit cc:Semigroup[E]):Converter[E,ISeq[S],ISeq[T]]	=
 			Converter { it =>
 				it traverseValidated convert
 			}
 			
-	def liftList(implicit cc:CanConcat[E]):Converter[E,List[S],List[T]]	=
+	def liftList(implicit cc:Semigroup[E]):Converter[E,List[S],List[T]]	=
 			Converter { it =>
 				it traverseValidated convert
 			}
 			
-	def liftVector(implicit cc:CanConcat[E]):Converter[E,Vector[S],Vector[T]]	=
+	def liftVector(implicit cc:Semigroup[E]):Converter[E,Vector[S],Vector[T]]	=
 			Converter { it =>
 				it traverseValidated convert
 			}
 			
-	def liftSet(implicit cc:CanConcat[E]):Converter[E,Set[S],Set[T]]	=
+	def liftSet(implicit cc:Semigroup[E]):Converter[E,Set[S],Set[T]]	=
 			Converter { it =>
 				it traverseValidated convert
 			}
+}
+
+trait ConverterInstances {
+	implicit def ConverterMonad[E,S]:Monad[ ({type l[T]=Converter[E,S,T]})#l ]	=
+			new Monad[ ({type l[T]=Converter[E,S,T]})#l ] {
+				override def pure[A](it:A):Converter[E,S,A]													= Converter constant it
+				override def map[A,B](it:Converter[E,S,A])(func:A=>B):Converter[E,S,B]						= it map func
+				override def flatMap[A,B](it:Converter[E,S,A])(func:A=>Converter[E,S,B]):Converter[E,S,B]	= it flatMap func
+			}
+			
+	implicit def ConverterSemigroup[E:Semigroup,S,T]:Semigroup[Converter[E,S,T]]	=
+			Semigroup by (_ orElse _)
 }

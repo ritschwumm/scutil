@@ -3,7 +3,7 @@ package scutil.lang
 import scutil.lang.implicits._
 import scutil.lang.tc._
 
-object PLens {
+object PLens extends PLensInstances {
 	def identity[T]:PLens[T,T]	=
 			PLens { t =>
 				Some(Store identity t)
@@ -43,8 +43,8 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 	// BETTER use these to replace modifier
 	def modifyP(s:S):Option[Endo[T]=>S]											= on(s) map { _.modify }
 	def modifyOptP(s:S):Option[PEndo[T]=>Option[S]]								= on(s) map { _.modifyOpt }
-	def modifyPF[F[_]:CanMap](s:S):Option[FEndo[F,T]=>F[S]]						= on(s) map { _.modifyF }
-	def modifyStatefulPF[F[_]:CanMap,X](s:S):Option[FStateful[F,T,X]=>F[(S,X)]]	= on(s) map { _.modifyStatefulF }
+	def modifyPF[F[_]:Functor](s:S):Option[FEndo[F,T]=>F[S]]						= on(s) map { _.modifyF }
+	def modifyStatefulPF[F[_]:Functor,X](s:S):Option[FStateful[F,T,X]=>F[(S,X)]]	= on(s) map { _.modifyStatefulF }
 	
 	//------------------------------------------------------------------------------
 	
@@ -133,4 +133,9 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 			
 	def toTLens(default: =>Store[S,T]):TLens[S,T]	=
 			TLens { on(_) getOrElse default }
+}
+
+trait PLensInstances {
+	implicit def PLensSemigroup[S,T]:Semigroup[PLens[S,T]]	=
+			Semigroup by (_ orElse _)
 }

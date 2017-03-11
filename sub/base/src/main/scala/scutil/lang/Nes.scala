@@ -1,6 +1,8 @@
 package scutil.lang
 
-object Nes {
+import scutil.lang.tc._
+
+object Nes extends NesInstances {
 	def single[T](head:T):Nes[T]	=
 			Nes(head, Vector.empty)
 		
@@ -161,4 +163,16 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 object VarNes {
 	def apply[T](head:T, tail:T*):Nes[T]			= Nes(head, tail.toVector)
 	def unapplySeq[T](it:Nes[T]):Option[ISeq[T]]	= Some(it.toVector)
+}
+
+trait NesInstances {
+	implicit def NesMonad:Monad[Nes]	=
+			new Monad[Nes] {
+				override def pure[A](it:A):Nes[A]							= Nes single it
+				override def map[A,B](it:Nes[A])(func:A=>B):Nes[B]			= it map func
+				override def flatMap[A,B](it:Nes[A])(func:A=>Nes[B]):Nes[B]	= it flatMap func
+			}
+			
+	implicit def NesSemigroup[T]:Semigroup[Nes[T]]	=
+			Semigroup by (_ ++ _)
 }

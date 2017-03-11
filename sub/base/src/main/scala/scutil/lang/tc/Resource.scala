@@ -1,7 +1,7 @@
 package scutil.lang.tc
 
 object Resource {
-	def apply[T:Resource]:Resource[T]	= implicitly[Resource[T]]
+	def apply[T](ev:Resource[T]):Resource[T]	= ev
 	
 	def by[T](disposeFunc:T=>Unit):Resource[T]	=
 			new Resource[T] {

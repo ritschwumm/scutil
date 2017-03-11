@@ -135,11 +135,11 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 	}
 	
 	/** peer is traversable (in the haskell sense), Validated is an idiom. */
-	def sequenceValidated[F,W](implicit ev:T=>Validated[F,W], cbf:CanBuildFrom[CC[T],W,CC[W]], cc:CanConcat[F]):Validated[F,CC[W]]	=
+	def sequenceValidated[F,W](implicit ev:T=>Validated[F,W], cbf:CanBuildFrom[CC[T],W,CC[W]], cc:Semigroup[F]):Validated[F,CC[W]]	=
 			traverseValidated(ev)
 		
 	/** peer is traversable (in the haskell sense), Validated is an idiom. */
-	def traverseValidated[F,W](func:T=>Validated[F,W])(implicit cbf:CanBuildFrom[CC[T],W,CC[W]], cc:CanConcat[F]):Validated[F,CC[W]]	= {
+	def traverseValidated[F,W](func:T=>Validated[F,W])(implicit cbf:CanBuildFrom[CC[T],W,CC[W]], cc:Semigroup[F]):Validated[F,CC[W]]	= {
 		var problems:Option[F]	= None
 		val builder				= cbf()
 		peer foreach { it =>

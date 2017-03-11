@@ -5,7 +5,7 @@ import scala.collection.generic.CanBuildFrom
 
 import scutil.lang.tc._
 
-object Validated extends ValidatedGenerated {
+object Validated extends ValidatedGenerated with ValidatedInstances {
 	def good[E,T](value:T):Validated[E,T]	= Good(value)
 	def bad[E,T](problems:E):Validated[E,T]	= Bad(problems)
 	
@@ -62,7 +62,7 @@ object Validated extends ValidatedGenerated {
 	/*
 	// these we get from ValidatedGenerated
 	
-	def zip2[E:CanConcat,S1,S2](s1:Validated[E,S1], s2:Validated[E,S2]):Validated[E,(S1,S2)]	=
+	def zip2[E:Semigroup,S1,S2](s1:Validated[E,S1], s2:Validated[E,S2]):Validated[E,(S1,S2)]	=
 			s1 zip s2
 			
 	def zip3[E,S1,S2,S3](s1:Validated[E,S1], s2:Validated[E,S2], s3:Validated[E,S3]):Validated[E,(S1,S2,S3)]	=
@@ -116,17 +116,17 @@ sealed trait Validated[+E,+T] {
 			flatMap(ev)
 		
 	/** error in that comes first */
-	def pa[EE>:E:CanConcat,U](that:Validated[EE,T=>U]):Validated[EE,U]	=
+	def pa[EE>:E:Semigroup,U](that:Validated[EE,T=>U]):Validated[EE,U]	=
 			(that zip this) map { case (t2u, t) => t2u(t) }
 		
 	/** error in this comes first */
-	def ap[EE>:E:CanConcat,U,V](that:Validated[EE,U])(implicit ev:T=>U=>V):Validated[EE,V]	=
+	def ap[EE>:E:Semigroup,U,V](that:Validated[EE,U])(implicit ev:T=>U=>V):Validated[EE,V]	=
 			(this zip that) map { case (fuv, u) => fuv(u) }
 		
-	def zip[EE>:E:CanConcat,U](that:Validated[EE,U]):Validated[EE,(T,U)]	=
+	def zip[EE>:E:Semigroup,U](that:Validated[EE,U]):Validated[EE,(T,U)]	=
 			(this zipWith that)((_,_))
 			
-	def zipWith[EE>:E,U,V](that:Validated[EE,U])(func:(T,U)=>V)(implicit cc:CanConcat[EE]):Validated[EE,V]	=
+	def zipWith[EE>:E,U,V](that:Validated[EE,U])(func:(T,U)=>V)(implicit cc:Semigroup[EE]):Validated[EE,V]	=
 			(this, that) match {
 				case (Good(a),	Good(b))	=> Good(func(a, b))
 				case (Bad(a),	Good(_))	=> Bad(a)
@@ -150,7 +150,7 @@ sealed trait Validated[+E,+T] {
 			
 	//------------------------------------------------------------------------------
 	
-	def orElse[EE>:E,TT>:T](that:Validated[EE,TT])(implicit cc:CanConcat[EE]):Validated[EE,TT]	=
+	def orElse[EE>:E,TT>:T](that:Validated[EE,TT])(implicit cc:Semigroup[EE]):Validated[EE,TT]	=
 			(this, that) match {
 				case (Good(a), _)		=> Good(a)
 				case (Bad(a), Good(b))	=> Good(b)
@@ -221,3 +221,15 @@ sealed trait Validated[+E,+T] {
 
 final case class Bad[E](problems:E)	extends Validated[E,Nothing]
 final case class Good[T](value:T)	extends Validated[Nothing,T]
+
+trait ValidatedInstances {
+	implicit def ValidatedMonad[S]:Monad[ ({type l[T]=Validated[S,T]})#l ]	=
+			new Monad[ ({type l[T]=Validated[S,T]})#l ] {
+				override def pure[A](it:A):Validated[S,A]											= Validated good it
+				override def map[A,B](it:Validated[S,A])(func:A=>B):Validated[S,B]					= it map func
+				override def flatMap[A,B](it:Validated[S,A])(func:A=>Validated[S,B]):Validated[S,B]	= it flatMap func
+			}
+			
+	implicit def ValidatedSemigroup[S:Semigroup,T]:Semigroup[Validated[S,T]]	=
+			Semigroup by (_ orElse _)
+}

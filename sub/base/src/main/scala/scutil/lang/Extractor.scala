@@ -1,6 +1,8 @@
 package scutil.lang
 
-object Extractor {
+import scutil.lang.tc._
+
+object Extractor extends ExtractorInstances {
 	def total[S,T](func:S=>T):Extractor[S,T]	=
 			Extractor(s	=> Some(func(s)))
 	
@@ -55,4 +57,14 @@ final case class Extractor[S,T](read:PFunction[S,T]) {
 	
 	def toPartialFunction:PartialFunction[S,T]	=
 			Function unlift read	
+}
+
+trait ExtractorInstances {
+	implicit def ExtractorFunctor[S]:Functor[ ({type l[T]=Extractor[S,T]})#l ]	=
+			new Functor[ ({type l[T]=Extractor[S,T]})#l ] {
+				def map[A,B](it:Extractor[S,A])(func:A=>B):Extractor[S,B]		= it map func
+			}
+			
+	implicit def ExtractorSemigroup[S,T]:Semigroup[Extractor[S,T]]	=
+			Semigroup by (_ orElse _)
 }

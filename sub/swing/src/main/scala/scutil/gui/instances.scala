@@ -7,6 +7,7 @@ import javax.imageio.ImageWriter
 import scutil.lang.tc._
 
 object instances extends instances
+
 trait instances {
 	implicit def GraphicsResource[T<:Graphics]:Resource[T]			= Resource by (_.dispose())
 	implicit def ImageReaderResource[T<:ImageReader]:Resource[T]	= Resource by (_.dispose())

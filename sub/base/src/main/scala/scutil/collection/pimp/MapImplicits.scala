@@ -25,6 +25,13 @@ final class MapExt[S,T](peer:Map[S,T]) {
 	def partitionKeys(pred:Predicate[S]):(Map[S,T],Map[S,T])	=
 			peer partition { case (k, _)	=> pred(k) }
 		
+	def where[U](that:Map[S,U]):Map[S,Where[T,U]]	=
+			(peer.keySet ++ that.keySet)
+			.map { k =>
+				k -> (Where from (peer get k, that get k) getOrElse nothing)
+			}
+			.toMap
+		
 	/** set or remove the value */
 	def set(key:S, value:Option[T]):Map[S,T]	=
 			value match {

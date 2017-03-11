@@ -23,4 +23,14 @@ object TLenses {
 						
 	def map[K,V](k:K):TLens[Map[K,V],Option[V]]	=
 			TLens { _ optionStoreAt k }
+		
+	def mapWithDefault[S,T](key:S, default:T):TLens[Map[S,T],T]	=
+			TLens { map =>
+				Store(
+					get	= map get key getOrElse default,
+					put	= value =>
+						if (value != default)	map updated (key, value)
+						else					map - key
+				)
+			}
 }
