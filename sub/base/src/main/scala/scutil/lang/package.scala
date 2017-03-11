@@ -17,16 +17,18 @@ package object lang {
 	type Executor			= Effect[Task]
 	
 	// Function[-S,+T]
-	type Endo[T]				= T=>T
-	type Stateful[T,+X]			= T=>(T,X)
-	
 	type PFunction[-S,+T]		= S=>Option[T]
-	type PEndo[T]				= T=>Option[T]
-	type PStateful[T,+X]		= T=>Option[(T,X)]
-	
 	type FFunction[F[_],S,T]	= S=>F[T]
+	
+	type Endo[T]				= T=>T
+	type PEndo[T]				= T=>Option[T]
 	type FEndo[F[_],T]			= T=>F[T]
+	
+	/*
+	type Stateful[T,+X]			= T=>(T,X)
+	type PStateful[T,+X]		= T=>Option[(T,X)]
 	type FStateful[F[_],T,X]	= T=>F[(T,X)]
+	*/
 	
 	//------------------------------------------------------------------------------
 	

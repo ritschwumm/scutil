@@ -162,6 +162,15 @@ final class OptionExt[T](peer:Option[T]) {
 				case Some(Good(x))	=> Good(Some(x))
 			}
 			
+	def sequenceState[S,U](implicit ev:T=>State[S,U]):State[S,Option[U]]	=
+			traverseState(ev)
+			
+	def traverseState[S,U](func:T=>State[S,U]):State[S,Option[U]]	=
+			peer map func match {
+				case None		=> State pure None
+				case Some(st)	=> st map Some.apply
+			}
+			
 	//------------------------------------------------------------------------------
 	
 	def toWin[F](fail: =>F):Tried[F,T]	=

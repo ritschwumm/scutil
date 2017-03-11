@@ -151,6 +151,22 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 		problems map Bad.apply getOrElse Good(builder.result)
 	}
 	
+	def sequenceState[S,U](implicit ev:T=>State[S,U], cbf:CanBuildFrom[CC[T],U,CC[U]]):State[S,CC[U]]	=
+			traverseState(ev)
+		
+	def traverseState[S,U](func:T=>State[S,U])(implicit cbf:CanBuildFrom[CC[T],U,CC[U]]):State[S,CC[U]]	= {
+		State { s =>
+			var temp	= s
+			val builder	= cbf()
+			peer foreach { it =>
+				val (next, part)	= func(it) run temp
+				temp	= next
+				builder += part
+			}
+			(temp, builder.result)
+		}
+	}
+	
 	def toISeq:ISeq[T]	=
 			peer match {
 				case x:ISeq[T]	=> x

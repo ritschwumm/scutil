@@ -22,7 +22,6 @@ trait extensions
 		with	PairImplicits
 		with	PartialFunctionImplicits
 		with	PredicateImplicits
-		with	StatefulImplicits
 		with	StringImplicits
 		with	StringContextImplicits
 		with	ThrowableImplicits

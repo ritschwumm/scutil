@@ -35,9 +35,14 @@ final case class TLens[S,T](on:S=>Store[S,T]) {
 	// TODO specialized modifierF
 	def modifyOpt(s:S, func:PEndo[T]):Option[S]	= on(s) modifyOpt func
 	def modifierOpt(func:PEndo[T]):PEndo[S]		= modifyOpt(_, func)
-		
+	
+	/*
 	def modifyStateful[X](s:S, func:Stateful[T,X]):(S,X)		= on(s) modifyStateful func
 	def modifierStateful[X](func:Stateful[T,X]):Stateful[S,X]	= modifyStateful(_, func)
+	*/
+	
+	def modifyState[X](s:S, func:State[T,X]):(S,X)	= on(s) modifyState func
+	def modifierState[X](func:State[T,X]):S=>(S,X)	= modifyState(_, func)
 	
 	//------------------------------------------------------------------------------
 	
@@ -48,22 +53,25 @@ final case class TLens[S,T](on:S=>Store[S,T]) {
 	def modifierF[F[_]:Functor](func:FEndo[F,T]):FEndo[F,S]	=
 			on(_) modifyF func
 	
+	/*
 	def modifierStatefulF[F[_]:Functor,X](func:FStateful[F,T,X]):FStateful[F,S,X]	=
 			on(_) modifyStatefulF func
+	*/
 		
 	//------------------------------------------------------------------------------
 		
-	def inside[U](state:State[T,U]):State[S,U]	=
-			state embed this
+	def embedState[U](state:State[T,U]):State[S,U]	=
+			state inside this
+			// State { on(_) modifyState state }
 		
 	def getState:State[S,T]	=
-			inside(State.get)
+			embedState(State.get)
 		
 	def setState(it:T):State[S,Unit]	=
-			inside(State set it)
+			embedState(State set it)
 		
 	def modState(func:T=>T):State[S,Unit]	=
-			inside(State mod func)
+			embedState(State mod func)
 		
 	//------------------------------------------------------------------------------
 	
