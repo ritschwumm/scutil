@@ -3,7 +3,6 @@ package scutil.lang.pimp
 import scala.annotation.tailrec
 
 import scutil.lang._
-import scutil.lang.tc.Resource
 
 object AnyImplicits extends AnyImplicits
 
@@ -37,10 +36,6 @@ final class AnyExt[T](peer:T) {
 		effect apply peer
 		peer
 	}
-	
-	/** do something to us, then dispose */
-	def use[U](consume:T=>U)(implicit ev:Resource[T]):U	=
-			(ev use peer)(consume)
 	
 	//------------------------------------------------------------------------------
 	

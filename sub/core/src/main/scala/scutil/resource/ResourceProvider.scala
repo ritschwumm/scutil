@@ -4,7 +4,7 @@ import java.net.URL
 import java.io.InputStream
 import java.io.IOException
 
-import scutil.lang.implicits._
+import scutil.base.implicits._
 import scutil.io.implicits._
 
 final class ResourceProvider(val findUrl:String=>Option[URL]) {

@@ -4,7 +4,7 @@ import java.io._
 import java.nio.charset.Charset
 
 import scutil.lang._
-import scutil.lang.implicits._
+import scutil.base.implicits._
 import scutil.io.implicits._
 import scutil.time._
 import scutil.platform.SystemProperties

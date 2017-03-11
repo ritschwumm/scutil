@@ -4,8 +4,8 @@ import java.io._
 import java.nio.charset.Charset
 import java.net._
 
+import scutil.base.implicits._
 import scutil.lang._
-import scutil.lang.implicits._
 
 object URLImplicits extends URLImplicits
 
