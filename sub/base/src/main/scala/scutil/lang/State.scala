@@ -3,8 +3,8 @@ package scutil.lang
 import scutil.lang.tc._
 
 object State extends StateInstances {
-	def delay[S,T](it: =>T):State[S,T]			= State { s => (s,	it)	}
-	def delayThunk[S,T](it:Thunk[T]):State[S,T]	= State { s => (s,	it())	}
+	def delay[S,T](it: =>T):State[S,T]		= State { s => (s,	it)	}
+	def thunk[S,T](it:Thunk[T]):State[S,T]	= State { s => (s,	it())	}
 	
 	def pure[S,T](it:T):State[S,T]		= State { s => (s,			it)	}
 	def get[S]:State[S,S]				= State { s => (s,			s)	}
@@ -96,7 +96,7 @@ trait StateInstances {
 			
 	implicit def StateDelay[S]:Delay[State[S,?]]	=
 			new Delay[State[S,?]] {
-				override def delay[T](it: =>T):State[S,T]		= State delay it
-				override def delayThunk[T](it:()=>T):State[S,T]	= State delayThunk it
+				override def delay[T](it: =>T):State[S,T]	= State delay it
+				override def thunk[T](it:()=>T):State[S,T]	= State thunk it
 			}
 }

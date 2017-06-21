@@ -3,9 +3,9 @@ package scutil.lang
 import scutil.lang.tc._
 
 object Io extends IoInstances {
-	def pure[T](it:T):Io[T]					= Io(() => it)
-	def delay[T](it: =>T):Io[T]				= Io(() => it)
-	def delayThunk[T](it:Thunk[T]):Io[T]	= Io(it)
+	def pure[T](it:T):Io[T]			= Io(() => it)
+	def delay[T](it: =>T):Io[T]		= Io(() => it)
+	def thunk[T](it:Thunk[T]):Io[T]	= Io(it)
 }
 
 final case class Io[T](run:()=>T) {
@@ -61,7 +61,7 @@ trait IoInstances {
 			
 	implicit val IoDelay:Delay[Io]	=
 			new Delay[Io] {
-				override def delay[T](it: =>T):Io[T]			= Io delay it
-				override def delayThunk[T](it:Thunk[T]):Io[T]	= Io delayThunk it
+				override def delay[T](it: =>T):Io[T]		= Io delay it
+				override def thunk[T](it:Thunk[T]):Io[T]	= Io thunk it
 			}
 }

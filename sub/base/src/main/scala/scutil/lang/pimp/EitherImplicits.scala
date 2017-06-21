@@ -137,13 +137,13 @@ trait EitherImplicits {
 		def withSwapped[LL,RR](func:Either[R,L]=>Either[RR,LL]):Either[LL,RR]	=
 				func(peer.swap).swap
 		
-		//------------------------------------------------------------------------------
-		
 		def bimap[LL,RR](leftFunc:L=>LL, rightFunc:R=>RR):Either[LL,RR]	=
 				peer match {
 					case Left(x)	=> Left(leftFunc(x))
 					case Right(x)	=> Right(rightFunc(x))
 				}
+				
+		//------------------------------------------------------------------------------
 		
 		def mapLeft[LL](func:L=>LL):Either[LL,R]	=
 				peer match {

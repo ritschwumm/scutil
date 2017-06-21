@@ -5,7 +5,7 @@ import scutil.lang.tc._
 object StateT extends StateTInstances {
 	def delay[F[_],S,T](it: =>T)(implicit F:Applicative[F]):StateT[F,S,T]	=
 			StateT { s => F pure (s -> it)	}
-	def delayThunk[F[_],S,T](it:()=>T)(implicit F:Applicative[F]):StateT[F,S,T]	=
+	def thunk[F[_],S,T](it:()=>T)(implicit F:Applicative[F]):StateT[F,S,T]	=
 			StateT { s => F pure (s -> it()) }
 	
 	def pure[F[_],S,T](it:T)(implicit F:Applicative[F]):StateT[F,S,T]	=
@@ -143,7 +143,7 @@ trait StateTInstances {
 			
 	implicit def StateTDelay[F[_]:Applicative,S]:Delay[StateT[F,S,?]]	=
 			new Delay[StateT[F,S,?]] {
-				override def delay[T](it: =>T):StateT[F,S,T]			= StateT delay it
-				override def delayThunk[T](it:Thunk[T]):StateT[F,S,T]	= StateT delayThunk it
+				override def delay[T](it: =>T):StateT[F,S,T]		= StateT delay it
+				override def thunk[T](it:Thunk[T]):StateT[F,S,T]	= StateT thunk it
 			}
 }
