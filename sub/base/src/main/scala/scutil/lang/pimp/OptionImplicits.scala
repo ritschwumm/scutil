@@ -12,6 +12,22 @@ import scutil.lang.pimp.EitherImplicits._
 object OptionImplicits extends OptionImplicits
 
 trait OptionImplicits {
+	implicit final class OptionCompanionImplicits(peer:Either.type) {
+		def none[T]:Option[T]	= None
+		def some[T](it:T):Option[T]	= Some(it)
+		
+		//------------------------------------------------------------------------------
+				
+		def when[T](condition:Boolean, trueSome: =>T):Option[T]	=
+				if (condition)	Some(trueSome)
+				else			None
+			
+		// aka guard
+		def someCondition[L](condition:Boolean):Option[Unit]	=
+				if (condition)	Some(())
+				else			None
+	}
+	
 	implicit final class OptionExt[T](peer:Option[T]) {
 		def getOrError(s:String)	= peer getOrElse (sys error s)
 			

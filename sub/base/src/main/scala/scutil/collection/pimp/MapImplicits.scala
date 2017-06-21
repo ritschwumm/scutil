@@ -73,6 +73,10 @@ implicit final class MapExt[S,T](peer:Map[S,T]) {
 		def updatedByOrInserted(key:S, update:Endo[T], insert: =>T):Map[S,T]	=
 				peer + (key -> (peer get key map update getOrElse insert))
 			
+		def putIfNotExist(key:S, value:T):(Map[S,T],Boolean)	=
+				if (peer contains key)	(peer, false)
+				else					(peer + (key -> value), true)
+			
 		def storeAt(key:S):Option[Store[Map[S,T],T]]	=
 				peer get key map { item	=>
 					Store[Map[S,T],T](

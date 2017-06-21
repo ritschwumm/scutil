@@ -21,20 +21,26 @@ object StateT extends StateTInstances {
 	def statelessF[F[_],S,T](func:S=>F[T])(implicit F:Functor[F]):StateT[F,S,T]	=
 			StateT { s => (F map func(s)) { s -> _ } }
 			
-	def get[F[_],S,T](implicit F:Applicative[F]):StateT[F,S,S]	=
+	def get[F[_],S](implicit F:Applicative[F]):StateT[F,S,S]	=
 			StateT { s => F pure (s -> s) }
 		
-	def set[F[_],S,T](it:S)(implicit F:Applicative[F]):StateT[F,S,Unit]	=
+	def set[F[_],S](it:S)(implicit F:Applicative[F]):StateT[F,S,Unit]	=
 			StateT { s => F pure (it -> (())) }
 		
-	def setOld[F[_],S,T](it:S)(implicit F:Applicative[F]):StateT[F,S,S]	=
+	def setOld[F[_],S](it:S)(implicit F:Applicative[F]):StateT[F,S,S]	=
 			StateT { s => F pure (it -> s) }
 		
-	def mod[F[_],S,T](func:S=>S)(implicit F:Applicative[F]):StateT[F,S,Unit]	=
+	def setF[F[_],S](it:F[S])(implicit F:Functor[F]):StateT[F,S,Unit]	=
+			StateT { s => (F map it)(s1 => (s1, ())) }
+		
+	def mod[F[_],S](func:S=>S)(implicit F:Applicative[F]):StateT[F,S,Unit]	=
 			StateT { s => F pure (func(s) -> (())) }
 		
-	def modOld[F[_],S,T](func:S=>S)(implicit F:Applicative[F]):StateT[F,S,S]	=
+	def modOld[F[_],S](func:S=>S)(implicit F:Applicative[F]):StateT[F,S,S]	=
 			StateT { s => F pure (func(s) -> s) }
+		
+	def modF[F[_],S](func:S=>F[S])(implicit F:Functor[F]):StateT[F,S,Unit]	=
+			StateT { s => (F map func(s))(s1 => (s1, ())) }
 		
 	// inference helper allowing to specify the state value typ while still let the result type be inferred
 	def pureU[F[_],S]:StateTPure[F,S]	= new StateTPure[F,S]

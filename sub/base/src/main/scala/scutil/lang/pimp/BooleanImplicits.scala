@@ -38,7 +38,7 @@ trait BooleanImplicits {
 		def preventISeq[T](falseValue: =>T):ISeq[T] =
 				if (!peer)	Vector(falseValue)
 				else		Vector.empty
-				
+			
 		//------------------------------------------------------------------------------
 		
 		def either[U,V](falseLeft: =>U, trueRight: =>V):Either[U,V] =

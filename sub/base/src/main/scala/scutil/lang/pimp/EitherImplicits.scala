@@ -54,6 +54,7 @@ trait EitherImplicits {
 		def leftOption[L](problem:Option[L]):Either[L,Unit]	=
 				leftOr(problem, ())
 			
+		// aka guard
 		def rightCondition[L](condition:Boolean, problem: =>L):Either[L,Unit]	=
 				if (condition)	Right(())
 				else			Left(problem)

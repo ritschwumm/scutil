@@ -37,9 +37,10 @@ object State extends StateInstances {
 				func map (_ apply s) getOrElse s
 			}
 		
-	def modOptional[S](func:S=>Option[S]):State[S,Unit]	=
-			State mod { s =>
-				func(s) getOrElse s
+	def modOptional[S](func:S=>Option[S]):State[S,Boolean]	=
+			State { s1 =>
+				val s2	= func(s1)
+				(s2 getOrElse s1, s2.isDefined)
 			}
 }
 
