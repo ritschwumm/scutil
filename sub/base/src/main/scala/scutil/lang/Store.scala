@@ -70,8 +70,8 @@ final case class Store[C,V](get:V, put:V=>C) {
 }
 
 trait StoreInstances {
-	implicit def StoreFunctor[S]:Functor[ ({type l[T]=Store[T,S]})#l ]	=
-			new Functor[ ({type l[T]=Store[T,S]})#l ] {
-				def map[A,B](it:Store[A,S])(func:A=>B):Store[B,S]				= it map func
+	implicit def StoreFunctor[S]:Functor[Store[?,S]]	=
+			new Functor[Store[?,S]] {
+				def map[A,B](it:Store[A,S])(func:A=>B):Store[B,S]	= it map func
 			}
 }

@@ -22,7 +22,7 @@ trait MonadSyntax {
 			}
 	}
 	
-	implicit class MonadArrowSyntax[F[_],S,T](peer:S=>F[T])(implicit MF:Monad[F]) {
+	implicit class MonadArrowSyntaxExt[F[_],S,T](peer:S=>F[T])(implicit MF:Monad[F]) {
 		// aka liftM
 		val flatMapping:F[S]=>F[T]	= fs => MF.flatMap(fs)(peer)
 	}

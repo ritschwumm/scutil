@@ -49,5 +49,5 @@ private final class TaskDisposable(task:Task) extends Disposable {
 }
 
 trait DisposableInstances {
-	implicit def DisposableResource[T<:Disposable]:Resource[T]	= Resource by (_.dispose())
+	implicit def DisposableResource[T<:Disposable]:Resource[T]	= Resource instance (_.dispose())
 }

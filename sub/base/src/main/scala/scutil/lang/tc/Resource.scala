@@ -3,7 +3,7 @@ package scutil.lang.tc
 object Resource {
 	def apply[T](ev:Resource[T]):Resource[T]	= ev
 	
-	def by[T](disposeFunc:T=>Unit):Resource[T]	=
+	def instance[T](disposeFunc:T=>Unit):Resource[T]	=
 			new Resource[T] {
 				def dispose(it:T):Unit	= disposeFunc(it)
 			}

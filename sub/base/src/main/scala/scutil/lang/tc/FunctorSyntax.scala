@@ -8,7 +8,7 @@ trait FunctorSyntax {
 		def void:F[Unit]			= FC.map(peer)(_ => ())
 	}
 	
-	implicit class FunctorArrowSyntax[F[_],S,T](peer:S=>T)(implicit FC:Functor[F]) {
+	implicit class FunctorArrowSyntaxExt[F[_],S,T](peer:S=>T)(implicit FC:Functor[F]) {
 		// aka liftF
 		val mapping:F[S]=>F[T]	= fs => FC.map(fs)(peer)
 	}

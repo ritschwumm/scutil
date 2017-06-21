@@ -133,5 +133,5 @@ final case class Prism[S,T](write:PFunction[S,T], read:T=>S) {
 
 trait PrismInstances {
 	implicit def PrismSemigroup[S,T]:Semigroup[Prism[S,T]]	=
-			Semigroup by (_ orElse _)
+			Semigroup instance (_ orElse _)
 }

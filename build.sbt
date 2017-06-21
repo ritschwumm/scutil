@@ -3,7 +3,7 @@ import spray.boilerplate.BoilerplatePlugin
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.104.0",
+	version			:= "0.105.0",
 	
 	scalaVersion	:= "2.12.1",
 	scalacOptions	++= Seq(
@@ -13,11 +13,14 @@ inThisBuild(Seq(
 		"-opt:l:project",
 		"-Ywarn-unused-import",
 		"-Xfatal-warnings",
-		"-Xlint"
+		"-Xlint",
+		"-Ypartial-unification"
 	),
 	
 	conflictManager	:= ConflictManager.strict,
-	resolvers		+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
+	resolvers		+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
+	resolvers 		+= Resolver.sonatypeRepo("releases"),
+	addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3")
 ))
 
 lazy val fixConsoleSettings	=

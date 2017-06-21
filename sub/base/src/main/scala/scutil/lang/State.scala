@@ -3,6 +3,9 @@ package scutil.lang
 import scutil.lang.tc._
 
 object State extends StateInstances {
+	def delay[S,T](it: =>T):State[S,T]			= State { s => (s,	it)	}
+	def delayThunk[S,T](it:Thunk[T]):State[S,T]	= State { s => (s,	it())	}
+	
 	def pure[S,T](it:T):State[S,T]		= State { s => (s,			it)	}
 	def get[S]:State[S,S]				= State { s => (s,			s)	}
 	def set[S](it:S):State[S,Unit]		= State { s => (it,			())	}
@@ -83,12 +86,16 @@ final case class State[S,+T](run:S=>(S,T)) {
 }
 
 trait StateInstances {
-	// ({type l[X]=State[S,X]})#l
-	// State[S,?]
-	implicit def StateMonad[S]:Monad[ ({type l[X]=State[S,X]})#l ]	=
-			new Monad[ ({type l[X]=State[S,X]})#l ] {
+	implicit def StateMonad[S]:Monad[State[S,?]]	=
+			new Monad[State[S,?]] {
 				override def pure[T](it:T):State[S,T]										= State pure it
 				override def map[T,U](its:State[S,T])(func:T=>U):State[S,U]					= its map func
 				override def flatMap[T,U](its:State[S,T])(func:T=>State[S,U]):State[S,U]	= its flatMap func
+			}
+			
+	implicit def StateDelay[S]:Delay[State[S,?]]	=
+			new Delay[State[S,?]] {
+				override def delay[T](it: =>T):State[S,T]		= State delay it
+				override def delayThunk[T](it:()=>T):State[S,T]	= State delayThunk it
 			}
 }

@@ -221,13 +221,12 @@ final case class Bad[E](problems:E)	extends Validated[E,Nothing]
 final case class Good[T](value:T)	extends Validated[Nothing,T]
 
 trait ValidatedInstances {
-	implicit def ValidatedMonad[S]:Monad[ ({type l[T]=Validated[S,T]})#l ]	=
-			new Monad[ ({type l[T]=Validated[S,T]})#l ] {
+	implicit def ValidatedApplicative[S:Semigroup]:Applicative[Validated[S,?]]	=
+			new Applicative[Validated[S,?]] {
 				override def pure[A](it:A):Validated[S,A]											= Validated good it
-				override def map[A,B](it:Validated[S,A])(func:A=>B):Validated[S,B]					= it map func
-				override def flatMap[A,B](it:Validated[S,A])(func:A=>Validated[S,B]):Validated[S,B]	= it flatMap func
+				override def ap[A,B](it:Validated[S,A])(func:Validated[S,A=>B]):Validated[S,B]		= it pa func
 			}
 			
 	implicit def ValidatedSemigroup[S:Semigroup,T]:Semigroup[Validated[S,T]]	=
-			Semigroup by (_ orElse _)
+			Semigroup instance (_ orElse _)
 }

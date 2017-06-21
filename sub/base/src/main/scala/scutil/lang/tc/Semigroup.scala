@@ -3,7 +3,7 @@ package scutil.lang.tc
 object Semigroup {
 	def apply[F](implicit ev:Semigroup[F]):Semigroup[F]	= ev
 	
-	def by[T](func:(T,T)=>T):Semigroup[T]	=
+	def instance[T](func:(T,T)=>T):Semigroup[T]	=
 			new Semigroup[T] {
 				def concat(a:T, b:T):T	= func(a, b)
 			}

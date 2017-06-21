@@ -88,8 +88,8 @@ final case class There[A,B](there:B)		extends Where[A,B]
 final case class Both[A,B](here:A, there:B)	extends Where[A,B]
 
 trait WhereInstances {
-	implicit def WhereFunctor[A]:Functor[ ({type l[B]=Where[A,B]})#l ]	=
-			new Functor[ ({type l[B]=Where[A,B]})#l ] {
+	implicit def WhereFunctor[A]:Functor[Where[A,?]]	=
+			new Functor[Where[A,?]] {
 				override def map[B,BB](it:Where[A,B])(func:B=>BB):Where[A,BB]	= it mapThere func
 			}
 }

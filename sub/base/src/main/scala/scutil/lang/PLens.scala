@@ -139,5 +139,5 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 
 trait PLensInstances {
 	implicit def PLensSemigroup[S,T]:Semigroup[PLens[S,T]]	=
-			Semigroup by (_ orElse _)
+			Semigroup instance (_ orElse _)
 }

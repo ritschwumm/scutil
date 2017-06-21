@@ -176,13 +176,13 @@ final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 }
 
 trait ConverterInstances {
-	implicit def ConverterMonad[E,S]:Monad[ ({type l[T]=Converter[E,S,T]})#l ]	=
-			new Monad[ ({type l[T]=Converter[E,S,T]})#l ] {
+	implicit def ConverterMonad[E,S]:Monad[Converter[E,S,?]]	=
+			new Monad[Converter[E,S,?]] {
 				override def pure[A](it:A):Converter[E,S,A]													= Converter constant it
 				override def map[A,B](it:Converter[E,S,A])(func:A=>B):Converter[E,S,B]						= it map func
 				override def flatMap[A,B](it:Converter[E,S,A])(func:A=>Converter[E,S,B]):Converter[E,S,B]	= it flatMap func
 			}
 			
 	implicit def ConverterSemigroup[E:Semigroup,S,T]:Semigroup[Converter[E,S,T]]	=
-			Semigroup by (_ orElse _)
+			Semigroup instance (_ orElse _)
 }

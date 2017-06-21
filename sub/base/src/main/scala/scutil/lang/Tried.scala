@@ -274,13 +274,13 @@ final case class Win[F,W](value:W)	extends Tried[F,W]
 final case class Fail[F,W](value:F)	extends Tried[F,W]
 
 trait TriedInstances {
-	implicit def TriedMonad[S]:Monad[ ({type l[T]=Tried[S,T]})#l ]	=
-			new Monad[ ({type l[T]=Tried[S,T]})#l ] {
+	implicit def TriedMonad[S]:Monad[Tried[S,?]]	=
+			new Monad[Tried[S,?]] {
 				override def pure[A](it:A):Tried[S,A]									= Tried win it
 				override def map[A,B](it:Tried[S,A])(func:A=>B):Tried[S,B]				= it map func
 				override def flatMap[A,B](it:Tried[S,A])(func:A=>Tried[S,B]):Tried[S,B]	= it flatMap func
 			}
 			
 	implicit def TriedSemigroup[S,T]:Semigroup[Tried[S,T]]	=
-			Semigroup by (_ orElse _)
+			Semigroup instance (_ orElse _)
 }

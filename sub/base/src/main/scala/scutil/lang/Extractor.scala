@@ -60,11 +60,11 @@ final case class Extractor[S,T](read:PFunction[S,T]) {
 }
 
 trait ExtractorInstances {
-	implicit def ExtractorFunctor[S]:Functor[ ({type l[T]=Extractor[S,T]})#l ]	=
-			new Functor[ ({type l[T]=Extractor[S,T]})#l ] {
+	implicit def ExtractorFunctor[S]:Functor[Extractor[S,?]]	=
+			new Functor[Extractor[S,?]] {
 				def map[A,B](it:Extractor[S,A])(func:A=>B):Extractor[S,B]		= it map func
 			}
 			
 	implicit def ExtractorSemigroup[S,T]:Semigroup[Extractor[S,T]]	=
-			Semigroup by (_ orElse _)
+			Semigroup instance (_ orElse _)
 }

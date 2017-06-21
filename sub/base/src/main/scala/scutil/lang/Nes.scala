@@ -132,7 +132,18 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 				(this.head, 0),
 				this.tail.zipWithIndex map { case (v,i) => (v,i+1) }
 			)
-		
+			
+	def reduce[U>:T](func:(U,U)=>U)(implicit S:Semigroup[U]):U	=
+			reduceWith(S.concat)
+	
+	def reduceWith[U>:T](func:(U,U)=>U):U	= {
+		var state:U	= head
+		tail foreach { it =>
+			state	= func(state, it)
+		}
+		state
+	}
+	
 	def storeAt[U>:T](index:Int):Option[Store[Nes[U],U]]	=
 			get(index) map { item =>
 				Store(
@@ -174,5 +185,5 @@ trait NesInstances {
 			}
 			
 	implicit def NesSemigroup[T]:Semigroup[Nes[T]]	=
-			Semigroup by (_ ++ _)
+			Semigroup instance (_ ++ _)
 }

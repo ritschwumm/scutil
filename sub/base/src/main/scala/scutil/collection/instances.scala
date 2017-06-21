@@ -14,7 +14,7 @@ trait instances extends instancesLow {
 			}
 			
 	implicit def VectorMonoid[T]:Monoid[Vector[T]]	=
-			Monoid by (Vector.empty, _ ++ _)
+			Monoid instance (Vector.empty, _ ++ _)
 			
 	implicit def ListMonad:Monad[List]	=
 			new Monad[List] {
@@ -24,15 +24,15 @@ trait instances extends instancesLow {
 			}
 			
 	implicit def ListMonoid[T]:Monoid[List[T]]	=
-			Monoid by (Nil, _ ++ _)
+			Monoid instance (Nil, _ ++ _)
 		
 	implicit def SetMonoid[T]:Monoid[Set[T]]	=
-			Monoid by (Set.empty, _ ++ _)
+			Monoid instance (Set.empty, _ ++ _)
 		
 	// no Functor[Set]
 		
 	implicit def MapMonoid[K,V]:Monoid[Map[K,V]]	=
-			Monoid by (Map.empty, _ ++ _)
+			Monoid instance (Map.empty, _ ++ _)
 		
 	// no Functor[Map]
 }
@@ -46,6 +46,5 @@ trait instancesLow {
 			}
 			
 	implicit def ISeqMonoid[T]:Monoid[ISeq[T]]	=
-			Monoid by (ISeq.empty, _ ++ _)
-	
+			Monoid instance (ISeq.empty, _ ++ _)
 }

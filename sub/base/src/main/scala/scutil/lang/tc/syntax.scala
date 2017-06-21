@@ -8,3 +8,4 @@ trait syntax
 		with	MonadSyntax
 		with	SemigroupSyntax
 		with	MonoidSyntax
+		with	ShowSyntax
