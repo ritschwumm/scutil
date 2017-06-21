@@ -6,6 +6,9 @@ import scala.collection.generic.CanBuildFrom
 
 import scutil.lang._
 
+// TODO either get rid of this
+import scutil.lang.pimp.EitherImplicits._
+
 object OptionImplicits extends OptionImplicits
 
 trait OptionImplicits {
@@ -63,13 +66,6 @@ trait OptionImplicits {
 				peer map ev match {
 					case Some(Left(x))	=> (Some(x),	None)
 					case Some(Right(x))	=> (None,		Some(x))
-					case None			=> (None,		None)
-				}
-		
-		def partitionTried[F,W](implicit ev:T=>Tried[F,W]):(Option[F],Option[W])	=
-				peer map ev match {
-					case Some(Fail(x))	=> (Some(x),	None)
-					case Some(Win(x))	=> (None,		Some(x))
 					case None			=> (None,		None)
 				}
 		
@@ -135,16 +131,16 @@ trait OptionImplicits {
 			builder.result
 		}
 			
-		/** peer is traversable (in the haskell sense), Tried is an idiom. */
-		def sequenceTried[F,W](implicit ev:T=>Tried[F,W]):Tried[F,Option[W]]	=
-				traverseTried(ev)
+		/** peer is traversable (in the haskell sense), Either is an idiom. */
+		def sequenceEither[F,W](implicit ev:T=>Either[F,W]):Either[F,Option[W]]	=
+				traverseEither(ev)
 			
-		/** peer is traversable (in the haskell sense), Tried is an idiom. */
-		def traverseTried[F,W](func:T=>Tried[F,W]):Tried[F,Option[W]]	=
+		/** peer is traversable (in the haskell sense), Either is an idiom. */
+		def traverseEither[F,W](func:T=>Either[F,W]):Either[F,Option[W]]	=
 				peer map func match {
-					case None			=> Win(None)
-					case Some(Fail(x))	=> Fail(x)
-					case Some(Win(x))	=> Win(Some(x))
+					case None			=> Right(None)
+					case Some(Left(x))	=> Left(x)
+					case Some(Right(x))	=> Right(Some(x))
 				}
 				
 		/** peer is traversable (in the haskell sense), Validated is an idiom. */
@@ -172,11 +168,11 @@ trait OptionImplicits {
 				
 		//------------------------------------------------------------------------------
 		
-		def toWin[F](fail: =>F):Tried[F,T]	=
-				Tried winOr (peer, fail)
+		def toRight[F](fail: =>F):Either[F,T]	=
+				Either rightOr (peer, fail)
 		
-		def toFail[W](win: =>W):Tried[T,W]	=
-				Tried failOr (peer, win)
+		def toLeft[W](win: =>W):Either[T,W]	=
+				Either leftOr (peer, win)
 				
 		def toGood[F](problems: =>F):Validated[F,T]	=
 				Validated goodOr (peer, problems)

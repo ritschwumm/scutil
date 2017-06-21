@@ -23,11 +23,18 @@ trait instances extends instancesLow {
 			
 	// TODO Semigroup[Pair]
 			
-	implicit def OptionMonad:Monad[Option]	=
-			new Monad[Option] {
-				override def pure[A](it:A):Option[A]									= Some(it)
+	implicit def OptionTraversedMonad:TraversedMonad[Option]	=
+			new TraversedMonad[Option] {
 				override def map[A,B](it:Option[A])(func:A=>B):Option[B]				= it map func
+
+				override def pure[A](it:A):Option[A]									= Some(it)
 				override def flatMap[A,B](it:Option[A])(func:A=>Option[B]):Option[B]	= it flatMap func
+				
+				override def traverse[G[_],S,T](it:Option[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[Option[T]]	=
+						it match {
+							case None		=> AP pure None
+							case Some(s)	=> (AP map func(s))(Some.apply)
+						}
 			}
 			
 	implicit def OptionMonoid[T]:Monoid[Option[T]]	=
@@ -105,10 +112,11 @@ trait instances extends instancesLow {
 }
 
 trait instancesLow {
-	implicit def IdentityMonad:Monad[Identity]	=
-			new Monad[Identity] {
-				override def pure[A](it:A):Identity[A]										= it
+	implicit def IdentityTraversedMonad:TraversedMonad[Identity]	=
+			new TraversedMonad[Identity] {
 				override def map[A,B](it:Identity[A])(func:A=>B):Identity[B]				= func(it)
+				override def pure[A](it:A):Identity[A]										= it
 				override def flatMap[A,B](it:Identity[A])(func:A=>Identity[B]):Identity[B]	= func(it)
+				override def traverse[G[_],S,T](it:Identity[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[Identity[T]]	= func(it)
 			}
 }

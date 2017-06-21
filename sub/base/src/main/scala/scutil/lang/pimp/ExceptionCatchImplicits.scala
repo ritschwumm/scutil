@@ -8,7 +8,7 @@ object ExceptionCatchImplicits extends ExceptionCatchImplicits
 
 trait ExceptionCatchImplicits {
 	implicit final class ExceptionCatchExt[T](peer:Catch[T]) {
-		def toTried:Catch[Tried[Throwable,T]]			= peer withApply Fail.apply
-		def tried[U>:T](body: =>U):Tried[Throwable,U]	= toTried(Win(body))
+		def toEither:Catch[Either[Throwable,T]]			= peer withApply Left.apply
+		def either[U>:T](body: =>U):Either[Throwable,U]	= toEither(Right(body))
 	}
 }

@@ -3,26 +3,24 @@ package scutil.lang.pimp
 import java.nio._
 import java.nio.charset._
 
-import scutil.lang._
-
 object CharsetImplicits extends CharsetImplicits
 
 trait CharsetImplicits {
 	implicit final class CharsetExt(peer:Charset) {
-		def encodeTried(string:String):Tried[CharacterCodingException,Array[Byte]]	=
+		def encodeEither(string:String):Either[CharacterCodingException,Array[Byte]]	=
 				try {
-					Win((failingEncoder encode (CharBuffer wrap string)).array)
+					Right((failingEncoder encode (CharBuffer wrap string)).array)
 				}
 				catch { case e:CharacterCodingException =>
-					Fail(e)
+					Left(e)
 				}
 				
-		def decodeTried(bytes:Array[Byte]):Tried[CharacterCodingException,String]	=
+		def decodeEither(bytes:Array[Byte]):Either[CharacterCodingException,String]	=
 				try {
-					Win((failingDecoder decode (ByteBuffer wrap bytes)).toString)
+					Right((failingDecoder decode (ByteBuffer wrap bytes)).toString)
 				}
 				catch { case e:CharacterCodingException =>
-					Fail(e)
+					Left(e)
 				}
 				
 		def failingEncoder:CharsetEncoder	= {

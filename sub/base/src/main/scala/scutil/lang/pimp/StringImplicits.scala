@@ -8,32 +8,32 @@ object StringImplicits extends StringImplicits
 
 trait StringImplicits {
 	implicit final class LangStringExt(peer:String) {
-		def toBooleanOption:Option[Boolean]	= toBooleanTried.toOption
-		def toByteOption:Option[Byte]		= toByteTried.toOption
-		def toShortOption:Option[Short]		= toShortTried.toOption
-		def toIntOption:Option[Int]			= toIntTried.toOption
-		def toLongOption:Option[Long]		= toLongTried.toOption
-		def toFloatOption:Option[Float]		= toFloatTried.toOption
-		def toDoubleOption:Option[Double]	= toDoubleTried.toOption
-		def toBigIntOption:Option[BigInt]	= toBigIntTried.toOption
+		def toBooleanOption:Option[Boolean]	= toBooleanEither.toOption
+		def toByteOption:Option[Byte]		= toByteEither.toOption
+		def toShortOption:Option[Short]		= toShortEither.toOption
+		def toIntOption:Option[Int]			= toIntEither.toOption
+		def toLongOption:Option[Long]		= toLongEither.toOption
+		def toFloatOption:Option[Float]		= toFloatEither.toOption
+		def toDoubleOption:Option[Double]	= toDoubleEither.toOption
+		def toBigIntOption:Option[BigInt]	= toBigIntEither.toOption
 		
 		// toBoolean throws an IllegalArgumentException, not a NumberFormatException
-		def toBooleanTried:Tried[NumberFormatException,Boolean]	=
+		def toBooleanEither:Either[NumberFormatException,Boolean]	=
 				peer match {
-					case "true"		=> Win(true)
-					case "false"	=> Win(false)
-					case null		=> Fail(new NumberFormatException("null is not a boolean"))
-					case x			=> Fail(new NumberFormatException("not a boolean: " + x))
+					case "true"		=> Right(true)
+					case "false"	=> Right(false)
+					case null		=> Left(new NumberFormatException("null is not a boolean"))
+					case x			=> Left(new NumberFormatException("not a boolean: " + x))
 				}
-		def toByteTried:Tried[NumberFormatException,Byte]		= toNumberTried(_.toByte)
-		def toShortTried:Tried[NumberFormatException,Short]		= toNumberTried(_.toShort)
-		def toIntTried:Tried[NumberFormatException,Int]			= toNumberTried(_.toInt)
-		def toLongTried:Tried[NumberFormatException,Long]		= toNumberTried(_.toLong)
-		def toFloatTried:Tried[NumberFormatException,Float]		= toNumberTried(_.toFloat)
-		def toDoubleTried:Tried[NumberFormatException,Double]	= toNumberTried(_.toDouble)
-		def toBigIntTried:Tried[NumberFormatException,BigInt]	= toNumberTried(BigInt(_))
+		def toByteEither:Either[NumberFormatException,Byte]		= toNumberEither(_.toByte)
+		def toShortEither:Either[NumberFormatException,Short]	= toNumberEither(_.toShort)
+		def toIntEither:Either[NumberFormatException,Int]		= toNumberEither(_.toInt)
+		def toLongEither:Either[NumberFormatException,Long]		= toNumberEither(_.toLong)
+		def toFloatEither:Either[NumberFormatException,Float]	= toNumberEither(_.toFloat)
+		def toDoubleEither:Either[NumberFormatException,Double]	= toNumberEither(_.toDouble)
+		def toBigIntEither:Either[NumberFormatException,BigInt]	= toNumberEither(BigInt(_))
 			
-		private def toNumberTried[T](func:String=>T):Tried[NumberFormatException,T]	=
+		private def toNumberEither[T](func:String=>T):Either[NumberFormatException,T]	=
 				Catch.byType[NumberFormatException] in func(peer)
 		
 		//------------------------------------------------------------------------------

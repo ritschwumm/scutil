@@ -3,9 +3,6 @@ package scutil.lang.pimp
 import scala.concurrent._
 import scala.util.{ Try, Success, Failure }
 
-import scutil.lang._
-import scutil.lang.pimp.TryImplicits._
-
 object FutureImplicits extends FutureImplicits
 
 trait FutureImplicits {
@@ -57,14 +54,14 @@ trait FutureImplicits {
 		//------------------------------------------------------------------------------
 		
 		/** always succeeds wrapping the original success/failure in a Tried */
-		def wrapTried(implicit executor:ExecutionContext):Future[Tried[Throwable,T]]	=
-				mapTry { it => Try(it.toTried) }
+		def wrapEither(implicit executor:ExecutionContext):Future[Either[Throwable,T]]	=
+				mapTry { it => Try(it.toEither) }
 		
 		/** succeeds for a Win, fails for a Fail */
-		def unwrapTried[X](implicit ev:T=>Tried[Throwable,X], executor:ExecutionContext):Future[X]	=
+		def unwrapEither[X](implicit ev:T=>Either[Throwable,X], executor:ExecutionContext):Future[X]	=
 				mapTry { _ flatMap { ev(_).toTry } }
 			
-		def mapTried[X](func:Tried[Throwable,T]=>Tried[Throwable,X])(implicit executor:ExecutionContext):Future[X]	=
-				mapTry { it => func(it.toTried).toTry }
+		def mapEither[X](func:Either[Throwable,T]=>Either[Throwable,X])(implicit executor:ExecutionContext):Future[X]	=
+				mapTry { it => func(it.toEither).toTry }
 	}
 }

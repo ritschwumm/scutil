@@ -26,10 +26,10 @@ private final class FielderImpl(val c:Context) {
 				.filter	{ _.isPrimaryConstructor }
 				.singleOption
 		
-		val names:Tried[String,Tree]	=
+		val names:Either[String,Tree]	=
 				for {
-					primaryCtor		<- primaryCtorOpt						toWin s"primary constructor not found in ${selfType}"
-					paramNames		<- primaryCtor.paramLists.singleOption	toWin s"primary constructor has multiple parameter lists in ${selfType}"
+					primaryCtor		<- primaryCtorOpt						toRight s"primary constructor not found in ${selfType}"
+					paramNames		<- primaryCtor.paramLists.singleOption	toRight s"primary constructor has multiple parameter lists in ${selfType}"
 					decodedNames	= paramNames map { _.name.decodedName.toString }
 				}
 				yield {

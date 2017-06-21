@@ -83,24 +83,6 @@ trait AnyImplicits {
 		def leftBy[U](func:PFunction[T,U]):Either[U,T]	=
 				func(peer) toLeft peer	
 			
-		/** Win if the predicate matches, else Fail */
-		def triedBy(predicate:T=>Boolean):Tried[T,T]	=
-				if (predicate(peer)) Win(peer) else Fail(peer)
-		
-		/** Win if Some else original value in Fail */
-		def winBy[U](func:PFunction[T,U]):Tried[T,U]	=
-				func(peer) match {
-					case Some(x)	=> Win(x)
-					case None		=> Fail(peer)
-				}
-	
-		/** Fail if Some else original value in Win */
-		def failBy[U](func:PFunction[T,U]):Tried[U,T]	=
-				func(peer) match {
-					case Some(x)	=> Fail(x)
-					case None		=> Win(peer)
-				}
-				
 		/** Fail if Some else original value in Win */
 		def badBy[E](func:PFunction[T,E]):Validated[E,T]	=
 				func(peer) match {

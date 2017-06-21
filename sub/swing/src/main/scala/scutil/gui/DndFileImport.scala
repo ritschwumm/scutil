@@ -65,10 +65,10 @@ object DndFileImport {
 	
 		private def extractFileList[T](support:TransferSupport, flavor:DataFlavor, extractor:T=>Validated[Nes[Exception],Nes[File]]):Option[Validated[Nes[Exception],Nes[File]]]	=
 				support isDataFlavorSupported flavor guard {
-					extractTransferData[T](support, flavor) mapFail Nes.single into Validated.fromTried flatMap extractor
+					extractTransferData[T](support, flavor) mapLeft Nes.single into Validated.fromEither flatMap extractor
 				}
 				
-		private def extractTransferData[T](support:TransferSupport, flavor:DataFlavor):Tried[Exception,T]	=
+		private def extractTransferData[T](support:TransferSupport, flavor:DataFlavor):Either[Exception,T]	=
 				Catch.exception in (support.getTransferable getTransferData flavor).asInstanceOf[T]
 				
 		private def filesFromURIList(uriList:String):Validated[Nes[Exception],Nes[File]]	=
@@ -82,17 +82,17 @@ object DndFileImport {
 		
 		// on el captain text/uri-list contains plain file path, but new File(URI) expects an absolute URI
 		private def fileFromURI(s:String):Validated[Nes[Exception],File]	=
-				(fileFromURI1(s) mapFail Nes.single into Validated.fromTried)	orElse
-				(fileFromURI2(s) mapFail Nes.single into Validated.fromTried)
+				(fileFromURI1(s) mapLeft Nes.single into Validated.fromEither)	orElse
+				(fileFromURI2(s) mapLeft Nes.single into Validated.fromEither)
 				
-		private def fileFromURI1(s:String):Tried[Exception,File]	=
+		private def fileFromURI1(s:String):Either[Exception,File]	=
 				Catch.exception in {
 					val uri	= new URI(s)
 					if (uri.getScheme != null)	new File(uri)
 					else						new File(s)
 				}
 			
-		private def fileFromURI2(s:String):Tried[Exception,File]	=
+		private def fileFromURI2(s:String):Either[Exception,File]	=
 				Catch.exception in {
 					val file	= new File(s)
 					if (!file.exists)	throw new FileNotFoundException(s"file does not exist: $file")

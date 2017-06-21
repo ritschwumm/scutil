@@ -13,6 +13,6 @@ object Charsets {
 	val utf_16le	= StandardCharsets.UTF_16LE
 	
 	/** Fail when then name is illegal or the Charset is not supported */
-	def byName(name:String):Tried[IllegalArgumentException,Charset]	=
+	def byName(name:String):Either[IllegalArgumentException,Charset]	=
 			Catch.byType[IllegalArgumentException] in { Charset forName name }
 }

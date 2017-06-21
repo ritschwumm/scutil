@@ -31,8 +31,5 @@ trait PredicateImplicits {
 				
 		def eitherOn[S<:T,UL,UR](left:S=>UL, right:S=>UR):S=>Either[UL,UR]	=
 				it	=> if (peer(it))	Left(left(it))	else	Right(right(it))
-				
-		def triedOn[S<:T,UF,UW](fail:S=>UF, win:S=>UW):S=>Tried[UF,UW]	=
-				it	=> if (peer(it))	Fail(fail(it))	else	Win(win(it))
 	}
 }

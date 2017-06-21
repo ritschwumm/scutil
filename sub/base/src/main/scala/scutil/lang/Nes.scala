@@ -177,11 +177,15 @@ object VarNes {
 }
 
 trait NesInstances {
-	implicit def NesMonad:Monad[Nes]	=
-			new Monad[Nes] {
-				override def pure[A](it:A):Nes[A]							= Nes single it
+	implicit def NesTraversedMonad:TraversedMonad[Nes]	=
+			new TraversedMonad[Nes] {
 				override def map[A,B](it:Nes[A])(func:A=>B):Nes[B]			= it map func
+				override def pure[A](it:A):Nes[A]							= Nes single it
 				override def flatMap[A,B](it:Nes[A])(func:A=>Nes[B]):Nes[B]	= it flatMap func
+				override def traverse[G[_],S,T](it:Nes[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[Nes[T]]	=
+						((it.tail map func) foldLeft ((AP map  func(it.head))(Nes.single[T]))) { (xs, x) => 
+							(AP combine (xs, x))(_ :+ _)
+						}
 			}
 			
 	implicit def NesSemigroup[T]:Semigroup[Nes[T]]	=

@@ -2,6 +2,9 @@ package scutil.lang.pimp
 
 import scutil.lang._
 
+// TODO either get rid of this
+import scutil.lang.pimp.EitherImplicits._
+
 object BooleanImplicits extends BooleanImplicits
 
 trait BooleanImplicits {
@@ -42,9 +45,6 @@ trait BooleanImplicits {
 				if (peer)	Right(trueRight)
 				else		Left(falseLeft)
 			
-		def tried[U,V](falseFail: =>U, trueWin: =>V):Tried[U,V] =
-				Tried switch (peer, falseFail, trueWin)
-			
 		def validated[E,T](falseProblems: =>E, trueGood: =>T):Validated[E,T]	=
 				Validated switch (peer, falseProblems, trueGood)
 			
@@ -60,11 +60,11 @@ trait BooleanImplicits {
 				if (!peer)	Some(())
 				else		None
 			
-		def trueWin[U](problem: =>U):Tried[U,Unit]	=
-				Tried winCondition (peer, problem)
+		def trueRight[U](problem: =>U):Either[U,Unit]	=
+				Either rightCondition (peer, problem)
 		
-		def falseWin[U](problem: =>U):Tried[U,Unit]	=
-				Tried failCondition (peer, problem)
+		def falseRight[U](problem: =>U):Either[U,Unit]	=
+				Either leftCondition (peer, problem)
 			
 		def trueValidated[E](problems: =>E):Validated[E,Unit]	=
 				Validated goodCondition (peer, problems)

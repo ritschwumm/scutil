@@ -9,7 +9,7 @@ object Platform {
 	def lineSeparator:String	=
 			SystemProperties.line.separator
 			
-	def fileEncoding:Tried[IllegalArgumentException,Charset]	=
+	def fileEncoding:Either[IllegalArgumentException,Charset]	=
 			Charsets byName SystemProperties.file.encoding
 		
 	//------------------------------------------------------------------------------

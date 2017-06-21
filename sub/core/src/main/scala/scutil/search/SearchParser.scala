@@ -32,7 +32,7 @@ object SearchParser {
 	}
 	
 	private def scan(s:String, func:String=>Option[String]):(Boolean,String)	= {
-		val t	= func(s) filter { _.nonEmpty } toWin s
-		(t.isWin, t.merge)
+		val t	= func(s) filter { _.nonEmpty } toRight s
+		(t.isRight, t.merge)
 	}
 }

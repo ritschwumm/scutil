@@ -9,10 +9,10 @@ object Io extends IoInstances {
 }
 
 final case class Io[T](run:()=>T) {
-	def attempt:Io[Tried[Exception,T]]	=
+	def attempt:Io[Either[Exception,T]]	=
 			Io { () =>
-				try { Win(run()) }
-				catch { case e:Exception => Fail(e) }
+				try { Right(run()) }
+				catch { case e:Exception => Left(e) }
 			}
 			
 	def map[U](func:T=>U):Io[U]	=

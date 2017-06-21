@@ -17,12 +17,6 @@ object Validated extends ValidatedGenerated with ValidatedInstances {
 				case Right(x)	=> Good(x)
 			}
 			
-	def fromTried[E,T](tried:Tried[E,T]):Validated[E,T]	=
-			tried match {
-				case Fail(x)	=> Bad(x)
-				case Win(x)		=> Good(x)
-			}
-			
 	def fromTry[T](tryy:Try[T]):Validated[Throwable,T]	=
 			tryy match {
 				case Failure(x)	=> Bad(x)
@@ -37,14 +31,14 @@ object Validated extends ValidatedGenerated with ValidatedInstances {
 		
 	def goodOr[E,T](value:Option[T], problems: =>E):Validated[E,T]	=
 			value match {
-				case Some(x)	=> good(x)
 				case None		=> bad(problems)
+				case Some(x)	=> good(x)
 			}
 		
 	def badOr[E,T](problems:Option[E], value: =>T):Validated[E,T]	=
 			problems match {
-				case Some(x)	=> bad(x)
 				case None		=> good(value)
+				case Some(x)	=> bad(x)
 			}
 		
 	def badOption[E](problems:Option[E]):Validated[E,Unit]	=
@@ -76,8 +70,8 @@ object Validated extends ValidatedGenerated with ValidatedInstances {
 sealed trait Validated[+E,+T] {
 	def cata[X](bad:E=>X, good:T=>X):X	=
 			this match {
-				case Bad(x)		=> bad(x)
 				case Good(x)	=> good(x)
+				case Bad(x)		=> bad(x)
 			}
 			
 	//------------------------------------------------------------------------------
@@ -126,10 +120,10 @@ sealed trait Validated[+E,+T] {
 			
 	def zipWith[EE>:E,U,V](that:Validated[EE,U])(func:(T,U)=>V)(implicit cc:Semigroup[EE]):Validated[EE,V]	=
 			(this, that) match {
-				case (Good(a),	Good(b))	=> Good(func(a, b))
 				case (Bad(a),	Good(_))	=> Bad(a)
 				case (Good(_),	Bad(b))		=> Bad(b)
 				case (Bad(a),	Bad(b))		=> Bad(cc concat (a, b))
+				case (Good(a),	Good(b))	=> Good(func(a, b))
 			}
 	
 			
@@ -137,8 +131,8 @@ sealed trait Validated[+E,+T] {
 	def flattenMany[U,CC[_]](implicit ev:T=>CC[U], cbf:CanBuildFrom[CC[U],U,CC[U]]):CC[U]	=
 			// toOption.flattenMany
 			this map ev match {
-				case Good(cc)	=> cc
 				case Bad(_)		=> cbf().result
+				case Good(cc)	=> cc
 			}
 			
 	//------------------------------------------------------------------------------
@@ -150,9 +144,9 @@ sealed trait Validated[+E,+T] {
 	
 	def orElse[EE>:E,TT>:T](that:Validated[EE,TT])(implicit cc:Semigroup[EE]):Validated[EE,TT]	=
 			(this, that) match {
-				case (Good(a), _)		=> Good(a)
-				case (Bad(a), Good(b))	=> Good(b)
 				case (Bad(a), Bad(b))	=> Bad(cc concat (a, b))
+				case (Bad(a), Good(b))	=> Good(b)
+				case (Good(a), _)		=> Good(a)
 			}
 		
 	def getOrElse[TT>:T](that: =>TT):TT	=
@@ -198,9 +192,6 @@ sealed trait Validated[+E,+T] {
 	
 	//------------------------------------------------------------------------------
 	
-	def toTried:Tried[E,T]	=
-			cata(Fail.apply, Win.apply)
-			
 	def toEither:Either[E,T]	=
 			cata(Left.apply, Right.apply)
 			

@@ -18,12 +18,12 @@ private final class BijectorImpl(val c:Context) {
 	def compile[T:c.WeakTypeTag]:Tree	= {
 		val selfType:Type	= weakTypeOf[T]
 		
-		val out:Tried[String,Tree]	=
+		val out:Either[String,Tree]	=
 				for {
 					companionSymbol	<-
 							selfType.typeSymbol.companion
 							.preventBy	{ _ == NoSymbol }
-							.toWin		(s"unexpected NoSymbol for companion of ${selfType.typeSymbol}")
+							.toRight	(s"unexpected NoSymbol for companion of ${selfType.typeSymbol}")
 			
 					// TODO use this?
 					// companionModule	= companionSymbol.asModule
@@ -42,7 +42,7 @@ private final class BijectorImpl(val c:Context) {
 					unapplyOuts		<-
 							unapplyReturn
 							.matchOption	{ case t@TypeRef(_, _, args) if t <:< typeOf[Option[Any]]	=> args }	
-							.toWin			(s"expected unapply TypeRef")
+							.toRight		(s"expected unapply TypeRef")
 							
 					// Int			(Int,Short)
 					
@@ -50,12 +50,12 @@ private final class BijectorImpl(val c:Context) {
 					unapplySingle	<-
 							unapplyOuts
 							.singleOption
-							.toWin	(s"expected unapply Option to contain a single value")
+							.toRight	(s"expected unapply Option to contain a single value")
 							
 					unapplySignature	<-
 							unapplySingle
 							.matchOption	{ case t @ TypeRef(_, _, _)	=> t }
-							.toWin			(s"unexpected unapply return ${unapplySingle}")
+							.toRight		(s"unexpected unapply return ${unapplySingle}")
 							
 					applySymbol		<- getDeclaration(companionType, "apply")
 					applyMethods	= applySymbol.asMethod.alternatives
@@ -86,7 +86,7 @@ private final class BijectorImpl(val c:Context) {
 					applyTmp	<-
 							applyMethods1
 							.singleOption
-							.toWin		(s"expected a single apply method matching unapply's types")
+							.toRight		(s"expected a single apply method matching unapply's types")
 							
 					(applyMethod, applySignature)	
 								= applyTmp
@@ -128,8 +128,8 @@ private final class BijectorImpl(val c:Context) {
 			&& ((a zip b) forall { case (a, b) => a =:= b })
 			*/
 			
-	private def getDeclaration(typ:Type, name:String):Tried[String,Symbol]	=
+	private def getDeclaration(typ:Type, name:String):Either[String,Symbol]	=
 			(typ decl TermName(name))
 			.preventBy	{ _ == NoSymbol }
-			.toWin		(s"unexpected NoSymbol for companion declaration ${name} of type ${typ}")
+			.toRight	(s"unexpected NoSymbol for companion declaration ${name} of type ${typ}")
 }

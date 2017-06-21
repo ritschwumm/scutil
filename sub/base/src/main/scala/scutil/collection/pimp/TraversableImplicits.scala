@@ -19,16 +19,16 @@ trait TraversableImplicits {
 			out
 		}
 		
-		/** Fail(false) for zero elements, Win(x) for one element, Fail(true) for more */
-		def singleTried:Tried[Boolean,T] = {
+		/** Left(false) for zero elements, Right(x) for one element, Left(true) for more */
+		def singleEither:Either[Boolean,T] = {
 			var out:Option[T]	= None
 			peer foreach { it =>
-				if (out.isDefined)	return Fail(true)
+				if (out.isDefined)	return Left(true)
 				out	= Some(it)
 			}
 			out match {
-				case Some(x)	=> Win(x)
-				case None		=> Fail(false)
+				case Some(x)	=> Right(x)
+				case None		=> Left(false)
 			}
 		}
 		
@@ -60,16 +60,6 @@ trait TraversableImplicits {
 			peer map ev foreach {
 				case Left(x)	=> builder1	+= x
 				case Right(x)	=> builder2	+= x
-			}
-			(builder1.result, builder2.result)
-		}
-		
-		def partitionTried[F,W](implicit ev:T=>Tried[F,W], cbf1:CanBuildFrom[CC[T],F,CC[F]], cbf2:CanBuildFrom[CC[T],W,CC[W]]):(CC[F],CC[W])	= {
-			val	builder1	= cbf1()
-			val	builder2	= cbf2()
-			peer map ev foreach {
-				case Fail(x)	=> builder1	+= x
-				case Win(x)		=> builder2	+= x
 			}
 			(builder1.result, builder2.result)
 		}
@@ -129,25 +119,25 @@ trait TraversableImplicits {
 			Some(builder.result)
 		}
 				
-		/** peer is traversable (in the haskell sense), Tried is an idiom. */
-		def sequenceTried[F,W](implicit ev:T=>Tried[F,W], cbf:CanBuildFrom[CC[T],W,CC[W]]):Tried[F,CC[W]]	=
-				traverseTried(ev)
+		/** peer is traversable (in the haskell sense), Either is an idiom. */
+		def sequenceEither[F,W](implicit ev:T=>Either[F,W], cbf:CanBuildFrom[CC[T],W,CC[W]]):Either[F,CC[W]]	=
+				traverseEither(ev)
 			
-		/** peer is traversable (in the haskell sense), Tried is an idiom. */
-		def traverseTried[F,W](func:T=>Tried[F,W])(implicit cbf:CanBuildFrom[CC[T],W,CC[W]]):Tried[F,CC[W]]	= {
+		/** peer is traversable (in the haskell sense), Either is an idiom. */
+		def traverseEither[F,W](func:T=>Either[F,W])(implicit cbf:CanBuildFrom[CC[T],W,CC[W]]):Either[F,CC[W]]	= {
 			val builder	= cbf()
 			peer map func foreach {
-				case Win(x)		=> builder	+= x
-				case Fail(x)	=> return Fail(x)
+				case Left(x)		=> return Left(x)
+				case Right(x)		=> builder	+= x
 			}
-			Win(builder.result)
+			Right(builder.result)
 		}
 		
-		/** all Fails if there is at least one, else all Wins */
-		def validateTried[F,W](implicit ev:T=>Tried[F,W], cbf1:CanBuildFrom[CC[T],F,CC[F]], cbf2:CanBuildFrom[CC[T],W,CC[W]]):Tried[CC[F],CC[W]]	= {
-			val (fails, wins)	= partitionTried
-			if (fails.isEmpty)	Win(wins)
-			else				Fail(fails)
+		/** all Lefts if there is at least one, else all Rights */
+		def validateEither[F,W](implicit ev:T=>Either[F,W], cbf1:CanBuildFrom[CC[T],F,CC[F]], cbf2:CanBuildFrom[CC[T],W,CC[W]]):Either[CC[F],CC[W]]	= {
+			val (lefts, rights)	= partitionEither
+			if (lefts.isEmpty)	Right(rights)
+			else				Left(lefts)
 		}
 		
 		/** peer is traversable (in the haskell sense), Validated is an idiom. */

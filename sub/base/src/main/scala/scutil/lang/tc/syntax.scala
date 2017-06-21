@@ -9,3 +9,4 @@ trait syntax
 		with	SemigroupSyntax
 		with	MonoidSyntax
 		with	ShowSyntax
+		with	TraversedSyntax

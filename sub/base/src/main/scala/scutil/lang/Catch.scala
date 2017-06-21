@@ -32,14 +32,14 @@ object Catch {
 }
 
 final class Catch[E<:Throwable](func:PFunction[Throwable,E]) {
-	def in[T](value: =>T):Tried[E,T]	=
+	def in[T](value: =>T):Either[E,T]	=
 			try {
-				Win(value)
+				Right(value)
 			}
 			catch { case e:Throwable =>
-				func(e) map Fail.apply getOrElse (throw e)
+				func(e) map Left.apply getOrElse (throw e)
 			}
 			
-	def get[T](value:Thunk[T]):Tried[E,T]	=
+	def get[T](value:Thunk[T]):Either[E,T]	=
 			in(value())
 }

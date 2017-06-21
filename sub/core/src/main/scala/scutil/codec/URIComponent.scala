@@ -6,6 +6,7 @@ import scala.collection.mutable
 
 import scutil.lang._
 import scutil.lang.pimp.CharsetImplicits._
+import scutil.lang.pimp.EitherImplicits._
 
 object URIComponent {
 	val utf_8	= forCharset(Charsets.utf_8)
@@ -61,22 +62,22 @@ final class URIComponent(charset:Charset) {
 	//------------------------------------------------------------------------------
 	//## decoding
 	
-	def decode(s:String):Tried[URIComponentProblem,String]	= {
+	def decode(s:String):Either[URIComponentProblem,String]	= {
 		val b	= new mutable.ArrayBuffer[Byte]
 		var i	= 0
 		while (i<s.length) {
 			val c	= s charAt i
-			if (c >= 256)	return Fail(URIComponentInvalid(i))
+			if (c >= 256)	return Left(URIComponentInvalid(i))
 			else if (c == '%') {
 				i	+= 1
-				if (i >= s.length)	return Fail(URIComponentInvalid(i))
+				if (i >= s.length)	return Left(URIComponentInvalid(i))
 				val n1	= decodeNibble(s charAt i)
-				if (n1 == -1)		return Fail(URIComponentInvalid(i))
+				if (n1 == -1)		return Left(URIComponentInvalid(i))
 				
 				i	+= 1
-				if (i >= s.length)	return Fail(URIComponentInvalid(i))
+				if (i >= s.length)	return Left(URIComponentInvalid(i))
 				val n2	= decodeNibble(s charAt i)
-				if (n2 == -1)		return Fail(URIComponentInvalid(i))
+				if (n2 == -1)		return Left(URIComponentInvalid(i))
 				
 				b	+= ((n1 << 4) | (n2 << 0)).toByte
 				i	+= 1
@@ -86,7 +87,7 @@ final class URIComponent(charset:Charset) {
 				i	+= 1
 			}
 		}
-		charset decodeTried b.toArray mapFail URIComponentException
+		charset decodeEither b.toArray mapLeft URIComponentException
 	}
 	
 	private def decodeNibble(nibble:Char):Int	=

@@ -19,22 +19,22 @@ private final class LenserImpl(val c:Context) {
 	import c.universe._
 		
 	def compile[T:c.WeakTypeTag](propName:c.Tree):c.Tree	= {
-		val out:Tried[String,Tree]	=
+		val out:Either[String,Tree]	=
 				for {
 					name			<-
 							propName
 							.matchOption	{ case Literal(Constant(name:String))	=> name }
-							.toWin			(s"unexpected propName: ${propName}")
+							.toRight		(s"unexpected propName: ${propName}")
 					fieldName		= TermName(name)
 					containerType	= c.weakTypeOf[T]
 					member			<-
 							(containerType member fieldName)
 							.guardBy		{ _ != NoSymbol }
-							.toWin			(s"value ${name} is not a member of ${containerType}")
+							.toRight		(s"value ${name} is not a member of ${containerType}")
 					valueType		<-
 							(member typeSignatureIn containerType)
 							.matchOption	{ case NullaryMethodType(tpe) => tpe }
-							.toWin			(s"member ${name} of ${containerType} is not a field")
+							.toRight		(s"member ${name} of ${containerType} is not a field")
 					containerName	= TermName("c$")
 					valueName		= TermName("v$")
 				}
