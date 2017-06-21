@@ -24,15 +24,21 @@ object Converter extends ConverterGenerated with ConverterInstances {
 				Validated good func(it)
 			}
 			
-	def partial[E,S,T](func:S=>Option[T], bad: =>E):Converter[E,S,T]	=
+	def optional[E,S,T](bad: =>E)(func:PFunction[S,T]):Converter[E,S,T]	=
 			Converter { it =>
 				Validated goodOr (func(it), bad)
 			}
 			
-	def rejecting[E,T](func:T=>Option[E]):Converter[E,T,T]	=
+	def partial[E,S,T](bad: =>E)(func:PartialFunction[S,T]):Converter[E,S,T]	=
+			optional(bad)(func.lift)
+			
+	def rejecting[E,T](func:PFunction[T,E]):Converter[E,T,T]	=
 			Converter { it =>
 				Validated badOr (func(it), it)
 			}
+			
+	def fromEitherFunc[E,S,T](func:S=>Either[E,T]):Converter[E,S,T]	=
+			Converter(func andThen (_.toValidated))
 			
 	//------------------------------------------------------------------------------
 	
@@ -173,9 +179,15 @@ final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 			Converter { it =>
 				it traverseValidated convert
 			}
+			
+	//------------------------------------------------------------------------------
+	
+	def toEitherFunc:S=>Either[E,T]	=
+			convert andThen (_.toEither)
 }
 
 trait ConverterInstances {
+	// TODO restrict this to applicative?
 	implicit def ConverterMonad[E,S]:Monad[Converter[E,S,?]]	=
 			new Monad[Converter[E,S,?]] {
 				override def pure[A](it:A):Converter[E,S,A]													= Converter constant it

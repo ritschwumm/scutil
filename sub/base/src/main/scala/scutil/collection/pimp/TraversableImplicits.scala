@@ -150,11 +150,21 @@ trait TraversableImplicits {
 			val builder				= cbf()
 			peer foreach { it =>
 				func(it) match {
-					case Good(x)	=> if (problems.isEmpty)	builder	+= x
-					case Bad(x)		=> problems map { p => cc concat (p,x) } orElse Some(x)
+					case Good(x)	=>
+						if (problems.isEmpty) {
+							builder	+= x
+						}
+					case Bad(x)		=>
+						problems	= problems match {
+							case None		=> Some(x)
+							case Some(p)	=> Some(cc concat (p, x))
+						}
 				}
 			}
-			problems map Bad.apply getOrElse Good(builder.result)
+			problems match {
+				case Some(p)	=> Bad(p)
+				case None		=> Good(builder.result)
+			}
 		}
 		
 		def sequenceState[S,U](implicit ev:T=>State[S,U], cbf:CanBuildFrom[CC[T],U,CC[U]]):State[S,CC[U]]	=

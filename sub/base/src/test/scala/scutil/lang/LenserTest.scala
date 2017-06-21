@@ -6,6 +6,9 @@ final case class Foo(a:Int, b:String)
 final case class Bar[T](t:T)
 
 class LenserTest extends Specification {
+	val lenses		= Lenser[Foo]
+	val lens		= lenses.a
+			
 	"lenses" should {
 		"work with simple case class getters" in {
 			val container	= Foo(4711, "hallo")
@@ -33,8 +36,9 @@ class LenserTest extends Specification {
 		
 		"allow splitting lenser and lens creation" in {
 			val container	= Foo(4711, "hallo")
-			val lenses		= Lenser[Foo]
-			val lens		= lenses.a
+			// TODO why does this say lenses is never used?
+			//val lenses		= Lenser[Foo]
+			//val lens		= lenses.a
 			lens put (container, 1337) mustEqual Foo(1337, "hallo")
 		}
 	}

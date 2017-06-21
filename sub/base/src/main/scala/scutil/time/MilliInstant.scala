@@ -6,7 +6,7 @@ import scutil.lang._
 
 object MilliInstant {
 	def zero:MilliInstant	= MilliInstant(0)
-	def now:MilliInstant	= MilliInstant(System.currentTimeMillis)
+	def now():MilliInstant	= MilliInstant(System.currentTimeMillis)
 	
 	val newType	= Bijection[MilliInstant,Long](_.millis, MilliInstant.apply)
 }

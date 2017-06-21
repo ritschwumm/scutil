@@ -8,7 +8,6 @@ trait OrderingImplicits {
 		def vary[U<:T]:Ordering[U]	=
 				new Ordering[U] {
 					def compare(x:U, y:U):Int	= {
-						val xx:T = x
 						peer compare (x, y)
 					}
 				}

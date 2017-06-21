@@ -12,10 +12,10 @@ trait AnyImplicits {
 		def boxed:AnyRef	= peer.asInstanceOf[AnyRef]
 		
 		/** type-invariant equality */
-		def ====[U](that:U)(implicit ev:T=:=U):Boolean	= peer == that
+		def ====[U](that:U)(implicit ev:T=:=U):Boolean	= ev(peer) == that
 		
 		/** type-invariant inequality */
-		def !===[U](that:T)(implicit ev:T=:=U):Boolean	= peer != that
+		def !===[U](that:T)(implicit ev:T=:=U):Boolean	= ev(peer) != that
 		
 		//------------------------------------------------------------------------------
 		

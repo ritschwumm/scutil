@@ -10,11 +10,9 @@ class MathTest extends Specification {
 			trait Numb
 			trait Inte extends Numb
 			
-			val i:Inte	= null
-			val n:Numb	= i
-			
 			val no:Ordering[Numb]	= null
 			val io:Ordering[Inte]	= no.vary[Inte]
+			val _ = io
 			
 			success
 		}

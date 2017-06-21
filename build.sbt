@@ -3,9 +3,9 @@ import spray.boilerplate.BoilerplatePlugin
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.106.0",
+	version			:= "0.107.0",
 	
-	scalaVersion	:= "2.12.1",
+	scalaVersion	:= "2.12.2",
 	scalacOptions	++= Seq(
 		"-deprecation",
 		"-unchecked",

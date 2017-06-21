@@ -34,7 +34,7 @@ trait Function1Implicits {
 		
 		/** inverse to PartialFunction#lift */
 		def unlift[X](implicit ev:PFunction[T,X]):PartialFunction[S,X]	=
-				Function unlift peer.asInstanceOf[PFunction[S,X]]
+				Function unlift (peer andThen ev)
 			
 		def toPartialFunction:PartialFunction[S,T]	=
 				{ case x => peer(x) }

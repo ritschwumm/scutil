@@ -15,7 +15,7 @@ object External {
 		pwd foreach { builder directory _ }
 		val proc	= builder.start()
 		
-		val in	= spawn { spewLines(proc.getOutputStream, input) }
+		/* val in = */ spawn { spewLines(proc.getOutputStream, input) }
 		val	err	= spawn { slurpLines(proc.getErrorStream) }
 		val	out	= spawn { slurpLines(proc.getInputStream) }
 		

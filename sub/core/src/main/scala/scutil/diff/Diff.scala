@@ -63,7 +63,7 @@ object Diff {
 		}
 		
 		// The length of the longest substring is S[n][m]
-		val pos		= S(n)(m) - 1
+		//val pos		= S(n)(m) - 1
 		
 		// Trace the backtracking matrix.
 		var diffs	= Vector.empty[Delta[T]]

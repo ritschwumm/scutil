@@ -29,6 +29,6 @@ class SourceLocationTest extends Specification {
 	private def bar(x:Int)(implicit loc:SourceLocation):SourceLocation			= loc
 	private def quux(x:Int)(y:Int)(implicit loc:SourceLocation):SourceLocation	= loc
 	
-	private def xxx(implicit loc:SourceLocation, x:Check):SourceLocation	= loc
-	private def yyy(implicit x:Check, loc:SourceLocation):SourceLocation	= loc
+	private def xxx(implicit loc:SourceLocation, x:Check):SourceLocation	= { val _ = x; loc }
+	private def yyy(implicit x:Check, loc:SourceLocation):SourceLocation	= { val _ = x; loc }
 }

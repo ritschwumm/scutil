@@ -11,7 +11,7 @@ class FielderTest extends Specification {
 		}
 		"work indirectly" in {
 			val names	= getNames[Named]
-			getNames[Named] mustEqual Seq("a", "b", "c")
+			names mustEqual Seq("a", "b", "c")
 		}
 	}
 	

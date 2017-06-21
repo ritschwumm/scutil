@@ -44,11 +44,12 @@ class BijectorTest extends Specification {
 			bijection write value mustEqual Some(1)
 		}
 		"work with case classes with one type parameter" in {
-			def	XXX[A] = Bijector[Parametrized1[A]]
+			// TODO why does this infer Nothing?
+			val _ = Bijector[Parametrized1[Int]]
 			1 mustEqual 1
 		}
 		"work with case classes with multiple type parameters" in {
-			def	XXX[A,B] = Bijector[Parametrized2[A,B]]
+			val _ = Bijector[Parametrized2[Int,String]]
 			1 mustEqual 1
 		}
 	}
