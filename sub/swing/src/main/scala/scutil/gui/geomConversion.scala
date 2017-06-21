@@ -12,5 +12,5 @@ object geomConversion {
 	def IntPoint_Dimension(it:IntPoint):Dimension	= new Dimension(it.x, it.y)
 	def Dimension_IntPoint(it:Dimension):IntPoint	= IntPoint(it.width, it.height)
 	def IntRect_Rectangle(it:IntRect):Rectangle		= new Rectangle(it.left, it.top, it.width, it.height)
-	def Rectangle_IntRect(it:Rectangle):IntRect		= IntRect(IntSpan(it.x, it.width), IntSpan(it.y, it.height))
+	def Rectangle_IntRect(it:Rectangle):IntRect		= IntRect leftTopWidthHeight (it.x, it.y, it.width, it.height)
 }
