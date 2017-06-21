@@ -4,7 +4,6 @@ import scutil.math.functions._
 
 object JulianDay {
 	val epoch	= GregorianDate.epoch.toJulianDay
-	
 }
 
 final case class JulianDay(value:Int) extends Ordered[JulianDay] {
