@@ -33,12 +33,31 @@ final case class Prism[S,T](write:PFunction[S,T], read:T=>S) {
 	
 	def modify(s:S, func:Endo[T]):Option[S]	= write(s) map (func andThen read)
 	def modifier(func:Endo[T]):PEndo[S]		= modify(_, func)
-		
+	
+	def modifyF[F[_]](s:S, func:FEndo[F,T])(implicit F:Functor[F]):Option[F[S]]	= {
+		write(s) map { t =>
+			(F map func(t)) { ss =>
+				read(ss)
+			}
+		}
+	}
+	def modifierF[F[_]](func:FEndo[F,T])(implicit F:Functor[F]):S=>Option[F[S]]	= modifyF(_, func)
+	
 	def modifyState[X](s:S, func:State[T,X]):Option[(S,X)]	=
 			write(s) map func.run map { case (t, x) =>
 				(read(t), x)
 			}
+			
 	def modifierState[X](func:State[T,X]):S=>Option[(S,X)]	= modifyState(_, func)
+	
+	def modifyStateT[F[_],X](s:S, func:StateT[F,T,X])(implicit F:Functor[F]):Option[F[(S,X)]]	=
+			write(s) map func.run map { (a:F[(T,X)]) =>
+				(F map a) { case (t, x) =>
+					(read(t), x)
+				}
+			}
+	
+	def modifierStateT[F[_],X](func:StateT[F,T,X])(implicit F:Functor[F]):S=>Option[F[(S,X)]]	= modifyStateT(_, func)
 	
 	//------------------------------------------------------------------------------
 	

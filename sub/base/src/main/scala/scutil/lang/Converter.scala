@@ -97,9 +97,7 @@ final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 			}
 	
 	def ap[U,V](that:Converter[E,S,U])(implicit ev:T=>U=>V, cc:Semigroup[E]):Converter[E,S,V]	=
-			Converter { it =>
-				(this convert it map ev) ap (that convert it)
-			}
+			that pa (this map ev)
 	
 	def zip[U](that:Converter[E,S,U])(implicit cc:Semigroup[E]):Converter[E,S,(T,U)] =
 			Converter { it	=>

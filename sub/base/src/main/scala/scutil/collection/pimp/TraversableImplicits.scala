@@ -186,6 +186,9 @@ final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
 		}
 	}
 	
+	// TODO state support StateT
+	
+	// TODO doesn't seem to work on _*
 	def toISeq:ISeq[T]	=
 			peer match {
 				case x:ISeq[T]	=> x

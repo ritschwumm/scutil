@@ -1,6 +1,6 @@
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.99.0",
+	version			:= "0.100.0",
 	
 	scalaVersion	:= "2.12.1",
 	scalacOptions	++= Seq(
@@ -17,6 +17,15 @@ inThisBuild(Seq(
 	conflictManager	:= ConflictManager.strict,
 	resolvers		+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
 ))
+
+lazy val fixConsole	=
+		Seq(
+			scalacOptions in (Compile, console) :=
+			(scalacOptions in (Compile, console)).value filterNot { it =>
+				it == "-Ywarn-unused-import" ||
+				it == "-Xfatal-warnings"
+			}
+		)
 
 lazy val warts	=
 		Seq(
@@ -50,6 +59,7 @@ lazy val `scutil-base`	=
 			spray.boilerplate.BoilerplatePlugin
 		)
 		.settings(
+			fixConsole,
 			scalacOptions	++= Seq(
 				// "-Ymacro-debug-lite",
 				"-language:implicitConversions",
@@ -60,21 +70,12 @@ lazy val `scutil-base`	=
 				// "-language:postfixOps",
 				// "-language:experimental.macros",
 			),
-			// only here because -> leads to inliner warnings
-			(scalacOptions in Compile) := (scalacOptions in Compile).value filterNot { _ == "-Xfatal-warnings" },
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "3.8.8"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "3.8.9"				% "test"
 			),
 			boilerplateSource in Compile := baseDirectory.value.getParentFile / "src" / "main" / "boilerplate",
-			wartremoverErrors ++= warts,
-			
-			//------------------------------------------------------------------------------
-			
-			scalacOptions in (Compile, console) := (scalacOptions in (Compile, console)).value filterNot { it =>
-				it == "-Ywarn-unused-import" ||
-				it == "-Xfatal-warnings"
-			}
+			wartremoverErrors ++= warts
 		)
 		.jvmSettings()
 		.jsSettings()
@@ -84,6 +85,7 @@ lazy val `scutil-base-js`	= `scutil-base`.js
 lazy val `scutil-core`	=
 		(project	in	file("sub/core"))
 		.settings(
+			fixConsole,
 			scalacOptions	++= Seq(
 				// "-Ymacro-debug-lite",
 				"-language:implicitConversions"//,
@@ -97,25 +99,20 @@ lazy val `scutil-core`	=
 			
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "3.8.8"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "3.8.9"				% "test"
 			),
 			
 			wartremoverErrors ++= warts,
 			
 			//------------------------------------------------------------------------------
 			
-			scalacOptions in (Compile, console) := (scalacOptions in (Compile, console)).value filterNot { it =>
-				it == "-Ywarn-unused-import" ||
-				it == "-Xfatal-warnings"
-			},
 			initialCommands in console	:= """
 				import scala.language.postfixOps
 				import java.io.File
 				import scutil.lang._
+				import scutil.lang.Charsets.{ us_ascii, iso_8859_1, utf_8 }
 				import scutil.base.implicits._
 				import scutil.core.implicits._
-				import scutil.io.Files._
-				import scutil.codec.Charsets.{ iso_8859_1, utf_8 }
 				import scutil.codec.Base64
 				import scutil.codec.URIComponent
 				import scutil.text.Human
@@ -123,6 +120,7 @@ lazy val `scutil-core`	=
 				import scutil.math._
 				import scutil.number._
 				import scutil.platform._
+				import scutil.platform.Platform._
 			"""
 		)
 		.dependsOn	(`scutil-base-jvm`)
@@ -130,6 +128,7 @@ lazy val `scutil-core`	=
 lazy val `scutil-swing`	=
 		(project	in	file("sub/swing"))
 		.settings(
+			fixConsole,
 			scalacOptions	++= Seq(
 				"-language:implicitConversions"//,
 				// "-language:existentials",
@@ -147,6 +146,7 @@ lazy val `scutil-swing`	=
 lazy val `scutil-xml`	=
 		(project	in	file("sub/xml"))
 		.settings(
+			fixConsole,
 			scalacOptions	++= Seq(
 				"-language:implicitConversions"//,
 				// "-language:existentials",
@@ -168,6 +168,7 @@ lazy val `scutil-xml`	=
 lazy val `scutil-uid`	=
 		(project	in	file("sub/uid"))
 		.settings(
+			fixConsole,
 			scalacOptions	++= Seq(
 				//"-language:implicitConversions",
 				// "-language:existentials",

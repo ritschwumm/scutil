@@ -1,5 +1,7 @@
 package scutil.lang
 
+import scutil.lang.tc._
+
 object Bijection {
 	def identity[T]:Bijection[T,T]	=
 			Bijection(Predef.identity, Predef.identity)
@@ -9,12 +11,22 @@ final case class Bijection[S,T](write:S=>T, read:T=>S) {
 	def modify(s:S, func:Endo[T]):S		= read(func(write(s)))
 	def modifier(func:Endo[T]):Endo[S]	= modify(_, func)
 		
+	def modifyF[F[_]](s:S, func:FEndo[F,T])(implicit F:Functor[F]):F[S]	= (F map func(write(s)))(read)
+	def modifierF[F[_]](func:FEndo[F,T])(implicit F:Functor[F]):S=>F[S]	= modifyF(_, func)
+		
 	def modifyState[X](s:S, func:State[T,X]):(S,X)	= {
 		val (t, x)	= func run write(s)
 		(read(t), x)
 	}
+	
 	def modifierState[X](func:State[T,X]):State[S,X]	=
 			State { modifyState(_, func) }
+		
+	def modifyStateT[F[_],X](s:S, func:StateT[F,T,X])(implicit F:Functor[F]):F[(S,X)]	=
+			(F map (func run write(s))) { case (t, x) => (read(t), x) }
+		
+	def modifierStateT[F[_],X](func:StateT[F,T,X])(implicit F:Functor[F]):StateT[F,S,X]	=
+			StateT { modifyStateT(_, func) }
 		
 	//------------------------------------------------------------------------------
 	

@@ -36,8 +36,8 @@ trait Disposable {
 					}
 			}
 			
-	final def toIO:IO[Unit]	=
-			IO delay { dispose() }
+	final def toIo:Io[Unit]	=
+			Io delay { dispose() }
 }
 
 private object EmptyDisposable extends Disposable {

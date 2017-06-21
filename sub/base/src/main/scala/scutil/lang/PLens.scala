@@ -31,17 +31,22 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 	def modify(s:S, func:Endo[T]):Option[S]	= on(s) map { _ modify func }
 	def modifier(func:Endo[T]):PEndo[S]		= modify(_, func)
 	
+	def modifyF[F[_]:Functor](s:S, func:FEndo[F,T]):Option[F[S]]	= on(s) map { _ modifyF func }
+	def modifierF[F[_]:Functor](func:FEndo[F,T]):S=>Option[F[S]]	= modifyF(_, func)
+	
 	def modifyState[X](s:S, func:State[T,X]):Option[(S,X)]	= on(s) map { _ modifyState func }
 	def modifierState[X](func:State[T,X]):S=>Option[(S,X)]	= modifyState(_, func)
+	
+	def modifyStateT[F[_]:Functor,X](s:S, func:StateT[F,T,X]):Option[F[(S,X)]]	= on(s) map (_ modifyStateT func)
+	def modifierStateT[F[_]:Functor,X](func:StateT[F,T,X]):S=>Option[F[(S,X)]]	= modifyStateT(_, func)
 	
 	//------------------------------------------------------------------------------
 
 	// BETTER use these to replace modifier
 	def modifyP(s:S):Option[Endo[T]=>S]							= on(s) map { _.modify }
 	def modifyPF[F[_]:Functor](s:S):Option[FEndo[F,T]=>F[S]]	= on(s) map { _.modifyF }
-	/*
-	def modifyStatefulPF[F[_]:Functor,X](s:S):Option[FStateful[F,T,X]=>F[(S,X)]]	= on(s) map { _.modifyStatefulF }
-	*/
+	
+	def modifyStateTPF[F[_]:Functor,X](s:S):Option[StateT[F,T,X]=>F[(S,X)]]	= on(s) map { _.modifyStateT }
 	
 	//------------------------------------------------------------------------------
 	

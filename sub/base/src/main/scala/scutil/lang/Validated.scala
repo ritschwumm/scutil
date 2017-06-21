@@ -115,7 +115,7 @@ sealed trait Validated[+E,+T] {
 		
 	/** function effect first */
 	def ap[EE>:E:Semigroup,U,V](that:Validated[EE,U])(implicit ev:T=>U=>V):Validated[EE,V]	=
-			(this zip that) map { case (uv, u) => uv(u) }
+			that pa (this map ev)
 		
 	/** function effect first */
 	def pa[EE>:E:Semigroup,U](that:Validated[EE,T=>U]):Validated[EE,U]	=

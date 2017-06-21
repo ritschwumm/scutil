@@ -22,7 +22,7 @@ final class OptionExt[T](peer:Option[T]) {
 			}
 	
 	/** ap of the monad, <*> of the applicative functor */
-	def ap[U,V](source:Option[U])(implicit witness:T=>U=>V):Option[V] =
+	def ap[U,V](source:Option[U])(implicit ev:T=>U=>V):Option[V] =
 			for { f	<- peer; s	<- source } yield f(s)
 		
 	/** ap with inverted parameters, aka <**> */
@@ -170,6 +170,8 @@ final class OptionExt[T](peer:Option[T]) {
 				case None		=> State pure None
 				case Some(st)	=> st map Some.apply
 			}
+			
+	// TODO state support StateT
 			
 	//------------------------------------------------------------------------------
 	

@@ -128,13 +128,7 @@ sealed trait Tried[+F,+W] {
 	
 	/** function effect first */
 	def ap[FF>:F,X,Y](that:Tried[FF,X])(implicit ev:W=>X=>Y):Tried[FF,Y]	=
-			this cata (
-				f	=> Fail(f),
-				f	=> that cata (
-					v	=> Fail(v),
-					v	=> Win(f(v))
-				)
-			)
+			that pa (this map ev)
 			
 	/** function effect first */
 	def pa[FF>:F,X](that:Tried[FF,W=>X]):Tried[FF,X]	=

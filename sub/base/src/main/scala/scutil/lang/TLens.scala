@@ -32,25 +32,18 @@ final case class TLens[S,T](on:S=>Store[S,T]) {
 	def modify(s:S, func:Endo[T]):S		= on(s) modify func
 	def modifier(func:Endo[T]):Endo[S]	= modify(_, func)
 	
+	def modifyF[F[_]:Functor](s:S, func:FEndo[F,T]):F[S]	= modifierF(func) apply s
+	// van laarhoven form
+	def modifierF[F[_]:Functor](func:FEndo[F,T]):FEndo[F,S]	= on(_) modifyF func
+		
 	def modifyState[X](s:S, func:State[T,X]):(S,X)	= on(s) modifyState func
 	def modifierState[X](func:State[T,X]):S=>(S,X)	= modifyState(_, func)
 	
-	//------------------------------------------------------------------------------
-	
-	def modifyF[F[_]:Functor](s:S, func:FEndo[F,T]):F[S]	=
-			modifierF(func) apply s
-	
-	// van laarhoven form
-	def modifierF[F[_]:Functor](func:FEndo[F,T]):FEndo[F,S]	=
-			on(_) modifyF func
-	
-	/*
-	def modifierStatefulF[F[_]:Functor,X](func:FStateful[F,T,X]):FStateful[F,S,X]	=
-			on(_) modifyStatefulF func
-	*/
+	def modifyStateT[F[_]:Functor,X](s:S, func:StateT[F,T,X]):F[(S,X)]		= on(s) modifyStateT func
+	def modifierStateT[F[_]:Functor,X](func:StateT[F,T,X]):StateT[F,S,X]	= StateT { s => on(s) modifyStateT func }
 		
 	//------------------------------------------------------------------------------
-		
+	
 	def embedState[U](state:State[T,U]):State[S,U]	=
 			state inside this
 			// State { on(_) modifyState state }
@@ -63,6 +56,20 @@ final case class TLens[S,T](on:S=>Store[S,T]) {
 		
 	def modState(func:T=>T):State[S,Unit]	=
 			embedState(State mod func)
+		
+	//------------------------------------------------------------------------------
+	
+	def embedStateT[F[_]:Functor,U](state:StateT[F,T,U]):StateT[F,S,U]	=
+			state inside this
+		
+	def getStateT[F[_]:Applicative]:StateT[F,S,T]	=
+			embedStateT(StateT.get)
+		
+	def setStateT[F[_]:Applicative](it:T):StateT[F,S,Unit]	=
+			embedStateT(StateT set it)
+		
+	def modStateT[F[_]:Applicative](func:T=>T):StateT[F,S,Unit]	=
+			embedStateT(StateT mod func)
 		
 	//------------------------------------------------------------------------------
 	
