@@ -65,4 +65,10 @@ final case class DoubleRect(horizontal:DoubleSpan, vertical:DoubleSpan) {
 				this.horizontal union that.horizontal,
 				this.vertical	union that.vertical
 			)
+			
+	def intersect(that:DoubleRect):Option[DoubleRect]	=
+			(this.horizontal intersect that.horizontal, this.vertical intersect that.vertical) match {
+				case (Some(horizontal), Some(vertical))	=> Some(DoubleRect(horizontal, vertical))
+				case _									=> None
+			}
 }

@@ -18,6 +18,7 @@ package object lang {
 	
 	// Function[-S,+T]
 	type PFunction[-S,+T]		= S=>Option[T]
+	// NOTE this is ReaderT
 	type FFunction[F[_],S,T]	= S=>F[T]
 	
 	type Endo[T]				= T=>T

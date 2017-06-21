@@ -77,7 +77,7 @@ object DndFileExport {
 					case DndFlavors.binary	=>
 						// NOTE doesn't give a file name
 						// NOTE does not work on windows
-						new FileInputStream(files.head)
+						files.head.newInputStream()
 					case x	=>
 						sys error s"unexpected DataFlavor ${x}"
 				}

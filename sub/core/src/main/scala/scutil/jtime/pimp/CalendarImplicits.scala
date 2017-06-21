@@ -8,9 +8,7 @@ import scutil.jtime._
 object CalendarImplicits extends CalendarImplicits
 
 trait CalendarImplicits {
-	implicit def toCalendarExt(peer:Calendar) = new CalendarExt(peer)
-}
-
-final class CalendarExt(peer:Calendar) {
-	def toGregorian:Gregorian	= JTimeUtil calendarToGregorian peer
+	implicit final class CalendarExt(peer:Calendar) {
+		def toGregorian:Gregorian	= JTimeUtil calendarToGregorian peer
+	}
 }

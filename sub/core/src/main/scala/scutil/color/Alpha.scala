@@ -2,7 +2,7 @@ package scutil.color
 
 import scala.math._
 
-import scutil.math._
+import scutil.math.functions._
 
 object Alpha {
 	val transparent	= Alpha(0)

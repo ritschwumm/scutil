@@ -5,28 +5,26 @@ import scutil.lang._
 object PairImplicits extends PairImplicits
 
 trait PairImplicits {
-	implicit def toPairExt[T1,T2](peer:Tuple2[T1,T2]) = new PairExt[T1,T2](peer)
-}
-
-final class PairExt[T1,T2](peer:Tuple2[T1,T2]) {
-	def first:FirstProjection[T1,T2]	= new FirstProjection[T1,T2](peer)
-	def second:SecondProjection[T1,T2]	= new SecondProjection[T1,T2](peer)
-	
-	/** apply function in first element to value in second */
-	def applied[U](implicit ev:T1=>(T2=>U)):U		= ev(peer._1)(peer._2)
-	/** apply function in second element to value in first */
-	def appliedSwap[U](implicit ev:T2=>(T1=>U)):U	= ev(peer._2)(peer._1)
-	
-	/** apply binary function to elements */
-	def combineWith[U](func:(T1,T2)=>U):U	= func(peer._1, peer._2)
-	
-	/** map both elements */
-	def bimap[U1,U2](func1:T1=>U1, func2:T2=>U2):(U1,U2)	=
-			(func1(peer._1), func2(peer._2))
-}
+	implicit final class PairExt[T1,T2](peer:Tuple2[T1,T2]) {
+		def first:PairFirstProjection[T1,T2]	= new PairFirstProjection[T1,T2](peer)
+		def second:PairSecondProjection[T1,T2]	= new PairSecondProjection[T1,T2](peer)
+		
+		/** apply function in first element to value in second */
+		def applied[U](implicit ev:T1=>(T2=>U)):U		= ev(peer._1)(peer._2)
+		/** apply function in second element to value in first */
+		def appliedSwap[U](implicit ev:T2=>(T1=>U)):U	= ev(peer._2)(peer._1)
+		
+		/** apply binary function to elements */
+		def combineWith[U](func:(T1,T2)=>U):U	= func(peer._1, peer._2)
+		
+		/** map both elements */
+		def bimap[U1,U2](func1:T1=>U1, func2:T2=>U2):(U1,U2)	=
+				(func1(peer._1), func2(peer._2))
+	}
+}	
 
 /** comonad, see Either's LeftProjection which is a monad */
-final class FirstProjection[T1,T2](peer:Tuple2[T1,T2]) {
+final class PairFirstProjection[T1,T2](peer:Tuple2[T1,T2]) {
 	def get:T1	= peer._1
 	
 	def map[U](func:T1=>U):Tuple2[U,T2]	= Tuple2(func(peer._1),	peer._2)
@@ -44,7 +42,7 @@ final class FirstProjection[T1,T2](peer:Tuple2[T1,T2]) {
 }
 
 /** comonad, see Either's RightProjection which is a monad */
-final class SecondProjection[T1,T2](peer:Tuple2[T1,T2]) {
+final class PairSecondProjection[T1,T2](peer:Tuple2[T1,T2]) {
 	def get:T2	= peer._2
 	
 	def map[U](func:T2=>U):Tuple2[T1,U]	= Tuple2(peer._1,	func(peer._2))

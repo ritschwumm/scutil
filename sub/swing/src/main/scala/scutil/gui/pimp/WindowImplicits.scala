@@ -8,26 +8,24 @@ import scutil.gui.geomConversion
 object WindowImplicits extends WindowImplicits
 
 trait WindowImplicits {
-	implicit def toWindowExt(peer:Window):WindowExt	= new WindowExt(peer)
-}
-	
-final class WindowExt(peer:Window) {
-	def restrictToScreen() {
-		val frame	= geomConversion Rectangle_IntRect peer.getBounds
-		val screen	= geomConversion Rectangle_IntRect peer.getGraphicsConfiguration.getBounds
-		
-		def restrict(frame:IntSpan, screen:IntSpan):IntSpan	=
-					 if (frame.size		> screen.size)	screen
-				else if (frame.start	< screen.start)	IntSpan startSize (screen.start,			frame.size)
-				else if (frame.end		> screen.end)	IntSpan startSize (screen.end - frame.size,	frame.size)
-				else									frame
+	implicit final class WindowExt(peer:Window) {
+		def restrictToScreen() {
+			val frame	= geomConversion Rectangle_IntRect peer.getBounds
+			val screen	= geomConversion Rectangle_IntRect peer.getGraphicsConfiguration.getBounds
 			
-		val bounds	=
-				IntRect horizontalWithVertical (
-					horizontal	= restrict(frame.horizontal, screen.horizontal),
-					vertical	= restrict(frame.vertical,	 screen.vertical)
-				)
+			def restrict(frame:IntSpan, screen:IntSpan):IntSpan	=
+						 if (frame.size		> screen.size)	screen
+					else if (frame.start	< screen.start)	IntSpan startSize (screen.start,			frame.size)
+					else if (frame.end		> screen.end)	IntSpan startSize (screen.end - frame.size,	frame.size)
+					else									frame
 				
-		peer setBounds (geomConversion IntRect_Rectangle bounds)
+			val bounds	=
+					IntRect horizontalWithVertical (
+						horizontal	= restrict(frame.horizontal, screen.horizontal),
+						vertical	= restrict(frame.vertical,	 screen.vertical)
+					)
+					
+			peer setBounds (geomConversion IntRect_Rectangle bounds)
+		}
 	}
 }

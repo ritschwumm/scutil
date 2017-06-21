@@ -7,20 +7,18 @@ import scala.collection.immutable.HashMap
 object PropertiesImplicits extends PropertiesImplicits
 
 trait PropertiesImplicits {
-	implicit def toPropertiesExt(peer:Properties) = new PropertiesExt(peer)
-}
-
-final class PropertiesExt(peer:Properties) {
-	def toHashMap:Map[String,String]	= {
-		var out		= HashMap.empty[String,String]
-		val keyIter	= peer.stringPropertyNames.iterator
-		while (keyIter.hasNext) {
-			val key		= keyIter.next
-			val value	= peer getProperty key
-			out	+= (key -> value)
+	implicit final class PropertiesExt(peer:Properties) {
+		def toHashMap:Map[String,String]	= {
+			var out		= HashMap.empty[String,String]
+			val keyIter	= peer.stringPropertyNames.iterator
+			while (keyIter.hasNext) {
+				val key		= keyIter.next
+				val value	= peer getProperty key
+				out	+= (key -> value)
+			}
+			out
 		}
-		out
+		
+		def toMap:Map[String,String]	= toHashMap
 	}
-	
-	def toMap:Map[String,String]	= toHashMap
 }

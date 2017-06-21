@@ -1,10 +1,10 @@
-package scutil
+package scutil.math
 
 import scala.annotation.tailrec
 
 import scala.{ math => smath }
 
-package object math {
+object functions {
 	val PiHalf		= smath.Pi / 2
 	val PiDouble	= smath.Pi * 2
 	

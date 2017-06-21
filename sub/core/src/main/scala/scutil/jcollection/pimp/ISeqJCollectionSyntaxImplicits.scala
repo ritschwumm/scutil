@@ -11,13 +11,11 @@ import scutil.lang.ISeq
 object ISeqJCollectionSyntaxImplicits extends ISeqJCollectionSyntaxImplicits
 
 trait ISeqJCollectionSyntaxImplicits {
-	implicit def toISeqJCollectionSyntaxExt[T](peer:ISeq[T]) = new ISeqJCollectionSyntaxExt(peer)
-}
-
-final class ISeqJCollectionSyntaxExt[T](peer:ISeq[T]) {
-	def toJList:JList[T]	=  {
-		val out	= new JArrayList[T]
-		peer foreach out.add
-		JCollections unmodifiableList out
+	implicit final class ISeqJCollectionSyntaxExt[T](peer:ISeq[T]) {
+		def toJList:JList[T]	=  {
+			val out	= new JArrayList[T]
+			peer foreach out.add
+			JCollections unmodifiableList out
+		}
 	}
 }

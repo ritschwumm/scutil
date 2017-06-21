@@ -1,8 +1,8 @@
-package scutil
+package scutil.bit
 
 import java.lang.{ Long => JLong }
 
-package object bit {
+object functions {
 	def nextPow2(it:Long):Long	=
 				 if (it == 0)	0
 			else if (it == 1)	1

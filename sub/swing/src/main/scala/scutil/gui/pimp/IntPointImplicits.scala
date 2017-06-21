@@ -9,13 +9,11 @@ import scutil.gui.geomConversion
 object IntPointImplicits extends IntPointImplicits
 
 trait IntPointImplicits {
-	implicit def toIntPointExt(peer:IntPoint):IntPointExt	= new IntPointExt(peer)
-}
-	
-final class IntPointExt(peer:IntPoint) {
-	def toAwtPoint:Point	=
-			geomConversion	IntPoint_Point		peer
-		
-	def toAwtDimension:Dimension	=
-			geomConversion	IntPoint_Dimension	peer
+	implicit final class IntPointExt(peer:IntPoint) {
+		def toAwtPoint:Point	=
+				geomConversion	IntPoint_Point		peer
+			
+		def toAwtDimension:Dimension	=
+				geomConversion	IntPoint_Dimension	peer
+	}
 }

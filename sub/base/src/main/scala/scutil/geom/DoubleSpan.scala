@@ -37,6 +37,14 @@ final case class DoubleSpan(start:Double, size:Double) {
 				end		= this.end		min that.end
 			)
 			
+	def intersect(that:DoubleSpan):Option[DoubleSpan]	=
+				 if (this.end   <= that.start)							None
+			else if (this.start >= that.end)							None
+			else if (this.start	>= that.start && this.end <= that.end)	Some(this)
+			else if (this.start	<= that.start && this.end >= that.end)	Some(that)
+			else if (this.start	<= that.start && this.end <= that.end)	Some(DoubleSpan startEnd (that.start, this.end))
+			else														Some(DoubleSpan startEnd (this.start, that.end))
+		
 	def rectWith(that:DoubleSpan):DoubleRect	=
 			DoubleRect horizontalWithVertical (this, that)
 }

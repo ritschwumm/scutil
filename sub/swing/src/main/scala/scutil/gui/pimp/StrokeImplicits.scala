@@ -7,18 +7,16 @@ import scutil.gui.CompositeStroke
 object StrokeImplicits extends StrokeImplicits
 
 trait StrokeImplicits {
-	implicit def toStrokeExt(peer:Stroke):StrokeExt	= new StrokeExt(peer)
-}
-	
-final class StrokeExt(peer:Stroke) {
-	/** symbolic alias for andThen */
-	def >=>(that:Stroke):Stroke	=
-			this andThen that
-		
-	/** symbolic alias for compose */
-	def <=<(that:Stroke):Stroke	=
-			this compose that
-		
-	def compose(that:Stroke):Stroke	= new CompositeStroke(peer, that)
-	def andThen(that:Stroke):Stroke	= new CompositeStroke(that, peer)
+	implicit final class StrokeExt(peer:Stroke) {
+		/** symbolic alias for andThen */
+		def >=>(that:Stroke):Stroke	=
+				this andThen that
+			
+		/** symbolic alias for compose */
+		def <=<(that:Stroke):Stroke	=
+				this compose that
+			
+		def compose(that:Stroke):Stroke	= new CompositeStroke(peer, that)
+		def andThen(that:Stroke):Stroke	= new CompositeStroke(that, peer)
+	}
 }

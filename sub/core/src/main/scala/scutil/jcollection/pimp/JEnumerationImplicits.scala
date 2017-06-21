@@ -8,10 +8,8 @@ import java.util.{
 object JEnumerationImplicits extends JEnumerationImplicits
 
 trait JEnumerationImplicits {
-	implicit def toJEnumerationExt[T](peer:JEnumeration[T])	= new JEnumerationExt(peer)
-}
-
-final class JEnumerationExt[T](peer:JEnumeration[T]) {
-	def toIterator:Iterator[T] 		= new JEnumerationAsIterator(peer)
-	def toJIterator:JIterator[T]	= new IteratorAsJIterator(toIterator)
+	implicit final class JEnumerationExt[T](peer:JEnumeration[T]) {
+		def toIterator:Iterator[T] 		= new JEnumerationAsIterator(peer)
+		def toJIterator:JIterator[T]	= new IteratorAsJIterator(toIterator)
+	}
 }

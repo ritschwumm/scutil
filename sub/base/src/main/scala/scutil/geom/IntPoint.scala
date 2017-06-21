@@ -45,4 +45,6 @@ final case class IntPoint(x:Int, y:Int) {
 	
 	def lengthQ:Long	= x*x + y*y
 	def length:Double	= sqrt(lengthQ)
+	
+	def toDoublePoint:DoublePoint	= DoublePoint(x, y)
 }

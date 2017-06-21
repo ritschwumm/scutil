@@ -65,4 +65,12 @@ final case class IntRect(horizontal:IntSpan, vertical:IntSpan) {
 				this.horizontal union that.horizontal,
 				this.vertical	union that.vertical
 			)
+			
+	def intersect(that:IntRect):Option[IntRect]	=
+			(this.horizontal intersect that.horizontal, this.vertical intersect that.vertical) match {
+				case (Some(horizontal), Some(vertical))	=> Some(IntRect(horizontal, vertical))
+				case _									=> None
+			}
+			
+	def toDoubleRect:DoubleRect	= DoubleRect(horizontal.toDoubleSpan, vertical.toDoubleSpan)
 }

@@ -7,9 +7,7 @@ import java.lang.{
 object IterableJCollectionSyntaxImplicits extends IterableJCollectionSyntaxImplicits
 
 trait IterableJCollectionSyntaxImplicits {
-	implicit def toIterableJCollectionSyntaxExt[T](peer:Iterable[T]) = new IterableJCollectionSyntaxExt(peer)
-}
-
-final class IterableJCollectionSyntaxExt[T](peer:Iterable[T]) {
-	def toJIterable:JIterable[T]	= new IterableAsJIterable(peer)
+	implicit final class IterableJCollectionSyntaxExt[T](peer:Iterable[T]) {
+		def toJIterable:JIterable[T]	= new IterableAsJIterable(peer)
+	}
 }
