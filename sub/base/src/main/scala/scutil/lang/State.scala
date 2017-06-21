@@ -18,6 +18,9 @@ object State extends StateInstances {
 	
 	//------------------------------------------------------------------------------
 	
+	def optionalT[S,T](func:StateT[Option,S,T]):State[S,Option[T]]	=
+			optional(func.run)
+		
 	def optional[S,T](run:S=>Option[(S,T)]):State[S,Option[T]]	=
 			State { s1 =>
 				run(s1) match {

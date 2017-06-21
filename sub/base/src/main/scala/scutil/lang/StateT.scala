@@ -5,6 +5,16 @@ import scutil.lang.tc._
 object StateT extends StateTInstances {
 	def pure[F[_],S,T](it:T)(implicit F:Applicative[F]):StateT[F,S,T]	=
 			StateT { s => F pure (s -> it) }
+		
+	def pureF[F[_],S,T](it:F[T])(implicit F:Functor[F]):StateT[F,S,T]	=
+			StateT { s => (F map it) { s -> _ } }
+		
+	// get map func
+	def stateless[F[_],S,T](func:S=>T)(implicit F:Applicative[F]):StateT[F,S,T]	=
+			StateT { s => F pure (s -> func(s)) }
+		
+	def statelessF[F[_],S,T](func:S=>F[T])(implicit F:Functor[F]):StateT[F,S,T]	=
+			StateT { s => (F map func(s)) { s -> _ } }
 			
 	def get[F[_],S,T](implicit F:Applicative[F]):StateT[F,S,S]	=
 			StateT { s => F pure (s -> s) }
@@ -29,11 +39,16 @@ object StateT extends StateTInstances {
 }
 
 final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
-	def inside[R](lens:TLens[R,S])(implicit F:Functor[F]):StateT[F,R,T]	= 
-		StateT { r1	=>
-			lens on r1 modifyStateT this
-		}
+	def transform[G[_]](func:F ~> G):StateT[G,S,T]	=
+			StateT { s0 =>
+				func(run(s0))
+			}
 	
+	def inside[R](lens:TLens[R,S])(implicit F:Functor[F]):StateT[F,R,T]	= 
+			StateT { r0	=>
+				lens on r0 modifyStateT this
+			}
+		
 	def map[U](func:T=>U)(implicit F:Functor[F]):StateT[F,S,U]	=
 			StateT { s0 =>
 				(F map run(s0)) { case (s1, t) => (s1, func(t)) }
@@ -45,6 +60,9 @@ final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
 					func(t) run s1
 				}
 			}
+			
+	def flatten[U](implicit ev:T=>StateT[F,S,U], F:Monad[F]):StateT[F,S,U]	=
+			flatMap(ev)
 			
 	/** function effect first */
 	def ap[A,B](that:StateT[F,S,A])(implicit F:Monad[F], ev:T=>(A=>B)):StateT[F,S,B]	=
@@ -71,6 +89,37 @@ final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
 					}
 				}
 			}
+			
+	def subMap[U](func:F[T]=>F[U])(implicit F:Monad[F]):StateT[F,S,U]	=
+			StateT { s0 =>
+				(F flatMap run(s0)) { case (s1, t) =>
+					(F map func(F pure t)) { u =>
+						(s1 -> u)
+					}
+				}
+			}
+			
+	def subFlatMap[U](func:T=>F[U])(implicit F:Monad[F]):StateT[F,S,U]	=
+			StateT { s0 =>
+				(F flatMap run(s0)) { case (s1, t) =>
+					(F map func(t)) { u =>
+						(s1 -> u)
+					}
+				}
+			}
+			
+	def subFlatten[U](implicit ev:T=>F[U], F:Monad[F]):StateT[F,S,U]	=
+			subFlatMap(ev)
+	
+	def innerFlatMap[U](func:F[T]=>StateT[F,S,U])(implicit F:Monad[F]):StateT[F,S,U]	=
+			StateT { s0 =>
+				(F flatMap run(s0)) { case (s1, t) =>
+					func(F pure t) run s1
+				}
+			}
+	
+	def innerFlatten[U](implicit ev:F[T]=>StateT[F,S,U], F:Monad[F]):StateT[F,S,U]	=
+			innerFlatMap(ev)
 }
 
 trait StateTInstances {
