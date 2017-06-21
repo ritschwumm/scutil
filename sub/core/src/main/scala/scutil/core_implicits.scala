@@ -11,4 +11,4 @@ trait implicits
 		with	scutil.regex.implicits
 		with	scutil.resource.implicits
 		with	scutil.text.implicits
-		with	scutil.time.implicits
+		with	scutil.jtime.implicits
