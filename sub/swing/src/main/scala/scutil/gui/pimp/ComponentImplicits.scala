@@ -3,7 +3,7 @@ package scutil.gui.pimp
 import java.awt.{ List=>_, _ }
 import javax.swing._
 
-import scutil.lang._
+import scutil.base.implicits._
 import scutil.geom._
 import scutil.gui.geomConversion
 
@@ -32,9 +32,10 @@ trait ComponentImplicits {
 			
 		/** get all parent Containers starting with the immediate parent and ending with the component root */
 		def parentChain:List[Container]	=
-				Lists unfoldRightSimple (
-						peer,
-						(it:Component) => Option(it.getParent))
+				List unfoldRightSimple (
+					peer,
+					(it:Component) => Option(it.getParent)
+				)
 			
 		/** sets minimum, preferred and maximum size of a {@link Component} */
 		def setAllSizes(size:Dimension) {

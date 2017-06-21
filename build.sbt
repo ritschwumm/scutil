@@ -3,7 +3,7 @@ import spray.boilerplate.BoilerplatePlugin
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.107.0",
+	version			:= "0.108.0",
 	
 	scalaVersion	:= "2.12.2",
 	scalacOptions	++= Seq(
@@ -11,7 +11,6 @@ inThisBuild(Seq(
 		"-unchecked",
 		"-feature",
 		"-opt:l:project",
-		"-Ywarn-unused-import",
 		"-Xfatal-warnings",
 		"-Xlint",
 		"-Ypartial-unification"
@@ -19,17 +18,16 @@ inThisBuild(Seq(
 	
 	conflictManager	:= ConflictManager.strict,
 	resolvers		+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
-	resolvers 		+= Resolver.sonatypeRepo("releases"),
+	resolvers 		+= Resolver sonatypeRepo "releases",
 	addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3")
 ))
 
 lazy val fixConsoleSettings	=
 		Seq(
-			scalacOptions in (Compile, console) :=
-			(scalacOptions in (Compile, console)).value filterNot { it =>
-				it == "-Ywarn-unused-import" ||
-				it == "-Xfatal-warnings"
-			}
+			scalacOptions in (Compile, console) ~= (opts => opts filterNot Set(
+				"-Xlint",
+				"-Xfatal-warnings"
+			))
 		)
 		
 lazy val noTestSettings	=

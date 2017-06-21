@@ -36,7 +36,7 @@ object StateT extends StateTInstances {
 	def modOld[F[_],S,T](func:S=>S)(implicit F:Applicative[F]):StateT[F,S,S]	=
 			StateT { s => F pure (func(s) -> s) }
 		
-	// inference helper allowing to specifiy the state value typ while still let the result type be inferred
+	// inference helper allowing to specify the state value typ while still let the result type be inferred
 	def pureU[F[_],S]:StateTPure[F,S]	= new StateTPure[F,S]
 	final class StateTPure[F[_],S] {
 		def apply[T](it:T)(implicit F:Applicative[F]):StateT[F,S,T]	= StateT pure it

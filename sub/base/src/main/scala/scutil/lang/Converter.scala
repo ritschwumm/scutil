@@ -24,13 +24,13 @@ object Converter extends ConverterGenerated with ConverterInstances {
 				Validated good func(it)
 			}
 			
-	def optional[E,S,T](bad: =>E)(func:PFunction[S,T]):Converter[E,S,T]	=
+	def optional[E,S,T](func:PFunction[S,T], bad: =>E):Converter[E,S,T]	=
 			Converter { it =>
 				Validated goodOr (func(it), bad)
 			}
 			
-	def partial[E,S,T](bad: =>E)(func:PartialFunction[S,T]):Converter[E,S,T]	=
-			optional(bad)(func.lift)
+	def partial[E,S,T](func:PartialFunction[S,T], bad: =>E):Converter[E,S,T]	=
+			optional(func.lift, bad)
 			
 	def rejecting[E,T](func:PFunction[T,E]):Converter[E,T,T]	=
 			Converter { it =>
@@ -62,6 +62,10 @@ object Converter extends ConverterGenerated with ConverterInstances {
 // Kleisli[Validated[E,_],S,T]
 final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 	def apply(s:S):Validated[E,T]	= convert(s)
+	
+	def varyIn[SS<:S]:Converter[E,SS,T]		= Converter(convert)
+	def varyOut[TT>:T]:Converter[E,S,TT]	= Converter(convert)
+	def varyError[EE>:E]:Converter[EE,S,T]	= Converter(convert)
 	
 	//------------------------------------------------------------------------------
 	
