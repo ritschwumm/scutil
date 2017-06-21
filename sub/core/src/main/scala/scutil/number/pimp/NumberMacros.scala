@@ -17,9 +17,9 @@ private final class NumberMacros(val c:Context) {
 
 	private implicit val liftBigRational:Liftable[BigRational]	=
 			Liftable[BigRational] { it =>
-				val num	= it.numerator
-				val den	= it.denominator
-				q"_root_.scutil.number.BigRational($num, $den)"
+				val num:JBigInteger	= it.numerator
+				val den:JBigInteger	= it.denominator
+				q"""_root_.scutil.number.BigRational($num, $den).getOrElse(sys error "unexpected zero denominator")"""
 			}
 
 	def brImpl():c.Tree		= {

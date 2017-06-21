@@ -20,23 +20,36 @@ object BigRational {
 	
 	//------------------------------------------------------------------------------
 	
-	def apply(numerator:JBigInteger, denominator:JBigInteger):BigRational =
-			new BigRational(numerator, denominator)
+	def apply(numerator:JBigInteger, denominator:JBigInteger):Option[BigRational] =
+			if (denominator != JBigInteger.ZERO)	Some(new BigRational(numerator, denominator))
+			else									None
+			
+	def apply(numerator:Long, denominator:Long):Option[BigRational] =
+			if (denominator != 0L) {
+				Some(new BigRational(
+					JBigInteger valueOf numerator,
+					JBigInteger valueOf denominator
+				))
+			}
+			else None
+					
+	def apply(numerator:JBigInteger):BigRational =
+			new BigRational(
+				numerator,
+				JBigInteger.ONE
+			)
+			
+	def apply(numerator:Long):BigRational =
+			new BigRational(
+				JBigInteger valueOf numerator,
+				JBigInteger.ONE
+			)
 			
 	def apply(numerator:JBigDecimal):BigRational =
 			new BigRational(
-					numerator.unscaledValue,
-					(JBigDecimal.ONE scaleByPowerOfTen numerator.scale).toBigInteger)
-					
-	def apply(numerator:Long, denominator:Long):BigRational =
-			new BigRational(
-					JBigInteger valueOf numerator,
-					JBigInteger valueOf denominator)
-					
-	def apply(numerator:Long):BigRational =
-			new BigRational(
-					JBigInteger valueOf numerator,
-					JBigInteger.ONE)
+				numerator.unscaledValue,
+				(JBigDecimal.ONE scaleByPowerOfTen numerator.scale).toBigInteger
+			)
 					
 	def unapply(self:BigRational):Option[(JBigInteger,JBigInteger)] =
 			Some((self.numerator, self.denominator))
@@ -54,7 +67,7 @@ object BigRational {
 }
 
 /** an immutable, auto-simplifying BigInteger fraction */
-final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extends JNumber with Ordered[BigRational] {
+final class BigRational private (_numerator:JBigInteger, _denominator:JBigInteger) extends JNumber with Ordered[BigRational] {
 	if (_denominator == JBigInteger.ZERO)	throw new ArithmeticException("denominator must not be zero")
 	
 	// simplify
@@ -80,29 +93,33 @@ final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extend
 				 if (this == BigRational.zero)	that
 			else if (that == BigRational.zero)	this
 			else new BigRational(
-					(this.numerator multiply that.denominator) add (this.denominator multiply that.numerator),
-					this.denominator multiply that.denominator)
+				(this.numerator multiply that.denominator) add (this.denominator multiply that.numerator),
+				this.denominator multiply that.denominator
+			)
 
 	def -(that:BigRational):BigRational =
 				 if (this == BigRational.zero)	that.negate
 			else if (that == BigRational.zero)	this
 			else new BigRational(
-					(this.numerator multiply that.denominator) subtract (this.denominator multiply that.numerator),
-					this.denominator multiply that.denominator)
+				(this.numerator multiply that.denominator) subtract (this.denominator multiply that.numerator),
+				this.denominator multiply that.denominator
+			)
 		
 	def *(that:BigRational):BigRational =
 				 if (this == BigRational.one)	that
 			else if (that == BigRational.one)	this
 			else new BigRational(
-					this.numerator		multiply that.numerator,
-					this.denominator	multiply that.denominator)
+				this.numerator		multiply that.numerator,
+				this.denominator	multiply that.denominator
+			)
 	
 	def /(that:BigRational):BigRational =
 				 if (this == BigRational.one)	that.reciprocal
 			else if (that == BigRational.one)	this
 			else new BigRational(
-					this.numerator		multiply that.denominator,
-					this.denominator	multiply that.numerator)
+				this.numerator		multiply that.denominator,
+				this.denominator	multiply that.numerator
+			)
 	
 	def unary_- :BigRational	= negate
 		
@@ -110,15 +127,17 @@ final class BigRational(_numerator:JBigInteger, _denominator:JBigInteger) extend
 	def negate:BigRational =
 			if (this == BigRational.zero)	this
 			else new BigRational(
-					numerator.negate,
-					denominator)
+				numerator.negate,
+				denominator
+			)
 
 	/** multiplicative inverse */
 	def reciprocal:BigRational =
 			if (this == BigRational.zero)	this
 			else new BigRational(
-					denominator,
-					numerator)
+				denominator,
+				numerator
+			)
 	
 	/** absolute value */
 	def abs:BigRational =

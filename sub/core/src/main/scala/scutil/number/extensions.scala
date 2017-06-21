@@ -4,5 +4,4 @@ import scutil.number.pimp._
 
 object extensions extends extensions
 trait extensions
-		extends	StringContextImplicits
-		with	RandomImplicits
+		extends	RandomImplicits

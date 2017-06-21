@@ -9,6 +9,6 @@ object CalendarImplicits extends CalendarImplicits
 
 trait CalendarImplicits {
 	implicit final class CalendarExt(peer:Calendar) {
-		def toGregorian:Gregorian	= JTimeUtil calendarToGregorian peer
+		def toGregorianDate:GregorianDate	= JTimeUtil calendarToGregorianDate peer
 	}
 }

@@ -4,5 +4,4 @@ import scutil.text.pimp._
 
 object extensions extends extensions
 trait extensions
-		extends	StringContextImplicits
-		with	StringTokenizerImplicits
+		extends	StringTokenizerImplicits

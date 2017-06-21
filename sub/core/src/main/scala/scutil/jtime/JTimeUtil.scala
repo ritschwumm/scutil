@@ -7,35 +7,36 @@ import scutil.lang._
 import scutil.time._
 
 object JTimeUtil {
-	def milliInstantToGregorian(instant:MilliInstant, tz:TimeZone):Gregorian	= {
+	def milliInstantToGregorianDate(instant:MilliInstant, tz:TimeZone):GregorianDate	= {
 		val	cal	= new GregorianCalendar(tz)
 		cal setTime milliInstantToDate(instant)
-		calendarToGregorian(cal)
+		calendarToGregorianDate(cal)
 	}
 	
 	//------------------------------------------------------------------------------
 	
-	def gregorianToday(tz:TimeZone):Gregorian	=
-			calendarToGregorian(new GregorianCalendar(tz))
+	def gregorianDateToday(tz:TimeZone):GregorianDate	=
+			calendarToGregorianDate(new GregorianCalendar(tz))
 				
-	def calendarToGregorian(cal:Calendar):Gregorian	=
-			Gregorian(
+	def calendarToGregorianDate(cal:Calendar):GregorianDate	=
+			GregorianDate(
 				(cal get Calendar.DAY_OF_MONTH) + 0,
 				(cal get Calendar.MONTH)		+ 1,
-				(cal get Calendar.YEAR)			+ 0)
+				(cal get Calendar.YEAR)			+ 0
+			)
 	
-	def gregorianToCalendar(it:Gregorian, tz:TimeZone):Option[GregorianCalendar]	= {
+	def gregorianDateToCalendar(it:GregorianDate, tz:TimeZone):Option[GregorianCalendar]	= {
 		val	cal	= new GregorianCalendar(tz)
 		cal setLenient false
-		gregorianIntoCalendar(it, cal)
+		gregorianDateIntoCalendar(it, cal)
 		try { cal.getTime; Some(cal) }
 		catch { case e:Exception => None }
 	}
 	
-	def gregorianIntoCalendar(it:Gregorian, cal:Calendar) {
+	def gregorianDateIntoCalendar(it:GregorianDate, cal:Calendar) {
 		cal set (Calendar.DAY_OF_MONTH,	it.day		- 0)
 		cal set (Calendar.MONTH,		it.month	- 1)
-		cal set (Calendar.YEAR,			it.year	- 0)
+		cal set (Calendar.YEAR,			it.year		- 0)
 	}
 	
 	//------------------------------------------------------------------------------

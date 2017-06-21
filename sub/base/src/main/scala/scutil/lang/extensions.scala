@@ -24,6 +24,5 @@ trait extensions
 		with	PartialFunctionImplicits
 		with	PredicateImplicits
 		with	StringImplicits
-		with	StringContextImplicits
 		with	ThrowableImplicits
 		with	TryImplicits
