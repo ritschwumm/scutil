@@ -3,6 +3,7 @@ package scutil.log
 import java.io._
 
 import scutil.base.implicits._
+import scutil.jtime.implicits._
 import scutil.lang.SourceLocation
 import scutil.time._
 
@@ -46,7 +47,7 @@ trait DefaultLogHandler extends LogHandler {
 	}
 	
 	def formatInstant(it:MilliInstant):String	=
-			"[" + it.toISO8601 + "]"
+			"[" + it.toDate.toISO8601 + "]"
 		
 	def formatLocation(it:SourceLocation):String	=
 			it.name + ":" + it.line.toString

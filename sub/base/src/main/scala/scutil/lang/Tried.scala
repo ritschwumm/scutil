@@ -93,6 +93,14 @@ sealed trait Tried[+F,+W] {
 	def merge[U](implicit ev:this.type <:< Tried[U,U]):U	=
 			ev(this) cata (identity, identity)
 		
+	def whereFail[FF,WW](that:Tried[FF,WW]):Tried[Where[F,FF],(W,WW)]	=
+			(this, that) match {
+				case (Fail(a), Fail(b))	=> Fail(Both(a, b))
+				case (Fail(a), Win(_))	=> Fail(Here(a))
+				case (Win(_),  Fail(b))	=> Fail(There(b))
+				case (Win(a),  Win(b))	=> Win((a, b))
+			}
+		
 	//------------------------------------------------------------------------------
 	
 	def isWin:Boolean	=

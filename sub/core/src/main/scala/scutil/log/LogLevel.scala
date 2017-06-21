@@ -18,8 +18,9 @@ object LogLevel {
 sealed abstract class LogLevel extends Ordered[LogLevel] {
 	protected val severity:Int
 	
-	def compare(that:LogLevel):Int	=
-			this.severity compare that.severity
+	def compare(that:LogLevel):Int	= this.severity compare that.severity
+	def min(that:LogLevel):LogLevel	= if (this < that) this else that
+	def max(that:LogLevel):LogLevel	= if (this > that) this else that
 }
 
 /** fine-grained tracing */

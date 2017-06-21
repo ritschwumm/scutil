@@ -6,3 +6,4 @@ trait implicits
 		with	scutil.lang.tc.implicits
 		with	scutil.collection.implicits
 		with	scutil.math.implicits
+		with	scutil.time.implicits

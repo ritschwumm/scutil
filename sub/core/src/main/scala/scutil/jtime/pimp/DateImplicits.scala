@@ -1,10 +1,11 @@
-package scutil.time.pimp
+package scutil.jtime.pimp
 
 import java.util.Date
 import java.util.TimeZone
 import java.text.SimpleDateFormat
 
-import scutil.time.MilliInstant
+import scutil.time._
+import scutil.jtime._
 
 object DateImplicits extends DateImplicits
 
@@ -19,6 +20,9 @@ final class DateExt(peer:Date) {
 		df format peer
 	}
 	
+	def toISO8601:String	=
+			JTimeUtil dateToISO8601 peer
+	
 	def toMilliInstant:MilliInstant	=
-			MilliInstant fromDate peer
+			JTimeUtil dateToMilliInstant peer
 }

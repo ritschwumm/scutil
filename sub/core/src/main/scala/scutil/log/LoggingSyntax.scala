@@ -3,6 +3,7 @@ package scutil.log
 import scutil.lang.SourceLocation
 import scutil.time.MilliInstant
 import scutil.collection.implicits._
+import scutil.jtime.implicits._
 
 trait LoggingSyntax {
 	def logHandler:LogHandler

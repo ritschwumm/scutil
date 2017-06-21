@@ -3,7 +3,6 @@ package scutil.time
 import scala.math.Ordered
 
 import scutil.lang._
-import scutil.text.Human
 
 object MilliDuration {
 	def week:MilliDuration		= day		*! 7
@@ -35,6 +34,4 @@ final case class MilliDuration(millis:Long) extends Ordered[MilliDuration] {
 	def max(that:MilliDuration):MilliDuration	= if (this > that) this else that
 	
 	def nanos:Long	= millis*1000
-	
-	def toHumanString:String	= Human fullMilliTime millis
 }

@@ -99,10 +99,10 @@ object Human {
 	private val millisToSeconds:Endo[BigDecimal]	=
 			_ * (time divisor 1)
 	
-	val fullMilliTime:BigDecimal=>String	=
+	val fullMilliDuration:BigDecimal=>String	=
 			millisToSeconds andThen (time renderer HumanConfig(smallUnits = 1, decimalPlaces = 0))
 		
-	val roundedMilliTime:BigDecimal=>String	=
+	val roundedMilliDuration:BigDecimal=>String	=
 			millisToSeconds andThen (time renderer HumanConfig(smallUnits = 1, maxUnits = 1, decimalPlaces = 2))
 }
 

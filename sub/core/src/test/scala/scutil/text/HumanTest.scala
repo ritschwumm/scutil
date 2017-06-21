@@ -29,10 +29,10 @@ class HumanTest extends Specification {
 		//------------------------------------------------------------------------------
 		
 		"full decode multiple milli time units" in {
-			Human fullMilliTime 47110815L mustEqual "13h 5m 10s 815ms"
+			Human fullMilliDuration 47110815L mustEqual "13h 5m 10s 815ms"
 		}
 		"rounded decode milli time units" in {
-			Human roundedMilliTime 47110815L mustEqual "13.09h"
+			Human roundedMilliDuration 47110815L mustEqual "13.09h"
 		}
 		
 		//------------------------------------------------------------------------------

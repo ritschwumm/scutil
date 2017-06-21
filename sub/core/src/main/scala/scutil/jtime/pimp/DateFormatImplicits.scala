@@ -1,4 +1,4 @@
-package scutil.time.pimp
+package scutil.jtime.pimp
 
 import java.text._
 import java.util.Date
