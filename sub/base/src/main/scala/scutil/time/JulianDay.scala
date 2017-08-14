@@ -14,7 +14,7 @@ final case class JulianDay(value:Int) extends Ordered[JulianDay] {
 	def min(that:JulianDay):JulianDay	= if (this < that) this else that
 	def max(that:JulianDay):JulianDay	= if (this > that) this else that
 	
-	def toGregorianDate:GregorianDate	= {
+	lazy val toGregorianDate:GregorianDate	= {
 		val J	= value
 		
 		val j	= 1401
@@ -41,17 +41,6 @@ final case class JulianDay(value:Int) extends Ordered[JulianDay] {
 		GregorianDate(D.toInt, M.toInt, Y.toInt)
 	}
 	
-	//def toTime:Time[Day]	=
-	//		Day time (Epoch.julianDay until this)
-		
-	def weekday:Weekday	=
-			moduloInt(value, 7) match {
-				case 0	=> Monday
-				case 1	=> Tuesday
-				case 2	=> Wednesday
-				case 3	=> Thursday
-				case 4	=> Friday
-				case 5	=> Saturday
-				case 6	=> Sunday
-			}
+	lazy val weekday:Weekday	=
+			Weekday fromIndex value
 }

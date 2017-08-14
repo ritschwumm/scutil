@@ -12,6 +12,12 @@ final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[Gre
 	require(month	>= 1,	s"expected month >= 1, got $month")
 	require(month	<= 12,	s"expected month <= 12, got $month")
 	
+	def move(offset:Int):GregorianDate	=
+			(toJulianDay move offset).toGregorianDate
+		
+	def until(that:GregorianDate):Int	=
+			this.toJulianDay until that.toJulianDay
+		
 	def compare(that:GregorianDate):Int		= {
 		val	y	= this.year		compare that.year;	if (y != 0)	return y
 		val	m	= this.month	compare that.month;	if (m != 0)	return m
@@ -22,7 +28,24 @@ final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[Gre
 	def min(that:GregorianDate):GregorianDate	= if (this < that) this else that
 	def max(that:GregorianDate):GregorianDate	= if (this > that) this else that
 	
-	def toJulianDay:JulianDay	= {
+	lazy val weekday:Weekday	=
+			toJulianDay.weekday
+		
+	/** ISO 8601 as opposed to US calendar weeks */
+	lazy val calendarWeek:CalendarWeek	= {
+		val thisJulian	= toJulianDay
+		val jan1Julian	= GregorianDate(day = 1, month = 1, year = year).toJulianDay
+		
+		val dayOfYear	= jan1Julian until thisJulian
+		val rawNumber	= (dayOfYear - weekday.index + Weekday.count + Thursday.index) / Weekday.count
+		val lastNumber	= (CalendarWeek lastIn year).number
+		
+			 if (rawNumber < 1)				CalendarWeek lastIn		year-1
+		else if (rawNumber > lastNumber)	CalendarWeek firstIn	year+1
+		else								CalendarWeek(rawNumber, year)
+	}
+	
+	lazy val toJulianDay:JulianDay	= {
 		// 1 for january and february, else 0
 		val a	= floorDivLong(14 - month, 12)
 		val y	= year + 4800 - a
