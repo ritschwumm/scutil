@@ -305,10 +305,22 @@ class DateTest extends Specification {
 		"roundtrip index" in {
 			0 until 10000 by 3 map { i =>
 				val jd	= JulianDay.epoch move i
-				val cw1	= jd.calendarWeek
-				val idx	= cw1.toIndex
-				val cw2	= CalendarWeek fromIndex idx
-				cw1 mustEqual cw2
+				val x1	= jd.calendarWeek
+				val idx	= x1.toIndex
+				val x2	= CalendarWeek fromIndex idx
+				x1 mustEqual x2
+			}
+		}
+	}
+	
+	"MonthYear" should {
+		"roundtrip index" in {
+			0 until 10000 by 3 map { i =>
+				val jd	= JulianDay.epoch move i
+				val x1	= jd.monthYear
+				val idx	= x1.toIndex
+				val x2	= MonthYear fromIndex idx
+				x1 mustEqual x2
 			}
 		}
 	}

@@ -42,5 +42,5 @@ final case class MonthYear(month:Int, year:Int) extends Ordered[MonthYear] {
 	
 	lazy val days:Int	= monthValue daysInYear yearValue
 	
-	lazy val toIndex:Int	= (month - 1) * 12 + year
+	lazy val toIndex:Int	= monthIndex + year * 12
 }
