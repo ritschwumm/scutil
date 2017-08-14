@@ -5,6 +5,17 @@ import scutil.math.functions._
 object Weekday {
 	val count	= 7
 	
+	val all:Vector[Weekday]	=
+			Vector(
+				Monday,
+				Tuesday,
+				Wednesday,
+				Thursday,
+				Friday,
+				Saturday,
+				Sunday
+			)
+	
 	def fromIndex(index:Int):Weekday	=
 			moduloInt(index, count) match {
 				case 0	=> Monday

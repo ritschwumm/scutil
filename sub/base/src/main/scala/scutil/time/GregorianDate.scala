@@ -4,6 +4,18 @@ import scutil.math.functions._
 
 object GregorianDate {
 	val epoch	= GregorianDate(1, 1, 1970)
+	
+	def firstDayOfYear(year:Int):GregorianDate	= GregorianDate(1,	1,	year)
+	def lastDayOfYear(year:Int):GregorianDate	= GregorianDate(31,	12,	year)
+	
+	def firstDayOfMonth(month:Int, year:Int):GregorianDate		= GregorianDate(1,						month, year)
+	def lastDayOfMonthYear(month:Int, year:Int):GregorianDate	= GregorianDate(monthDays(month, year), month, year)
+
+	def monthDays(month:Int, year:Int):Int	=
+			Month fromIndex month-1 days leapYear(year)
+			
+	def leapYear(year:Int):Boolean	=
+			Year(year).gregorianLeap
 }
 
 final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[GregorianDate] {
@@ -30,6 +42,15 @@ final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[Gre
 	
 	lazy val weekday:Weekday	=
 			toJulianDay.weekday
+		
+	lazy val dayIndex:Int	=
+			day-1
+		
+	lazy val monthData:Month	=
+			Month fromIndex month-1
+		
+	lazy val yearData:Year	=
+			Year(year)
 		
 	/** ISO 8601 as opposed to US calendar weeks */
 	lazy val calendarWeek:CalendarWeek	= {

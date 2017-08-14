@@ -14,6 +14,7 @@ trait OrderingImplicits {
 				new Ordering[T] {
 					def compare(x:T, y:T):Int	= 0
 				}
+				
 		/**
 		useful with case classes where unapply always returns a Some,
 		fails with an Exception if None is returned.
@@ -32,7 +33,8 @@ trait OrderingImplicits {
 						peer compare (x, y)
 					}
 				}
-				
+			
+		// TODO remove when scala 2.13 is there
 		/**
 		alternative to the implicit (Ordering[T],Ordering[T]) => Ordering[T] conversion in Ordering.Implicits,
 		forms a Monoid with Orderings#trivial
