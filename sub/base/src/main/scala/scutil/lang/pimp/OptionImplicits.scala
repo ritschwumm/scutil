@@ -12,7 +12,7 @@ import scutil.lang.pimp.EitherImplicits._
 object OptionImplicits extends OptionImplicits
 
 trait OptionImplicits {
-	implicit final class OptionCompanionImplicits(peer:Either.type) {
+	implicit final class OptionCompanionImplicits(peer:Option.type) {
 		def none[T]:Option[T]	= None
 		def some[T](it:T):Option[T]	= Some(it)
 		

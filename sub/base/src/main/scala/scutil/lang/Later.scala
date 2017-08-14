@@ -18,6 +18,11 @@ object Later extends LaterInstances {
 			Later { cont =>
 				cont(value())
 			}
+			
+	def optional[T](value:Option[T]):Later[T]	=
+			Later { cont =>
+				value foreach cont
+			}
 		
 	def many[T](value:Iterable[T]):Later[T]	=
 			Later { cont =>
@@ -26,6 +31,8 @@ object Later extends LaterInstances {
 }
 
 final case class Later[T](run:(T=>Unit)=>Unit) {
+	def foreach(handler:T=>Unit):Unit	= run(handler)
+	
 	def runUnit():Unit	=
 			runFold(())((_,_)=>())
 	
@@ -69,6 +76,12 @@ final case class Later[T](run:(T=>Unit)=>Unit) {
 			
 	def collapse[U](implicit ev:T=>Option[U]):Later[U]	=
 			collapseMap(ev)
+		
+	def collect[U](pf:PartialFunction[T,U]):Later[U]	=
+			collapseMap(pf.lift)
+		
+	def withFilter(pred:T=>Boolean):Later[T]	=
+			filter(pred)
 			
 	def filter(pred:T=>Boolean):Later[T]	=
 			Later { cont =>

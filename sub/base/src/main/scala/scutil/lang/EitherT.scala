@@ -18,6 +18,11 @@ object EitherT extends EitherTInstances {
 	def rightF[F[_]:Functor,L,R](it:F[R]):EitherT[F,L,R]	= EitherT(it map Right.apply)
 	def leftF[F[_]:Functor,L,R](it:F[L]):EitherT[F,L,R]		= EitherT(it map Left.apply)
 	
+	def wrap[F[_]]:Wrap[F]	= new Wrap[F]
+	final class Wrap[F[_]] { 
+		def apply[L,R](it:F[Either[L,R]]):EitherT[F,L,R]	= EitherT(it)
+	}
+	
 	//------------------------------------------------------------------------------
 		
 	def fromValidated[F[_],L,R](it:Validated[L,R])(implicit M:Applicative[F]):EitherT[F,L,R]	=
@@ -71,6 +76,11 @@ object EitherT extends EitherTInstances {
 }
 
 final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
+	def reval[G[_]](func:F[Either[L,R]]=>G[Either[L,R]]):EitherT[G,L,R]	=
+			EitherT(func(value))
+	
+	//------------------------------------------------------------------------------
+	
 	def map[RR](func:R=>RR)(implicit M:Functor[F]):EitherT[F,L,RR]	=
 			mapEither(_ map func)
 		
@@ -121,22 +131,27 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 	def orElse[LL>:L,RR>:R](that: =>EitherT[F,LL,RR])(implicit M:Monad[F]):EitherT[F,LL,RR]	=
 			EitherT(
 				(M flatMap value) {
-					_ cata (
-						_	=> that.value,
-						x	=> M pure (Either right[LL,RR] x)
-					)
+					case Left(_)	=> that.value
+					case x			=> M pure x
 				}
 			)
 			
 	def orElsePure[LL>:L,RR>:R](that: =>Either[LL,RR])(implicit M:Functor[F]):EitherT[F,LL,RR]	=
 			EitherT(
 				(M map value) {
-					_ cata (
-						_	=> that,
-						x	=> Either right[LL,RR] x
-					)
+					case Left(_)	=> that
+					case x			=> x
 				}
 			)
+			
+	//------------------------------------------------------------------------------
+	
+	def toOptionT(implicit M:Functor[F]):OptionT[F,R]	=
+			OptionT((M map value)(_.toOption))
+	
+	//------------------------------------------------------------------------------
+		
+	// TODO merge, swap, getOrElse
 }
 
 trait EitherTInstances {

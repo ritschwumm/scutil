@@ -21,6 +21,7 @@ trait FutureImplicits {
 		def andThenTotal[U](func:Try[T]=>U)(implicit executor:ExecutionContext):Future[T]	=
 				peer andThen { case x => func(x) }
 			
+		@deprecated("0.113.0", "use #transform")
 		def mapTry[U](func:Try[T]=>Try[U])(implicit executor:ExecutionContext):Future[U]	= {
 			val p = Promise[U]
 			peer onComplete { candidate =>
@@ -32,6 +33,7 @@ trait FutureImplicits {
 			p.future
 		}
 		
+		@deprecated("0.113.0", "use #transformWith")
 		def flatMapTry[U](func:Try[T]=>Future[U])(implicit executor:ExecutionContext):Future[U]	= {
 			val p = Promise[U]
 			peer onComplete { candidate =>
@@ -45,7 +47,7 @@ trait FutureImplicits {
 		
 		/** like transform, but each branch can fail independently */
 		def transformTry[U](failure:Throwable=>Try[U], success:T=>Try[U])(implicit executor:ExecutionContext):Future[U]	= {
-			mapTry {
+			peer transform {
 				case Failure(t)	=> failure(t)
 				case Success(t)	=> success(t)
 			}
@@ -55,13 +57,13 @@ trait FutureImplicits {
 		
 		/** always succeeds wrapping the original success/failure in a Tried */
 		def wrapEither(implicit executor:ExecutionContext):Future[Either[Throwable,T]]	=
-				mapTry { it => Try(it.toEither) }
+				peer transform { it => Try(it.toEither) }
 		
 		/** succeeds for a Win, fails for a Fail */
 		def unwrapEither[X](implicit ev:T=>Either[Throwable,X], executor:ExecutionContext):Future[X]	=
-				mapTry { _ flatMap { ev(_).toTry } }
+				peer transform { _ flatMap { ev(_).toTry } }
 			
 		def mapEither[X](func:Either[Throwable,T]=>Either[Throwable,X])(implicit executor:ExecutionContext):Future[X]	=
-				mapTry { it => func(it.toEither).toTry }
+				peer transform { it => func(it.toEither).toTry }
 	}
 }
