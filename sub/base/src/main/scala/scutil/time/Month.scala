@@ -39,6 +39,9 @@ object Month {
 }
 
 sealed abstract class Month {
+	def daysInYear(year:Year):Int	=
+			days(year.gregorianLeap)
+		
 	def days(leapYear:Boolean):Int	=
 			this match {
 				case January	=> 31
@@ -71,6 +74,8 @@ sealed abstract class Month {
 				case November	=> 10
 				case December	=> 11
 			}
+			
+	def monthYearAt(year:Year):MonthYear	= MonthYear fromValues (this, year)
 }
 case object January		extends Month
 case object February	extends Month

@@ -5,20 +5,12 @@ import scutil.math.functions._
 object GregorianDate {
 	val epoch	= GregorianDate(1, 1, 1970)
 	
-	def firstDayOfYear(year:Int):GregorianDate	= GregorianDate(1,	1,	year)
-	def lastDayOfYear(year:Int):GregorianDate	= GregorianDate(31,	12,	year)
-	
-	def firstDayOfMonth(month:Int, year:Int):GregorianDate		= GregorianDate(1,						month, year)
-	def lastDayOfMonthYear(month:Int, year:Int):GregorianDate	= GregorianDate(monthDays(month, year), month, year)
-
-	def monthDays(month:Int, year:Int):Int	=
-			Month fromIndex month-1 days leapYear(year)
-			
-	def leapYear(year:Int):Boolean	=
-			Year(year).gregorianLeap
+	// TODO smart constructor
 }
 
+/** day in 1..31, month in 1..12 */
 final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[GregorianDate] {
+	// TODO check real values here
 	require(day		>= 1,	s"expected day >= 1, got $day")
 	require(day		<= 31,	s"expected day <= 31, got $day")
 	require(month	>= 1,	s"expected month >= 1, got $month")
@@ -40,17 +32,12 @@ final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[Gre
 	def min(that:GregorianDate):GregorianDate	= if (this < that) this else that
 	def max(that:GregorianDate):GregorianDate	= if (this > that) this else that
 	
-	lazy val weekday:Weekday	=
-			toJulianDay.weekday
-		
-	lazy val dayIndex:Int	=
-			day-1
-		
-	lazy val monthData:Month	=
-			Month fromIndex month-1
-		
-	lazy val yearData:Year	=
-			Year(year)
+	def weekday:Weekday	= toJulianDay.weekday
+	def dayIndex:Int	= day-1
+	def monthIndex:Int	= month-1
+	lazy val monthValue:Month		= Month fromIndex monthIndex
+	lazy val yearValue:Year			= Year(year)
+	lazy val monthYear:MonthYear	= MonthYear(month, year)
 		
 	/** ISO 8601 as opposed to US calendar weeks */
 	lazy val calendarWeek:CalendarWeek	= {
@@ -59,11 +46,11 @@ final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[Gre
 		
 		val dayOfYear	= jan1Julian until thisJulian
 		val rawNumber	= (dayOfYear - weekday.index + Weekday.count + Thursday.index) / Weekday.count
-		val lastNumber	= (CalendarWeek lastIn year).number
+		val lastNumber	= yearValue.lastCalendarWeek.number
 		
-			 if (rawNumber < 1)				CalendarWeek lastIn		year-1
-		else if (rawNumber > lastNumber)	CalendarWeek firstIn	year+1
-		else								CalendarWeek(rawNumber, year)
+			 if (rawNumber < 1)				(yearValue move -1).lastCalendarWeek
+		else if (rawNumber > lastNumber)	(yearValue move +1).firstCalendarWeek
+		else								yearValue calendarWeekAt rawNumber
 	}
 	
 	lazy val toJulianDay:JulianDay	= {

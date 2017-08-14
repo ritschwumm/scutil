@@ -2,9 +2,8 @@ package scutil.time
 
 import org.specs2.mutable._
 
-class TimeTest extends Specification {
-	/*
-	"conversion should" should {
+class DateTest extends Specification {
+	"conversion" should {
 		"convert JulianDay 2457700 to GregorianDate 7.11.2016" in {
 			JulianDay(2457700).toGregorianDate mustEqual GregorianDate(7,11,2016)
 		}
@@ -237,69 +236,80 @@ class TimeTest extends Specification {
 			GregorianDate(3,1,2010).calendarWeek mustEqual CalendarWeek(53, 2009)
 		}
 	}
-	*/
 	
 	"CalendarWeek dates" should {
 		"calculate the correct date" in {
-			CalendarWeek(39, 2008) gregorianDayOf Saturday mustEqual GregorianDate(27,9,2008)
+			CalendarWeek(39, 2008) gregorianDayAt Saturday mustEqual GregorianDate(27,9,2008)
 		}
 		
 		"calculate the correct date" in {
-			CalendarWeek(53, 2004) gregorianDayOf Saturday mustEqual GregorianDate(1,1,2005)
+			CalendarWeek(53, 2004) gregorianDayAt Saturday mustEqual GregorianDate(1,1,2005)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(53, 2004) gregorianDayOf Sunday mustEqual GregorianDate(2,1,2005)
+			CalendarWeek(53, 2004) gregorianDayAt Sunday mustEqual GregorianDate(2,1,2005)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(52, 2005) gregorianDayOf Saturday mustEqual GregorianDate(31,12,2005)
+			CalendarWeek(52, 2005) gregorianDayAt Saturday mustEqual GregorianDate(31,12,2005)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(52, 2005) gregorianDayOf Sunday mustEqual GregorianDate(1,1,2006)
+			CalendarWeek(52, 2005) gregorianDayAt Sunday mustEqual GregorianDate(1,1,2006)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(1, 2006) gregorianDayOf Monday mustEqual GregorianDate(2,1,2006)
+			CalendarWeek(1, 2006) gregorianDayAt Monday mustEqual GregorianDate(2,1,2006)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(52, 2006) gregorianDayOf Sunday mustEqual GregorianDate(31,12,2006)
+			CalendarWeek(52, 2006) gregorianDayAt Sunday mustEqual GregorianDate(31,12,2006)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(1, 2007) gregorianDayOf Monday mustEqual GregorianDate(1,1,2007)
+			CalendarWeek(1, 2007) gregorianDayAt Monday mustEqual GregorianDate(1,1,2007)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(52, 2007) gregorianDayOf Sunday mustEqual GregorianDate(30,12,2007)
+			CalendarWeek(52, 2007) gregorianDayAt Sunday mustEqual GregorianDate(30,12,2007)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(1, 2008) gregorianDayOf Monday mustEqual GregorianDate(31,12,2007)
+			CalendarWeek(1, 2008) gregorianDayAt Monday mustEqual GregorianDate(31,12,2007)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(1, 2008) gregorianDayOf Tuesday mustEqual GregorianDate(1,1,2008)
+			CalendarWeek(1, 2008) gregorianDayAt Tuesday mustEqual GregorianDate(1,1,2008)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(52, 2008) gregorianDayOf Sunday mustEqual GregorianDate(28,12,2008)
+			CalendarWeek(52, 2008) gregorianDayAt Sunday mustEqual GregorianDate(28,12,2008)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(1, 2009) gregorianDayOf Monday mustEqual GregorianDate(29,12,2008)
+			CalendarWeek(1, 2009) gregorianDayAt Monday mustEqual GregorianDate(29,12,2008)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(1, 2009) gregorianDayOf Tuesday mustEqual GregorianDate(30,12,2008)
+			CalendarWeek(1, 2009) gregorianDayAt Tuesday mustEqual GregorianDate(30,12,2008)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(1, 2009) gregorianDayOf Wednesday mustEqual GregorianDate(31,12,2008)
+			CalendarWeek(1, 2009) gregorianDayAt Wednesday mustEqual GregorianDate(31,12,2008)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(1, 2009) gregorianDayOf Thursday mustEqual GregorianDate(1,1,2009)
+			CalendarWeek(1, 2009) gregorianDayAt Thursday mustEqual GregorianDate(1,1,2009)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(53, 2009) gregorianDayOf Thursday mustEqual GregorianDate(31,12,2009)
+			CalendarWeek(53, 2009) gregorianDayAt Thursday mustEqual GregorianDate(31,12,2009)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(53, 2009) gregorianDayOf Friday mustEqual GregorianDate(1,1,2010)
+			CalendarWeek(53, 2009) gregorianDayAt Friday mustEqual GregorianDate(1,1,2010)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(53, 2009) gregorianDayOf Saturday mustEqual GregorianDate(2,1,2010)
+			CalendarWeek(53, 2009) gregorianDayAt Saturday mustEqual GregorianDate(2,1,2010)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(53, 2009) gregorianDayOf Sunday mustEqual GregorianDate(3,1,2010)
+			CalendarWeek(53, 2009) gregorianDayAt Sunday mustEqual GregorianDate(3,1,2010)
+		}
+	}
+	
+	"CalendarWeek" should {
+		"roundtrip index" in {
+			0 until 10000 by 3 map { i =>
+				val jd	= JulianDay.epoch move i
+				val cw1	= jd.calendarWeek
+				val idx	= cw1.toIndex
+				val cw2	= CalendarWeek fromIndex idx
+				cw1 mustEqual cw2
+			}
 		}
 	}
 }
