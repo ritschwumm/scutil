@@ -50,6 +50,12 @@ final class Worker(name:String, delay:MilliDuration, task:Task, error:Effect[Exc
 		thread.join()
 	}
 	
+	def disposeAndWait() {
+		dispose()
+		awaitWorkless()
+		join()
+	}
+	
 	//------------------------------------------------------------------------------
 	
 	@tailrec

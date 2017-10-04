@@ -3,7 +3,7 @@ import spray.boilerplate.BoilerplatePlugin
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.116.1",
+	version			:= "0.117.0",
 	
 	scalaVersion	:= "2.12.3",
 	scalacOptions	++= Seq(
@@ -46,7 +46,17 @@ lazy val wartRemoverSetting	=
 			Wart.FinalCaseClass,
 			Wart.JavaConversions,
 			Wart.Option2Iterable,
-			Wart.TryPartial
+			Wart.TryPartial,
+			Wart.JavaSerializable,
+			//Wart.Any,
+			Wart.AnyVal,
+			//Wart.Nothing,
+			Wart.ArrayEquals,
+			Wart.ExplicitImplicitTypes,
+			Wart.LeakingSealed
+			//Wart.Overloading
+			//Wart.PublicInference,
+			//Wart.TraversableOps
 		)
 		
 // (crossProject crossType CrossType.Pure in base)
@@ -89,7 +99,7 @@ lazy val `scutil-base`	=
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "3.9.4"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "3.9.5"				% "test"
 			),
 			boilerplateSource in Compile := baseDirectory.value.getParentFile / "src" / "main" / "boilerplate"
 		)
@@ -117,7 +127,7 @@ lazy val `scutil-core`	=
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "3.9.4"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "3.9.5"				% "test"
 			),
 			
 			//------------------------------------------------------------------------------

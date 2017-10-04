@@ -13,17 +13,17 @@ trait ComponentImplicits {
 	implicit final class ComponentExt(peer:Component) {
 		/** the nearest Window in the ancestor chain, including this component itself */
 		def windowSelfOrAncestor:Option[Window]	=
-				windowSelfOrAncestor(peer)
+				windowSelfOrAncestorImpl(peer)
 		
 		/** the nearest Window in the ancestor chain, excluding this component itself */
 		def windowAncestor:Option[Window]	=
-				windowSelfOrAncestor(peer.getParent)
+				windowSelfOrAncestorImpl(peer.getParent)
 		
-		private def windowSelfOrAncestor(here:Component):Option[Window]	=
+		private def windowSelfOrAncestorImpl(here:Component):Option[Window]	=
 				here match {
 					case null		=> None
 					case x:Window	=> Some(x)
-					case x			=> windowSelfOrAncestor(x.getParent)
+					case x			=> windowSelfOrAncestorImpl(x.getParent)
 				}
 		
 		/** get the parent Container the scala way */
@@ -37,7 +37,7 @@ trait ComponentImplicits {
 					(it:Component) => Option(it.getParent)
 				)
 			
-		/** sets minimum, preferred and maximum size of a {@link Component} */
+		/** sets minimum, preferred and maximum size */
 		def setAllSizes(size:Dimension) {
 			peer setMinimumSize		size
 			peer setMaximumSize		size

@@ -58,6 +58,7 @@ trait InputStreamImplicits {
 			}
 		}
 		
+		// TODO java 9 has this
 		/** copy everything */
 		def transferTo(out:OutputStream) {
 			val	buffer	= new Array[Byte](blockSize)

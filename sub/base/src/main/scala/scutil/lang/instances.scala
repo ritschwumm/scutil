@@ -68,28 +68,28 @@ trait instances extends instancesLow {
 			Show instance identity
 		
 	implicit val ByteShow:Show[Byte]	=
-			Show.toString
+			Show.toStringInstance
 			
 	implicit val ShortShow:Show[Short]	=
-			Show.toString
+			Show.toStringInstance
 			
 	implicit val IntShow:Show[Int]	=
-			Show.toString
+			Show.toStringInstance
 			
 	implicit val LongShow:Show[Long]	=
-			Show.toString
+			Show.toStringInstance
 			
 	implicit val FloatShow:Show[Float]	=
-			Show.toString
+			Show.toStringInstance
 			
 	implicit val DoubleShow:Show[Double]	=
-			Show.toString
+			Show.toStringInstance
 			
 	implicit val CharShow:Show[Char]	=
-			Show.toString
+			Show.toStringInstance
 			
 	implicit val BooleanShow:Show[Boolean]	=
-			Show.toString
+			Show.toStringInstance
 			
 	//------------------------------------------------------------------------------
 	//## on function, questionable

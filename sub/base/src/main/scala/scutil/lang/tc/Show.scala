@@ -8,7 +8,7 @@ object Show {
 				def show(it:T):String	= func(it)
 			}
 			
-	def toString[T]:Show[T]	=
+	def toStringInstance[T]:Show[T]	=
 			Show instance (_.toString)
 }
 

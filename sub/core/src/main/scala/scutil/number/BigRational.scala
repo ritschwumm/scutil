@@ -24,7 +24,7 @@ object BigRational {
 			if (denominator != JBigInteger.ZERO)	Some(new BigRational(numerator, denominator))
 			else									None
 			
-	def apply(numerator:Long, denominator:Long):Option[BigRational] =
+	def fromLongs(numerator:Long, denominator:Long):Option[BigRational] =
 			if (denominator != 0L) {
 				Some(new BigRational(
 					JBigInteger valueOf numerator,
@@ -33,19 +33,19 @@ object BigRational {
 			}
 			else None
 					
-	def apply(numerator:JBigInteger):BigRational =
+	def fromJBigInteger(numerator:JBigInteger):BigRational =
 			new BigRational(
 				numerator,
 				JBigInteger.ONE
 			)
 			
-	def apply(numerator:Long):BigRational =
+	def fromLong(numerator:Long):BigRational =
 			new BigRational(
 				JBigInteger valueOf numerator,
 				JBigInteger.ONE
 			)
 			
-	def apply(numerator:JBigDecimal):BigRational =
+	def fromJBigDecimal(numerator:JBigDecimal):BigRational =
 			new BigRational(
 				numerator.unscaledValue,
 				(JBigDecimal.ONE scaleByPowerOfTen numerator.scale).toBigInteger
