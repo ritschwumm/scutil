@@ -65,7 +65,7 @@ object DndFileImport {
 	
 		private def extractFileList[T](support:TransferSupport, flavor:DataFlavor, extractor:T=>Validated[Nes[Exception],Nes[File]]):Option[Validated[Nes[Exception],Nes[File]]]	=
 				support isDataFlavorSupported flavor guard {
-					extractTransferData[T](support, flavor) mapLeft Nes.single into Validated.fromEither flatMap extractor
+					extractTransferData[T](support, flavor) mapLeft Nes.single into (_.toValidated) flatMap extractor
 				}
 				
 		private def extractTransferData[T](support:TransferSupport, flavor:DataFlavor):Either[Exception,T]	=
@@ -82,8 +82,8 @@ object DndFileImport {
 		
 		// on el captain text/uri-list contains plain file path, but new File(URI) expects an absolute URI
 		private def fileFromURI(s:String):Validated[Nes[Exception],File]	=
-				(fileFromURI1(s) mapLeft Nes.single into Validated.fromEither)	orElse
-				(fileFromURI2(s) mapLeft Nes.single into Validated.fromEither)
+				(fileFromURI1(s) mapLeft Nes.single into (_.toValidated))	orElse
+				(fileFromURI2(s) mapLeft Nes.single into (_.toValidated))
 				
 		private def fileFromURI1(s:String):Either[Exception,File]	=
 				Catch.exception in {

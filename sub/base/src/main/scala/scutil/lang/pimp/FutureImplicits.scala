@@ -21,6 +21,7 @@ trait FutureImplicits {
 		def andThenTotal[U](func:Try[T]=>U)(implicit executor:ExecutionContext):Future[T]	=
 				peer andThen { case x => func(x) }
 			
+		/*
 		@deprecated("0.113.0", "use #transform")
 		def mapTry[U](func:Try[T]=>Try[U])(implicit executor:ExecutionContext):Future[U]	= {
 			val p = Promise[U]
@@ -44,6 +45,7 @@ trait FutureImplicits {
 			}
 			p.future
 		}
+		*/
 		
 		/** like transform, but each branch can fail independently */
 		def transformTry[U](failure:Throwable=>Try[U], success:T=>Try[U])(implicit executor:ExecutionContext):Future[U]	= {

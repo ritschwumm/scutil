@@ -26,7 +26,7 @@ object Converter extends ConverterGenerated with ConverterInstances {
 			
 	def optional[E,S,T](func:PFunction[S,T], bad: =>E):Converter[E,S,T]	=
 			Converter { it =>
-				Validated goodOr (func(it), bad)
+				func(it) toGood bad
 			}
 			
 	def partial[E,S,T](func:PartialFunction[S,T], bad: =>E):Converter[E,S,T]	=
@@ -34,7 +34,7 @@ object Converter extends ConverterGenerated with ConverterInstances {
 			
 	def rejecting[E,T](func:PFunction[T,E]):Converter[E,T,T]	=
 			Converter { it =>
-				Validated badOr (func(it), it)
+				func(it) toBad it
 			}
 			
 	def fromEitherFunc[E,S,T](func:S=>Either[E,T]):Converter[E,S,T]	=

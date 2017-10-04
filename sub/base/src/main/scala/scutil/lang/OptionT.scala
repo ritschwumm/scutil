@@ -1,12 +1,13 @@
 package scutil.lang
 
+import scutil.base.implicits._
 import scutil.lang.tc._
 
 object OptionT extends OptionTInstances {
-	def pure[F[_],T](it:T)(implicit MF:Monad[F]):OptionT[F,T]	= some(it)
+	def pure[F[_]:Applicative,T](it:T):OptionT[F,T]	= some(it)
 	
-	def some[F[_],T](it:T)(implicit MF:Monad[F]):OptionT[F,T]	= fromOption(Some(it))
-	def none[F[_],T](implicit MF:Monad[F]):OptionT[F,T]			= fromOption(None)
+	def some[F[_]:Applicative,T](it:T):OptionT[F,T]	= fromOption(Some(it))
+	def none[F[_]:Applicative,T]:OptionT[F,T]		= fromOption(None)
 	
 	def fromOption[F[_],T](it:Option[T])(implicit M:Applicative[F]):OptionT[F,T]	=
 			OptionT(M pure it)
@@ -14,12 +15,12 @@ object OptionT extends OptionTInstances {
 	def pureF[F[_],T](it:F[T])(implicit M:Functor[F]):OptionT[F,T]	= pureF(it)
 	def someF[F[_],T](it:F[T])(implicit M:Functor[F]):OptionT[F,T]	= OptionT((M map it)(Some.apply))
 	
-	def guard[F[_]](it:Boolean)(implicit M:Applicative[F]):OptionT[F,Unit]	=
-			fromOption(if (it) Some(()) else None)
-			
 	def wrap[F[_]]:Wrap[F]	= new Wrap[F]
 	final class Wrap[F[_]] { 
-		def apply[T](it:F[Option[T]]):OptionT[F,T]	= OptionT(it)
+		def apply[T](it:F[Option[T]]):OptionT[F,T]							= OptionT(it)
+		def option[T](it:Option[T])(implicit M:Applicative[F]):OptionT[F,T]	= fromOption(it)
+		def some[T](it:T)(implicit M:Monad[F]):OptionT[F,T]					= OptionT some it
+		def none[T](implicit M:Monad[F]):OptionT[F,T]						= OptionT.none
 	}
 	
 	//------------------------------------------------------------------------------
@@ -37,6 +38,20 @@ object OptionT extends OptionTInstances {
 		
 	def thunkFromOption[F[_],T](it:Thunk[Option[T]])(implicit D:Delay[F]):OptionT[F,T]	=
 			OptionT(D thunk it)
+		
+	//------------------------------------------------------------------------------
+	
+	@deprecated("use Boolean#guardT", "0.119.0")
+	def when[F[_]:Applicative,T](condition:Boolean, trueSome: =>T):OptionT[F,T]	=
+			condition guardT trueSome
+			
+	@deprecated("use Boolean#preventT", "0.119.0")
+	def unless[F[_]:Applicative,T](condition:Boolean, falseSome: =>T):OptionT[F,T]	=
+			condition preventT falseSome
+		
+	@deprecated("use Boolean#guardOptionT", "0.119.0")
+	def someCondition[F[_]:Applicative,L](condition:Boolean):OptionT[F,Unit]	=
+			condition.guardOptionT
 }
 
 final case class OptionT[F[_],T](value:F[Option[T]]) {
@@ -108,6 +123,30 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 				case None		=> that
 				case Some(x)	=> x
 			}
+			
+	//------------------------------------------------------------------------------
+	
+	def toRight[L](leftValue: =>F[L])(implicit M:Monad[F]):EitherT[F,L,T]	=
+			EitherT {
+				(M flatMap value) {
+					case Some(x)	=> M pure Right(x)
+					case None		=> (M map leftValue)(Left.apply)
+				}
+			}
+			
+	def toRightPure[L](leftValue: =>L)(implicit M:Functor[F]):EitherT[F,L,T]	=
+			EitherT((M map value)(_ toRight leftValue))
+		
+	def toLeft[R](rightValue: =>F[R])(implicit M:Monad[F]):EitherT[F,T,R]	=
+			EitherT {
+				(M flatMap value) {
+					case Some(x)	=> M pure Left(x)
+					case None		=> (M map rightValue)(Right.apply)
+				}
+			}
+			
+	def toLeftPure[R](rightValue: =>R)(implicit M:Functor[F]):EitherT[F,T,R]	=
+			EitherT((M map value)(_ toLeft rightValue))
 }
 
 trait OptionTInstances {

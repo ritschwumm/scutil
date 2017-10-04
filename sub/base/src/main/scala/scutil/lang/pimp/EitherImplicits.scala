@@ -4,6 +4,7 @@ import scala.util.{ Try, Success, Failure }
 import scala.collection.generic.CanBuildFrom
 
 import scutil.lang._
+import scutil.lang.tc._
 
 object EitherImplicits extends EitherImplicits
 
@@ -18,49 +19,19 @@ trait EitherImplicits {
 				if (it eq null)	Left(null)
 				else			Right(it)
 			
+		@deprecated("use Validated#toEither", "0.119.0")
 		def fromValidated[L,R](validated:Validated[L,R]):Either[L,R]	=
-				validated match {
-					case Bad(x)		=> Left(x)
-					case Good(x)	=> Right(x)
-				}
+				validated.toEither
 			
+		@deprecated("use Try#toEither", "0.119.0")
 		def fromTry[T](tryy:Try[T]):Either[Throwable,T]	=
-				tryy match {
-					case Failure(x)	=> Left(x)
-					case Success(x)	=> Right(x)
-				}
+				tryy.toEither
 				
 		//------------------------------------------------------------------------------
 				
 		// Either.cond with flipped arguments
 		def switch[L,R](condition:Boolean, falseLeft: =>L, trueRight: =>R):Either[L,R]	=
 				Either cond (condition, trueRight, falseLeft)
-			
-		def rightOr[L,R](value:Option[R], problem: =>L):Either[L,R]	=
-				value match {
-					case None		=> Left(problem)
-					case Some(x)	=> Right(x)
-				}
-				
-		def leftOr[L,R](problem:Option[L], value: =>R):Either[L,R]	=
-				problem match {
-					case None		=> Right(value)
-					case Some(x)	=> Left(x)
-				}
-				
-		def rightOption[R](problem:Option[R]):Either[Unit,R]	=
-				rightOr(problem, ())
-			
-		def leftOption[L](problem:Option[L]):Either[L,Unit]	=
-				leftOr(problem, ())
-			
-		// aka guard
-		def rightCondition[L](condition:Boolean, problem: =>L):Either[L,Unit]	=
-				if (condition)	Right(())
-				else			Left(problem)
-			
-		def leftCondition[L](condition:Boolean, problem: =>L):Either[L,Unit]	=
-				rightCondition(!condition, problem)
 	}
 	
 	implicit final class EitherExt[L,R](peer:Either[L,R]) {
@@ -231,12 +202,15 @@ trait EitherImplicits {
 		
 		def toTry(implicit ev:L=>Throwable):Try[R]	=
 				peer match {
-					case Left(it)	=> Failure(it)
-					case Right(it)	=> Success(it)
+					case Left(x)	=> Failure(x)
+					case Right(x)	=> Success(x)
 				}
 				
 		def toValidated:Validated[L,R]	=
-				Validated fromEither peer
+				peer match {
+					case Left(x)	=> Bad(x)
+					case Right(x)	=> Good(x)
+				}
 			
 		// exists: toOption
 		
@@ -254,5 +228,10 @@ trait EitherImplicits {
 					case Left(_)	=> Vector.empty
 					case Right(x)	=> Vector(x)
 				}
+				
+		//------------------------------------------------------------------------------
+		
+		def toEitherT[F[_]](implicit M:Applicative[F]):EitherT[F,L,R]	=
+				EitherT fromEither peer
 	}
 }

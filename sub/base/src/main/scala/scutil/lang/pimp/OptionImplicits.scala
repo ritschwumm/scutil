@@ -4,10 +4,9 @@ import java.util.{ Optional => JOptional }
 
 import scala.collection.generic.CanBuildFrom
 
+import scutil.base.implicits._
 import scutil.lang._
-
-// TODO either get rid of this
-import scutil.lang.pimp.EitherImplicits._
+import scutil.lang.tc._
 
 object OptionImplicits extends OptionImplicits
 
@@ -17,15 +16,14 @@ trait OptionImplicits {
 		def some[T](it:T):Option[T]	= Some(it)
 		
 		//------------------------------------------------------------------------------
-				
+		
+		@deprecated("use Boolean#guard", "0.119.0")
 		def when[T](condition:Boolean, trueSome: =>T):Option[T]	=
-				if (condition)	Some(trueSome)
-				else			None
+				condition guard trueSome
 			
-		// aka guard
-		def someCondition[L](condition:Boolean):Option[Unit]	=
-				if (condition)	Some(())
-				else			None
+		@deprecated("use Boolean#prevent", "0.119.0")
+		def unless[T](condition:Boolean, falseSome: =>T):Option[T]	=
+				condition prevent falseSome
 	}
 	
 	implicit final class OptionExt[T](peer:Option[T]) {
@@ -184,17 +182,37 @@ trait OptionImplicits {
 				
 		//------------------------------------------------------------------------------
 		
-		def toRight[F](fail: =>F):Either[F,T]	=
-				Either rightOr (peer, fail)
+		def failEither:Either[T,Unit]	=
+				toLeft(())
 		
-		def toLeft[W](win: =>W):Either[T,W]	=
-				Either leftOr (peer, win)
+		def failValidated:Validated[T,Unit]	=
+				toBad(())
+		
+		//------------------------------------------------------------------------------
+		
+		def toRight[F](leftValue: =>F):Either[F,T]	=
+				peer match {
+					case None		=> Left(leftValue)
+					case Some(x)	=> Right(x)
+				}
+		
+		def toLeft[W](rightValue: =>W):Either[T,W]	=
+				peer match {
+					case None		=> Right(rightValue)
+					case Some(x)	=> Left(x)
+				}
 				
 		def toGood[F](problems: =>F):Validated[F,T]	=
-				Validated goodOr (peer, problems)
+				peer match {
+					case None		=> Bad(problems)
+					case Some(x)	=> Good(x)
+				}
 			
 		def toBad[ES,W](good: =>W):Validated[T,W]	=
-				Validated badOr (peer, good)
+				peer match {
+					case None		=> Good(good)
+					case Some(x)	=> Bad(x)
+				}
 			
 		def toISeq:ISeq[T]	=
 				toVector
@@ -213,5 +231,22 @@ trait OptionImplicits {
 					case Some(x)	=> JOptional of x
 					case None		=> JOptional.empty[T]
 				}
+				
+		//------------------------------------------------------------------------------
+		
+		def toOptionT[F[_]:Applicative]:OptionT[F,T]	=
+				OptionT fromOption peer
+			
+		def toRightT[F[_]:Monad,L](leftValue: =>F[L]):EitherT[F,L,T]	=
+				toOptionT[F] toRight leftValue
+			
+		def toRightPureT[F[_]:Applicative,L](leftValue: =>L):EitherT[F,L,T]	=
+				toOptionT[F] toRightPure leftValue
+			
+		def toLeftT[F[_]:Monad,R](rightValue: =>F[R]):EitherT[F,T,R]	=
+				toOptionT[F] toLeft rightValue
+			
+		def toLeftPureT[F[_]:Applicative,R](rightValue: =>R):EitherT[F,T,R]	=
+				toOptionT[F] toLeftPure rightValue
 	}
 }

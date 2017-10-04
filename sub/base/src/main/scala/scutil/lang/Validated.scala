@@ -1,8 +1,9 @@
 package scutil.lang
 
-import scala.util.{ Try, Success, Failure }
+import scala.util.Try
 import scala.collection.generic.CanBuildFrom
 
+import scutil.base.implicits._
 import scutil.lang.tc._
 
 object Validated extends ValidatedGenerated with ValidatedInstances {
@@ -11,17 +12,13 @@ object Validated extends ValidatedGenerated with ValidatedInstances {
 	
 	//------------------------------------------------------------------------------
 	
+	@deprecated("use Either#toValidated", "0.119.0")
 	def fromEither[E,T](either:Either[E,T]):Validated[E,T]	=
-			either match {
-				case Left(x)	=> Bad(x)
-				case Right(x)	=> Good(x)
-			}
+			either.toValidated
 			
+	@deprecated("use Try#toValidated", "0.119.0")
 	def fromTry[T](tryy:Try[T]):Validated[Throwable,T]	=
-			tryy match {
-				case Failure(x)	=> Bad(x)
-				case Success(x)	=> Good(x)
-			}
+			tryy.toValidated
 			
 	//------------------------------------------------------------------------------
 			
@@ -29,27 +26,25 @@ object Validated extends ValidatedGenerated with ValidatedInstances {
 			if (ok)	good(value)
 			else	bad(problems)
 		
+	@deprecated("use Option#toGood", "0.119.0")
 	def goodOr[E,T](value:Option[T], problems: =>E):Validated[E,T]	=
-			value match {
-				case None		=> bad(problems)
-				case Some(x)	=> good(x)
-			}
+			value toGood problems
 		
+	@deprecated("use Option#toBad", "0.119.0")
 	def badOr[E,T](problems:Option[E], value: =>T):Validated[E,T]	=
-			problems match {
-				case None		=> good(value)
-				case Some(x)	=> bad(x)
-			}
-		
+			problems toBad value
+	
+	@deprecated("use Option#failValidated", "0.119.0")
 	def badOption[E](problems:Option[E]):Validated[E,Unit]	=
-			badOr(problems, ())
+			problems.failValidated
 		
+	@deprecated("use Boolean#guardValidated", "0.119.0")
 	def goodCondition[E,T](condition:Boolean, problems: =>E):Validated[E,Unit]	=
-			if (condition)	good(())
-			else			bad(problems)
+			condition guardValidated problems
 		
+	@deprecated("use Boolean#preventValidated", "0.119.0")
 	def badCondition[E,T](condition:Boolean, problems: =>E):Validated[E,Unit]	=
-			goodCondition(!condition, problems)
+			condition preventValidated problems
 		
 	//------------------------------------------------------------------------------
 	
@@ -206,6 +201,14 @@ sealed trait Validated[+E,+T] {
 		
 	def toVector:Vector[T]	=
 			cata(_ => Vector.empty, Vector(_))
+		
+	//------------------------------------------------------------------------------
+	
+	/*
+	// TODO implement this
+	def toEitherT[F[_]](implicit ev:Applicative[F]):EitherT[F,EE,T]	=
+		toEither.toEitherT
+	*/
 }
 
 final case class Bad[E](problems:E)	extends Validated[E,Nothing]

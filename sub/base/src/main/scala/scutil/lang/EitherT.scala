@@ -6,10 +6,10 @@ import scutil.base.implicits._
 import scutil.lang.tc._
 
 object EitherT extends EitherTInstances {
-	def pure[F[_]:Monad,L,R](it:R):EitherT[F,L,R]	= right(it)
+	def pure[F[_]:Applicative,L,R](it:R):EitherT[F,L,R]	= right(it)
 	
-	def right[F[_]:Monad,L,R](it:R):EitherT[F,L,R]	= fromEither(Either right it)
-	def left[F[_]:Monad,L,R](it:L):EitherT[F,L,R]	= fromEither(Either left it)
+	def right[F[_]:Applicative,L,R](it:R):EitherT[F,L,R]	= fromEither(Either right it)
+	def left[F[_]:Applicative,L,R](it:L):EitherT[F,L,R]	= fromEither(Either left it)
 	
 	def fromEither[F[_],L,R](it:Either[L,R])(implicit M:Applicative[F]):EitherT[F,L,R]	=
 			EitherT(M pure it)
@@ -17,19 +17,25 @@ object EitherT extends EitherTInstances {
 	def pureF[F[_]:Functor,L,R](it:F[R]):EitherT[F,L,R]		= rightF(it)
 	def rightF[F[_]:Functor,L,R](it:F[R]):EitherT[F,L,R]	= EitherT(it map Right.apply)
 	def leftF[F[_]:Functor,L,R](it:F[L]):EitherT[F,L,R]		= EitherT(it map Left.apply)
-	
+ 
 	def wrap[F[_]]:Wrap[F]	= new Wrap[F]
 	final class Wrap[F[_]] { 
-		def apply[L,R](it:F[Either[L,R]]):EitherT[F,L,R]	= EitherT(it)
+		def apply[L,R](it:F[Either[L,R]]):EitherT[F,L,R]							= EitherT(it)
+		def either[L,R](it:Either[L,R])(implicit M:Applicative[F]):EitherT[F,L,R]	= fromEither(it)
+		// left and right need more type parameters
 	}
 	
 	//------------------------------------------------------------------------------
 		
+	/*
+	@deprecated("use Validated#toEitherT", "0.119.0")
 	def fromValidated[F[_],L,R](it:Validated[L,R])(implicit M:Applicative[F]):EitherT[F,L,R]	=
-			EitherT(M pure (Either fromValidated it))
+			EitherT(M pure it.toEither)
+	*/
 	
+	@deprecated("use Try#toEitherT", "0.119.0")
 	def fromTry[F[_],R](it:Try[R])(implicit M:Applicative[F]):EitherT[F,Throwable,R]	=
-			EitherT(M pure (Either fromTry it))
+			it.toEitherT
 	
 	//------------------------------------------------------------------------------
 	
@@ -59,20 +65,22 @@ object EitherT extends EitherTInstances {
 		
 	//------------------------------------------------------------------------------
 	
-	// aka guard
-	def rightCondition[F[_]:Monad,L](flag:Boolean, leftValue: =>L):EitherT[F,L,Unit]	=
-			if (flag)	pure(())
-			else		left(leftValue)
+	def switch[F[_]:Applicative,L,R](condition:Boolean, falseLeft: =>L, trueRight: =>R):EitherT[F,L,R]	=
+			fromEither(Either cond (condition, trueRight, falseLeft))
 		
-	def rightConditionF[F[_]:Functor,L](flag:F[Boolean], leftValue: =>L):EitherT[F,L,Unit]	=
-			//EitherT(flag map { f => }(_ either (leftValue, (()))))
-			EitherT(flag map { f => Either rightCondition (f, leftValue) })
+	//------------------------------------------------------------------------------
 		
+	@deprecated("use Boolean#guardEitherT", "0.119.0")
+	def rightCondition[F[_]:Applicative,L](flag:Boolean, leftValue: =>L):EitherT[F,L,Unit]	=
+			flag guardEitherT leftValue
+		
+	@deprecated("use Option#toRightPureT", "0.119.0")
 	def fromOption[F[_]:Monad,L,R](right:Option[R], leftValue: =>L):EitherT[F,L,R]	=
-			fromEither(right toRight leftValue)
+			right toRightPureT leftValue
 		
+	@deprecated("use OptionT(x)#toRightPure", "0.119.0")
 	def fromOptionF[F[_]:Functor,L,R](right:F[Option[R]], leftValue: =>L):EitherT[F,L,R]	=
-			EitherT(right map (_ toRight leftValue))
+			OptionT(right) toRightPure leftValue
 }
 
 final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
