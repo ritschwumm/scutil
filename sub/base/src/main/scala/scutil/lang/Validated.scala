@@ -129,11 +129,19 @@ sealed trait Validated[+E,+T] {
 	def reject[EE>:E](func:PFunction[T,EE]):Validated[EE,T]	=
 			cata(Bad.apply, it => func(it) map Bad.apply getOrElse Good(it))
 			
-	def guardByOr[EE>:E](func:Predicate[T], bad: =>EE):Validated[EE,T]	=
+	def winByOr[EE>:E](func:Predicate[T], bad: =>EE):Validated[EE,T]	=
 			cata(Bad.apply, it => if (func(it)) Good(it) else Bad(bad))
 			
-	def preventByOr[EE>:E](func:Predicate[T], bad: =>EE):Validated[EE,T]	=
+	def winNotByOr[EE>:E](func:Predicate[T], bad: =>EE):Validated[EE,T]	=
 			cata(Bad.apply, it => if (!func(it)) Good(it) else Bad(bad))
+			
+	@deprecated("use winByOr", "0.121.0")
+	def guardByOr[EE>:E](func:Predicate[T], bad: =>EE):Validated[EE,T]	=
+			winByOr(func, bad)
+			
+	@deprecated("use winNotByOr", "0.121.0")
+	def preventByOr[EE>:E](func:Predicate[T], bad: =>EE):Validated[EE,T]	=
+			winNotByOr(func, bad)
 			
 	def collapseOr[EE>:E,TT](func:PFunction[T,TT], bad: =>EE):Validated[EE,TT]	=
 			cata(Bad.apply, it => func(it) map Good.apply getOrElse Bad(bad))

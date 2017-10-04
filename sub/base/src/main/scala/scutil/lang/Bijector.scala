@@ -22,8 +22,8 @@ private final class BijectorImpl(val c:Context) {
 				for {
 					companionSymbol	<-
 							selfType.typeSymbol.companion
-							.preventBy	{ _ == NoSymbol }
-							.toRight	(s"unexpected NoSymbol for companion of ${selfType.typeSymbol}")
+							.optionNotBy	{ _ == NoSymbol }
+							.toRight		(s"unexpected NoSymbol for companion of ${selfType.typeSymbol}")
 			
 					// TODO use this?
 					// companionModule	= companionSymbol.asModule
@@ -130,6 +130,6 @@ private final class BijectorImpl(val c:Context) {
 			
 	private def getDeclaration(typ:Type, name:String):Either[String,Symbol]	=
 			(typ decl TermName(name))
-			.preventBy	{ _ == NoSymbol }
-			.toRight	(s"unexpected NoSymbol for companion declaration ${name} of type ${typ}")
+			.optionNotBy	{ _ == NoSymbol }
+			.toRight		(s"unexpected NoSymbol for companion declaration ${name} of type ${typ}")
 }

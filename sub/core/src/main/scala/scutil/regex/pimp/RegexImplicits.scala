@@ -12,6 +12,6 @@ trait RegexImplicits {
 				(peer.pattern matcher s).matches
 		
 		def toPrism:Prism[String,String]	=
-				Prism guarded test
+				Prism filtered test
 	}
 }

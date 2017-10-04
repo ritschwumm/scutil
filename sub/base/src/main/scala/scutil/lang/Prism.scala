@@ -15,11 +15,15 @@ object Prism extends PrismInstances {
 	def always[T]:Prism[Option[T],T]	=
 			Prism(Predef.identity, Some.apply)
 			
-	def guarded[T](pred:T=>Boolean):Prism[T,T]	=
+	def filtered[T](pred:T=>Boolean):Prism[T,T]	=
 			Prism(
 				it => if (pred(it)) Some(it) else None,
 				Predef.identity
 			)
+		
+	@deprecated("use filtered", "0.121.0")
+	def guarded[T](pred:T=>Boolean):Prism[T,T]	=
+			filtered(pred)
 }
 
 /** parser and unparser for some data into a side format, aka Prism' */

@@ -9,6 +9,10 @@ object Extractor extends ExtractorInstances {
 	def partial[S,T](func:PartialFunction[S,T]):Extractor[S,T]	=
 			Extractor(s	=> if (func isDefinedAt s) Some(func apply s) else None)
 	
+	def filtered[T](pred:Predicate[T]):Extractor[T,T]	=
+			Extractor(it => if (pred(it)) Some(it) else None)
+			
+	@deprecated("use filtered", "0.121.0")
 	def guarding[T](pred:Predicate[T]):Extractor[T,T]	=
 			Extractor(it => if (pred(it)) Some(it) else None)
 			

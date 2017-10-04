@@ -71,32 +71,6 @@ trait BooleanImplicits {
 				OptionT fromOption optionNot(falseValue)
 			
 		//------------------------------------------------------------------------------
-			
-		@deprecated("use option", "0.120.0")
-		def guard[T](trueValue: =>T):Option[T] =
-				option(trueValue)
-		
-		@deprecated("use optionNot", "0.120.0")
-		def prevent[T](falseValue: =>T):Option[T] =
-				optionNot(falseValue)
-			
-		@deprecated("use flatOption", "0.120.0")
-		def flatGuard[T](trueValue: =>Option[T]):Option[T] =
-				flatOption(trueValue)
-		
-		@deprecated("use flatOptionNot", "0.120.0")
-		def flatPrevent[T](falseValue: =>Option[T]):Option[T] =
-				flatOptionNot(falseValue)
-				
-		@deprecated("use optionT", "0.120.0")
-		def guardT[F[_]:Applicative,T](trueValue: =>T):OptionT[F,T] =
-				optionT(trueValue)
-		
-		@deprecated("use optionNotT", "0.120.0")
-		def preventT[F[_]:Applicative,T](falseValue: =>T):OptionT[F,T] =
-				optionNotT(falseValue)
-			
-		//------------------------------------------------------------------------------
 		
 		// TODO generalize to MonadPlus (?)
 		

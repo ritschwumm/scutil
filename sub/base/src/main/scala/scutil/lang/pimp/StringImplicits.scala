@@ -38,10 +38,14 @@ trait StringImplicits {
 		
 		//------------------------------------------------------------------------------
 		
-		def guardNonEmpty:Option[String]	=
+		def optionNonEmpty:Option[String]	=
 				if (peer.nonEmpty)	Some(peer)
 				else				None
 		
+		@deprecated("use optionNonEmpty", "0.121.0")
+		def guardNonEmpty:Option[String]	=
+				optionNonEmpty
+			
 		//------------------------------------------------------------------------------
 			
 		def cutPrefix(prefix:String):Option[String] =

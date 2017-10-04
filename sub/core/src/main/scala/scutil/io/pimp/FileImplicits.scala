@@ -54,7 +54,7 @@ trait FileImplicits {
 				peer :: parentChain
 						
 		/** Some existing file, or None */
-		def guardExists:Option[File] =
+		def optionExists:Option[File] =
 				if (peer.exists)	Some(peer)
 				else				None
 	

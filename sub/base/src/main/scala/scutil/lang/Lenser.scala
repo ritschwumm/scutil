@@ -29,7 +29,7 @@ private final class LenserImpl(val c:Context) {
 					containerType	= c.weakTypeOf[T]
 					member			<-
 							(containerType member fieldName)
-							.guardBy		{ _ != NoSymbol }
+							.optionBy		{ _ != NoSymbol }
 							.toRight		(s"value ${name} is not a member of ${containerType}")
 					valueType		<-
 							(member typeSignatureIn containerType)

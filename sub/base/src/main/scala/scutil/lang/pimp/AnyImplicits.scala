@@ -54,7 +54,7 @@ trait AnyImplicits {
 		/*
 		// NOTE works only for covariant type parameters
 		// typesafe casting
-		def guardInstanceOf[U](implicit tm:Manifest[T], um:Manifest[U]):Option[U] = {
+		def optionInstanceOf[U](implicit tm:Manifest[T], um:Manifest[U]):Option[U] = {
 			def sameArgs	= (um.typeArguments zip tm.typeArguments) forall { case (ua,ta) => ua >:> ta }
 			if (um >:> tm && sameArgs)	Some(peer.asInstanceOf[U])
 			else						None
@@ -64,12 +64,20 @@ trait AnyImplicits {
 		//------------------------------------------------------------------------------
 		
 		/** Some if the predicate matches, else None */
-		def guardBy(predicate:T=>Boolean):Option[T]	=
+		def optionBy(predicate:T=>Boolean):Option[T]	=
 				if (predicate(peer)) Some(peer) else None
-				
+			
 		/** None if the predicate matches, else Some */
-		def preventBy(predicate:T=>Boolean):Option[T]	=
+		def optionNotBy(predicate:T=>Boolean):Option[T]	=
 				if (predicate(peer)) None else Some(peer)
+			
+		@deprecated("use optionBy", "0.121.0")
+		def guardBy(predicate:T=>Boolean):Option[T]	=
+				optionBy(predicate)
+				
+		@deprecated("use optionNotBy", "0.121.0")
+		def preventBy(predicate:T=>Boolean):Option[T]	=
+				optionNotBy(predicate)
 				
 		/** Right if the predicate matches, else Left */
 		def eitherBy(predicate:T=>Boolean):Either[T,T]	=

@@ -22,7 +22,7 @@ object Dump {
 	}
 	
 	object AsciiFormat extends DumpFormat {
-		def string(line:ISeq[Byte])		= line map { _.toChar guardBy printable getOrElse "." } mkString ""
+		def string(line:ISeq[Byte])		= line map { _.toChar optionBy printable getOrElse "." } mkString ""
 		def width(size:Int):Int			= size
 		def printable(c:Char):Boolean	= c >= 32 && c <= 127
 	}
