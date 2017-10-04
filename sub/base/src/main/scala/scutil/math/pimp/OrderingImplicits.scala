@@ -33,6 +33,9 @@ trait OrderingImplicits {
 						peer compare (x, y)
 					}
 				}
+				
+		def contraMap[S](func:S=>T):Ordering[S]	=
+				peer on func
 			
 		// TODO remove when scala 2.13 is there
 		/**

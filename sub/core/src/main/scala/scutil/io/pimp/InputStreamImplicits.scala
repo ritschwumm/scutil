@@ -58,9 +58,9 @@ trait InputStreamImplicits {
 			}
 		}
 		
-		// TODO java 9 has this
 		/** copy everything */
-		def transferTo(out:OutputStream) {
+		// TODO kept only for compatibility with java 8, this exists in java 9 as transferTo
+		def transferToPre9(out:OutputStream) {
 			val	buffer	= new Array[Byte](blockSize)
 			var running	= true
 			while (running) {
