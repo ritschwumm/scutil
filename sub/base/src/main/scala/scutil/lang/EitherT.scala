@@ -1,7 +1,5 @@
 package scutil.lang
 
-import scala.util.Try
-
 import scutil.base.implicits._
 import scutil.lang.tc._
 
@@ -27,18 +25,6 @@ object EitherT extends EitherTInstances {
 	
 	//------------------------------------------------------------------------------
 		
-	/*
-	@deprecated("use Validated#toEitherT", "0.119.0")
-	def fromValidated[F[_],L,R](it:Validated[L,R])(implicit M:Applicative[F]):EitherT[F,L,R]	=
-			EitherT(M pure it.toEither)
-	*/
-	
-	@deprecated("use Try#toEitherT", "0.119.0")
-	def fromTry[F[_],R](it:Try[R])(implicit M:Applicative[F]):EitherT[F,Throwable,R]	=
-			it.toEitherT
-	
-	//------------------------------------------------------------------------------
-	
 	def delay[F[_]:Delay,L,R](it: =>R):EitherT[F,L,R]		= delayWin(it)
 	
 	def delayWin[F[_]:Delay,L,R](it: =>R):EitherT[F,L,R]	= delayFromEither(Either right it)
@@ -67,20 +53,6 @@ object EitherT extends EitherTInstances {
 	
 	def switch[F[_]:Applicative,L,R](condition:Boolean, falseLeft: =>L, trueRight: =>R):EitherT[F,L,R]	=
 			fromEither(Either cond (condition, trueRight, falseLeft))
-		
-	//------------------------------------------------------------------------------
-		
-	@deprecated("use Boolean#guardEitherT", "0.119.0")
-	def rightCondition[F[_]:Applicative,L](flag:Boolean, leftValue: =>L):EitherT[F,L,Unit]	=
-			flag guardEitherT leftValue
-		
-	@deprecated("use Option#toRightPureT", "0.119.0")
-	def fromOption[F[_]:Monad,L,R](right:Option[R], leftValue: =>L):EitherT[F,L,R]	=
-			right toRightPureT leftValue
-		
-	@deprecated("use OptionT(x)#toRightPure", "0.119.0")
-	def fromOptionF[F[_]:Functor,L,R](right:F[Option[R]], leftValue: =>L):EitherT[F,L,R]	=
-			OptionT(right) toRightPure leftValue
 }
 
 final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {

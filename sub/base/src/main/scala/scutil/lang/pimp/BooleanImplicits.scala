@@ -11,6 +11,40 @@ trait BooleanImplicits {
 				if (peer)	trueValue
 				else		falseValue
 				
+		//------------------------------------------------------------------------------
+		
+		def option[T](trueValue: =>T):Option[T] =
+				if (peer)	Some(trueValue)
+				else		None
+		
+		def optionNot[T](falseValue: =>T):Option[T] =
+				if (!peer)	Some(falseValue)
+				else		None
+			
+		def list[T](trueValue: =>T):List[T]	=
+				if (peer)	List(trueValue)
+				else		List.empty
+				
+		def listNot[T](falseValue: =>T):List[T]	=
+				if (!peer)	List(falseValue)
+				else		List.empty
+				
+		def vector[T](trueValue: =>T):Vector[T]	=
+				if (peer)	Vector(trueValue)
+				else		Vector.empty
+				
+		def vectorNot[T](falseValue: =>T):Vector[T]	=
+				if (!peer)	Vector(falseValue)
+				else		Vector.empty
+				
+		def set[T](trueValue: =>T):Set[T]	=
+				if (peer)	Set(trueValue)
+				else		Set.empty
+				
+		def setNot[T](falseValue: =>T):Set[T]	=
+				if (!peer)	Set(falseValue)
+				else		Set.empty
+				
 		def either[U,V](falseLeft: =>U, trueRight: =>V):Either[U,V] =
 				if (peer)	Right(trueRight)
 				else		Left(falseLeft)
@@ -20,37 +54,57 @@ trait BooleanImplicits {
 			
 		//------------------------------------------------------------------------------
 		
-		// TODO rename these to when and unless
-		
-		def guard[T](trueValue: =>T):Option[T] =
-				if (peer)	Some(trueValue)
-				else		None
-		
-		def prevent[T](falseValue: =>T):Option[T] =
-				if (!peer)	Some(falseValue)
-				else		None
-			
-		def flatGuard[T](trueValue: =>Option[T]):Option[T] =
+		def flatOption[T](trueValue: =>Option[T]):Option[T] =
 				if (peer)	trueValue
 				else		None
 		
-		def flatPrevent[T](falseValue: =>Option[T]):Option[T] =
+		def flatOptionNot[T](falseValue: =>Option[T]):Option[T] =
 				if (!peer)	falseValue
 				else		None
-				
-		def guardT[F[_]:Applicative,T](trueValue: =>T):OptionT[F,T] =
-				OptionT fromOption guard(trueValue)
+			
+		//------------------------------------------------------------------------------
+			
+		def optionT[F[_]:Applicative,T](trueValue: =>T):OptionT[F,T] =
+				OptionT fromOption option(trueValue)
 		
+		def optionNotT[F[_]:Applicative,T](falseValue: =>T):OptionT[F,T] =
+				OptionT fromOption optionNot(falseValue)
+			
+		//------------------------------------------------------------------------------
+			
+		@deprecated("use option", "0.120.0")
+		def guard[T](trueValue: =>T):Option[T] =
+				option(trueValue)
+		
+		@deprecated("use optionNot", "0.120.0")
+		def prevent[T](falseValue: =>T):Option[T] =
+				optionNot(falseValue)
+			
+		@deprecated("use flatOption", "0.120.0")
+		def flatGuard[T](trueValue: =>Option[T]):Option[T] =
+				flatOption(trueValue)
+		
+		@deprecated("use flatOptionNot", "0.120.0")
+		def flatPrevent[T](falseValue: =>Option[T]):Option[T] =
+				flatOptionNot(falseValue)
+				
+		@deprecated("use optionT", "0.120.0")
+		def guardT[F[_]:Applicative,T](trueValue: =>T):OptionT[F,T] =
+				optionT(trueValue)
+		
+		@deprecated("use optionNotT", "0.120.0")
 		def preventT[F[_]:Applicative,T](falseValue: =>T):OptionT[F,T] =
-				OptionT fromOption prevent(falseValue)
+				optionNotT(falseValue)
 			
 		//------------------------------------------------------------------------------
 		
+		// TODO generalize to MonadPlus (?)
+		
 		def guardOption:Option[Unit]	=
-				guard(())
+				option(())
 			
 		def preventOption:Option[Unit]	=
-				prevent(())
+				optionNot(())
 			
 		def guardEither[U](leftValue: =>U):Either[U,Unit]	=
 				if (peer)	Right(())
@@ -69,10 +123,16 @@ trait BooleanImplicits {
 				else		Bad(problems)
 			
 		def guardISeq[T](trueValue: =>T):ISeq[T] =
+				guardVector(trueValue)
+		
+		def preventISeq[T](falseValue: =>T):ISeq[T] =
+				preventVector(falseValue)
+			
+		def guardVector[T](trueValue: =>T):Vector[T] =
 				if (peer)	Vector(trueValue)
 				else		Vector.empty
 		
-		def preventISeq[T](falseValue: =>T):ISeq[T] =
+		def preventVector[T](falseValue: =>T):ISeq[T] =
 				if (!peer)	Vector(falseValue)
 				else		Vector.empty
 			
@@ -89,32 +149,6 @@ trait BooleanImplicits {
 			
 		def preventEitherT[F[_]:Applicative,U](leftValue: =>U):EitherT[F,U,Unit]	=
 				EitherT switch (!peer, leftValue, ())
-			
-		//------------------------------------------------------------------------------
-		
-		@deprecated("use guardOption", "0.119.0")
-		def trueSome:Option[Unit]	=
-				guardOption
-		
-		@deprecated("use preventOption", "0.119.0")
-		def falseSome:Option[Unit]	=
-				preventOption
-			
-		@deprecated("use guardEither", "0.119.0")
-		def trueRight[U](problem: =>U):Either[U,Unit]	=
-				guardEither(problem)
-		
-		@deprecated("use preventEither", "0.119.0")
-		def falseRight[U](problem: =>U):Either[U,Unit]	=
-				preventEither(problem)
-			
-		@deprecated("use guardValidated", "0.119.0")
-		def trueValidated[E](problems: =>E):Validated[E,Unit]	=
-				Validated goodCondition (peer, problems)
-			
-		@deprecated("use preventValidated", "0.119.0")
-		def falseValidated[E](problems: =>E):Validated[E,Unit]	=
-				Validated badCondition (peer, problems)
 			
 		//------------------------------------------------------------------------------
 		

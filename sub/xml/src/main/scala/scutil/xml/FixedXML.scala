@@ -60,7 +60,7 @@ object FixedXML extends XMLLoader[Elem] {
 	}
 	
 	private def write(node:Node, xmlDecl:Boolean, docType:Option[DocType], minimizeTags:MinimizeMode.Value)(writer:Writer) {
-		xmlDecl guard s"<?xml version='1.0' encoding='${encoding.name}'?>\n" foreach writer.write
+		xmlDecl option s"<?xml version='1.0' encoding='${encoding.name}'?>\n" foreach writer.write
 		docType map { _.toString + "\n" } foreach writer.write
 		writer write (Utility serialize (node, minimizeTags = minimizeTags)).toString
 	}

@@ -19,16 +19,6 @@ trait EitherImplicits {
 				if (it eq null)	Left(null)
 				else			Right(it)
 			
-		@deprecated("use Validated#toEither", "0.119.0")
-		def fromValidated[L,R](validated:Validated[L,R]):Either[L,R]	=
-				validated.toEither
-			
-		@deprecated("use Try#toEither", "0.119.0")
-		def fromTry[T](tryy:Try[T]):Either[Throwable,T]	=
-				tryy.toEither
-				
-		//------------------------------------------------------------------------------
-				
 		// Either.cond with flipped arguments
 		def switch[L,R](condition:Boolean, falseLeft: =>L, trueRight: =>R):Either[L,R]	=
 				Either cond (condition, trueRight, falseLeft)

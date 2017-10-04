@@ -1,6 +1,5 @@
 package scutil.lang
 
-import scutil.base.implicits._
 import scutil.lang.tc._
 
 object OptionT extends OptionTInstances {
@@ -38,20 +37,6 @@ object OptionT extends OptionTInstances {
 		
 	def thunkFromOption[F[_],T](it:Thunk[Option[T]])(implicit D:Delay[F]):OptionT[F,T]	=
 			OptionT(D thunk it)
-		
-	//------------------------------------------------------------------------------
-	
-	@deprecated("use Boolean#guardT", "0.119.0")
-	def when[F[_]:Applicative,T](condition:Boolean, trueSome: =>T):OptionT[F,T]	=
-			condition guardT trueSome
-			
-	@deprecated("use Boolean#preventT", "0.119.0")
-	def unless[F[_]:Applicative,T](condition:Boolean, falseSome: =>T):OptionT[F,T]	=
-			condition preventT falseSome
-		
-	@deprecated("use Boolean#guardOptionT", "0.119.0")
-	def someCondition[F[_]:Applicative,L](condition:Boolean):OptionT[F,Unit]	=
-			condition.guardOptionT
 }
 
 final case class OptionT[F[_],T](value:F[Option[T]]) {

@@ -9,7 +9,7 @@ object UidPrisms {
 	val ByteArray:Prism[Array[Byte],Uid]	=
 			Prism(
 				(it:Array[Byte])	=> {
-					it.size == 4*8 guard {
+					it.size == 4*8 option {
 						val bb	= ByteBuffer wrap it
 						Uid(
 							machine	= bb.getLong,

@@ -1,9 +1,7 @@
 package scutil.lang
 
-import scala.util.Try
 import scala.collection.generic.CanBuildFrom
 
-import scutil.base.implicits._
 import scutil.lang.tc._
 
 object Validated extends ValidatedGenerated with ValidatedInstances {
@@ -12,40 +10,10 @@ object Validated extends ValidatedGenerated with ValidatedInstances {
 	
 	//------------------------------------------------------------------------------
 	
-	@deprecated("use Either#toValidated", "0.119.0")
-	def fromEither[E,T](either:Either[E,T]):Validated[E,T]	=
-			either.toValidated
-			
-	@deprecated("use Try#toValidated", "0.119.0")
-	def fromTry[T](tryy:Try[T]):Validated[Throwable,T]	=
-			tryy.toValidated
-			
-	//------------------------------------------------------------------------------
-			
 	def switch[E,T](ok:Boolean, problems: =>E, value: =>T):Validated[E,T]	=
 			if (ok)	good(value)
 			else	bad(problems)
-		
-	@deprecated("use Option#toGood", "0.119.0")
-	def goodOr[E,T](value:Option[T], problems: =>E):Validated[E,T]	=
-			value toGood problems
-		
-	@deprecated("use Option#toBad", "0.119.0")
-	def badOr[E,T](problems:Option[E], value: =>T):Validated[E,T]	=
-			problems toBad value
 	
-	@deprecated("use Option#failValidated", "0.119.0")
-	def badOption[E](problems:Option[E]):Validated[E,Unit]	=
-			problems.failValidated
-		
-	@deprecated("use Boolean#guardValidated", "0.119.0")
-	def goodCondition[E,T](condition:Boolean, problems: =>E):Validated[E,Unit]	=
-			condition guardValidated problems
-		
-	@deprecated("use Boolean#preventValidated", "0.119.0")
-	def badCondition[E,T](condition:Boolean, problems: =>E):Validated[E,Unit]	=
-			condition preventValidated problems
-		
 	//------------------------------------------------------------------------------
 	
 	/*

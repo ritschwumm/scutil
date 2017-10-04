@@ -4,7 +4,6 @@ import java.util.{ Optional => JOptional }
 
 import scala.collection.generic.CanBuildFrom
 
-import scutil.base.implicits._
 import scutil.lang._
 import scutil.lang.tc._
 
@@ -14,16 +13,6 @@ trait OptionImplicits {
 	implicit final class OptionCompanionImplicits(peer:Option.type) {
 		def none[T]:Option[T]	= None
 		def some[T](it:T):Option[T]	= Some(it)
-		
-		//------------------------------------------------------------------------------
-		
-		@deprecated("use Boolean#guard", "0.119.0")
-		def when[T](condition:Boolean, trueSome: =>T):Option[T]	=
-				condition guard trueSome
-			
-		@deprecated("use Boolean#prevent", "0.119.0")
-		def unless[T](condition:Boolean, falseSome: =>T):Option[T]	=
-				condition prevent falseSome
 	}
 	
 	implicit final class OptionExt[T](peer:Option[T]) {

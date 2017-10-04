@@ -55,7 +55,7 @@ object DndFileImport {
 		//------------------------------------------------------------------------------
 				
 		private def importEffect(support:TransferSupport):Option[Effect[Validated[Nes[Exception],Nes[File]]]] =
-				supportsFormat(support)	flatGuard consumer(dropIntPoint(support))
+				supportsFormat(support)	flatOption consumer(dropIntPoint(support))
 				
 		private def supportsFormat(support:TransferSupport):Boolean =
 				support.getDataFlavors.toSet containsAny DndFileImport.importable
@@ -64,7 +64,7 @@ object DndFileImport {
 				support.getDropLocation.getDropPoint.toIntPoint
 	
 		private def extractFileList[T](support:TransferSupport, flavor:DataFlavor, extractor:T=>Validated[Nes[Exception],Nes[File]]):Option[Validated[Nes[Exception],Nes[File]]]	=
-				support isDataFlavorSupported flavor guard {
+				support isDataFlavorSupported flavor option {
 					extractTransferData[T](support, flavor) mapLeft Nes.single into (_.toValidated) flatMap extractor
 				}
 				
