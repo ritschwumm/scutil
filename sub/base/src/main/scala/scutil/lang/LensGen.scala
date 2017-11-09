@@ -7,15 +7,15 @@ import scala.reflect.macros.whitebox.Context
 import scutil.lang.implicits._
 
 /** creates lens instances for a case classes' fields */
-object Lenser {
-	def apply[T]	= new Lenser[T]
+object LensGen {
+	def apply[T]	= new LensGen[T]
 }
 
-final class Lenser[T] extends Dynamic {
-	def selectDynamic(propName:String):AnyRef	= macro LenserImpl.compile[T]
+final class LensGen[T] extends Dynamic {
+	def selectDynamic(propName:String):AnyRef	= macro LensGenImpl.compile[T]
 }
 
-private final class LenserImpl(val c:Context) {
+private final class LensGenImpl(val c:Context) {
 	import c.universe._
 		
 	def compile[T:c.WeakTypeTag](propName:c.Tree):c.Tree	= {

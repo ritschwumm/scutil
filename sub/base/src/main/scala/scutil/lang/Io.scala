@@ -7,6 +7,8 @@ object Io extends IoInstances {
 	def delay[T](it: =>T):Io[T]		= Io(() => it)
 	def thunk[T](it:Thunk[T]):Io[T]	= Io(it)
 	
+	def pureUnit:Io[Unit]	= Io(()=>())
+	
 	//------------------------------------------------------------------------------
 	
 	def newIoRef[T](initial: =>T):Io[IoRef[T]]	=
@@ -73,7 +75,13 @@ final case class Io[T](unsafeRun:()=>T) {
 
 trait IoInstances {
 	implicit val IoUnitMonoid:Monoid[Io[Unit]]	=
-			Monoid instance (Io pure (()), _ second _)
+			Monoid instance (
+				Io.pureUnit,
+				(a, b) =>
+							 if (a == Io.pureUnit)	b
+						else if (b == Io.pureUnit)	a
+						else						a second b
+			)
 			
 	implicit val IoMonad:Monad[Io]	=
 			new Monad[Io] {

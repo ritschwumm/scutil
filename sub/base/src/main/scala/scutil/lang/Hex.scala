@@ -23,7 +23,7 @@ object Hex {
 	private val invalid	= -1
 	
 	def decodeByteString(s:String):Option[ByteString]	=
-			decodeByteArray(s) map ByteString.unsafeFromByteArray
+			decodeByteArray(s) map ByteString.unsafeFromArray
 		
 	def decodeByteArray(s:String):Option[Array[Byte]]	= {
 		val count	= s.length / 2

@@ -5,6 +5,8 @@ import java.nio.charset.Charset
 
 import scala.collection.mutable
 
+import scutil.lang.ByteString
+
 object InputStreamImplicits extends InputStreamImplicits
 
 trait InputStreamImplicits {
@@ -23,6 +25,9 @@ trait InputStreamImplicits {
 			}
 			offset
 		}
+		
+		def readFullyByteString():ByteString	=
+				ByteString unsafeFromArray readFully()
 		
 		/** read the complete content */
 		def readFully():Array[Byte] = {

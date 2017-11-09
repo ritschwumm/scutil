@@ -10,7 +10,7 @@ object CharsetImplicits extends CharsetImplicits
 trait CharsetImplicits {
 	implicit final class CharsetExt(peer:Charset) {
 		def encodeByteString(string:String):Either[CharacterCodingException,ByteString]	=
-				encodeEither(string) map ByteString.unsafeFromByteArray
+				encodeEither(string) map ByteString.unsafeFromArray
 			
 		def decodeByteString(string:ByteString):Either[CharacterCodingException,String]	=
 				decodeEither(string.unsafeValue)

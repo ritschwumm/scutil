@@ -3,11 +3,16 @@ package scutil.io.pimp
 import java.io._
 import java.nio.charset.Charset
 
+import scutil.lang.ByteString
+
 object OutputStreamImplicits extends OutputStreamImplicits
 
 trait OutputStreamImplicits {
 	/** utility methods for OutputStream objects */
 	implicit final class OutputStreamExt(peer:OutputStream) {
+		def writeByteString(it:ByteString):Unit	=
+				peer write it.unsafeValue
+			
 		def buffered:BufferedOutputStream	=
 				new BufferedOutputStream(peer)
 			

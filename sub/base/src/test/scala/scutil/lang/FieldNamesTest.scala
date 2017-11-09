@@ -4,10 +4,10 @@ import org.specs2.mutable._
 
 final case class Named(a:Int, b:String, c:java.util.Date)
 
-class FielderTest extends Specification {
-	"fielding" should {
+class FieldNamesTest extends Specification {
+	"FieldNames" should {
 		"work directly" in {
-			Fielder[Named] mustEqual Seq("a", "b", "c")
+			implicitly[FieldNames[Named]] mustEqual FieldNames(Vector("a", "b", "c"))
 		}
 		"work indirectly" in {
 			val names	= getNames[Named]
@@ -15,5 +15,5 @@ class FielderTest extends Specification {
 		}
 	}
 	
-	def getNames[T:Fielding]:Seq[String]	= Fielder[T]
+	def getNames[T:FieldNames]:Seq[String]	=implicitly[FieldNames[Named]].names
 }

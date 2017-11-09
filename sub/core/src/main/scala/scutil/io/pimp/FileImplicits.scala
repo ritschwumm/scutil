@@ -119,6 +119,11 @@ trait FileImplicits {
 		//------------------------------------------------------------------------------
 		//## file only: complete read
 		
+		// TODO Files readAllBytes delegate
+		// TODO Files write (delegate, content)
+		def readByteString():ByteString				= withInputStream	{ _ readFullyByteString ()	}
+		def writeByteString(bytes:ByteString):Unit	= withOutputStream	{ _ writeByteString bytes	}
+		
 		def readBytes():Array[Byte]				= withInputStream	{ _ readFully ()	}
 		def writeBytes(bytes:Array[Byte]):Unit	= withOutputStream	{ _ write bytes		}
 		

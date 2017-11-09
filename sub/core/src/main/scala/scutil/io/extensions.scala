@@ -4,7 +4,8 @@ import scutil.io.pimp._
 
 object extensions extends extensions
 trait extensions
-		extends	FileImplicits
+		extends	DataOutputImplicits
+		with	FileImplicits
 		with	PathImplicits
 		with	InputStreamImplicits
 		with	OutputStreamImplicits

@@ -3,7 +3,10 @@ package scutil.lang
 import scala.annotation.tailrec
 
 import java.util.{ Arrays => JArrays }
+import java.nio.ByteBuffer
 import java.nio.charset.Charset
+
+import scala.collection.mutable
 
 import scutil.lang.tc._
 
@@ -15,13 +18,13 @@ object ByteString extends ByteStringInstances {
 	
 	//------------------------------------------------------------------------------
 	
-	def fromByteArray(it:Array[Byte]):ByteString	=
-			makeWithByteArray(it.length) { tmp =>
+	def fromArray(it:Array[Byte]):ByteString	=
+			makeWithArray(it.length) { tmp =>
 				System arraycopy (it, 0, tmp, 0, it.length)
 			}
 	
 	def fromSeq(it:Seq[Byte]):ByteString	=
-			makeWithByteArray(it.size) { tmp =>
+			makeWithArray(it.size) { tmp =>
 				val iter = it.iterator
 				var i = 0
 				while (iter.hasNext) {
@@ -39,24 +42,39 @@ object ByteString extends ByteStringInstances {
 	def fromUtf8String(it:String):ByteString	=
 			fromString(it, Charsets.utf_8)
 		
-	def sliceFromByteArray(it:Array[Byte], srcPos:Int, copyLength:Int):Option[ByteString]	=
+	def fromArrayBuffer(it:mutable.ArrayBuffer[Byte]):ByteString	=
+			new ByteString(it.toArray)
+		
+	def sliceFromArray(it:Array[Byte], srcPos:Int, copyLength:Int):Option[ByteString]	=
 			if (!containsSlice(srcPos, srcPos+copyLength, it.length))	None
 			else Some {
-				makeWithByteArray(copyLength) { tmp =>
+				makeWithArray(copyLength) { tmp =>
 					System arraycopy (it, srcPos, tmp, 0, copyLength)
 				}
 			}
 	
 	//------------------------------------------------------------------------------
 		
-	def makeWithByteArray(size:Int)(effect:Effect[Array[Byte]]):ByteString	= {
+	def makeWithArray(size:Int)(effect:Effect[Array[Byte]]):ByteString	= {
 		val tmp	= new Array[Byte](size)
 		effect(tmp)
 		new ByteString(tmp)
 	}
 	
-	def unsafeFromByteArray(it:Array[Byte]):ByteString	=
+	def makeWithByteBuffer(size:Int)(effect:Effect[ByteBuffer]):ByteString	= {
+		val tmp	= ByteBuffer allocate size
+		effect(tmp)
+		new ByteString(tmp.array())
+	}
+	
+	def unsafeFromArray(it:Array[Byte]):ByteString	=
 			new ByteString(it)
+		
+	def unsafeFromByteBuffer(it:ByteBuffer):ByteString	=
+			new ByteString(it.array())
+		
+	val unsafeArrayBijection:Bijection[Array[Byte],ByteString]	=
+			Bijection(ByteString.unsafeFromArray, _.unsafeValue)
 		
 	//------------------------------------------------------------------------------
 	
@@ -64,7 +82,7 @@ object ByteString extends ByteStringInstances {
 			fromSeq(its)
 		
 	def unapplySeq(it:ByteString):Option[Seq[Byte]]	=
-			Some(it.toByteArray)
+			Some(it.toArray)
 		
 	//------------------------------------------------------------------------------
 	
@@ -108,7 +126,7 @@ final class ByteString private (private val value:Array[Byte]) {
 			else if (begin == 0 && end == size)		Some(this)
 			else Some {
 				val length	= end - begin
-				(ByteString makeWithByteArray length) { tmp =>
+				(ByteString makeWithArray length) { tmp =>
 					System arraycopy (value, begin, tmp, 0, length)
 				}
 			}
@@ -132,19 +150,19 @@ final class ByteString private (private val value:Array[Byte]) {
 			this append that
 		
 	def concat(that:ByteString):ByteString	=
-			(ByteString makeWithByteArray (this.size + that.size)) { tmp =>
+			(ByteString makeWithArray (this.size + that.size)) { tmp =>
 				System arraycopy (this.value, 0, tmp, 0, this.size)
 				System arraycopy (that.value, 0, tmp, this.size, that.size)
 			}
 			
 	def prepend(value:Byte):ByteString	=
-			(ByteString makeWithByteArray (size+1)) { tmp =>
+			(ByteString makeWithArray (size+1)) { tmp =>
 				tmp(0)	= value
 				System arraycopy (this.value, 0, tmp, 1, size)
 			}
 			
 	def append(value:Byte):ByteString	=
-			(ByteString makeWithByteArray (size+1)) { tmp =>
+			(ByteString makeWithArray (size+1)) { tmp =>
 				System arraycopy (this.value, 0, tmp, 0, size)
 				tmp(size)	= value
 			}
@@ -165,10 +183,14 @@ final class ByteString private (private val value:Array[Byte]) {
 	def asString(charset:Charset):String		= new String(value, charset)
 	def asUtf8String(charset:Charset):String	= asString(Charsets.utf_8)
 	
-	def toByteArray:Array[Byte]	= {
+	def toArray:Array[Byte]	= {
 		val tmp	= new Array[Byte](size)
 		System arraycopy (value, 0, tmp, 0, size)
 		tmp
+	}
+	
+	def toByteBuffer:ByteBuffer	= {
+		 ByteBuffer wrap toArray
 	}
 	
 	def toISeq:ISeq[Byte]	= value.to[ISeq]
@@ -176,10 +198,10 @@ final class ByteString private (private val value:Array[Byte]) {
 	def toList:ISeq[Byte]	= value.to[List]
 	def toSet:Set[Byte]		= value.to[Set]
 	
-	def copyIntoByteArray(dest:Array[Byte], destPos:Int):Boolean	=
-			sliceIntoByteArray(0, dest, destPos, size)
+	def copyIntoArray(dest:Array[Byte], destPos:Int):Boolean	=
+			sliceIntoArray(0, dest, destPos, size)
 		
-	def sliceIntoByteArray(srcPos:Int, dest:Array[Byte], destPos:Int, copyLength:Int):Boolean	= {
+	def sliceIntoArray(srcPos:Int, dest:Array[Byte], destPos:Int, copyLength:Int):Boolean	= {
 		val ok	=
 				(ByteString containsSlice (srcPos,	srcPos	+ copyLength, size)) &&
 				(ByteString containsSlice (destPos,	destPos	+ copyLength, dest.length))
@@ -187,10 +209,17 @@ final class ByteString private (private val value:Array[Byte]) {
 		ok
 	}
 	
+	def modifyAArray(func:Array[Byte]=>Unit):ByteString	= {
+		val tmp	= toArray
+		func(tmp)
+		ByteString unsafeFromArray tmp
+	}
+	
 	//------------------------------------------------------------------------------
 	
 	def unsafeGet(index:Int):Byte	= value(index)
 	def unsafeValue:Array[Byte]		= value
+	def unsafeByteBuffer:ByteBuffer	= ByteBuffer wrap value
 	
 	//------------------------------------------------------------------------------
 	

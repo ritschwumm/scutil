@@ -6,6 +6,27 @@ import scutil.lang._
 import scutil.base.implicits._
 
 object UidPrisms {
+	val ByteString:Prism[ByteString,Uid]	=
+			Prism(
+				(it:ByteString)	=> {
+					it.size == 4*8 option {
+						val bb	= it.unsafeByteBuffer
+						Uid(
+							machine	= bb.getLong,
+							counter	= bb.getLong,
+							time	= bb.getLong,
+							random	= bb.getLong
+						)
+					}
+				},
+				(it:Uid)	=> {
+					(scutil.lang.ByteString makeWithByteBuffer 4*8) (
+						_ putLong it.counter putLong it.time putLong it.random
+					)
+				}
+			)
+			
+	@deprecated("0.126.0", "use ByteString")
 	val ByteArray:Prism[Array[Byte],Uid]	=
 			Prism(
 				(it:Array[Byte])	=> {

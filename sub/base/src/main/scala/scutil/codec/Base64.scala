@@ -87,7 +87,7 @@ object Base64 {
 	//------------------------------------------------------------------------------
 
 	def decodeByteString(text:String):Option[ByteString] =
-			decodeByteArray(text) map ByteString.unsafeFromByteArray
+			decodeByteArray(text) map ByteString.unsafeFromArray
 	
 	/** standard alphabet, whitespace is ignored, padding is required */
 	def decodeByteArray(text:String):Option[Array[Byte]] = {

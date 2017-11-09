@@ -19,6 +19,8 @@ object TLens {
 	
 	def codiag[T]:TLens[Either[T,T],T]	=
 			identity[T] sum identity[T]
+		
+	val Gen	= LensGen
 }
 
 /** functional reference to a part of product type, aka Lens' */

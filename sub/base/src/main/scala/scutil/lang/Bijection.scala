@@ -5,6 +5,8 @@ import scutil.lang.tc._
 object Bijection {
 	def identity[T]:Bijection[T,T]	=
 			Bijection(Predef.identity, Predef.identity)
+		
+	val Gen	= BijectionGen
 }
 
 final case class Bijection[S,T](write:S=>T, read:T=>S) {

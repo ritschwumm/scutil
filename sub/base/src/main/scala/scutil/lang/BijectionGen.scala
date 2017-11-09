@@ -8,11 +8,11 @@ import scutil.lang.implicits._
 import scutil.collection.implicits._
 
 /** creates bijections from the apply/unapply methods in a case classes' companion object */
-object Bijector {
-	def apply[T]:AnyRef	= macro BijectorImpl.compile[T]
+object BijectionGen {
+	def apply[T]:AnyRef	= macro BijectionGen.compile[T]
 }
 
-private final class BijectorImpl(val c:Context) {
+private final class BijectionGen(val c:Context) {
 	import c.universe._
 		
 	def compile[T:c.WeakTypeTag]:Tree	= {

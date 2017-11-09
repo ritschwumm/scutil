@@ -5,7 +5,7 @@ import java.text.Normalizer
 import java.nio.charset.Charset
 
 import scutil.base.implicits._
-import scutil.lang.ISeq
+import scutil.lang._
 import scutil.codec.Base64
 
 /*
@@ -56,11 +56,11 @@ final class HashSalt(
 	
 	/** salt and cook a raw password so it can safely be stored somewhere */
 	def cook(raw:String):String	= {
-		val	salt		= new Array[Byte](saltSize) |>> synchronized { random.nextBytes }
+		val	salt		= synchronized { random byteString saltSize }
 		val prepared	= prepare(raw, salt, roundCount)
 		roundCount.toString				+ "$" +
-		(Base64 encodeByteArray salt)	+ "$" +
-		(Base64 encodeByteArray prepared)
+		(Base64 encodeByteString salt)	+ "$" +
+		(Base64 encodeByteString prepared)
 	}
 		
 	/** check if a raw password, when cooked, matches the same password cooked before */
@@ -68,32 +68,32 @@ final class HashSalt(
 		(for {
 			ISeq(r,s,p)	<- cooked splitAroundChar '$' optionBy { _.size == 3 }
 			rounds		<- r.toIntOption
-			salt		<- Base64 decodeByteArray s
-			prepared	<- Base64 decodeByteArray p
+			salt		<- Base64 decodeByteString s
+			prepared	<- Base64 decodeByteString p
 		}
 		yield {
-			prepared sameElements prepare(raw, salt, rounds)
+			prepared constantTimeEquals prepare(raw, salt, rounds)
 		})
 		.getOrElse(false)
 	}
 	
-	private def prepare(raw:String, salt:Array[Byte], rounds:Int):Array[Byte]	=
+	private def prepare(raw:String, salt:ByteString, rounds:Int):ByteString	=
 			raw 										|>
 			(Normalizer normalize (_, normalizerForm)) 	|>
-			(_ getBytes encoding) 						|>
+			(_ toByteString encoding) 					|>
 			(salt ++ _) 								|>
 			hash(rounds)
 	
-	private def hash(rounds:Int)(bytes:Array[Byte]):Array[Byte]	= {
+	private def hash(rounds:Int)(bytes:ByteString):ByteString	= {
 		// throws NoSuchAlgorithmException
 		val digest	= MessageDigest getInstance hashAlgorithm
-		var trip	= bytes
+		var trip	= bytes.toArray
 		var round	= 0
 		while (round < rounds) {
 			digest update trip
 			trip	= digest.digest()
 			round	+= 1
 		}
-		trip
+		ByteString unsafeFromArray trip
 	}
 }
