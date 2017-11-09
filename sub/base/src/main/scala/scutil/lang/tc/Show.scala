@@ -10,6 +10,8 @@ object Show {
 			
 	def toStringInstance[T]:Show[T]	=
 			Show instance (_.toString)
+		
+	def doit[T](value:T)(implicit S:Show[T]):String	= S show value
 }
 
 trait Show[T] {

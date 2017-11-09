@@ -8,7 +8,7 @@ object Synchronized {
 final class Synchronized[T](initial:T) {
 	var value	= initial
 	
-	def get:T	=
+	def get():T	=
 			synchronized {
 				value
 			}

@@ -14,6 +14,10 @@ object Validated extends ValidatedGenerated with ValidatedInstances {
 			if (ok)	good(value)
 			else	bad(problems)
 	
+	implicit class MergeableValidated[T](peer:Validated[T,T]) {
+		def merge:T	= peer cata (identity, identity)
+	}
+	
 	//------------------------------------------------------------------------------
 	
 	/*

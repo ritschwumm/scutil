@@ -57,6 +57,12 @@ final case class TLens[S,T](on:S=>Store[S,T]) {
 	def modState(func:T=>T):State[S,Unit]	=
 			embedState(State mod func)
 		
+	def transformState:State[T,?] ~> State[S,?]	=
+			new (State[T,?] ~> State[S,?]) {
+				def apply[X](it:State[T,X]):State[S,X]	=
+						embedState(it)
+			}
+		
 	//------------------------------------------------------------------------------
 	
 	def embedStateT[F[_]:Functor,U](state:StateT[F,T,U]):StateT[F,S,U]	=
@@ -70,6 +76,12 @@ final case class TLens[S,T](on:S=>Store[S,T]) {
 		
 	def modStateT[F[_]:Applicative](func:T=>T):StateT[F,S,Unit]	=
 			embedStateT(StateT mod func)
+		
+	def transformStateT[F[_]:Functor]:StateT[F,T,?] ~> StateT[F,S,?]	=
+			new (StateT[F,T,?] ~> StateT[F,S,?]) {
+				def apply[X](it:StateT[F,T,X]):StateT[F,S,X]	=
+						embedStateT(it)
+			}
 		
 	//------------------------------------------------------------------------------
 	

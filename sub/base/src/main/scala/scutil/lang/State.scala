@@ -17,34 +17,6 @@ object State extends StateInstances {
 	final class StatePure[S] {
 		def apply[T](it:T):State[S,T]	= State pure it
 	}
-	
-	//------------------------------------------------------------------------------
-	
-	@deprecated("0.122.0", "do it yourself")
-	def optionalT[S,T](func:StateT[Option,S,T]):State[S,Option[T]]	=
-			optional(func.run)
-		
-	@deprecated("0.122.0", "do it yourself")
-	def optional[S,T](run:S=>Option[(S,T)]):State[S,Option[T]]	=
-			State { s1 =>
-				run(s1) match {
-					case None			=> (s1, None)
-					case Some((s2, t))	=> (s2, Some(t))
-				}
-			}
-			
-	@deprecated("0.122.0", "do it yourself")
-	def optionalMod[S](func:Option[S=>S]):State[S,Unit]	=
-			State mod { s =>
-				func map (_ apply s) getOrElse s
-			}
-		
-	@deprecated("0.122.0", "do it yourself")
-	def modOptional[S](func:S=>Option[S]):State[S,Boolean]	=
-			State { s1 =>
-				val s2	= func(s1)
-				(s2 getOrElse s1, s2.isDefined)
-			}
 }
 
 final case class State[S,+T](run:S=>(S,T)) {
@@ -91,7 +63,7 @@ final case class State[S,+T](run:S=>(S,T)) {
 	//------------------------------------------------------------------------------
 	
 	def toStateT[F[_],TT>:T](implicit M:Applicative[F]):StateT[F,S,TT]	=
-				StateT fromState this
+			StateT fromState this
 }
 
 trait StateInstances {

@@ -10,7 +10,10 @@ object StateT extends StateTInstances {
 			StateT { s => (F map it) { s -> _ } }
 		
 	def fromState[F[_],S,T](it:State[S,T])(implicit F:Applicative[F]):StateT[F,S,T]	=
-			StateT { s => F pure (it run s) }
+			fromStateFunc(it.run)
+		
+	def fromStateFunc[F[_],S,T](it:S=>(S,T))(implicit F:Applicative[F]):StateT[F,S,T]	=
+			StateT { s => F pure it(s) }
 		
 	//------------------------------------------------------------------------------
 	
@@ -25,6 +28,7 @@ object StateT extends StateTInstances {
 	final class Wrap[F[_]] {
 		def apply[S,T](it:S=>F[(S,T)]):StateT[F,S,T]							= StateT(it)
 		def state[S,T](it:State[S,T])(implicit M:Applicative[F]):StateT[F,S,T]	= fromState(it)
+		def func[S,T](it:S=>(S,T))(implicit M:Applicative[F]):StateT[F,S,T]		= fromStateFunc(it)
 	}
 		
 	//------------------------------------------------------------------------------
@@ -70,15 +74,22 @@ object StateT extends StateTInstances {
 }
 
 final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
-	def transform[G[_]](func:F ~> G):StateT[G,S,T]	=
+	def transform[G[_]](nat:F ~> G):StateT[G,S,T]	=
 			StateT { s0 =>
-				func(run(s0))
+				nat(run(s0))
+			}
+			
+	def transformFunc[G[_]](func:(S=>F[(S,T)])=>(S=>G[(S,T)])):StateT[G,S,T]	=
+			StateT { s0 =>
+				func(run)(s0)
 			}
 	
 	def inside[R](lens:TLens[R,S])(implicit F:Functor[F]):StateT[F,R,T]	= 
 			StateT { r0	=>
 				lens on r0 modifyStateT this
 			}
+			
+	//------------------------------------------------------------------------------
 		
 	def map[U](func:T=>U)(implicit F:Functor[F]):StateT[F,S,U]	=
 			StateT { s0 =>

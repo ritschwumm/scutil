@@ -49,7 +49,10 @@ object OptionT extends OptionTInstances {
 }
 
 final case class OptionT[F[_],T](value:F[Option[T]]) {
-	def reval[G[_]:Monad](func:F[Option[T]]=>G[Option[T]]):OptionT[G,T]	=
+	def transform[G[_]:Monad](nat:F ~> G):OptionT[G,T]	=
+			transformFunc(nat.apply)
+	
+	def transformFunc[G[_]:Monad](func:F[Option[T]]=>G[Option[T]]):OptionT[G,T]	=
 			OptionT(func(value))
 		
 	//------------------------------------------------------------------------------

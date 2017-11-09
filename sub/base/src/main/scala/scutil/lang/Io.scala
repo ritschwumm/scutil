@@ -6,24 +6,39 @@ object Io extends IoInstances {
 	def pure[T](it:T):Io[T]			= Io(() => it)
 	def delay[T](it: =>T):Io[T]		= Io(() => it)
 	def thunk[T](it:Thunk[T]):Io[T]	= Io(it)
+	
+	//------------------------------------------------------------------------------
+	
+	def newIoRef[T](initial: =>T):Io[IoRef[T]]	=
+			Io delay IoRef(initial)
+	
+	//------------------------------------------------------------------------------
+	
+	// TODO how about cokleisli?
+	
+	def staticToKleisli[S,T](func:Io[S=>T]):(S => Io[T])	=
+			s	=>  delay { func unsafeRun () apply s }
+		
+	def kleisliToStatic[S,T](func:S=>Io[T]):Io[S=>T]	=
+			delay { s => func(s) unsafeRun () }
 }
 
-final case class Io[T](run:()=>T) {
+final case class Io[T](unsafeRun:()=>T) {
 	def attempt:Io[Either[Exception,T]]	=
 			Io { () =>
-				try { Right(run()) }
+				try { Right(unsafeRun()) }
 				catch { case e:Exception => Left(e) }
 			}
 			
 	def map[U](func:T=>U):Io[U]	=
 			Io { () =>
-				func(run())
+				func(unsafeRun())
 			}
 			
 	/** function effect first */
 	def pa[U](that:Io[T=>U]):Io[U]	=
 			Io { () =>
-				that.run()(run())
+				that.unsafeRun()(unsafeRun())
 			}
 			
 	/** function effect first */
@@ -32,7 +47,7 @@ final case class Io[T](run:()=>T) {
 			
 	def flatMap[U](func:T=>Io[U]):Io[U]	=
 			Io { () =>
-				func(run()).run()
+				func(unsafeRun()).unsafeRun()
 			}
 			
 	def flatten[U](implicit ev:T=>Io[U]):Io[U]	=

@@ -61,10 +61,19 @@ object EitherT extends EitherTInstances {
 		
 	def delayCatching[F[_]:Delay,T](it: =>T):EitherT[F,Exception,T]	=
 			delayFromEither(Catch.exception in it)
+		
+	//------------------------------------------------------------------------------
+	
+	implicit class MergeableEitherT[F[_],T](peer:EitherT[F,T,T]) {
+		def merge(implicit F:Functor[F]):F[T]	= (F map peer.value)(_.merge)
+	}
 }
 
 final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
-	def reval[G[_]](func:F[Either[L,R]]=>G[Either[L,R]]):EitherT[G,L,R]	=
+	def transform[G[_]:Monad](nat:F ~> G):EitherT[G,L,R]	=
+			transformFunc(nat.apply)
+		
+	def transformFunc[G[_]](func:F[Either[L,R]]=>G[Either[L,R]]):EitherT[G,L,R]	=
 			EitherT(func(value))
 	
 	//------------------------------------------------------------------------------
@@ -139,7 +148,7 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 	
 	//------------------------------------------------------------------------------
 		
-	// TODO merge, swap, getOrElse
+	// TODO swap, getOrElse
 }
 
 trait EitherTInstances {

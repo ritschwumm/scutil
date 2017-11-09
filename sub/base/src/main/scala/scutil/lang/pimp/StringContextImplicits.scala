@@ -17,5 +17,8 @@ trait StringContextImplicits {
 		
 		/** provide a string interpolator "so" that allows nothing but String in $ escapes */
 		def so(args:String*):String		= peer.s(args:_*)
+		
+		/** provide a string interpolator "show" that requires a Show instance for all arguments */
+		def show(args:Any*):String	= macro ShowMacros.showImpl
 	}
 }
