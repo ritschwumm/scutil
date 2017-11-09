@@ -64,6 +64,11 @@ final case class Io[T](unsafeRun:()=>T) {
 		
 	def second[U](that:Io[U]):Io[U]	=
 			for { _	<- this; u	<- that } yield u
+		
+	def toLater:Later[T]	=
+			Later { cont =>
+				cont(unsafeRun())
+			}
 }
 
 trait IoInstances {

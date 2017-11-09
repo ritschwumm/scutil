@@ -1,18 +1,21 @@
 package scutil.codec
 
 import scutil.lang._
-import scutil.regex.pimp.StringImplicits._
 
 /**
 encodes and decodes byte arrays into strings using the base64 encoding method.
 @see RFC4648
-@see  javax.xml.bind.DatatypeConverter
+@see javax.xml.bind.DatatypeConverter
 */
 object Base64 {
+	val byteArrayPrism	= Prism(decodeByteArray,	encodeByteArray)
+	val byteStringPrism	= Prism(decodeByteString,	encodeByteString)
+	
+	//------------------------------------------------------------------------------
+	
 	private val whitespaceRE	= """\s+"""
 	
 	private val padding:Char	= '='
-	private val validPaddingRE	= "[^"+padding.toString.quoteCharacterClass+"]+" + padding.toString.quoteRegex+"{0,2}"
 	
 	// TODO allow alternate alphabet ending in "-_"
 	private val alphabet:Array[Char]	= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray
@@ -20,7 +23,6 @@ object Base64 {
 	private val invalidFlag	= -1.toByte
 	private val paddingFlag	= -2.toByte
 	private val	table:Array[Byte]	= {
-		// -1 means "invalid", -2 means "padding"
 		val out	= new Array[Byte](256)
 		for (i <- 0 until 256)					out(i)	= invalidFlag
 		for ((i, v) <- alphabet.zipWithIndex)	out(i)	= v.toByte
@@ -28,20 +30,36 @@ object Base64 {
 		out
 	}
 	
-	private def alphabetOrPadding(it:Char):Boolean	=
-			it >= 0 && it < table.length && table(it) != invalidFlag
-		
 	private def validInput(s:String):Boolean	=
-			(s.length % 4 == 0)				&&
-			(s forall alphabetOrPadding)	&&
-			(s matches validPaddingRE)
-		
+			(s.length % 4 == 0)	&& {
+				var pad	= false
+				var i	= 0
+				while (i < s.length) {
+					val c	= s charAt i
+					if (c < 0)				return false
+					if (c > table.length)	return false
+					val x	= table(c)
+						 if (x == invalidFlag)			return false
+					else if (x == paddingFlag && !pad)	pad = true
+					else if (x != paddingFlag &&  pad)	return false
+					i = i + 1
+				}
+				true
+			}
+			
 	private val emptyOutput	= Array.empty[Byte]
 	
 	//------------------------------------------------------------------------------
 	
+	def encodeByteString(data:ByteString):String =
+			encodeByteArray(data.unsafeValue)
+		
+	@deprecated("0.124", "use encodeByteArray")
+	def encode(data:Array[Byte]):String =
+			encodeByteArray(data)
+		
 	/** standard alphabet, no line feeds, adds padding */
-	def encode(data:Array[Byte]):String = {
+	def encodeByteArray(data:Array[Byte]):String = {
 		val	packetsSize		= data.length / 3
 		val extraSize		= data.length % 3
 		val	output			= new StringBuilder
@@ -70,8 +88,17 @@ object Base64 {
 		output.toString
 	}
 	
+	//------------------------------------------------------------------------------
+
+	def decodeByteString(text:String):Option[ByteString] =
+			decodeByteArray(text) map ByteString.unsafeFromByteArray
+	
+	@deprecated("0.124", "use decodeByteArray")
+	def decode(text:String):Option[Array[Byte]] =
+			decodeByteArray(text)
+		
 	/** standard alphabet, whitespace is ignored, padding is required */
-	def decode(text:String):Option[Array[Byte]] = {
+	def decodeByteArray(text:String):Option[Array[Byte]] = {
 		// TODO ignoring all whitespace input might be stupid
 		val cleanText	= text replaceAll (whitespaceRE, "")
 		if (cleanText.length == 0)	return Some(emptyOutput)
@@ -107,8 +134,9 @@ object Base64 {
 		Some(output)
 	}
 	
+	@deprecated("0.124", "use byteArrayPrism")
 	def toPrism:Prism[String,Array[Byte]]	=
-			Prism(decode, encode)
+			byteArrayPrism
 		
 	//------------------------------------------------------------------------------
 	//## padding helper

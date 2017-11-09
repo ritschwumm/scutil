@@ -18,10 +18,11 @@ trait ExecutorImplicits {
 			thunk { out.get.throwException }
 		}
 		
-		def toJavaExecutor:JExecutor	= new JExecutor {
-			def execute(command:Runnable) {
-				peer(command.run _)
-			}
-		}
+		def toJavaExecutor:JExecutor	=
+				new JExecutor {
+					def execute(command:Runnable) {
+						peer(command.run _)
+					}
+				}
 	}
 }

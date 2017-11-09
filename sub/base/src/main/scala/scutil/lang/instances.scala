@@ -90,6 +90,9 @@ trait instances extends instancesLow {
 			
 	implicit val BooleanShow:Show[Boolean]	=
 			Show.toStringInstance
+		
+	implicit val BigDecimalShow:Show[BigDecimal]	=
+			Show.toStringInstance
 			
 	//------------------------------------------------------------------------------
 	//## on function, questionable
@@ -101,7 +104,7 @@ trait instances extends instancesLow {
 			Semigroup instance (_ andThenFixed _)
 		
 	// TODO do we get this for free with FFunctionFunctor?
-	// NOTE PFunction and FFunction are both just ReaderT
+	// NOTE PFunction and FFunction are both just ReaderT/Kleisli
 	implicit def PFunctionFunctor[S]:Functor[PFunction[S,?]]	=
 			new Functor[PFunction[S,?]] {
 				def map[A,B](it:PFunction[S,A])(func:A=>B):PFunction[S,B]		= it(_) map func

@@ -30,8 +30,11 @@ object Later extends LaterInstances {
 			}
 }
 
-final case class Later[T](run:(T=>Unit)=>Unit) {
-	def foreach(handler:T=>Unit):Unit	= run(handler)
+final case class Later[T](unsafeRun:(T=>Unit)=>Unit) {
+	@deprecated("use unsafeRun", "0.124")
+	def run(handler:T=>Unit):Unit	= unsafeRun(handler)
+	
+	def foreach(handler:T=>Unit):Unit	= unsafeRun(handler)
 	
 	def runUnit():Unit	=
 			runFold(())((_,_)=>())
@@ -42,7 +45,7 @@ final case class Later[T](run:(T=>Unit)=>Unit) {
 	// TODO merge with fold somehow?
 	def runFold[U](initial:U)(combine:(U,T)=>U):U	= {
 		var state	= initial
-		run { item =>
+		unsafeRun { item =>
 			state	= combine(state, item)		
 		}
 		state
@@ -52,15 +55,15 @@ final case class Later[T](run:(T=>Unit)=>Unit) {
 	
 	def map[U](func:T=>U):Later[U]	=
 			Later { cont =>
-				run { item =>
+				unsafeRun { item =>
 					cont(func(item))
 				}
 			}
 			
 	def flatMap[U](func:T=>Later[U]):Later[U]	=
 			Later { cont =>
-				run { item =>
-					func(item) run cont
+				unsafeRun { item =>
+					func(item) unsafeRun cont
 				}
 			}
 			
@@ -69,7 +72,7 @@ final case class Later[T](run:(T=>Unit)=>Unit) {
 		
 	def collapseMap[U](func:T=>Option[U]):Later[U]	=
 			Later { cont =>
-				run { item =>
+				unsafeRun { item =>
 					func(item) foreach cont
 				}
 			}
@@ -85,36 +88,36 @@ final case class Later[T](run:(T=>Unit)=>Unit) {
 			
 	def filter(pred:T=>Boolean):Later[T]	=
 			Later { cont =>
-				run(t => if (pred(t)) cont(t))
+				unsafeRun(t => if (pred(t)) cont(t))
 			}
 		
 	def filterNot(pred:T=>Boolean):Later[T]	=
 			Later { cont =>
-				run(t => if (!pred(t)) cont(t))
+				unsafeRun(t => if (!pred(t)) cont(t))
 			}
 		
 	def concat(that:Later[T]):Later[T]	=
 			Later { cont =>
-				this run cont
-				that run cont
+				this unsafeRun cont
+				that unsafeRun cont
 			}
 			
 	def prepend(item:T):Later[T]	=
 			Later { cont =>
 				cont(item)
-				run(cont)
+				unsafeRun(cont)
 			}
 			
 	def append(item:T):Later[T]	=
 			Later { cont =>
-				run(cont)
+				unsafeRun(cont)
 				cont(item)
 			}
 			
 	def exists(pred:T=>Boolean):Later[Boolean]	=
 			Later { cont =>
 				var state	= false
-				run { item =>
+				unsafeRun { item =>
 					state	= state || pred(item)
 				}
 				cont(state)
@@ -123,7 +126,7 @@ final case class Later[T](run:(T=>Unit)=>Unit) {
 	def forall(pred:T=>Boolean):Later[Boolean]	=
 			Later { cont =>
 				var state	= true
-				run { item =>
+				unsafeRun { item =>
 					state	= state && pred(item)
 				}
 				cont(state)
@@ -149,7 +152,7 @@ final case class Later[T](run:(T=>Unit)=>Unit) {
 	def scan[U](initial:U)(combine:(U,T)=>U):Later[(T,U)]	=
 			Later { cont =>
 				var state	= initial
-				run { item =>
+				unsafeRun { item =>
 					cont(item -> state)
 					state	= combine(state, item)
 				}
@@ -158,7 +161,7 @@ final case class Later[T](run:(T=>Unit)=>Unit) {
 	def grouped(size:Long):Later[Vector[T]]	=
 			Later { cont =>
 				var batch	= Vector.empty[T]
-				run { item =>
+				unsafeRun { item =>
 					batch	:+= item
 					if (batch.size >= size) {
 						cont(batch)

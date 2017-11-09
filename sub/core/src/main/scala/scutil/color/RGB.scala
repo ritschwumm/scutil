@@ -9,7 +9,7 @@ object RGB {
 	val black	= RGB(0,0,0)
 	
 	def parseHex(s:String):Option[RGB]	=
-			Hex bytes s collect { case Array(r,g,b)	=>
+			Hex decodeByteArray s collect { case Array(r,g,b)	=>
 				RGB(
 					(r & 0xff) / 255f,
 					(g & 0xff) / 255f,

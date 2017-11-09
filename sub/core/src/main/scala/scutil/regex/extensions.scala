@@ -6,4 +6,3 @@ object extensions extends extensions
 trait extensions
 		extends	MatcherImplicits
 		with	RegexImplicits
-		with	StringImplicits

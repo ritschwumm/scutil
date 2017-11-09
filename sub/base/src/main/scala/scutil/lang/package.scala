@@ -12,9 +12,7 @@ package object lang {
 	
 	type Thunk[+T]			= ()=>T
 	type Effect[-T]			= T=>Unit
-	
-	type Task				= Thunk[Unit]
-	type Executor			= Effect[Task]
+	type Executor			= Effect[Thunk[Unit]]
 	
 	// Function[-S,+T]
 	type PFunction[-S,+T]		= S=>Option[T]
@@ -30,10 +28,10 @@ package object lang {
 	def constant[S,T](value: =>T):(S=>T)		= _ => value
 	def ignorant[S,T](thunk:Thunk[T]):(S=>T)	= _ => thunk()
 	
-	def task(block: =>Unit):Task				= thunk(block)
 	def thunk[T](value: =>T):Thunk[T]			= () => value
 	
-	def disposable(block: =>Unit):Disposable	= Disposable(task(block))
+	def io[T](block: =>T):Io[T]					= Io delay block
+	def disposable(block: =>Unit):Disposable	= Disposable delay block
 	
 	/** tell the compiler the control flow never reaches this point */
 	def nothing:Nothing	= sys error "silence! i kill you!"

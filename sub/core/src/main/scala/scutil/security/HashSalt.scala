@@ -58,9 +58,9 @@ final class HashSalt(
 	def cook(raw:String):String	= {
 		val	salt		= new Array[Byte](saltSize) |>> synchronized { random.nextBytes }
 		val prepared	= prepare(raw, salt, roundCount)
-		roundCount.toString		+ "$" +
-		(Base64 encode salt)	+ "$" +
-		(Base64 encode prepared)
+		roundCount.toString				+ "$" +
+		(Base64 encodeByteArray salt)	+ "$" +
+		(Base64 encodeByteArray prepared)
 	}
 		
 	/** check if a raw password, when cooked, matches the same password cooked before */
@@ -68,8 +68,8 @@ final class HashSalt(
 		(for {
 			ISeq(r,s,p)	<- cooked splitAroundChar '$' optionBy { _.size == 3 }
 			rounds		<- r.toIntOption
-			salt		<- Base64 decode s
-			prepared	<- Base64 decode p
+			salt		<- Base64 decodeByteArray s
+			prepared	<- Base64 decodeByteArray p
 		}
 		yield {
 			prepared sameElements prepare(raw, salt, rounds)

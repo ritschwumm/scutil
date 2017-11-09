@@ -2,9 +2,10 @@ package scutil.search
 
 import java.util.regex.Pattern
 
+import scala.util.matching.Regex
+
 import scutil.lang._
 import scutil.base.implicits._
-import scutil.core.implicits._
 
 object SearchCompiler {
 	def multi(pattern:SearchPattern):Predicate[Iterable[String]]	=
@@ -19,7 +20,7 @@ object SearchCompiler {
 	
 	private def token(token:SearchToken):Predicate[String]	= {
 		val pattern	= Pattern compile (
-				(token.start cata ("", "^")) + token.text.quoteRegex + (token.end cata ("", "$")),
+				(token.start cata ("", "^")) + (Regex quote token.text) + (token.end cata ("", "$")),
 				token.caseInsensitive cata (0, Pattern.CASE_INSENSITIVE))
 		s:String	=>
 				(pattern matcher s).find

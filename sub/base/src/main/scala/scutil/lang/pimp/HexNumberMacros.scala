@@ -21,7 +21,7 @@ private final class HexNumberMacros(val c:Context) {
 	}
 	
 	private def parse[T](s:String, byteCount:Int, func:BigInt=>T):Option[T]	=
-			(Hex bytes s)
+			(Hex decodeByteArray s)
 			.filter (_.length == byteCount)
 			.map	(BigInt(_))
 			.map	(func)

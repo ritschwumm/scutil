@@ -10,9 +10,10 @@ import java.math.{
 }
 
 import scutil.lang.ISeq
+import scutil.lang.tc.Show
 import scutil.lang.implicits._
 
-object BigRational {
+object BigRational extends BigRationalInstances {
 	/** additive neutral element */
 	val zero	= new BigRational(JBigInteger.ZERO, JBigInteger.ONE)
 	/** multiplicative neutral element */
@@ -191,4 +192,8 @@ final class BigRational private (_numerator:JBigInteger, _denominator:JBigIntege
 	private def rounded:JBigDecimal	= toBigDecimal(MathContext.DECIMAL128)
 	
 	override def toString:String	= numerator.toString + "/" + denominator.toString
+}
+
+trait BigRationalInstances {
+	implicit val BigRationalShow:Show[BigRational]	= Show.toStringInstance
 }

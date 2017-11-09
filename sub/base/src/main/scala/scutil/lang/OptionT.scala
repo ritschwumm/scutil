@@ -36,6 +36,7 @@ object OptionT extends OptionTInstances {
 		def option[T](it:Option[T])(implicit M:Applicative[F]):OptionT[F,T]	= fromOption(it)
 		def some[T](it:T)(implicit M:Monad[F]):OptionT[F,T]					= OptionT some it
 		def none[T](implicit M:Monad[F]):OptionT[F,T]						= OptionT.none
+		def delayPure[T](it: =>T)(implicit D:Delay[F]):OptionT[F,T]			= OptionT delayPure it
 	}
 	
 	//------------------------------------------------------------------------------

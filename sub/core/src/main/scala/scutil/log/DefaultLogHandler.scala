@@ -66,12 +66,8 @@ trait DefaultLogHandler extends LogHandler {
 			if (it != null)	it.toString
 			else			"<null>"
 			
-	def formatThrowable(t:Throwable):String	= {
-		val	sw	= new StringWriter
-		val	pw	= new PrintWriter(sw)
-		t printStackTrace pw
-		sw.toString
-	}
+	def formatThrowable(t:Throwable):String	=
+			t.stackTrace
 	
 	def extractMessage(element:Any):Option[Any]	=
 			element match {

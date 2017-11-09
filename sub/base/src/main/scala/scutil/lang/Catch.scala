@@ -2,7 +2,7 @@ package scutil.lang
 
 import scala.reflect.ClassTag
 
-/** similar to scala.util.control.Exception.Catch but much simpler and specialised to Tried */
+/** similar to scala.util.control.Exception.Catch but much simpler and specialised to Either */
 object Catch {
 	def apply[E<:Throwable](pfunc:PFunction[Throwable,E]):Catch[E]	=
 			new Catch[E](pfunc)

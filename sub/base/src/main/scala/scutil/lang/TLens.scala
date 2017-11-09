@@ -74,7 +74,7 @@ final case class TLens[S,T](on:S=>Store[S,T]) {
 	def setStateT[F[_]:Applicative](it:T):StateT[F,S,Unit]	=
 			embedStateT(StateT set it)
 		
-	def modStateT[F[_]:Applicative](func:T=>T):StateT[F,S,Unit]	=
+	def modStateT[F[_]:Applicative](func:Endo[T]):StateT[F,S,Unit]	=
 			embedStateT(StateT mod func)
 		
 	def transformStateT[F[_]:Functor]:StateT[F,T,?] ~> StateT[F,S,?]	=

@@ -3,9 +3,9 @@ package scutil.lang
 import scutil.lang.tc._
 
 object Disposable extends DisposableInstances {
-	def apply(todo:Task):Disposable		= new TaskDisposable(todo)
+	def apply(todo:Thunk[Unit]):Disposable	= new TaskDisposable(todo)
 	
-	def delay(todo: =>Unit):Disposable	= new TaskDisposable(() => todo)
+	def delay(todo: =>Unit):Disposable		= new TaskDisposable(() => todo)
 	
 	/** forms a monoids with and */
 	val empty:Disposable	= EmptyDisposable
@@ -44,7 +44,7 @@ private object EmptyDisposable extends Disposable {
 	def dispose() {}
 }
 
-private final class TaskDisposable(task:Task) extends Disposable {
+private final class TaskDisposable(task:Thunk[Unit]) extends Disposable {
 	def dispose() { task() }
 }
 
