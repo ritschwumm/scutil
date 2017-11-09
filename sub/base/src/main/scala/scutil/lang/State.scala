@@ -3,15 +3,14 @@ package scutil.lang
 import scutil.lang.tc._
 
 object State extends StateInstances {
-	def delay[S,T](it: =>T):State[S,T]		= State { s => (s,	it)	}
-	def thunk[S,T](it:Thunk[T]):State[S,T]	= State { s => (s,	it())	}
-	
 	def pure[S,T](it:T):State[S,T]		= State { s => (s,			it)	}
 	def get[S]:State[S,S]				= State { s => (s,			s)	}
 	def set[S](it:S):State[S,Unit]		= State { s => (it,			())	}
 	def setOld[S](it:S):State[S,S]		= State { s => (it,			s)	}
 	def mod[S](func:S=>S):State[S,Unit]	= State { s => (func(s),	())	}
 	def modOld[S](func:S=>S):State[S,S]	= State { s => (func(s),	s)	}
+	
+	//------------------------------------------------------------------------------
 	
 	// inference helper allowing to specifiy the state value typ while still let the result type be inferred
 	def pureU[S]:StatePure[S]	= new StatePure[S]
@@ -21,9 +20,11 @@ object State extends StateInstances {
 	
 	//------------------------------------------------------------------------------
 	
+	@deprecated("0.122.0", "do it yourself")
 	def optionalT[S,T](func:StateT[Option,S,T]):State[S,Option[T]]	=
 			optional(func.run)
 		
+	@deprecated("0.122.0", "do it yourself")
 	def optional[S,T](run:S=>Option[(S,T)]):State[S,Option[T]]	=
 			State { s1 =>
 				run(s1) match {
@@ -32,11 +33,13 @@ object State extends StateInstances {
 				}
 			}
 			
+	@deprecated("0.122.0", "do it yourself")
 	def optionalMod[S](func:Option[S=>S]):State[S,Unit]	=
 			State mod { s =>
 				func map (_ apply s) getOrElse s
 			}
 		
+	@deprecated("0.122.0", "do it yourself")
 	def modOptional[S](func:S=>Option[S]):State[S,Boolean]	=
 			State { s1 =>
 				val s2	= func(s1)
@@ -84,6 +87,11 @@ final case class State[S,+T](run:S=>(S,T)) {
 				val (s2, u)	= that run s1
 				(s2, func(t, u))
 			}
+			
+	//------------------------------------------------------------------------------
+	
+	def toStateT[F[_],TT>:T](implicit M:Applicative[F]):StateT[F,S,TT]	=
+				StateT fromState this
 }
 
 trait StateInstances {
@@ -92,11 +100,5 @@ trait StateInstances {
 				override def pure[T](it:T):State[S,T]										= State pure it
 				override def map[T,U](its:State[S,T])(func:T=>U):State[S,U]					= its map func
 				override def flatMap[T,U](its:State[S,T])(func:T=>State[S,U]):State[S,U]	= its flatMap func
-			}
-			
-	implicit def StateDelay[S]:Delay[State[S,?]]	=
-			new Delay[State[S,?]] {
-				override def delay[T](it: =>T):State[S,T]	= State delay it
-				override def thunk[T](it:()=>T):State[S,T]	= State thunk it
 			}
 }

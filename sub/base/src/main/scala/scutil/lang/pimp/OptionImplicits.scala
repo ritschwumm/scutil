@@ -13,6 +13,9 @@ trait OptionImplicits {
 	implicit final class OptionCompanionImplicits(peer:Option.type) {
 		def none[T]:Option[T]	= None
 		def some[T](it:T):Option[T]	= Some(it)
+		
+		def switch[T](condition:Boolean, trueSome: =>T):Option[T]	=
+				if (condition) Some(trueSome) else None
 	}
 	
 	implicit final class OptionExt[T](peer:Option[T]) {

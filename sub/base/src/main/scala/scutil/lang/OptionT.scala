@@ -3,19 +3,35 @@ package scutil.lang
 import scutil.lang.tc._
 
 object OptionT extends OptionTInstances {
-	def pure[F[_]:Applicative,T](it:T):OptionT[F,T]	= some(it)
+	def pure[F[_]:Applicative,T](it:T):OptionT[F,T]					= some(it)
+	def pureF[F[_],T](it:F[T])(implicit M:Functor[F]):OptionT[F,T]	= someF(it)
 	
-	def some[F[_]:Applicative,T](it:T):OptionT[F,T]	= fromOption(Some(it))
-	def none[F[_]:Applicative,T]:OptionT[F,T]		= fromOption(None)
+	//------------------------------------------------------------------------------
+	
+	def some[F[_]:Applicative,T](it:T):OptionT[F,T]					= fromOption(Some(it))
+	def someF[F[_],T](it:F[T])(implicit M:Functor[F]):OptionT[F,T]	= OptionT((M map it)(Some.apply))
+	
+	def none[F[_]:Applicative,T]:OptionT[F,T]						= fromOption(None)
+	
+	//------------------------------------------------------------------------------
 	
 	def fromOption[F[_],T](it:Option[T])(implicit M:Applicative[F]):OptionT[F,T]	=
 			OptionT(M pure it)
+		
+	def switch[F[_]:Applicative,T](condition:Boolean, trueSome: =>T):OptionT[F,T]	=
+			fromOption(if (condition) Some(trueSome) else None)
+		
+	//------------------------------------------------------------------------------
 	
-	def pureF[F[_],T](it:F[T])(implicit M:Functor[F]):OptionT[F,T]	= pureF(it)
-	def someF[F[_],T](it:F[T])(implicit M:Functor[F]):OptionT[F,T]	= OptionT((M map it)(Some.apply))
+	// inference helper
+	def pureU[F[_]]:OptionTPure[F]	= new OptionTPure[F]
+	final class OptionTPure[F[_]] {
+		def apply[T](it:T)(implicit F:Applicative[F]):OptionT[F,T]	= OptionT pure it
+	}
 	
+	// inference helper
 	def wrap[F[_]]:Wrap[F]	= new Wrap[F]
-	final class Wrap[F[_]] { 
+	final class Wrap[F[_]] {
 		def apply[T](it:F[Option[T]]):OptionT[F,T]							= OptionT(it)
 		def option[T](it:Option[T])(implicit M:Applicative[F]):OptionT[F,T]	= fromOption(it)
 		def some[T](it:T)(implicit M:Monad[F]):OptionT[F,T]					= OptionT some it
@@ -24,19 +40,12 @@ object OptionT extends OptionTInstances {
 	
 	//------------------------------------------------------------------------------
 	
-	def delay[F[_]:Delay,T](it: =>T):OptionT[F,T]		= delaySome(it)
+	def delayPure[F[_]:Delay,T](it: =>T):OptionT[F,T]	= delaySome(it)
+	
 	def delaySome[F[_]:Delay,T](it: =>T):OptionT[F,T]	= delayFromOption(Some(it))
 		
 	def delayFromOption[F[_],T](it: =>Option[T])(implicit D:Delay[F]):OptionT[F,T]	=
 			OptionT(D delay it)
-		
-	//------------------------------------------------------------------------------
-	
-	def thunk[F[_]:Delay,T](it:Thunk[T]):OptionT[F,T]		= thunkSome(it)
-	def thunkSome[F[_]:Delay,T](it:Thunk[T]):OptionT[F,T]	= thunkFromOption(() => Some(it()))
-		
-	def thunkFromOption[F[_],T](it:Thunk[Option[T]])(implicit D:Delay[F]):OptionT[F,T]	=
-			OptionT(D thunk it)
 }
 
 final case class OptionT[F[_],T](value:F[Option[T]]) {
@@ -137,8 +146,7 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 trait OptionTInstances {
 	implicit def OptionTDelay[F[_]:Delay]:Delay[OptionT[F,?]]	=
 			new Delay[OptionT[F,?]] {
-				override def delay[T](it: =>T):OptionT[F,T]		= OptionT delay it
-				override def thunk[T](it:Thunk[T]):OptionT[F,T]	= OptionT thunk it
+				override def delay[T](it: =>T):OptionT[F,T]	= OptionT delayPure it
 			}
 			
 	implicit def OptionTMonad[F[_]](implicit MF:Monad[F]):Monad[OptionT[F,?]]	=

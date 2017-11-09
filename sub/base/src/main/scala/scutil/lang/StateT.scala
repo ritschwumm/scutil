@@ -3,50 +3,70 @@ package scutil.lang
 import scutil.lang.tc._
 
 object StateT extends StateTInstances {
-	def delay[F[_],S,T](it: =>T)(implicit F:Applicative[F]):StateT[F,S,T]	=
-			StateT { s => F pure (s -> it)	}
-	def thunk[F[_],S,T](it:()=>T)(implicit F:Applicative[F]):StateT[F,S,T]	=
-			StateT { s => F pure (s -> it()) }
-	
 	def pure[F[_],S,T](it:T)(implicit F:Applicative[F]):StateT[F,S,T]	=
 			StateT { s => F pure (s -> it) }
 		
 	def pureF[F[_],S,T](it:F[T])(implicit F:Functor[F]):StateT[F,S,T]	=
 			StateT { s => (F map it) { s -> _ } }
 		
-	// get map func
+	def fromState[F[_],S,T](it:State[S,T])(implicit F:Applicative[F]):StateT[F,S,T]	=
+			StateT { s => F pure (it run s) }
+		
+	//------------------------------------------------------------------------------
+	
+	// inference helper
+	def pureU[F[_],S]:StateTPure[F,S]	= new StateTPure[F,S]
+	final class StateTPure[F[_],S] {
+		def apply[T](it:T)(implicit F:Applicative[F]):StateT[F,S,T]	= StateT pure it
+	}
+	
+	// inference helper
+	def wrap[F[_]]:Wrap[F]	= new Wrap[F]
+	final class Wrap[F[_]] {
+		def apply[S,T](it:S=>F[(S,T)]):StateT[F,S,T]							= StateT(it)
+		def state[S,T](it:State[S,T])(implicit M:Applicative[F]):StateT[F,S,T]	= fromState(it)
+	}
+		
+	//------------------------------------------------------------------------------
+	
+	def delayPure[F[_],S,T](it: =>T)(implicit D:Delay[F]):StateT[F,S,T]	=
+			StateT { s => D delay (s -> it) }
+	
+	//------------------------------------------------------------------------------
+		
+	def get[F[_],S](implicit F:Applicative[F]):StateT[F,S,S]	=
+			StateT { s => F pure (s -> s) }
+		
+	//------------------------------------------------------------------------------
+		
+	def set[F[_],S](it:S)(implicit F:Applicative[F]):StateT[F,S,Unit]	=
+			StateT { s => F pure (it -> (())) }
+		
+	def setF[F[_],S](it:F[S])(implicit F:Functor[F]):StateT[F,S,Unit]	=
+			StateT { s => (F map it)(s1 => (s1, ())) }
+		
+	def setOld[F[_],S](it:S)(implicit F:Applicative[F]):StateT[F,S,S]	=
+			StateT { s => F pure (it -> s) }
+		
+	//------------------------------------------------------------------------------
+		
+	def mod[F[_],S](func:S=>S)(implicit F:Applicative[F]):StateT[F,S,Unit]	=
+			StateT { s => F pure (func(s) -> (())) }
+		
+	def modF[F[_],S](func:S=>F[S])(implicit F:Functor[F]):StateT[F,S,Unit]	=
+			StateT { s => (F map func(s))(s1 => (s1, ())) }
+		
+	def modOld[F[_],S](func:S=>S)(implicit F:Applicative[F]):StateT[F,S,S]	=
+			StateT { s => F pure (func(s) -> s) }
+		
+	//------------------------------------------------------------------------------
+		
+	// == get map func
 	def stateless[F[_],S,T](func:S=>T)(implicit F:Applicative[F]):StateT[F,S,T]	=
 			StateT { s => F pure (s -> func(s)) }
 		
 	def statelessF[F[_],S,T](func:S=>F[T])(implicit F:Functor[F]):StateT[F,S,T]	=
 			StateT { s => (F map func(s)) { s -> _ } }
-			
-	def get[F[_],S](implicit F:Applicative[F]):StateT[F,S,S]	=
-			StateT { s => F pure (s -> s) }
-		
-	def set[F[_],S](it:S)(implicit F:Applicative[F]):StateT[F,S,Unit]	=
-			StateT { s => F pure (it -> (())) }
-		
-	def setOld[F[_],S](it:S)(implicit F:Applicative[F]):StateT[F,S,S]	=
-			StateT { s => F pure (it -> s) }
-		
-	def setF[F[_],S](it:F[S])(implicit F:Functor[F]):StateT[F,S,Unit]	=
-			StateT { s => (F map it)(s1 => (s1, ())) }
-		
-	def mod[F[_],S](func:S=>S)(implicit F:Applicative[F]):StateT[F,S,Unit]	=
-			StateT { s => F pure (func(s) -> (())) }
-		
-	def modOld[F[_],S](func:S=>S)(implicit F:Applicative[F]):StateT[F,S,S]	=
-			StateT { s => F pure (func(s) -> s) }
-		
-	def modF[F[_],S](func:S=>F[S])(implicit F:Functor[F]):StateT[F,S,Unit]	=
-			StateT { s => (F map func(s))(s1 => (s1, ())) }
-		
-	// inference helper allowing to specify the state value typ while still let the result type be inferred
-	def pureU[F[_],S]:StateTPure[F,S]	= new StateTPure[F,S]
-	final class StateTPure[F[_],S] {
-		def apply[T](it:T)(implicit F:Applicative[F]):StateT[F,S,T]	= StateT pure it
-	}
 }
 
 final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
@@ -134,16 +154,15 @@ final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
 }
 
 trait StateTInstances {
+	implicit def StateTDelay[F[_]:Delay,S]:Delay[StateT[F,S,?]]	=
+			new Delay[StateT[F,S,?]] {
+				override def delay[T](it: =>T):StateT[F,S,T]	= StateT delayPure it
+			}
+			
 	implicit def StateTMonad[F[_]:Monad,S]:Monad[StateT[F,S,?]]	=
 			new Monad[StateT[F,S,?]] {
 				override def pure[T](it:T):StateT[F,S,T]											= StateT pure it
 				override def map[T,U](its:StateT[F,S,T])(func:T=>U):StateT[F,S,U]					= its map func
 				override def flatMap[T,U](its:StateT[F,S,T])(func:T=>StateT[F,S,U]):StateT[F,S,U]	= its flatMap func
-			}
-			
-	implicit def StateTDelay[F[_]:Applicative,S]:Delay[StateT[F,S,?]]	=
-			new Delay[StateT[F,S,?]] {
-				override def delay[T](it: =>T):StateT[F,S,T]		= StateT delay it
-				override def thunk[T](it:Thunk[T]):StateT[F,S,T]	= StateT thunk it
 			}
 }

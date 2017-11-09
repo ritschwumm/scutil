@@ -4,20 +4,45 @@ import scutil.base.implicits._
 import scutil.lang.tc._
 
 object EitherT extends EitherTInstances {
-	def pure[F[_]:Applicative,L,R](it:R):EitherT[F,L,R]	= right(it)
+	def pure[F[_]:Applicative,L,R](it:R):EitherT[F,L,R]		= right(it)
+	def pureF[F[_]:Functor,L,R](it:F[R]):EitherT[F,L,R]		= rightF(it)
+	
+	def error[F[_]:Applicative,L,R](it:L):EitherT[F,L,R]	= left(it)
+	def errorF[F[_]:Functor,L,R](it:F[L]):EitherT[F,L,R]	= leftF(it)
+	
+	//------------------------------------------------------------------------------
 	
 	def right[F[_]:Applicative,L,R](it:R):EitherT[F,L,R]	= fromEither(Either right it)
-	def left[F[_]:Applicative,L,R](it:L):EitherT[F,L,R]	= fromEither(Either left it)
+	def rightF[F[_]:Functor,L,R](it:F[R]):EitherT[F,L,R]	= EitherT(it map Right.apply)
+	
+	def left[F[_]:Applicative,L,R](it:L):EitherT[F,L,R]		= fromEither(Either left it)
+	def leftF[F[_]:Functor,L,R](it:F[L]):EitherT[F,L,R]		= EitherT(it map Left.apply)
+	
+	//------------------------------------------------------------------------------
 	
 	def fromEither[F[_],L,R](it:Either[L,R])(implicit M:Applicative[F]):EitherT[F,L,R]	=
 			EitherT(M pure it)
 		
-	def pureF[F[_]:Functor,L,R](it:F[R]):EitherT[F,L,R]		= rightF(it)
-	def rightF[F[_]:Functor,L,R](it:F[R]):EitherT[F,L,R]	= EitherT(it map Right.apply)
-	def leftF[F[_]:Functor,L,R](it:F[L]):EitherT[F,L,R]		= EitherT(it map Left.apply)
- 
+	def switch[F[_]:Applicative,L,R](condition:Boolean, falseLeft: =>L, trueRight: =>R):EitherT[F,L,R]	=
+			fromEither(Either cond (condition, trueRight, falseLeft))
+
+	//------------------------------------------------------------------------------
+	
+	// inference helper
+	def pureU[F[_],L]:EitherTPure[F,L]	= new EitherTPure[F,L]
+	final class EitherTPure[F[_],L] {
+		def apply[T](it:T)(implicit F:Applicative[F]):EitherT[F,L,T]	= EitherT pure it
+	}
+	
+	// inference helper
+	def errorU[F[_],R]:EitherTError[F,R]	= new EitherTError[F,R]
+	final class EitherTError[F[_],R] {
+		def apply[T](it:T)(implicit F:Applicative[F]):EitherT[F,T,R]	= EitherT error it
+	}
+	
+	// inference helper
 	def wrap[F[_]]:Wrap[F]	= new Wrap[F]
-	final class Wrap[F[_]] { 
+	final class Wrap[F[_]] {
 		def apply[L,R](it:F[Either[L,R]]):EitherT[F,L,R]							= EitherT(it)
 		def either[L,R](it:Either[L,R])(implicit M:Applicative[F]):EitherT[F,L,R]	= fromEither(it)
 		// left and right need more type parameters
@@ -25,34 +50,17 @@ object EitherT extends EitherTInstances {
 	
 	//------------------------------------------------------------------------------
 		
-	def delay[F[_]:Delay,L,R](it: =>R):EitherT[F,L,R]		= delayWin(it)
-	
-	def delayWin[F[_]:Delay,L,R](it: =>R):EitherT[F,L,R]	= delayFromEither(Either right it)
-	def delayFail[F[_]:Delay,L,R](it: =>L):EitherT[F,L,R]	= delayFromEither(Either left it)
+	def delayPure[F[_]:Delay,L,R](it: =>R):EitherT[F,L,R]	= delayRight(it)
+	def delayError[F[_]:Delay,L,R](it: =>L):EitherT[F,L,R]	= delayLeft(it)
+		
+	def delayRight[F[_]:Delay,L,R](it: =>R):EitherT[F,L,R]	= delayFromEither(Either right it)
+	def delayLeft[F[_]:Delay,L,R](it: =>L):EitherT[F,L,R]	= delayFromEither(Either left it)
 		
 	def delayFromEither[F[_],L,R](it: =>Either[L,R])(implicit D:Delay[F]):EitherT[F,L,R]	=
 			EitherT(D delay it)
 		
 	def delayCatching[F[_]:Delay,T](it: =>T):EitherT[F,Exception,T]	=
 			delayFromEither(Catch.exception in it)
-		
-	//------------------------------------------------------------------------------
-	
-	def thunk[F[_]:Delay,L,R](it:Thunk[R]):EitherT[F,L,R]		= thunkWin(it)
-	
-	def thunkWin[F[_]:Delay,L,R](it:Thunk[R]):EitherT[F,L,R]	= thunkFromEither(() => Either right it())
-	def thunkFail[F[_]:Delay,L,R](it:Thunk[L]):EitherT[F,L,R]	= thunkFromEither(() => Either left it())
-		
-	def thunkFromEither[F[_],L,R](it:Thunk[Either[L,R]])(implicit D:Delay[F]):EitherT[F,L,R]	=
-			EitherT(D thunk it)
-		
-	def thunkCatching[F[_]:Delay,T](it:Thunk[T]):EitherT[F,Exception,T]	=
-			thunkFromEither(() => Catch.exception in it())
-		
-	//------------------------------------------------------------------------------
-	
-	def switch[F[_]:Applicative,L,R](condition:Boolean, falseLeft: =>L, trueRight: =>R):EitherT[F,L,R]	=
-			fromEither(Either cond (condition, trueRight, falseLeft))
 }
 
 final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
@@ -137,8 +145,7 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 trait EitherTInstances {
 	implicit def EitherTDelay[F[_]:Delay,L]:Delay[EitherT[F,L,?]]	=
 			new Delay[EitherT[F,L,?]] {
-				override def delay[R](it: =>R):EitherT[F,L,R]		= EitherT delay it
-				override def thunk[R](it:Thunk[R]):EitherT[F,L,R]	= EitherT thunk it
+				override def delay[R](it: =>R):EitherT[F,L,R]	= EitherT delayPure it
 			}
 			
 	implicit def EitherTMonad[F[_]:Monad,L]:Monad[EitherT[F,L,?]]	=

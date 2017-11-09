@@ -172,16 +172,15 @@ final case class Later[T](run:(T=>Unit)=>Unit) {
 }
 
 trait LaterInstances {
-	implicit val LaterDelay:Delay[Later]	=
-			new Delay[Later] {
-				override def delay[R](it: =>R):Later[R]		= Later delay it
-				override def thunk[R](it:Thunk[R]):Later[R]	= Later thunk it
-			}
-			
 	implicit val LaterMonad:Monad[Later]	=
 			new Monad[Later] {
 				override def pure[R](it:R):Later[R]										= Later pure it
 				override def map[R,RR](it:Later[R])(func:R=>RR):Later[RR]				= it map func
 				override def flatMap[R,RR](it:Later[R])(func:R=>Later[RR]):Later[RR]	= it flatMap func
+			}
+			
+	implicit val LaterDelay:Delay[Later]	=
+			new Delay[Later] {
+				override def delay[R](it: =>R):Later[R]	= Later delay it
 			}
 }

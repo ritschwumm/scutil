@@ -61,7 +61,6 @@ trait IoInstances {
 			
 	implicit val IoDelay:Delay[Io]	=
 			new Delay[Io] {
-				override def delay[T](it: =>T):Io[T]		= Io delay it
-				override def thunk[T](it:Thunk[T]):Io[T]	= Io thunk it
+				override def delay[T](it: =>T):Io[T]	= Io delay it
 			}
 }
