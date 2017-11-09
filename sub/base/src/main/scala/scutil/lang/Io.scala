@@ -72,6 +72,9 @@ final case class Io[T](unsafeRun:()=>T) {
 }
 
 trait IoInstances {
+	implicit val IoUnitMonoid:Monoid[Io[Unit]]	=
+			Monoid instance (Io pure (()), _ second _)
+			
 	implicit val IoMonad:Monad[Io]	=
 			new Monad[Io] {
 				override def pure[A](it:A):Io[A]							= Io pure it

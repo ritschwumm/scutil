@@ -9,10 +9,6 @@ object Hex {
 	def encodeByteString(bytes:ByteString):String	=
 			encodeByteArray(bytes.unsafeValue)
 	
-	@deprecated("0.124", "use encodeByteArray")
-	def string(bytes:Array[Byte]):String	=
-			encodeByteArray(bytes)
-		
 	def encodeByteArray(bytes:Array[Byte]):String	=
 			bytes map nibbles mkString ""
 		
@@ -29,9 +25,6 @@ object Hex {
 	def decodeByteString(s:String):Option[ByteString]	=
 			decodeByteArray(s) map ByteString.unsafeFromByteArray
 		
-	@deprecated("0.124", "use decodeByteArray")
-	def bytes(s:String):Option[Array[Byte]]	= decodeByteArray(s)
-	
 	def decodeByteArray(s:String):Option[Array[Byte]]	= {
 		val count	= s.length / 2
 		if (s.length != count*2)	return None

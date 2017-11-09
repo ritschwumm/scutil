@@ -1,5 +1,7 @@
 package scutil.lang.pimp
 
+import java.nio.charset.Charset
+
 import scala.collection.mutable
 
 import scutil.lang._
@@ -35,6 +37,14 @@ trait StringImplicits {
 			
 		private def toNumberEither[T](func:String=>T):Either[NumberFormatException,T]	=
 				Catch.byType[NumberFormatException] in func(peer)
+			
+		//------------------------------------------------------------------------------
+		
+		def toByteString(charset:Charset):ByteString	=
+				ByteString fromString (peer, charset)
+		
+		def toUtf8ByteString:ByteString	=
+				ByteString fromUtf8String peer
 		
 		//------------------------------------------------------------------------------
 		
@@ -42,10 +52,6 @@ trait StringImplicits {
 				if (peer.nonEmpty)	Some(peer)
 				else				None
 		
-		@deprecated("use optionNonEmpty", "0.121.0")
-		def guardNonEmpty:Option[String]	=
-				optionNonEmpty
-			
 		//------------------------------------------------------------------------------
 			
 		def cutPrefix(prefix:String):Option[String] =

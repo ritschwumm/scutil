@@ -7,7 +7,7 @@ import scutil.number.BigRational
 object StringContextImplicits extends StringContextImplicits
 
 trait StringContextImplicits {
-	implicit final class MathStringContextExt(peer:StringContext) {
+	implicit final class NumberStringContextExt(peer:StringContext) {
 		def br():BigRational	= macro NumberMacros.brImpl
 	}
 }

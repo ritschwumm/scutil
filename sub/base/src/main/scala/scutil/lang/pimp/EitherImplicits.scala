@@ -162,14 +162,6 @@ trait EitherImplicits {
 		def rightNotByOr[LL>:L](func:Predicate[R], fail: =>LL):Either[LL,R]	=
 				cata(Left.apply, it => if (!func(it)) Right(it) else Left(fail))
 				
-		@deprecated("use rightByOr", "0.121.0")
-		def guardByOr[LL>:L](func:Predicate[R], fail: =>LL):Either[LL,R]	=
-				rightByOr(func, fail)
-				
-		@deprecated("use rightNotByOr", "0.121.0")
-		def preventByOr[LL>:L](func:Predicate[R], fail: =>LL):Either[LL,R]	=
-				rightNotByOr(func, fail)
-				
 		def collapseOr[LL>:L,RR](func:PFunction[R,RR], fail: =>LL):Either[LL,RR]	=
 				cata(Left.apply, it => func(it) map Right.apply getOrElse Left(fail))
 			

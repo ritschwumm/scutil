@@ -20,10 +20,6 @@ object Prism extends PrismInstances {
 				it => if (pred(it)) Some(it) else None,
 				Predef.identity
 			)
-		
-	@deprecated("use filtered", "0.121.0")
-	def guarded[T](pred:T=>Boolean):Prism[T,T]	=
-			filtered(pred)
 }
 
 /** parser and unparser for some data into a side format, aka Prism' */

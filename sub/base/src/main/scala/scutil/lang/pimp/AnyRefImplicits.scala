@@ -9,10 +9,6 @@ trait AnyRefImplicits {
 				if (peer != null)	Some(peer)
 				else				None
 		
-		@deprecated("use optionNotNull", "0.121.0")
-		def guardNotNull:Option[T]	=
-				optionNotNull
-		
 		/** replace null with another value */
 		def replaceNull[U>:T](replacement: =>U):U	=
 				if (peer != null)	peer

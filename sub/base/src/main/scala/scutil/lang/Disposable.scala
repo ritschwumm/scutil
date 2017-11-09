@@ -8,7 +8,10 @@ object Disposable extends DisposableInstances {
 	def delay(todo: =>Unit):Disposable		= new TaskDisposable(() => todo)
 	
 	/** forms a monoids with and */
-	val empty:Disposable	= EmptyDisposable
+	val empty:Disposable	=
+			new Disposable {
+				def dispose() {}
+			}
 	
 	def all(subs:ISeq[Disposable]):Disposable	=
 			disposable {
@@ -26,22 +29,17 @@ trait Disposable {
 	
 	/** forms a monoid with empty */
 	final def and(that:Disposable):Disposable	=
-			(this, that) match {
-				case (EmptyDisposable, x)	=> x
-				case (x, EmptyDisposable)	=> x
-				case (a, b) =>
-					disposable {
-						a.dispose()
-						b.dispose()
-					}
+				 if (this == Disposable.empty)	that
+			else if (that ==  Disposable.empty)	this
+			else {
+				disposable {
+					this.dispose()
+					that.dispose()
+				}
 			}
 			
 	final def toIo:Io[Unit]	=
 			Io delay { dispose() }
-}
-
-private object EmptyDisposable extends Disposable {
-	def dispose() {}
 }
 
 private final class TaskDisposable(task:Thunk[Unit]) extends Disposable {
@@ -49,5 +47,6 @@ private final class TaskDisposable(task:Thunk[Unit]) extends Disposable {
 }
 
 trait DisposableInstances {
+	implicit val DisposableMonoid:Monoid[Disposable]			= Monoid instance (Disposable.empty, _ and _)
 	implicit def DisposableResource[T<:Disposable]:Resource[T]	= Resource instance (_.dispose())
 }

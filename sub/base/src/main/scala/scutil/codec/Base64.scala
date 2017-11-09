@@ -54,10 +54,6 @@ object Base64 {
 	def encodeByteString(data:ByteString):String =
 			encodeByteArray(data.unsafeValue)
 		
-	@deprecated("0.124", "use encodeByteArray")
-	def encode(data:Array[Byte]):String =
-			encodeByteArray(data)
-		
 	/** standard alphabet, no line feeds, adds padding */
 	def encodeByteArray(data:Array[Byte]):String = {
 		val	packetsSize		= data.length / 3
@@ -93,10 +89,6 @@ object Base64 {
 	def decodeByteString(text:String):Option[ByteString] =
 			decodeByteArray(text) map ByteString.unsafeFromByteArray
 	
-	@deprecated("0.124", "use decodeByteArray")
-	def decode(text:String):Option[Array[Byte]] =
-			decodeByteArray(text)
-		
 	/** standard alphabet, whitespace is ignored, padding is required */
 	def decodeByteArray(text:String):Option[Array[Byte]] = {
 		// TODO ignoring all whitespace input might be stupid
@@ -133,10 +125,6 @@ object Base64 {
 		}
 		Some(output)
 	}
-	
-	@deprecated("0.124", "use byteArrayPrism")
-	def toPrism:Prism[String,Array[Byte]]	=
-			byteArrayPrism
 		
 	//------------------------------------------------------------------------------
 	//## padding helper

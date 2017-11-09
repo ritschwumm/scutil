@@ -31,9 +31,6 @@ object Later extends LaterInstances {
 }
 
 final case class Later[T](unsafeRun:(T=>Unit)=>Unit) {
-	@deprecated("use unsafeRun", "0.124")
-	def run(handler:T=>Unit):Unit	= unsafeRun(handler)
-	
 	def foreach(handler:T=>Unit):Unit	= unsafeRun(handler)
 	
 	def runUnit():Unit	=

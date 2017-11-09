@@ -2,6 +2,8 @@ package scutil.number.pimp
 
 import java.util.Random
 
+import scutil.lang._
+
 object RandomImplicits extends RandomImplicits
 
 trait RandomImplicits {
@@ -15,5 +17,8 @@ trait RandomImplicits {
 			}
 			out.toString
 		}
+		
+		def byteString(length:Int):ByteString	=
+				(ByteString makeWithByteArray length)(peer.nextBytes _)
 	}
 }

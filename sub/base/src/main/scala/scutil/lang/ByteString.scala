@@ -5,27 +5,30 @@ import scala.annotation.tailrec
 import java.util.{ Arrays => JArrays }
 import java.nio.charset.Charset
 
-object ByteString {
+import scutil.lang.tc._
+
+
+object ByteString extends ByteStringInstances {
 	val empty:ByteString	= new ByteString(Array.empty)
+	
+	def single(it:Byte):ByteString	= apply(it)
 	
 	//------------------------------------------------------------------------------
 	
-	def fromByteArray(it:Array[Byte]):ByteString	= {
-		val tmp	= new Array[Byte](it.length)
-		System arraycopy (it, 0, tmp, 0, it.length)
-		new ByteString(tmp)
-	}
+	def fromByteArray(it:Array[Byte]):ByteString	=
+			makeWithByteArray(it.length) { tmp =>
+				System arraycopy (it, 0, tmp, 0, it.length)
+			}
 	
-	def fromSeq(it:Seq[Byte]):ByteString	= {
-		val tmp	= new Array[Byte](it.size)
-		val iter = it.iterator
-		var i = 0
-		while (iter.hasNext) {
-			tmp(i) = iter.next()
-			i	= i + 1
-		}
-		new ByteString(tmp)
-	}
+	def fromSeq(it:Seq[Byte]):ByteString	=
+			makeWithByteArray(it.size) { tmp =>
+				val iter = it.iterator
+				var i = 0
+				while (iter.hasNext) {
+					tmp(i) = iter.next()
+					i	= i + 1
+				}
+			}
 	
 	def fromISeq(it:ISeq[Byte]):ByteString	=
 			fromSeq(it)
@@ -39,13 +42,19 @@ object ByteString {
 	def sliceFromByteArray(it:Array[Byte], srcPos:Int, copyLength:Int):Option[ByteString]	=
 			if (!containsSlice(srcPos, srcPos+copyLength, it.length))	None
 			else Some {
-				val tmp	= new Array[Byte](copyLength)
-				System arraycopy (it, srcPos, tmp, 0, copyLength)
-				new ByteString(tmp)
+				makeWithByteArray(copyLength) { tmp =>
+					System arraycopy (it, srcPos, tmp, 0, copyLength)
+				}
 			}
 	
 	//------------------------------------------------------------------------------
 		
+	def makeWithByteArray(size:Int)(effect:Effect[Array[Byte]]):ByteString	= {
+		val tmp	= new Array[Byte](size)
+		effect(tmp)
+		new ByteString(tmp)
+	}
+	
 	def unsafeFromByteArray(it:Array[Byte]):ByteString	=
 			new ByteString(it)
 		
@@ -99,9 +108,9 @@ final class ByteString private (private val value:Array[Byte]) {
 			else if (begin == 0 && end == size)		Some(this)
 			else Some {
 				val length	= end - begin
-				val tmp	= new Array[Byte](length)
-				System arraycopy (value, begin, tmp, 0, length)
-				new ByteString(tmp)
+				(ByteString makeWithByteArray length) { tmp =>
+					System arraycopy (value, begin, tmp, 0, length)
+				}
 			}
 		
 	def containsAt(index:Int, that:ByteString):Boolean	=
@@ -113,11 +122,42 @@ final class ByteString private (private val value:Array[Byte]) {
 				loop(0)
 			}
 		
-	def concat(that:ByteString):ByteString	= {
-		val tmp	 = new Array[Byte](this.size + that.size)
-		System arraycopy (this.value, 0, tmp, 0, this.size)
-		System arraycopy (that.value, 0, tmp, this.size, that.size)
-		new ByteString(tmp)
+	@inline def ++(that:ByteString):ByteString	=
+			this concat that
+	
+	@inline def +:(that:Byte):ByteString	=
+			this prepend that
+	
+	@inline def :+(that:Byte):ByteString	=
+			this append that
+		
+	def concat(that:ByteString):ByteString	=
+			(ByteString makeWithByteArray (this.size + that.size)) { tmp =>
+				System arraycopy (this.value, 0, tmp, 0, this.size)
+				System arraycopy (that.value, 0, tmp, this.size, that.size)
+			}
+			
+	def prepend(value:Byte):ByteString	=
+			(ByteString makeWithByteArray (size+1)) { tmp =>
+				tmp(0)	= value
+				System arraycopy (this.value, 0, tmp, 1, size)
+			}
+			
+	def append(value:Byte):ByteString	=
+			(ByteString makeWithByteArray (size+1)) { tmp =>
+				System arraycopy (this.value, 0, tmp, 0, size)
+				tmp(size)	= value
+			}
+			
+	def constantTimeEquals(that:ByteString):Boolean	= {
+		val length	= this.size min that.size
+		var diff	= this.size ^ that.size
+		var i = 0
+		while (i < length) {
+			diff |= (this unsafeGet i) ^ (that unsafeGet i)
+			i	+= 1
+		}
+		diff == 0
 	}
 	
 	//------------------------------------------------------------------------------
@@ -154,12 +194,18 @@ final class ByteString private (private val value:Array[Byte]) {
 	
 	//------------------------------------------------------------------------------
 	
-	override def equals(that:Any):Boolean	= that match {
-		case that:ByteString	=> JArrays equals (this.value, that.value)
-		case _					=> false
-	}
+	override def equals(that:Any):Boolean	=
+			that match {
+				case that:ByteString	=> JArrays equals (this.value, that.value)
+				case _					=> false
+			}
 	
 	override def hashCode():Int		= JArrays hashCode value
 	
 	override def toString:String	= "[" + value.size.toString + " bytes]"
+}
+
+trait ByteStringInstances {
+	implicit val ByteStringMonoid:Monoid[ByteString]	=
+			Monoid instance (ByteString.empty, _ ++ _)
 }

@@ -71,14 +71,6 @@ trait AnyImplicits {
 		def optionNotBy(predicate:T=>Boolean):Option[T]	=
 				if (predicate(peer)) None else Some(peer)
 			
-		@deprecated("use optionBy", "0.121.0")
-		def guardBy(predicate:T=>Boolean):Option[T]	=
-				optionBy(predicate)
-				
-		@deprecated("use optionNotBy", "0.121.0")
-		def preventBy(predicate:T=>Boolean):Option[T]	=
-				optionNotBy(predicate)
-				
 		/** Right if the predicate matches, else Left */
 		def eitherBy(predicate:T=>Boolean):Either[T,T]	=
 				if (predicate(peer)) Right(peer) else Left(peer)
