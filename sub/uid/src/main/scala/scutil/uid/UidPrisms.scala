@@ -1,7 +1,5 @@
 package scutil.uid
 
-import java.nio.ByteBuffer
-
 import scutil.lang._
 import scutil.base.implicits._
 
@@ -23,25 +21,6 @@ object UidPrisms {
 					(scutil.lang.ByteString makeWithByteBuffer 4*8) (
 						_ putLong it.counter putLong it.time putLong it.random
 					)
-				}
-			)
-			
-	@deprecated("0.126.0", "use ByteString")
-	val ByteArray:Prism[Array[Byte],Uid]	=
-			Prism(
-				(it:Array[Byte])	=> {
-					it.size == 4*8 option {
-						val bb	= ByteBuffer wrap it
-						Uid(
-							machine	= bb.getLong,
-							counter	= bb.getLong,
-							time	= bb.getLong,
-							random	= bb.getLong
-						)
-					}
-				},
-				(it:Uid)	=> {
-					ByteBuffer allocate 4*8 putLong it.counter putLong it.time  putLong it.random array()
 				}
 			)
 

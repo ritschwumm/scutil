@@ -87,7 +87,7 @@ final class URIComponent(charset:Charset) {
 				i	+= 1
 			}
 		}
-		charset decodeEither b.toArray mapLeft URIComponentException
+		charset decodeEitherByteString (ByteString fromArrayBuffer b) mapLeft URIComponentException
 	}
 	
 	private def decodeNibble(nibble:Char):Int	=

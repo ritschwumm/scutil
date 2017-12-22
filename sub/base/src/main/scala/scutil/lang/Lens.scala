@@ -25,9 +25,6 @@ object Lens {
 
 /** functional reference to a part of product type, aka Lens' */
 final case class Lens[S,T](get:S=>T, put:(S,T)=>S) {
-	@deprecated("0.127.0", "use get")
-	def getter	= get
-	
 	def putter(t:T):Endo[S]	= put(_, t)
 	
 	def mod(func:Endo[T]):Endo[S]	= s => put(s, func(get(s)))
@@ -36,16 +33,6 @@ final case class Lens[S,T](get:S=>T, put:(S,T)=>S) {
 	// van laarhoven form
 	def modF[F[_]](func:FEndo[F,T])(implicit F:Functor[F]):FEndo[F,S]	= s	=> (F map func(get(s))) { t => put(s,t) }
 	def modTheF[F[_]:Functor](s:S, func:FEndo[F,T]):F[S]				= modF(func) apply s
-	
-	@deprecated("0.127.0", "use modThe")
-	def modify(s:S, func:Endo[T]):S		= modThe(s, func)
-	@deprecated("0.127.0", "use mod")
-	def modifier(func:Endo[T]):Endo[S]	= mod(func)
-			
-	@deprecated("0.127.0", "use modTheF")
-	def modifyF[F[_]](s:S, func:FEndo[F,T])(implicit F:Functor[F]):F[S]	= modTheF(s, func)
-	@deprecated("0.127.0", "use modF")
-	def modifierF[F[_]:Functor](func:FEndo[F,T]):FEndo[F,S]	= modF(func)
 	
 	//------------------------------------------------------------------------------
 	
@@ -115,14 +102,6 @@ final case class Lens[S,T](get:S=>T, put:(S,T)=>S) {
 					this put (s, that put (this get s, u))
 				}
 			)
-			
-	@deprecated("0.127.0", "use this >=> that.toLens")
-	def andThenBijection[U](that:Bijection[T,U]):Lens[S,U]	=
-			this >=> that.toLens
-			
-	@deprecated("0.127.0", "use this.toPLens >=> that")
-	def andThenPLens[U](that:PLens[T,U]):PLens[S,U]	=
-			toPLens >=> that
 		
 	//------------------------------------------------------------------------------
 			

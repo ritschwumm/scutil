@@ -39,6 +39,8 @@ final case class Optional[S,T](
 	get:S=>Option[T],
 	put:(S,T)=>S
 ) {
+	def putter(t:T):Endo[S]	= put(_, t)
+	
 	def mod(func:Endo[T]):Endo[S]	=
 			s	=> {
 				get(s)

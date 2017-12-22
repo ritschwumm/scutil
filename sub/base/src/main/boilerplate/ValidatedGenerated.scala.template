@@ -6,14 +6,21 @@ trait ValidatedGenerated {
 	//------------------------------------------------------------------------------
 	// zip
 	
-	[2..#def zip1[E:Semigroup,[#S1#,]]([#s1:Validated[E,S1]#]):Validated[E,([#S1#,])]	=
+	[2..#def zip1[E:Semigroup,[#S1#]]([#s1:Validated[E,S1]#]):Validated[E,([#S1#])]	=
 		[#s1# zip ] map assoc.unarrow1#
 	]
 	
 	//------------------------------------------------------------------------------
 	// lift
 	
-	[2..#def lift1[E:Semigroup,[#S1#,],T](func:([#S1#,])=>T):([#Validated[E,S1]#,])=>Validated[E,T]	=
+	[2..#def lift1[E:Semigroup,[#S1#],T](func:([#S1#])=>T):([#Validated[E,S1]#])=>Validated[E,T]	=
 			([#s1:Validated[E,S1]#]) => Validated good func.curried ap [#s1# ap ]#
+	]
+	
+	//------------------------------------------------------------------------------
+	// map
+	
+	[2..#def map1[E:Semigroup,[#R1#],RR]([#r1:Validated[E,R1]#]):(([#R1#])=>RR)=>Validated[E,RR]	=
+			func => Validated good func.curried ap [#r1# ap ]#
 	]
 }

@@ -6,28 +6,28 @@ import org.specs2.mutable._
 class HexTest extends Specification {
 	"Hex" should {
 		"decode an empty string" in {
-			(Hex decodeByteArray "").get must beEqualTo(Array.empty[Byte])
+			(Hex decodeByteString "").get mustEqual ByteString.empty
 		}
 		"fail with uneven number of chars (1)" in {
-			(Hex decodeByteArray "0") must beNone
+			(Hex decodeByteString "0") must beNone
 		}
 		"fail with uneven number of chars (5)" in {
-			(Hex decodeByteArray "00000") must beNone
+			(Hex decodeByteString "00000") must beNone
 		}
 		"fail with unexpected characters" in {
-			(Hex decodeByteArray "xx") must beNone
+			(Hex decodeByteString "xx") must beNone
 		}
 		"decode a single byte" in {
-			(Hex decodeByteArray "7f").get must beEqualTo(Array[Byte](127.toByte))
+			(Hex decodeByteString "7f").get mustEqual ByteString(127.toByte)
 		}
 		"decode a single byte" in {
-			(Hex decodeByteArray "f6").get must beEqualTo(Array[Byte](246.toByte))
+			(Hex decodeByteString "f6").get mustEqual ByteString(246.toByte)
 		}
 		"decode multiple bytes (3)" in {
-			(Hex decodeByteArray "10abf6").get must beEqualTo(Array[Byte](16.toByte, 171.toByte, 246.toByte))
+			(Hex decodeByteString "10abf6").get mustEqual ByteString(16.toByte, 171.toByte, 246.toByte)
 		}
 		"decode uppercase letters" in {
-			(Hex decodeByteArray "FF").get must beEqualTo(Array[Byte](255.toByte))
+			(Hex decodeByteString "FF").get mustEqual ByteString(255.toByte)
 		}
 	}
 }

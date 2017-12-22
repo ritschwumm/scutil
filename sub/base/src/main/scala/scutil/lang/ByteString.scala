@@ -10,7 +10,6 @@ import scala.collection.mutable
 
 import scutil.lang.tc._
 
-
 object ByteString extends ByteStringInstances {
 	val empty:ByteString	= new ByteString(Array.empty)
 	
@@ -41,6 +40,9 @@ object ByteString extends ByteStringInstances {
 		
 	def fromUtf8String(it:String):ByteString	=
 			fromString(it, Charsets.utf_8)
+		
+	def fromByteBuffer(it:ByteBuffer):ByteString	=
+			fromArray(it.array)
 		
 	def fromArrayBuffer(it:mutable.ArrayBuffer[Byte]):ByteString	=
 			new ByteString(it.toArray)
@@ -189,9 +191,8 @@ final class ByteString private (private val value:Array[Byte]) {
 		tmp
 	}
 	
-	def toByteBuffer:ByteBuffer	= {
-		 ByteBuffer wrap toArray
-	}
+	def toByteBuffer:ByteBuffer	=
+		 	ByteBuffer wrap toArray
 	
 	def toISeq:ISeq[Byte]	= value.to[ISeq]
 	def toVector:ISeq[Byte]	= value.to[Vector]

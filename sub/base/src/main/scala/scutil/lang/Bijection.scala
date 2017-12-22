@@ -16,26 +16,11 @@ final case class Bijection[S,T](get:S=>T, put:T=>S) {
 	
 	//------------------------------------------------------------------------------
 	
-	@deprecated("0.127.0", "use get")
-	def write	= get
-	@deprecated("0.127.0", "use put")
-	def read	= put
-	
 	def mod(func:Endo[T]):Endo[S]	= s => put(func(get(s)))
 	def modThe(s:S, func:Endo[T]):S	= mod(func)(s)
 	
 	def modF[F[_]](func:FEndo[F,T])(implicit F:Functor[F]):FEndo[F,S]	= s => (F map func(get(s)))(put)
 	def modTheF[F[_]:Functor](s:S, func:FEndo[F,T]):F[S]				= modF(func) apply s
-	
-	@deprecated("0.127.0", "use modThe")
-	def modify(s:S, func:Endo[T]):S		= modThe(s, func)
-	@deprecated("0.127.0", "use mod")
-	def modifier(func:Endo[T]):Endo[S]	= mod(func)
-		
-	@deprecated("0.127.0", "use modTheF")
-	def modifyF[F[_]](s:S, func:FEndo[F,T])(implicit F:Functor[F]):F[S]	= modTheF(s, func)
-	@deprecated("0.127.0", "use modF")
-	def modifierF[F[_]](func:FEndo[F,T])(implicit F:Functor[F]):S=>F[S]	= modF(func)
 	
 	//------------------------------------------------------------------------------
 	
@@ -74,22 +59,6 @@ final case class Bijection[S,T](get:S=>T, put:T=>S) {
 				get	= s	=> that get (this get s),
 				put	= u	=> this put  (that put  u)
 			)
-		
-	@deprecated("0.127.0", "use this.toPrism >=> that")
-	def andThenPrism[U](that:Prism[T,U]):Prism[S,U]	=
-			toPrism >=> that
-					
-	@deprecated("0.127.0", "use this.toPBijection >=> that")
-	def andThenPBijection[U](that:PBijection[T,U]):PBijection[S,U]	=
-			toPBijection >=> that
-					
-	@deprecated("0.127.0", "use this.toLens >=> that")
-	def andThenLens[U](that:Lens[T,U]):Lens[S,U]	=
-			toLens >=> that
-			
-	@deprecated("0.127.0", "use this.toPLens >=> that")
-	def andThenPLens[U](that:PLens[T,U]):PLens[S,U]	=
-			toPLens >=> that
 		
 	def toPrism:Prism[S,T]	=
 			Prism total (get, put)

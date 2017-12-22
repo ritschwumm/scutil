@@ -14,7 +14,8 @@ object BijectionGen {
 
 private final class BijectionGen(val c:Context) {
 	import c.universe._
-		
+	
+	// TODO handle case objects and zero-param case classes
 	def compile[T:c.WeakTypeTag]:Tree	= {
 		val selfType:Type	= weakTypeOf[T]
 		

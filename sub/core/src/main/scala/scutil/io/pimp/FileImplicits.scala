@@ -124,7 +124,9 @@ trait FileImplicits {
 		def readByteString():ByteString				= withInputStream	{ _ readFullyByteString ()	}
 		def writeByteString(bytes:ByteString):Unit	= withOutputStream	{ _ writeByteString bytes	}
 		
+		@deprecated("use readByteString", "0.128.0")
 		def readBytes():Array[Byte]				= withInputStream	{ _ readFully ()	}
+		@deprecated("use writeByteString", "0.128.0")
 		def writeBytes(bytes:Array[Byte]):Unit	= withOutputStream	{ _ write bytes		}
 		
 		def readString(charset:Charset):String					= withReader(charset) { _ readFully () }

@@ -57,10 +57,6 @@ final case class State[S,+T](run:S=>(S,T)) {
 			
 	//------------------------------------------------------------------------------
 	
-	@deprecated("0.127.0", "use Lens#embedState")
-	def inside[R](lens:Lens[R,S]):State[R,T]	=
-			lens embedState this
-		
 	def toStateT[F[_],TT>:T](implicit M:Applicative[F]):StateT[F,S,TT]	=
 			StateT fromState this
 }

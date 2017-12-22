@@ -6,7 +6,7 @@ trait assocGenerated extends assocBase {
 	
 	type Arrowed1[T1]	= T1
 	
-	[2..#type Arrowed1[[#T1#,]] = ([#T1# -> ])#
+	[2..#type Arrowed1[[#T1#]] = ([#T1# -> ])#
 	]
 	
 	//------------------------------------------------------------------------------
@@ -14,7 +14,7 @@ trait assocGenerated extends assocBase {
 	
 	def arrow1[T1](it:(T1)):(T1)		= it
 	
-	[2..#def arrow1[[#T1#,]](it:([#T1#,])):([#T1# -> ])	=
+	[2..#def arrow1[[#T1#]](it:([#T1#])):([#T1# -> ])	=
 			[#it._1# -> ]#
 	]
 	
@@ -23,7 +23,7 @@ trait assocGenerated extends assocBase {
 	
 	def unarrow1[T1](it:(T1)):(T1)	= it
 	
-	[2..#def unarrow1[[#T1#,]](it:([#T1# -> ])):([#T1#,])	=
+	[2..#def unarrow1[[#T1#]](it:([#T1# -> ])):([#T1#])	=
 			it match { case ([#t1# -> ]) => ([#t1#]) }#
 	]
 }

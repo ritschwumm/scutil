@@ -79,14 +79,6 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 				}
 			}
 			
-	@deprecated("0.127.0", "use this >=> that.toPLens")
-	def andThenBijection[U](that:Bijection[T,U]):PLens[S,U]	=
-			this >=> that.toPLens
-			
-	@deprecated("0.127.0", "use this >=> that.toPLens")
-	def andThenLens[U](that:Lens[T,U]):PLens[S,U]	=
-			this >=> that.toPLens
-		
 	//------------------------------------------------------------------------------
 			
 	def over[R](store:Option[Store[R,S]]):Option[Store[R,T]]	=

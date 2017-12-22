@@ -31,13 +31,6 @@ final case class Prism[S,T](get:PFunction[S,T], put:T=>S) {
 	
 	//------------------------------------------------------------------------------
 	
-	@deprecated("0.127.0", "use get")
-	def write	= get
-	@deprecated("0.127.0", "use get")
-	def getter:PFunction[S,T]	= get
-	@deprecated("0.127.0", "use put")
-	def read	= put
-	
 	// these fall back to the original value if necessary
 	
 	def mod(func:Endo[T]):Endo[S]	= s => get(s) map (func andThen put) getOrElse s
@@ -62,21 +55,6 @@ final case class Prism[S,T](get:PFunction[S,T], put:T=>S) {
 			}
 	def modTheOptF[F[_]](s:S, func:FEndo[F,T])(implicit F:Functor[F]):Option[F[S]]	=
 			modOptF(func) apply s
-	
-	@deprecated("0.127.0", "use modTheOpt")
-	def modify(s:S, func:Endo[T]):Option[S]	= modTheOpt(s, func)
-	@deprecated("0.127.0", "use modOpt")
-	def modifier(func:Endo[T]):PEndo[S]		= modOpt(func)
-	
-	@deprecated("0.127.0", "use modTheOptF")
-	def modifyF[F[_]](s:S, func:FEndo[F,T])(implicit F:Functor[F]):Option[F[S]]	=
-			get(s) map { t =>
-				(F map func(t)) { ss =>
-					put(ss)
-				}
-			}
-	@deprecated("0.127.0", "use modOptF")
-	def modifierF[F[_]](func:FEndo[F,T])(implicit F:Functor[F]):S=>Option[F[S]]	= modOptF(func)
 	
 	//------------------------------------------------------------------------------
 	
@@ -146,18 +124,6 @@ final case class Prism[S,T](get:PFunction[S,T], put:T=>S) {
 				get	= s	=> this get s flatMap that.get,
 				put	= t	=> this put (that put t)
 			)
-			
-	@deprecated("0.127.0", "use this >=> that.toPrism")
-	def andThenBijection[U](that:Bijection[T,U]):Prism[S,U]	=
-			this >=> that.toPrism
-					
-	@deprecated("0.127.0", "use this.toPBijection >=> that")
-	def andThenPBijection[U](that:PBijection[T,U]):PBijection[S,U]	=
-			toPBijection >=> that
-					
-	@deprecated("0.127.0", "this.toPLens >=> that")
-	def andThenPLens[U](that:PLens[T,U]):PLens[S,U]	=
-			toPLens >=> that
 			
 	//------------------------------------------------------------------------------
 		

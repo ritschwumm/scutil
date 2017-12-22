@@ -12,6 +12,7 @@ final class ResourceProvider(val findUrl:String=>Option[URL]) {
 	def readByteString(path:String):Option[ByteString]	=
 			withInputStream(path, _.readFullyByteString)
 		
+	@deprecated("use readByteString", "0.128.0")
 	def readBytes(path:String):Option[Array[Byte]]	=
 			withInputStream(path, _.readFully)
 			

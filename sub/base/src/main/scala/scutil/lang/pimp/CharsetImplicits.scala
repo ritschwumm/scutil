@@ -9,13 +9,21 @@ object CharsetImplicits extends CharsetImplicits
 
 trait CharsetImplicits {
 	implicit final class CharsetExt(peer:Charset) {
-		def encodeByteString(string:String):Either[CharacterCodingException,ByteString]	=
-				encodeEither(string) map ByteString.unsafeFromArray
+		def encodeEitherByteString(string:String):Either[CharacterCodingException,ByteString]	=
+				encodeEitherImpl(string) map ByteString.unsafeFromArray
 			
-		def decodeByteString(string:ByteString):Either[CharacterCodingException,String]	=
-				decodeEither(string.unsafeValue)
+		def decodeEitherByteString(string:ByteString):Either[CharacterCodingException,String]	=
+				decodeEitherImpl(string.unsafeValue)
 			
+		@deprecated("use encodeEitherByteString", "0.128.0")
 		def encodeEither(string:String):Either[CharacterCodingException,Array[Byte]]	=
+				encodeEitherImpl(string)
+			
+		@deprecated("use decodeEitherByteString", "0.128.0")
+		def decodeEither(bytes:Array[Byte]):Either[CharacterCodingException,String]	=
+				decodeEitherImpl(bytes)
+			
+		private def encodeEitherImpl(string:String):Either[CharacterCodingException,Array[Byte]]	=
 				try {
 					Right((failingEncoder encode (CharBuffer wrap string)).array)
 				}
@@ -23,7 +31,7 @@ trait CharsetImplicits {
 					Left(e)
 				}
 				
-		def decodeEither(bytes:Array[Byte]):Either[CharacterCodingException,String]	=
+		private def decodeEitherImpl(bytes:Array[Byte]):Either[CharacterCodingException,String]	=
 				try {
 					Right((failingDecoder decode (ByteBuffer wrap bytes)).toString)
 				}

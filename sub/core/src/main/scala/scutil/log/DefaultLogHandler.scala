@@ -12,7 +12,7 @@ object DefaultLogHandler extends DefaultLogHandler
 trait DefaultLogHandler extends LogHandler {
 	def handle(event:LogEvent) {
 		if (accept(event)) {
-			print(format(event))
+			print(formatEvent(event))
 		}
 	}
 	
@@ -25,10 +25,14 @@ trait DefaultLogHandler extends LogHandler {
 		}
 	}
 	
+	// TODO scala-js this make everything appear in console.error
 	def printStream:PrintStream	=
 			System.err
 	
-	def format(event:LogEvent):String	= {
+	//------------------------------------------------------------------------------
+		
+	// TODO scala-js in the browser it might make more sense to call console.log with individual elements
+	def formatEvent(event:LogEvent):String	= {
 		val messages	= event.elements collapseMap extractMessage
 		val throwables	= event.elements collapseMap extractThrowable
 		
@@ -62,22 +66,20 @@ trait DefaultLogHandler extends LogHandler {
 				case FATAL	=> "FATAL"
 			}
 		
-	def formatMessage(it:Any):String	=
+	def formatMessage(it:String):String	=
 			if (it != null)	it.toString
 			else			"<null>"
 			
-	def formatThrowable(t:Throwable):String	=
-			t.stackTrace
+	// TODO scala-js this is not very useful in the browser
+	def formatThrowable(it:Throwable):String	=
+			if (it != null)	it.stackTrace
+			else			"<null>"
+			
+	//------------------------------------------------------------------------------
 	
-	def extractMessage(element:Any):Option[Any]	=
-			element match {
-				case x if !x.isInstanceOf[Throwable]	=> Some(x)
-				case _									=> None
-			}
+	def extractMessage(element:LogValue):Option[String]	=
+			LogValue.P.LogString get element
 		
-	def extractThrowable(element:Any):Option[Throwable]	=
-			element match {
-				case x:Throwable 	=> Some(x)
-				case _				=> None
-			}
+	def extractThrowable(element:LogValue):Option[Throwable]	=
+			LogValue.P.LogThrowable get element
 }
