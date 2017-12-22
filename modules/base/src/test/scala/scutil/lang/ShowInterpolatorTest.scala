@@ -48,5 +48,16 @@ class ShowInterpolatorTest extends Specification {
 			show"""$o""" mustEqual "some: 1"
 		}
 		*/
+		
+		"allow escapes" in {
+			show"\t" mustEqual s"\t"
+		}
+		
+		/*
+		// TODO allow escaped double quotes somehow
+		"allow escapes" in {
+			show"\"" mustEqual s"\""
+		}
+		*/
 	}
 }

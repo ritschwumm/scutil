@@ -3,7 +3,7 @@ import spray.boilerplate.BoilerplatePlugin
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.130.0",
+	version			:= "0.131.0",
 	
 	scalaVersion	:= "2.12.4",
 	scalacOptions	++= Seq(

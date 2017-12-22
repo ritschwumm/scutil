@@ -18,11 +18,6 @@ object PBijection {
 final case class PBijection[S,T](get:PFunction[S,T], set:PFunction[T,S]) {
 	// TODO optics add mod and modF etc.
 	
-	@deprecated("use set", "0.130.0")
-	def put(t:T):Option[S]	= set(t)
-	
-	//------------------------------------------------------------------------------
-	
 	def inverse:PBijection[T,S]	=
 			PBijection(set, get)
 	

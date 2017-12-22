@@ -25,11 +25,6 @@ object Lens {
 
 /** functional reference to a part of product type, aka Lens' */
 final case class Lens[S,T](get:S=>T, set:T=>S=>S) {
-	@deprecated("use setThe", "0.130.0")
-	def put(s:S, t:T):S		= setThe(s,t)
-	@deprecated("use set", "0.130.0")
-	def putter(t:T):Endo[S]	= set(t)
-	
 	def setThe(s:S, t:T):S	= set(t)(s)
 	
 	//------------------------------------------------------------------------------

@@ -43,11 +43,6 @@ object Optional extends OptionalInstances {
 }
 
 final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
-	@deprecated("use setThe", "0.130.0")
-	def put(s:S, t:T):S		= setThe(s,t)
-	@deprecated("use set", "0.130.0")
-	def putter(t:T):Endo[S]	= set(t)
-	
 	def setThe(s:S, t:T):S	= set(t)(s)
 	
 	//------------------------------------------------------------------------------

@@ -40,6 +40,9 @@ final case class Subtype[Super,Sub<:Super](downcast:PFunction[Super,Sub]) {
 	def toPrism:Prism[Super,Sub]	=
 			Prism(downcast, upcast)
 		
+	def toOptional:Optional[Super,Sub]	=
+			toPrism.toOptional
+		
 	def toPLens:PLens[Super,Sub]	=
 			PLens(downcast(_) map (Store(_, upcast)))
 		

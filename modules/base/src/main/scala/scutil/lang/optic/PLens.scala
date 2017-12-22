@@ -21,19 +21,41 @@ object PLens extends PLensInstances {
 			identity[T] sum identity[T]
 }
 
-// TODO optics rework
 final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
-	def get(s:S):Option[T]		= on(s) map { _.get }
-	def getter:PFunction[S,T]	= get(_)
+	val get:PFunction[S,T]	= on(_) map (_.get)
 	
-	def put(s:S, t:T):Option[S]	= on(s) map { _ set t }
-	def putter(t:T):PEndo[S]	= put(_, t)
+	val set:T=>S=>Option[S]			= t => s => on(s) map (_ set t)
+	def setThe(s:S, t:T):Option[S]	= set(t)(s)
 	
-	def modify(s:S, func:Endo[T]):Option[S]	= on(s) map { _ modify func }
-	def modifier(func:Endo[T]):PEndo[S]		= modify(_, func)
+	def mod(func:Endo[T]):S=>Option[S]		= on(_) map { _ modify func }
+	def modThe(s:S, func:Endo[T]):Option[S]	= mod(func)(s)
 	
+	def modF[F[_]:Functor](func:FEndo[F,T]):S=>Option[F[S]]			= on(_) map { _ modifyF func }
+	def modTheF[F[_]:Functor](s:S, func:FEndo[F,T]):Option[F[S]]	= modF(func) apply s
+	
+	//------------------------------------------------------------------------------
+	
+	@deprecated("use get", "0.131.0")
+	def getter:PFunction[S,T]	= get
+	
+	@deprecated("use setThe", "0.131.0")
+	def put(s:S, t:T):Option[S]	= setThe(s, t)
+	@deprecated("use set", "0.131.0")
+	def putter(t:T):PEndo[S]	= set(t)
+	
+	@deprecated("use modThe", "0.131.0")
+	def modify(s:S, func:Endo[T]):Option[S]	= modThe(s, func)
+	@deprecated("use mod", "0.131.0")
+	def modifier(func:Endo[T]):PEndo[S]		= modThe(_, func)
+	
+	@deprecated("use modTheF", "0.131.0")
 	def modifyF[F[_]:Functor](s:S, func:FEndo[F,T]):Option[F[S]]	= on(s) map { _ modifyF func }
+	@deprecated("use modF", "0.131.0")
 	def modifierF[F[_]:Functor](func:FEndo[F,T]):S=>Option[F[S]]	= modifyF(_, func)
+	
+	//------------------------------------------------------------------------------
+	
+	// TODO optics rework these
 	
 	def modifyState[X](s:S, func:State[T,X]):Option[(S,X)]	= on(s) map { _ modifyState func }
 	def modifierState[X](func:State[T,X]):S=>Option[(S,X)]	= modifyState(_, func)
@@ -41,8 +63,6 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 	def modifyStateT[F[_]:Functor,X](s:S, func:StateT[F,T,X]):Option[F[(S,X)]]	= on(s) map (_ modifyStateT func)
 	def modifierStateT[F[_]:Functor,X](func:StateT[F,T,X]):S=>Option[F[(S,X)]]	= modifyStateT(_, func)
 	
-	//------------------------------------------------------------------------------
-
 	// BETTER use these to replace modifier
 	def modifyP(s:S):Option[Endo[T]=>S]							= on(s) map { _.modify }
 	def modifyPF[F[_]:Functor](s:S):Option[FEndo[F,T]=>F[S]]	= on(s) map { _.modifyF }

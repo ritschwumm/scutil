@@ -33,11 +33,6 @@ final case class Prism[S,T](get:PFunction[S,T], set:T=>S) {
 	
 	//------------------------------------------------------------------------------
 	
-	@deprecated("use set", "0.130.0")
-	def put(t:T):S	= set(t)
-	
-	//------------------------------------------------------------------------------
-	
 	// these fall back to the original value if necessary
 	
 	def mod(func:Endo[T]):Endo[S]	= s => get(s) map (func andThen set) getOrElse s

@@ -10,9 +10,6 @@ object Bijection {
 }
 
 final case class Bijection[S,T](get:S=>T, set:T=>S) {
-	@deprecated("use set", "0.130.0")
-	def put(t:T):S	= set(t)
-	
 	// can be used as scala function and extractor
 	def apply(t:T):S			= set(t)
 	def unapply(s:S):Option[T]	= Some(get(s))
