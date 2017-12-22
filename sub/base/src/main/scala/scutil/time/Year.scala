@@ -1,8 +1,9 @@
 package scutil.time
 
+import scutil.lang.tc._
 import scutil.math.functions._
 
-object Year {
+object Year extends YearInstances {
 	private val longYears:Set[Int]	=
 			Set(
 				4, 9, 15, 20, 26, 32, 37, 43, 48, 54, 60, 65, 71, 76, 82, 88, 93, 99,
@@ -43,5 +44,11 @@ final case class Year(value:Int) extends Ordered[Year] {
 	lazy val gregorianLeap:Boolean	=
 			(value % 4 == 0) 	&&
 			!(value % 100 == 0) ||
-			(value % 400 == 0) 
+			(value % 400 == 0)
+			
+	override def toString:String	= value.toString
+}
+
+trait YearInstances {
+	implicit val YearShow:Show[Year]	= Show.toStringInstance
 }

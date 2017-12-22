@@ -1,8 +1,9 @@
 package scutil.time
 
+import scutil.lang.tc._
 import scutil.math.functions._
 
-object GregorianDate {
+object GregorianDate extends GregorianDateInstances {
 	val epoch	= GregorianDate(1, 1, 1970)
 	
 	// TODO smart constructor
@@ -69,4 +70,10 @@ final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[Gre
 				32045
 		JulianDay(x.toInt)
 	}
+	
+	override def toString:String	= s"$year-$month-$day"
+}
+
+trait GregorianDateInstances {
+	implicit val GregorianDateShow:Show[GregorianDate]	= Show.toStringInstance
 }

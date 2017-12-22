@@ -4,7 +4,7 @@ import java.io._
 
 import scutil.base.implicits._
 import scutil.jtime.implicits._
-import scutil.lang.SourceLocation
+import scutil.lang._
 import scutil.time._
 
 object DefaultLogHandler extends DefaultLogHandler
@@ -33,8 +33,9 @@ trait DefaultLogHandler extends LogHandler {
 		
 	// TODO scala-js in the browser it might make more sense to call console.log with individual elements
 	def formatEvent(event:LogEvent):String	= {
-		val messages	= event.elements collapseMap extractMessage
-		val throwables	= event.elements collapseMap extractThrowable
+		val atoms		= event.values flatMap (_.atoms)
+		val messages	= atoms collect { case LogString(x) 	=> x }
+		val throwables	= atoms collect { case LogThrowable(x)	=> x }
 		
 		val headerItems	=
 				Vector(
@@ -74,12 +75,4 @@ trait DefaultLogHandler extends LogHandler {
 	def formatThrowable(it:Throwable):String	=
 			if (it != null)	it.stackTrace
 			else			"<null>"
-			
-	//------------------------------------------------------------------------------
-	
-	def extractMessage(element:LogValue):Option[String]	=
-			LogValue.P.LogString get element
-		
-	def extractThrowable(element:LogValue):Option[Throwable]	=
-			LogValue.P.LogThrowable get element
 }

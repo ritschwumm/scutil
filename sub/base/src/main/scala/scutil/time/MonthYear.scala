@@ -1,8 +1,9 @@
 package scutil.time
 
+import scutil.lang.tc._
 import scutil.math.functions._
 
-object MonthYear {
+object MonthYear extends MonthYearInstances {
 	// TODO smart constructor
 	
 	def fromValues(month:Month, year:Year):MonthYear	=
@@ -43,4 +44,10 @@ final case class MonthYear(month:Int, year:Int) extends Ordered[MonthYear] {
 	lazy val days:Int	= monthValue daysInYear yearValue
 	
 	lazy val toIndex:Int	= monthIndex + year * 12
+	
+	override def toString:String	= s"$year-$month"
+}
+
+trait MonthYearInstances {
+	implicit val MonthYearShow:Show[MonthYear]	= Show.toStringInstance
 }

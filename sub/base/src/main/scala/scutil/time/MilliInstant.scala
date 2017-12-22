@@ -3,8 +3,9 @@ package scutil.time
 import scala.math.Ordered
 
 import scutil.lang._
+import scutil.lang.tc._
 
-object MilliInstant {
+object MilliInstant extends MilliInstantInstances {
 	def zero:MilliInstant	= MilliInstant(0)
 	def now():MilliInstant	= MilliInstant(System.currentTimeMillis)
 	
@@ -20,4 +21,10 @@ final case class MilliInstant(millis:Long) extends Ordered[MilliInstant] {
 	def compare(that:MilliInstant):Int		= this.millis compare that.millis
 	def min(that:MilliInstant):MilliInstant	= if (this < that) this else that
 	def max(that:MilliInstant):MilliInstant	= if (this > that) this else that
+	
+	override def toString:String	= millis.toString
+}
+
+trait MilliInstantInstances {
+	implicit val MilliInstantShow:Show[MilliInstant]	= Show.toStringInstance
 }

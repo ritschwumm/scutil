@@ -1,8 +1,9 @@
 package scutil.time
 
+import scutil.lang.tc._
 import scutil.math.functions._
 
-object JulianDay {
+object JulianDay extends JulianDayInstances {
 	val epoch	= GregorianDate.epoch.toJulianDay
 }
 
@@ -49,4 +50,10 @@ final case class JulianDay(value:Int) extends Ordered[JulianDay] {
 	
 	lazy val weekday:Weekday	=
 			Weekday fromIndex value
+		
+	override def toString:String	= s"JD$value"
+}
+
+trait JulianDayInstances {
+	implicit val JulianDayShow:Show[JulianDay]	= Show.toStringInstance
 }

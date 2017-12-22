@@ -6,7 +6,7 @@ import scutil.time.MilliInstant
 
 final case class LogEvent(
 	level:LogLevel,
-	elements:ISeq[LogValue],
+	values:ISeq[LogValue],
 	timestamp:MilliInstant,
 	location:SourceLocation
 )

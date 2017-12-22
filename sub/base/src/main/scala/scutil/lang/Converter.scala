@@ -39,6 +39,11 @@ object Converter extends ConverterGenerated with ConverterInstances {
 			
 	def fromEitherFunc[E,S,T](func:S=>Either[E,T]):Converter[E,S,T]	=
 			Converter(func andThen (_.toValidated))
+		
+	def required[E,S,T](base:Converter[E,S,Option[T]], bad: =>E):Converter[E,S,T]	=
+			Converter { input =>
+				base convert input flatMap { _ toGood bad }
+			}
 			
 	//------------------------------------------------------------------------------
 	

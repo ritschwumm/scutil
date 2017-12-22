@@ -1,8 +1,9 @@
 package scutil.time
 
+import scutil.lang.tc._
 import scutil.math.functions._
 
-object Month {
+object Month extends MonthInstances {
 	val count	= 12
 	
 	val all:Vector[Month]	=
@@ -76,6 +77,22 @@ sealed abstract class Month {
 			}
 			
 	def monthYearAt(year:Year):MonthYear	= MonthYear fromValues (this, year)
+	
+	override def toString:String	=
+			this match {
+				case January	=> "January"
+				case February	=> "February"
+				case March		=> "March"
+				case April		=> "April"
+				case May		=> "May"
+				case June		=> "June"
+				case July		=> "July"
+				case August		=> "August"
+				case September	=> "September"
+				case October	=> "October"
+				case November	=> "November"
+				case December	=> "December"
+			}
 }
 case object January		extends Month
 case object February	extends Month
@@ -89,3 +106,8 @@ case object September	extends Month
 case object October		extends Month
 case object November	extends Month
 case object December	extends Month
+
+trait MonthInstances {
+	implicit val MonthShow:Show[Month]	= Show.toStringInstance
+}
+

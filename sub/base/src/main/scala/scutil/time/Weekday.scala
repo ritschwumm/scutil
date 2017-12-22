@@ -1,8 +1,9 @@
 package scutil.time
 
+import scutil.lang.tc._
 import scutil.math.functions._
 
-object Weekday {
+object Weekday extends WeekdayInstances {
 	val count	= 7
 	
 	val all:Vector[Weekday]	=
@@ -40,6 +41,18 @@ sealed abstract class Weekday {
 				case Saturday	=> 5
 				case Sunday		=> 6
 			}
+			
+	override def toString:String	=
+			this match {
+				case Monday		=> "Monday"
+				case Tuesday	=> "Tuesday"
+				case Wednesday	=> "Wednesday"
+				case Thursday	=> "Thursday"
+				case Friday		=> "Friday"
+				case Saturday	=> "Saturday"
+				case Sunday		=> "Sunday"
+			}
+			
 }
 case object Monday		extends Weekday
 case object Tuesday		extends Weekday
@@ -48,3 +61,8 @@ case object Thursday	extends Weekday
 case object Friday		extends Weekday
 case object Saturday	extends Weekday
 case object Sunday		extends Weekday
+
+
+trait WeekdayInstances {
+	implicit val WeekdayShow:Show[Weekday]	= Show.toStringInstance
+}

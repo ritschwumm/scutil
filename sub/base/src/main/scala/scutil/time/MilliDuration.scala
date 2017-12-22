@@ -3,8 +3,9 @@ package scutil.time
 import scala.math.Ordered
 
 import scutil.lang._
+import scutil.lang.tc._
 
-object MilliDuration {
+object MilliDuration extends MilliDurationInstances {
 	def week:MilliDuration		= day		*! 7
 	def day:MilliDuration		= hour		*! 24
 	def hour:MilliDuration		= minute	*! 60
@@ -35,4 +36,10 @@ final case class MilliDuration(millis:Long) extends Ordered[MilliDuration] {
 	
 	def micros:Long	= millis*1000
 	def nanos:Long	= millis*1000*1000
+	
+	override def toString:String	= millis.toString
+}
+
+trait MilliDurationInstances {
+	implicit val MilliDurationShow:Show[MilliDuration]	= Show.toStringInstance
 }

@@ -21,6 +21,8 @@ object Prism extends PrismInstances {
 				it => if (pred(it)) Some(it) else None,
 				Predef.identity
 			)
+			
+	val Gen	 = PrismGen
 }
 
 /** parser and unparser for some data into a side format, aka Prism' */

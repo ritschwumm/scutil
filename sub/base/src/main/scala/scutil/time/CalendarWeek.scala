@@ -1,6 +1,8 @@
 package scutil.time
 
-object CalendarWeek {
+import scutil.lang.tc._
+
+object CalendarWeek extends CalendarWeekInstances {
 	// TODO smart constructor
 	
 	val days	= 7
@@ -11,7 +13,7 @@ object CalendarWeek {
 
 /** number in 1..53 */
 final case class CalendarWeek(number:Int, year:Int) extends Ordered[CalendarWeek] {
-	// TODO check countInYear here 
+	// TODO check countInYear here
 	require(number >= 1,	"expected number >= 1")
 	require(number <= 53,	"expected number >= 53")
 	
@@ -45,4 +47,10 @@ final case class CalendarWeek(number:Int, year:Int) extends Ordered[CalendarWeek
 		
 	lazy val toIndex:Int	=
 			julianDayAt(Monday).value / 7
+		
+	override def toString:String	= s"KW${number}/${year}"
+}
+
+trait CalendarWeekInstances {
+	implicit val CalendarWeekShow:Show[CalendarWeek]	= Show.toStringInstance
 }

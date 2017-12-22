@@ -1,5 +1,9 @@
 package scutil.lang
 
+import java.util.UUID
+import java.net.URL
+import java.net.URI
+
 import scutil.base.implicits._
 import scutil.lang.tc._
 
@@ -7,9 +11,71 @@ object instances extends instances
 
 trait instances extends instancesLow {
 	//------------------------------------------------------------------------------
-	//## builtin
+	//## builtin Resource
 	
 	implicit def AutoCloseableResource[T<:AutoCloseable]:Resource[T]	= Resource instance (_.close())
+	
+	//------------------------------------------------------------------------------
+	//## builting Show
+	
+	implicit val ByteShow:Show[Byte]		= Show.toStringInstance
+	implicit val ShortShow:Show[Short]		= Show.toStringInstance
+	implicit val IntShow:Show[Int]			= Show.toStringInstance
+	implicit val LongShow:Show[Long]		= Show.toStringInstance
+	implicit val FloatShow:Show[Float]		= Show.toStringInstance
+	implicit val DoubleShow:Show[Double]	= Show.toStringInstance
+	implicit val CharShow:Show[Char]		= Show.toStringInstance
+	implicit val BooleanShow:Show[Boolean]	= Show.toStringInstance
+	
+	implicit val StringShow:Show[String]	= Show instance identity
+	
+	implicit val ThreadShow:Show[Thread]	= Show.toStringInstance
+	implicit val ClassShow:Show[Class[_]]	= Show.toStringInstance
+	implicit val UuidShow:Show[UUID]		= Show.toStringInstance
+	implicit val UrlShow:Show[URL]			= Show.toStringInstance
+	implicit val UriShow:Show[URI]			= Show.toStringInstance
+	
+	//------------------------------------------------------------------------------
+	//## builting Semigroup/Monoid
+	
+	implicit val StringMonoid:Monoid[String]	=
+			Monoid instance ("", _ + _)
+		
+	implicit def PairMonoid[T1,T2](implicit T1:Monoid[T1], T2:Monoid[T2]):Monoid[(T1,T2)]	=
+			Monoid instance (
+				(T1.empty, T2.empty),
+				(a, b) => (
+					T1 concat (a._1, b._1),
+					T2 concat (a._2, b._2)	
+				)
+			)
+		
+	implicit def OptionMonoid[T](implicit S:Semigroup[T]):Monoid[Option[T]]	=
+			Monoid instance (
+				None,
+				(a,b) => (a,b) match {
+					case (None,		None)		=> None
+					case (Some(aa),	None)		=> Some(aa)
+					case (None,		Some(bb))	=> Some(bb)
+					case (Some(aa),	Some(bb))	=> Some(S concat (aa, bb))
+				}
+			)
+			
+	/*
+	// TODO does this make sense without further constraints on T?
+	implicit def EitherSemigroup[S,T]:Semigroup[Either[S,T]]	=
+			Semigroup instance { (a,b) =>
+				a match {
+					case Left(_)	=> b
+					case Right(_)	=> a
+				}
+			}
+	*/
+		
+	// TODO Pair Monoid
+		
+	//------------------------------------------------------------------------------
+	//## builtin Functor/Applicative/Monad
 	
 	implicit def FunctionFunctor[S]:Functor[Function[S,?]]	=
 			new Functor[Function[S,?]] {
@@ -37,17 +103,6 @@ trait instances extends instancesLow {
 						}
 			}
 			
-	implicit def OptionMonoid[T](implicit S:Semigroup[T]):Monoid[Option[T]]	=
-			Monoid instance (
-				None,
-				(a,b) => (a,b) match {
-					case (None,		None)		=> None
-					case (Some(aa),	None)		=> Some(aa)
-					case (None,		Some(bb))	=> Some(bb)
-					case (Some(aa),	Some(bb))	=> Some(S concat (aa, bb))
-				}
-			)
-		
 	implicit def EitherTraversedMonad[S]:TraversedMonad[Either[S,?]]	=
 			new TraversedMonad[Either[S,?]] {
 				override def pure[A](it:A):Either[S,A]										= Right(it)
@@ -60,47 +115,6 @@ trait instances extends instancesLow {
 							case Right(x)	=> (AP map func(x))(Right.apply)
 						}
 			}
-			
-	implicit def EitherSemigroup[S,T]:Semigroup[Either[S,T]]	=
-			Semigroup instance { (a,b) =>
-				a match {
-					case Left(_)	=> b
-					case Right(_)	=> a
-				}
-			}
-			
-	implicit val StringMonoid:Monoid[String]	=
-			Monoid instance ("", _ + _)
-		
-	implicit val StringShow:Show[String]	=
-			Show instance identity
-		
-	implicit val ByteShow:Show[Byte]	=
-			Show.toStringInstance
-			
-	implicit val ShortShow:Show[Short]	=
-			Show.toStringInstance
-			
-	implicit val IntShow:Show[Int]	=
-			Show.toStringInstance
-			
-	implicit val LongShow:Show[Long]	=
-			Show.toStringInstance
-			
-	implicit val FloatShow:Show[Float]	=
-			Show.toStringInstance
-			
-	implicit val DoubleShow:Show[Double]	=
-			Show.toStringInstance
-			
-	implicit val CharShow:Show[Char]	=
-			Show.toStringInstance
-			
-	implicit val BooleanShow:Show[Boolean]	=
-			Show.toStringInstance
-		
-	implicit val BigDecimalShow:Show[BigDecimal]	=
-			Show.toStringInstance
 			
 	//------------------------------------------------------------------------------
 	//## on function, questionable
