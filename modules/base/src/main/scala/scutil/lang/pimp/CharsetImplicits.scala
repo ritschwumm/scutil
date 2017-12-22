@@ -15,14 +15,6 @@ trait CharsetImplicits {
 		def decodeEitherByteString(string:ByteString):Either[CharacterCodingException,String]	=
 				decodeEitherImpl(string.unsafeValue)
 			
-		@deprecated("use encodeEitherByteString", "0.128.0")
-		def encodeEither(string:String):Either[CharacterCodingException,Array[Byte]]	=
-				encodeEitherImpl(string)
-			
-		@deprecated("use decodeEitherByteString", "0.128.0")
-		def decodeEither(bytes:Array[Byte]):Either[CharacterCodingException,String]	=
-				decodeEitherImpl(bytes)
-			
 		private def encodeEitherImpl(string:String):Either[CharacterCodingException,Array[Byte]]	=
 				try {
 					Right((failingEncoder encode (CharBuffer wrap string)).array)

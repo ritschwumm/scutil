@@ -107,7 +107,7 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 			Nes(this.head, this.tail :+ item)
 		
 	def prependMany[U>:T](items:ISeq[U]):Nes[U]	=
-			if (items.nonEmpty)	Nes(items.head, items.tail ++ this.tail)
+			if (items.nonEmpty)	Nes(items.head, items.tail ++ this.toVector)
 			else				this
 			
 	def appendMany[U>:T](items:ISeq[U]):Nes[U]	=

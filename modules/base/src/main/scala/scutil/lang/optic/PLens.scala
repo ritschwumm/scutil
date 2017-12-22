@@ -35,26 +35,6 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 	
 	//------------------------------------------------------------------------------
 	
-	@deprecated("use get", "0.131.0")
-	def getter:PFunction[S,T]	= get
-	
-	@deprecated("use setThe", "0.131.0")
-	def put(s:S, t:T):Option[S]	= setThe(s, t)
-	@deprecated("use set", "0.131.0")
-	def putter(t:T):PEndo[S]	= set(t)
-	
-	@deprecated("use modThe", "0.131.0")
-	def modify(s:S, func:Endo[T]):Option[S]	= modThe(s, func)
-	@deprecated("use mod", "0.131.0")
-	def modifier(func:Endo[T]):PEndo[S]		= modThe(_, func)
-	
-	@deprecated("use modTheF", "0.131.0")
-	def modifyF[F[_]:Functor](s:S, func:FEndo[F,T]):Option[F[S]]	= on(s) map { _ modifyF func }
-	@deprecated("use modF", "0.131.0")
-	def modifierF[F[_]:Functor](func:FEndo[F,T]):S=>Option[F[S]]	= modifyF(_, func)
-	
-	//------------------------------------------------------------------------------
-	
 	// TODO optics rework these
 	
 	def modifyState[X](s:S, func:State[T,X]):Option[(S,X)]	= on(s) map { _ modifyState func }

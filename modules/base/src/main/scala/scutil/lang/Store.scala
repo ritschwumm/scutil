@@ -11,9 +11,6 @@ object Store extends StoreInstances {
 }
 
 final case class Store[C,V](get:V, set:V=>C) {
-	@deprecated("use set", "0.130.0")
-	def put(v:V):C	= set(v)
-		
 	/** aka extract */
 	def container:C							= set(get)
 	

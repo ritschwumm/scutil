@@ -28,9 +28,6 @@ trait InputStreamImplicits {
 		def readFullyByteString():ByteString	=
 				ByteString unsafeFromArray readFullyImpl()
 		
-		@deprecated("use readFullyByteString", "0.128.0")
-		def readFully():Array[Byte] = readFullyImpl()
-		
 		private def readFullyImpl():Array[Byte] = {
 			val baos	= new ByteArrayOutputStream
 			transferToPre9(baos)

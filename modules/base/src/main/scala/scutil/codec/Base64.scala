@@ -8,8 +8,6 @@ encodes and decodes byte arrays into strings using the base64 encoding method.
 @see javax.xml.bind.DatatypeConverter
 */
 object Base64 {
-	@deprecated("use byteStringPrism", "0.128.0")
-	val byteArrayPrism	= Prism(decodeImpl,			encodeImpl)
 	val byteStringPrism	= Prism(decodeByteString,	encodeByteString)
 	
 	//------------------------------------------------------------------------------
@@ -56,9 +54,6 @@ object Base64 {
 	def encodeByteString(data:ByteString):String =
 			encodeImpl(data.unsafeValue)
 		
-	@deprecated("use encodeByteString", "0.128.0")
-	def encodeByteArray(data:Array[Byte]):String = encodeImpl(data)
-		
 	private def encodeImpl(data:Array[Byte]):String = {
 		val	packetsSize		= data.length / 3
 		val extraSize		= data.length % 3
@@ -94,9 +89,6 @@ object Base64 {
 	def decodeByteString(text:String):Option[ByteString] =
 			decodeImpl(text) map ByteString.unsafeFromArray
 	
-	@deprecated("use decodeByteString", "0.128.0")
-	def decodeByteArray(text:String):Option[Array[Byte]] = decodeImpl(text)
-		
 	private def decodeImpl(text:String):Option[Array[Byte]] = {
 		// TODO ignoring all whitespace input might be stupid
 		val cleanText	= text replaceAll (whitespaceRE, "")

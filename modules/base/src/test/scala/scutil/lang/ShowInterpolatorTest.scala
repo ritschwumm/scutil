@@ -43,7 +43,7 @@ class ShowInterpolatorTest extends Specification {
 			show"""$o""" mustEqual "some: 1"
 		}
 		/*
-		"work with inheritnce" in {
+		"work with inheritance" in {
 			val o:Some[Int]	= Some(1)
 			show"""$o""" mustEqual "some: 1"
 		}
@@ -52,6 +52,17 @@ class ShowInterpolatorTest extends Specification {
 		"allow escapes" in {
 			show"\t" mustEqual s"\t"
 		}
+		
+		"allow escapes" in {
+			show"\u0000" mustEqual s"\u0000"
+		}
+		
+		/*
+		// this should fail at compile time
+		"allow escapes" in {
+			show"\x" mustEqual s"\t"
+		}
+		*/
 		
 		/*
 		// TODO allow escaped double quotes somehow

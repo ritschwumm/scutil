@@ -1,8 +1,6 @@
 package scutil.lang
 
 object Hex {
-	@deprecated("use byteStringPrism", "0.128.0")
-	val byteArrayPrism	= Prism(decodeImpl,			encodeImpl)
 	val byteStringPrism	= Prism(decodeByteString,	encodeByteString)
 	
 	//------------------------------------------------------------------------------
@@ -10,9 +8,6 @@ object Hex {
 	def encodeByteString(bytes:ByteString):String	=
 			encodeImpl(bytes.unsafeValue)
 	
-	@deprecated("use encodeByteString", "0.128.0")
-	def encodeByteArray(bytes:Array[Byte]):String	= encodeImpl(bytes)
-		
 	private def encodeImpl(bytes:Array[Byte]):String	=
 			bytes map nibbles mkString ""
 		
@@ -29,9 +24,6 @@ object Hex {
 	def decodeByteString(s:String):Option[ByteString]	=
 			decodeImpl(s) map ByteString.unsafeFromArray
 		
-	@deprecated("use decodeByteString", "0.128.0")
-	def decodeByteArray(s:String):Option[Array[Byte]]	= decodeImpl(s)
-			
 	private def decodeImpl(s:String):Option[Array[Byte]]	= {
 		val count	= s.length / 2
 		if (s.length != count*2)	return None
