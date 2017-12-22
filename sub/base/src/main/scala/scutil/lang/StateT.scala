@@ -84,11 +84,6 @@ final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
 				func(run)(s0)
 			}
 	
-	def inside[R](lens:TLens[R,S])(implicit F:Functor[F]):StateT[F,R,T]	= 
-			StateT { r0	=>
-				lens on r0 modifyStateT this
-			}
-			
 	//------------------------------------------------------------------------------
 		
 	def map[U](func:T=>U)(implicit F:Functor[F]):StateT[F,S,U]	=
@@ -162,6 +157,12 @@ final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
 	
 	def innerFlatten[U](implicit ev:F[T]=>StateT[F,S,U], F:Monad[F]):StateT[F,S,U]	=
 			innerFlatMap(ev)
+		
+	//------------------------------------------------------------------------------
+	
+	@deprecated("0.127.0", "use Lens#embedStateT")
+	def inside[R](lens:Lens[R,S])(implicit F:Functor[F]):StateT[F,R,T]	=
+			lens embedStateT this
 }
 
 trait StateTInstances {

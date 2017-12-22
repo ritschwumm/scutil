@@ -17,7 +17,7 @@ class PrismTest extends Specification {
 	"Prism" should {
 		"do write in partial" in {
 			val data:DragData	= WorkMove(1)
-			val opt:Option[Int]	= DragData.P.WorkMove write data
+			val opt:Option[Int]	= DragData.P.WorkMove get data
 			opt mustEqual Some(1)
 		}
 	}

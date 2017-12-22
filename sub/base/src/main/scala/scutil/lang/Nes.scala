@@ -36,6 +36,9 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 	def containsIndex(index:Int):Boolean	=
 			index >= 0 && index < size
 		
+	def lift(index:Int):Option[T]	=
+			get(index)
+		
 	def get(index:Int):Option[T]	=
 			if (index == 0)	Some(head)
 			else			tail lift (index - 1)
@@ -114,6 +117,15 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 	@inline
 	def +:[U>:T](item:U):Nes[U]	=
 			this prepend item
+		
+	def updatedAt[U>:T](index:Int, item:U):Option[Nes[U]]	=
+			if (containsIndex(index)) {
+				Some(
+					if (index == 0)	Nes(item, tail)
+					else			Nes(head, tail updated (index-1, item))
+				)
+			}
+			else None
 		
 	def zip[U](that:Nes[U]):Nes[(T,U)]	=
 			Nes(

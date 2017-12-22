@@ -62,10 +62,11 @@ final case class Store[C,V](get:V, put:V=>C) {
 	def compose[CC](that:Store[CC,C]):Store[CC,V]	=
 			that andThen this
 		
+	// TODO optics cleanup
 	def andThenBijection[U](that:Bijection[V,U]):Store[C,U]	=
 			Store(
-				that write get,
-				that.read andThen put
+				that get get,
+				that.put andThen put
 			)
 }
 

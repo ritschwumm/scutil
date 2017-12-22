@@ -21,6 +21,7 @@ object PLens extends PLensInstances {
 			identity[T] sum identity[T]
 }
 
+// TODO optics rework
 final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 	def get(s:S):Option[T]		= on(s) map { _.get }
 	def getter:PFunction[S,T]	= get(_)
@@ -78,11 +79,15 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 				}
 			}
 			
+	@deprecated("0.127.0", "use this >=> that.toPLens")
 	def andThenBijection[U](that:Bijection[T,U]):PLens[S,U]	=
 			this >=> that.toPLens
 			
-	def andThenTLens[U](that:TLens[T,U]):PLens[S,U]	=
+	@deprecated("0.127.0", "use this >=> that.toPLens")
+	def andThenLens[U](that:Lens[T,U]):PLens[S,U]	=
 			this >=> that.toPLens
+		
+	//------------------------------------------------------------------------------
 			
 	def over[R](store:Option[Store[R,S]]):Option[Store[R,T]]	=
 			for {
@@ -94,6 +99,8 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 	def overTotal[R](store:Store[R,S]):Option[Store[R,T]]	=
 			this on store.get map { _ compose store }
 			
+	//------------------------------------------------------------------------------
+	
 	// impossible
 	// def zip[U](that:PLens[S,U]):PLens[S,(T,U)]
 	
@@ -133,8 +140,11 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 				}
 			}
 			
-	def toTLens(default: =>Store[S,T]):TLens[S,T]	=
-			TLens { on(_) getOrElse default }
+	//------------------------------------------------------------------------------
+	
+	// TODO optics does this make sense?
+	def toLens(default: =>Store[S,T]):Lens[S,T]	=
+			Lens fromStoreAt { on(_) getOrElse default }
 }
 
 trait PLensInstances {

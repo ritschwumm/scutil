@@ -209,7 +209,7 @@ final class ByteString private (private val value:Array[Byte]) {
 		ok
 	}
 	
-	def modifyAArray(func:Array[Byte]=>Unit):ByteString	= {
+	def modifyArray(func:Array[Byte]=>Unit):ByteString	= {
 		val tmp	= toArray
 		func(tmp)
 		ByteString unsafeFromArray tmp

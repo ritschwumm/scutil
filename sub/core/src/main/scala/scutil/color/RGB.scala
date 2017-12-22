@@ -2,20 +2,22 @@ package scutil.color
 
 import scala.math._
 
-import scutil.lang.Hex
+import scutil.lang._
 
 object RGB {
 	val white	= RGB(1,1,1)
 	val black	= RGB(0,0,0)
 	
 	def parseHex(s:String):Option[RGB]	=
-			Hex decodeByteArray s collect { case Array(r,g,b)	=>
+			Hex decodeByteString s collect { case ByteString(r,g,b)	=>
 				RGB(
 					(r & 0xff) / 255f,
 					(g & 0xff) / 255f,
 					(b & 0xff) / 255f
 				)
 			}
+			
+	def unparseHex(rgb:RGB):String	= rgb.unparseHex
 			
 	def fromIntRGB(argb:Int):RGB	=
 			RGB(
@@ -69,4 +71,11 @@ final case class RGB(r:Float, g:Float, b:Float) {
 			(((r * 255).toInt) << 16) |
 			(((g * 255).toInt) <<  8) |
 			(((b * 255).toInt) <<  0)
+			
+	def unparseHex:String	=
+			Hex encodeByteString ByteString(
+				(r * 255).toByte,
+				(g * 255).toByte,
+				(b * 255).toByte
+			)
 }

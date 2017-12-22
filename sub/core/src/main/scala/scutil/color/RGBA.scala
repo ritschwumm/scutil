@@ -1,13 +1,13 @@
 package scutil.color
 
-import scutil.lang.Hex
+import scutil.lang._
 
 object RGBA {
 	val transparentBlack	= RGBA(RGB.black, Alpha.transparent)
 	val transparentWhite	= RGBA(RGB.white, Alpha.transparent)
 	
 	def parseHex(s:String):Option[RGBA]	=
-			Hex decodeByteArray s collect { case Array(r,g,b,a)	=>
+			Hex decodeByteString s collect { case ByteString(r,g,b,a)	=>
 				RGBA(
 					RGB(
 						(r & 0xff) / 255f,
@@ -19,6 +19,8 @@ object RGBA {
 					)
 				)
 			}
+			
+	def unparseHex(rgba:RGBA):String	= rgba.unparseHex
 			
 	def fromIntARGB(argb:Int):RGBA	=
 			RGBA(
@@ -54,4 +56,12 @@ final case class RGBA(rgb:RGB, alpha:Alpha) {
 			(((rgb.r	* 255).toInt) << 16) |
 			(((rgb.g	* 255).toInt) <<  8) |
 			(((rgb.b	* 255).toInt) <<  0)
+			
+	def unparseHex:String	=
+			Hex encodeByteString ByteString(
+				(r			* 255).toByte,
+				(g			* 255).toByte,
+				(b			* 255).toByte,
+				(alpha.a	* 255).toByte
+			)
 }

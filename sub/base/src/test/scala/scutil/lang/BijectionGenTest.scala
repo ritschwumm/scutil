@@ -26,22 +26,22 @@ class BijectionGenTest extends Specification {
 		"work with unary case classes" in {
 			val value		= Unary(1)
 			val	bijection	= BijectionGen[Unary]
-			bijection write value mustEqual 1
+			bijection get value mustEqual 1
 		}
 		"work with binary case classes" in {
 			val value		= Binary(1,2)
 			val	bijection	= BijectionGen[Binary]
-			bijection write value mustEqual ((1,2))
+			bijection get value mustEqual ((1,2))
 		}
 		"work with nested case classes" in {
 			val value		= Container(Unary(1))
 			val	bijection	= BijectionGen[Container]
-			bijection write value mustEqual Unary(1)
+			bijection get value mustEqual Unary(1)
 		}
 		"work with unary case classes where the argument is a Product" in {
 			val value		= UnaryOption(Some(1))
 			val	bijection	= BijectionGen[UnaryOption]
-			bijection write value mustEqual Some(1)
+			bijection get value mustEqual Some(1)
 		}
 		"work with case classes with one type parameter" in {
 			// TODO why does this infer Nothing?
@@ -55,7 +55,7 @@ class BijectionGenTest extends Specification {
 		"work as Bijection.Gen" in {
 			val value		= Unary(1)
 			val	bijection	= Bijection.Gen[Unary]
-			bijection write value mustEqual 1
+			bijection get value mustEqual 1
 		}
 	}
 }

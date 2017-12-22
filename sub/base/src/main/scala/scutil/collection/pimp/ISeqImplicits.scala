@@ -187,7 +187,7 @@ trait ISeqImplicits {
 				if (index >= 0 && index < peer.size)	Some(peer updated (index, func(peer(index))))
 				else									None
 				
-		/** None when the index is ouside our bounds */
+		/** None when the index is outside our bounds */
 		def updatedAt(index:Int, item:T):Option[ISeq[T]]	=
 				if (containsIndex(index))	Some(peer updated (index, item))
 				else						None

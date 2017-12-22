@@ -69,6 +69,11 @@ implicit final class MapExt[S,T](peer:Map[S,T]) {
 					k -> func(k, v)
 				}
 				
+		/** None when the key does not exist */
+		def updatedAt(key:S, value:T):Option[Map[S,T]]	=
+				if (peer contains key)	Some(peer updated (key, value))
+				else					None
+			
 		/** map the value for a single key if it exists or insert a new value for this key */
 		def updatedByOrInserted(key:S, update:Endo[T], insert: =>T):Map[S,T]	=
 				peer + (key -> (peer get key map update getOrElse insert))

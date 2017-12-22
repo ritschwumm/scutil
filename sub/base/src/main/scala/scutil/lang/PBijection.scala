@@ -15,9 +15,18 @@ object PBijection {
 }
 
 /** a partial Bijection */
-final case class PBijection[S,T](write:PFunction[S,T], read:PFunction[T,S]) {
+final case class PBijection[S,T](get:PFunction[S,T], put:PFunction[T,S]) {
+	@deprecated("0.127.0", "use get")
+	def write	= get
+	@deprecated("0.127.0", "use put")
+	def read	= put
+	
+	// TODO optics add mod and modF etc.
+	
+	//------------------------------------------------------------------------------
+	
 	def inverse:PBijection[T,S]	=
-			PBijection(read, write)
+			PBijection(put, get)
 	
 	/** symbolic alias for andThen */
 	def >=>[U](that:PBijection[T,U]):PBijection[S,U]	=
@@ -32,22 +41,26 @@ final case class PBijection[S,T](write:PFunction[S,T], read:PFunction[T,S]) {
 	
 	def andThen[U](that:PBijection[T,U]):PBijection[S,U]	=
 			PBijection(
-				s	=> this write	s flatMap that.write,
-				u	=> that read	u flatMap this.read
+				s	=> this get	s flatMap that.get,
+				u	=> that put	u flatMap this.put
 			)
 					
+	@deprecated("0.127.0", "use this >=> that.toPBijection")
 	def andThenBijection[U](that:Bijection[T,U]):PBijection[S,U]	=
 			this >=> that.toPBijection
 					
+	@deprecated("0.127.0", "use this >=> that.toPBijection")
 	def andThenPrism[U](that:Prism[T,U]):PBijection[S,U]	=
 			this >=> that.toPBijection
+		
+	//------------------------------------------------------------------------------
 			
 	def toBijection:Bijection[Option[S],Option[T]]	=
-			Bijection(_ flatMap write, _ flatMap read)
+			Bijection(_ flatMap get, _ flatMap put)
 			
 	def readExtractor:Extractor[T,S]	=
-			Extractor(read)
+			Extractor(put)
 		
 	def writeExtractor:Extractor[S,T]	=
-			Extractor(write)
+			Extractor(get)
 }

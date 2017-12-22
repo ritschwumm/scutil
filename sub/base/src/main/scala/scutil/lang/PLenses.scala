@@ -4,7 +4,7 @@ import scutil.lang.implicits._
 import scutil.collection.implicits._
 
 object PLenses {
-	def opt[S,T](total:TLens[S,Option[T]]):PLens[S,T]	=
+	def opt[S,T](total:Lens[S,Option[T]]):PLens[S,T]	=
 			PLens { s =>
 				total get s map { t =>
 					Store[S,T](

@@ -39,9 +39,9 @@ private final class LensGenImpl(val c:Context) {
 					valueName		= TermName("v$")
 				}
 				yield q"""
-					_root_.scutil.lang.TLens.create[$containerType,$valueType](
-						($containerName:$containerType) => $containerName.$fieldName,
-						($containerName:$containerType, $valueName:$valueType) => $containerName.copy($fieldName=$valueName)
+					_root_.scutil.lang.Lens[$containerType,$valueType](
+						get	= ($containerName:$containerType) => $containerName.$fieldName,
+						put	= ($containerName:$containerType, $valueName:$valueType) => $containerName.copy($fieldName=$valueName)
 					)
 				"""
 				

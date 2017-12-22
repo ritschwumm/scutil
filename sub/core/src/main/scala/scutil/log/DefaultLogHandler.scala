@@ -47,7 +47,7 @@ trait DefaultLogHandler extends LogHandler {
 	}
 	
 	def formatInstant(it:MilliInstant):String	=
-			"[" + it.toDate.toISO8601 + "]"
+			"[" + it.toISO8601 + "]"
 		
 	def formatLocation(it:SourceLocation):String	=
 			it.name + ":" + it.line.toString

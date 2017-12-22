@@ -3,8 +3,6 @@ package scutil.io.pimp
 import java.io._
 import java.nio.charset.Charset
 
-import scala.collection.mutable
-
 import scutil.lang.ByteString
 
 object InputStreamImplicits extends InputStreamImplicits
@@ -31,15 +29,10 @@ trait InputStreamImplicits {
 		
 		/** read the complete content */
 		def readFully():Array[Byte] = {
-			val	buffer	= new Array[Byte](blockSize)
-			val out		= new mutable.ArrayBuffer[Byte]
-			var	running	= true
-			while (running) {
-				val len	= peer read buffer
-				if (len != -1)	out ++= buffer.view(0, len)
-				else			running	= false
-			}
-			out.toArray
+			val baos	= new ByteArrayOutputStream
+			transferToPre9(baos)
+			baos.flush()
+			baos.toByteArray
 		}
 		
 		/** skip as much as desired if possible, return how much */
