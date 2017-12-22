@@ -3,7 +3,7 @@ import spray.boilerplate.BoilerplatePlugin
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.129.0",
+	version			:= "0.130.0",
 	
 	scalaVersion	:= "2.12.4",
 	scalacOptions	++= Seq(
@@ -20,7 +20,7 @@ inThisBuild(Seq(
 	conflictManager	:= ConflictManager.strict,
 	resolvers		+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
 	resolvers 		+= Resolver sonatypeRepo "releases",
-	addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.4")
+	addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.5")
 ))
 
 lazy val fixConsoleSettings	=
@@ -80,7 +80,7 @@ lazy val `scutil`	=
 //------------------------------------------------------------------------------
 
 lazy val `scutil-base`	=
-		myCrossProject("scutil-base", file("sub/base"))
+		myCrossProject("scutil-base", file("modules/base"))
 		.enablePlugins(
 			BoilerplatePlugin
 		)
@@ -99,7 +99,7 @@ lazy val `scutil-base`	=
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "4.0.1"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "4.0.2"				% "test"
 			),
 			boilerplateSource in Compile := baseDirectory.value.getParentFile / "src" / "main" / "boilerplate"
 		)
@@ -111,7 +111,7 @@ lazy val `scutil-base-jvm`	= `scutil-base`.jvm
 lazy val `scutil-base-js`	= `scutil-base`.js
 
 lazy val `scutil-core`	=
-		(project	in	file("sub/core"))
+		(project	in	file("modules/core"))
 		.settings(
 			fixConsoleSettings,
 			wartRemoverSetting,
@@ -127,7 +127,7 @@ lazy val `scutil-core`	=
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "4.0.1"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "4.0.2"				% "test"
 			),
 			
 			//------------------------------------------------------------------------------
@@ -152,7 +152,7 @@ lazy val `scutil-core`	=
 		.dependsOn	(`scutil-base-jvm`)
 
 lazy val `scutil-swing`	=
-		(project	in	file("sub/swing"))
+		(project	in	file("modules/swing"))
 		.settings(
 			fixConsoleSettings,
 			wartRemoverSetting,
@@ -171,7 +171,7 @@ lazy val `scutil-swing`	=
 		)
 		
 lazy val `scutil-xml`	=
-		(project	in	file("sub/xml"))
+		(project	in	file("modules/xml"))
 		.settings(
 			fixConsoleSettings,
 			wartRemoverSetting,
@@ -193,7 +193,7 @@ lazy val `scutil-xml`	=
 		)
 		
 lazy val `scutil-uid`	=
-		(project	in	file("sub/uid"))
+		(project	in	file("modules/uid"))
 		.settings(
 			fixConsoleSettings,
 			wartRemoverSetting,
