@@ -1,37 +1,40 @@
 package scutil.geom
 
 object DoubleRect {
-	val zero	= DoubleRect(DoubleSpan.zero, DoubleSpan.zero)
+	val zero	= new DoubleRect(DoubleSpan.zero, DoubleSpan.zero)
 	
 	def leftTopRightBottom(left:Double, top:Double, right:Double, bottom:Double):DoubleRect	=
-			DoubleRect(
+			new DoubleRect(
 				horizontal	= DoubleSpan startEnd (left, right),
 				vertical	= DoubleSpan startEnd (top, bottom)
 			)
 			
 	def leftTopWidthHeight(left:Double, top:Double, width:Double, height:Double):DoubleRect	=
-			DoubleRect(
+			new DoubleRect(
 				horizontal	= DoubleSpan startSize (left, width),
 				vertical	= DoubleSpan startSize (top, height)
 			)
 			
 	def topLeftToBottomRight(topLeft:DoublePoint, bottomRight:DoublePoint):DoubleRect	=
-			DoubleRect(
+			new DoubleRect(
 				horizontal	= DoubleSpan startEnd (topLeft.x, bottomRight.x),
 				vertical	= DoubleSpan startEnd (topLeft.y, bottomRight.y)
 			)
 			
 	def topLeftWithSize(topLeft:DoublePoint, size:DoublePoint):DoubleRect	=
-			DoubleRect(
+			new DoubleRect(
 				horizontal	= DoubleSpan startSize (topLeft.x, size.x),
 				vertical	= DoubleSpan startSize (topLeft.y, size.y)
 			)
 			
 	def horizontalWithVertical(horizontal:DoubleSpan, vertical:DoubleSpan):DoubleRect	=
-			DoubleRect(horizontal, vertical)
+			new DoubleRect(horizontal, vertical)
+		
+	@deprecated("use DoubleRect#horizontalWithVertical", "0.134.0")
+	def apply(horizontal:DoubleSpan, vertical:DoubleSpan):DoubleRect	= horizontalWithVertical(horizontal, vertical)
 }
 
-final case class DoubleRect(horizontal:DoubleSpan, vertical:DoubleSpan) {
+final class DoubleRect private (val horizontal:DoubleSpan, val vertical:DoubleSpan) {
 	def left:Double		= horizontal.start
 	def right:Double	= horizontal.end
 	def top:Double		= vertical.start
@@ -50,25 +53,37 @@ final case class DoubleRect(horizontal:DoubleSpan, vertical:DoubleSpan) {
 			(horizontal	contains pt.x) &&
 			(vertical	contains pt.y)
 	
-	def swap:DoubleRect			= DoubleRect(vertical, horizontal)
-	def negate:DoubleRect		= DoubleRect(horizontal.negate,		vertical.negate)
-	def normalize:DoubleRect	= DoubleRect(horizontal.normalize,	vertical.normalize)
+	def swap:DoubleRect			= new DoubleRect(vertical, horizontal)
+	def negate:DoubleRect		= new DoubleRect(horizontal.negate,		vertical.negate)
+	def normalize:DoubleRect	= new DoubleRect(horizontal.normalize,	vertical.normalize)
 	
-	def move(d:DoublePoint):DoubleRect		= DoubleRect(horizontal move	d.x,	vertical move		d.y)
-	def unmove(d:DoublePoint):DoubleRect	= DoubleRect(horizontal unmove	d.x,	vertical unmove		d.y)
+	def move(d:DoublePoint):DoubleRect		= new DoubleRect(horizontal move	d.x,	vertical move		d.y)
+	def unmove(d:DoublePoint):DoubleRect	= new DoubleRect(horizontal unmove	d.x,	vertical unmove		d.y)
 	
-	def scale(f:DoublePoint):DoubleRect		= DoubleRect(horizontal scale	f.x,	vertical scale		f.y)
-	def unscale(f:DoublePoint):DoubleRect	= DoubleRect(horizontal unscale	f.x,	vertical unscale	f.y)
+	def scale(f:DoublePoint):DoubleRect		= new DoubleRect(horizontal scale	f.x,	vertical scale		f.y)
+	def unscale(f:DoublePoint):DoubleRect	= new DoubleRect(horizontal unscale	f.x,	vertical unscale	f.y)
 	
 	def union(that:DoubleRect):DoubleRect	=
-			DoubleRect(
+			new DoubleRect(
 				this.horizontal union that.horizontal,
 				this.vertical	union that.vertical
 			)
 			
 	def intersect(that:DoubleRect):Option[DoubleRect]	=
 			(this.horizontal intersect that.horizontal, this.vertical intersect that.vertical) match {
-				case (Some(horizontal), Some(vertical))	=> Some(DoubleRect(horizontal, vertical))
+				case (Some(horizontal), Some(vertical))	=> Some(new DoubleRect(horizontal, vertical))
 				case _									=> None
 			}
+			
+	//------------------------------------------------------------------------------
+	
+	override def equals(that:Any):Boolean	=
+			that match {
+				case that:DoubleRect	=> this.horizontal == that.horizontal && this.vertical == that.vertical
+				case _					=> false
+			}
+	
+	override def hashCode():Int		= this.horizontal.hashCode ^ this.vertical.hashCode
+	
+	override def toString:String	= s"DoubleRect(left=$left, top=$top, right=$right, bottom=$bottom, width=$width, height=$height)"
 }

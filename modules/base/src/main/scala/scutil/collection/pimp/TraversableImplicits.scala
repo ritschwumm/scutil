@@ -177,6 +177,13 @@ trait TraversableImplicits {
 			}
 		}
 		
+		/** all Lefts if there is at least one, else all Rights */
+		def validateValidated[F,W](implicit ev:T=>Validated[F,W], cbf1:CanBuildFrom[CC[T],F,CC[F]], cbf2:CanBuildFrom[CC[T],W,CC[W]]):Validated[CC[F],CC[W]]	= {
+			val (bads, goods)	= partitionValidated
+			if (bads.isEmpty)	Good(goods)
+			else				Bad(bads)
+		}
+		
 		def sequenceState[S,U](implicit ev:T=>State[S,U], cbf:CanBuildFrom[CC[T],U,CC[U]]):State[S,CC[U]]	=
 				traverseState(ev)
 			

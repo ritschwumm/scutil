@@ -9,6 +9,8 @@ object RectangleImplicits extends RectangleImplicits
 
 trait RectangleImplicits {
 	implicit final class RectangleExt(peer:Rectangle) {
+		// TODO get rid of these
+		
 		def topLeft:Point	=
 				new Point(
 					peer.x,

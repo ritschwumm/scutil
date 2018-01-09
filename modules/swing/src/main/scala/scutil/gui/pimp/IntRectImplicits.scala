@@ -1,6 +1,6 @@
 package scutil.gui.pimp
 
-import java.awt.Rectangle
+import java.awt._
 
 import scutil.geom._
 import scutil.gui.geomConversion

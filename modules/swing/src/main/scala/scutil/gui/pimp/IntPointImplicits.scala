@@ -1,7 +1,6 @@
 package scutil.gui.pimp
 
-import java.awt.Point
-import java.awt.Dimension
+import java.awt._
 
 import scutil.geom._
 import scutil.gui.geomConversion

@@ -14,13 +14,18 @@ trait extensions
 		with	ComponentImplicits
 		with	ContainerImplicits
 		with	DimensionImplicits
+		with	Dimension2DImplicits
+		with	DoubleRectImplicits
+		with	DoublePointImplicits
 		with	GraphicsImplicits
 		with	ImageImplicits
 		with	ImageIconImplicits
 		with	InsetsImplicits
 		with	JComponentImplicits
 		with	PointImplicits
+		with	Point2DImplicits
 		with	RectangleImplicits
+		with	Rectangle2DImplicits
 		with	RootPaneContainerImplicits
 		with	StrokeImplicits
 		with	WindowImplicits

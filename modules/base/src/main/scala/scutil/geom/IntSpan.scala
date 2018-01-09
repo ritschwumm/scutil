@@ -1,27 +1,30 @@
 package scutil.geom
 
 object IntSpan {
-	val zero	= IntSpan(0, 0)
+	val zero	= new IntSpan(0, 0)
 	
-	def startSize(start:Int, size:Int):IntSpan	= IntSpan(start, size)
-	def endSize(end:Int, size:Int):IntSpan		= IntSpan(end - size, size)
-	def startEnd(start:Int, end:Int):IntSpan	= IntSpan(start, end-start)
+	def startSize(start:Int, size:Int):IntSpan	= new IntSpan(start, size)
+	def endSize(end:Int, size:Int):IntSpan		= new IntSpan(end - size, size)
+	def startEnd(start:Int, end:Int):IntSpan	= new IntSpan(start, end-start)
+	
+	@deprecated("use IntSpan#startSize", "0.134.0")
+	def apply(start:Int, size:Int):IntSpan	= startSize(start, size)
 }
 
-final case class IntSpan(start:Int, size:Int) {
+final class IntSpan private (val start:Int, val size:Int) {
 	val end:Int			= start + size
 	def empty:Boolean	= size == 0
 	def min:Int			= start min end
 	def max:Int			= start max end
 	def center:Int		= (start + end) / 2
 	
-	def negate:IntSpan	= IntSpan(end, -size)
+	def negate:IntSpan	= new IntSpan(end, -size)
 	
-	def move(d:Int):IntSpan		= IntSpan(start + d, size)
-	def unmove(d:Int):IntSpan	= IntSpan(start - d, size)
+	def move(d:Int):IntSpan		= new IntSpan(start + d, size)
+	def unmove(d:Int):IntSpan	= new IntSpan(start - d, size)
 	
-	def scale(f:Int):IntSpan	= IntSpan(start * f, size * f)
-	def unscale(f:Int):IntSpan	= IntSpan(start / f, size / f)
+	def scale(f:Int):IntSpan	= new IntSpan(start * f, size * f)
+	def unscale(f:Int):IntSpan	= new IntSpan(start / f, size / f)
 	
 	def contains(it:Int):Boolean	=
 			it >= start && it < end
@@ -48,5 +51,17 @@ final case class IntSpan(start:Int, size:Int) {
 	def rectWith(that:IntSpan):IntRect	=
 			IntRect horizontalWithVertical (this, that)
 		
-	def toDoubleSpan:DoubleSpan	= DoubleSpan(start, size)
+	def toDoubleSpan:DoubleSpan	= DoubleSpan startSize (start, size)
+	
+	//------------------------------------------------------------------------------
+	
+	override def equals(that:Any):Boolean	=
+			that match {
+				case that:IntSpan	=> this.start == that.start && this.size == that.size
+				case _				=> false
+			}
+	
+	override def hashCode():Int		= this.start ^ this.size
+	
+	override def toString:String	= s"IntSpan(start=$start, end=$end, size=$size)"
 }

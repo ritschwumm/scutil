@@ -1,27 +1,30 @@
 package scutil.geom
 
 object DoubleSpan {
-	val zero	= DoubleSpan(0, 0)
+	val zero	= new DoubleSpan(0, 0)
 	
-	def startSize(start:Double, size:Double):DoubleSpan	= DoubleSpan(start, size)
-	def endSize(end:Double, size:Double):DoubleSpan		= DoubleSpan(end - size, size)
-	def startEnd(start:Double, end:Double):DoubleSpan	= DoubleSpan(start, end - start)
+	def startSize(start:Double, size:Double):DoubleSpan	= new DoubleSpan(start, size)
+	def endSize(end:Double, size:Double):DoubleSpan		= new DoubleSpan(end - size, size)
+	def startEnd(start:Double, end:Double):DoubleSpan	= new DoubleSpan(start, end - start)
+	
+	@deprecated("use DoubleSpan#startSize", "0.134.0")
+	def apply(start:Double, size:Double):DoubleSpan	= startSize(start, size)
 }
 
-final case class DoubleSpan(start:Double, size:Double) {
+final class DoubleSpan private (val start:Double, val size:Double) {
 	def end:Double		= start + size
 	def empty:Boolean	= size == 0
 	def min:Double		= start min end
 	def max:Double		= start max end
 	def center:Double	= (start + end) / 2
 	
-	def negate:DoubleSpan	= DoubleSpan(end, -size)
+	def negate:DoubleSpan	= new DoubleSpan(end, -size)
 	
-	def move(d:Double):DoubleSpan	= DoubleSpan(start + d, size)
-	def unmove(d:Double):DoubleSpan	= DoubleSpan(start - d, size)
+	def move(d:Double):DoubleSpan	= new DoubleSpan(start + d, size)
+	def unmove(d:Double):DoubleSpan	= new DoubleSpan(start - d, size)
 	
-	def scale(f:Double):DoubleSpan		= DoubleSpan(start * f, size * f)
-	def unscale(f:Double):DoubleSpan	= DoubleSpan(start / f, size / f)
+	def scale(f:Double):DoubleSpan		= new DoubleSpan(start * f, size * f)
+	def unscale(f:Double):DoubleSpan	= new DoubleSpan(start / f, size / f)
 
 	def contains(it:Double):Boolean	=
 			it >= start && it < end
@@ -47,4 +50,16 @@ final case class DoubleSpan(start:Double, size:Double) {
 		
 	def rectWith(that:DoubleSpan):DoubleRect	=
 			DoubleRect horizontalWithVertical (this, that)
+		
+	//------------------------------------------------------------------------------
+	
+	override def equals(that:Any):Boolean	=
+			that match {
+				case that:DoubleSpan	=> this.start == that.start && this.size == that.size
+				case _					=> false
+			}
+	
+	override def hashCode():Int		= this.start.hashCode ^ this.size.hashCode
+	
+	override def toString:String	= s"DoubleSpan(start=$start, end=$end, size=$size)"
 }
