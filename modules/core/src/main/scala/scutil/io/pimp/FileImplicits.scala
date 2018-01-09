@@ -22,7 +22,7 @@ trait FileImplicits {
 		//## file and directory
 		
 		/** time of last modification as an MilliInstant, returns MilliInstant.zero for non-existing files */
-		def lastModifiedMilliInstant:MilliInstant	=
+		def lastModifiedMilliInstant():MilliInstant	=
 				MilliInstant(peer.lastModified)
 			
 		def setLastModifiedMilliInstant(it:MilliInstant):Boolean	=

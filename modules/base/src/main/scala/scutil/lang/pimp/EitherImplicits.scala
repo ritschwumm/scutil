@@ -111,20 +111,23 @@ trait EitherImplicits {
 				
 		//------------------------------------------------------------------------------
 		
-		def mapLeft[LL](func:L=>LL):Either[LL,R]	=
+		def leftMap[LL](func:L=>LL):Either[LL,R]	=
 				peer match {
 					case Left(x)	=> Left(func(x))
 					case Right(x)	=> Right(x)
 				}
 				
-		def flatMapLeft[LL,RR>:R](func:L=>Either[LL,RR]):Either[LL,RR]	=
+		def leftFlatMap[LL,RR>:R](func:L=>Either[LL,RR]):Either[LL,RR]	=
 				peer match {
 					case Left(x)	=> func(x)
 					case Right(x)	=> Right(x)
 				}
 				
-		def flattenLeft[LL,RR>:R](implicit ev:L=>Either[LL,RR]):Either[LL,RR]	=
-				flatMapLeft(ev)
+		def leftFlatten[LL,RR>:R](implicit ev:L=>Either[LL,RR]):Either[LL,RR]	=
+				leftFlatMap(ev)
+			
+		def leftToOption:Option[L]	=
+				peer.swap.toOption
 		
 		//------------------------------------------------------------------------------
 			
@@ -180,6 +183,9 @@ trait EitherImplicits {
 		
 		def throwException(implicit ev:L=>Exception):R	=
 				cata(throw _, identity)
+			
+		def getOrThrow(func:L=>Throwable):R	=
+				cata(it => throw func(it), identity)
 				
 		//------------------------------------------------------------------------------
 	
@@ -195,6 +201,12 @@ trait EitherImplicits {
 		
 		//------------------------------------------------------------------------------
 		
+		def toWhere:Where[L,R]	=
+				peer match {
+					case Left(a)	=> Here(a)
+					case Right(b)	=> There(b)
+				}
+			
 		def toTry(implicit ev:L=>Throwable):Try[R]	=
 				peer match {
 					case Left(x)	=> Failure(x)

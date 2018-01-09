@@ -96,21 +96,21 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 			
 	//------------------------------------------------------------------------------
 	
-	def mapLeft[LL](func:L=>LL)(implicit M:Functor[F]):EitherT[F,LL,R]	=
-			mapEither(_ mapLeft func)
+	def leftMap[LL](func:L=>LL)(implicit M:Functor[F]):EitherT[F,LL,R]	=
+			mapEither(_ leftMap func)
 		
-	def flatMapLeft[LL](func:L=>EitherT[F,LL,R])(implicit M:Monad[F]):EitherT[F,LL,R]	=
+	def leftFlatMap[LL](func:L=>EitherT[F,LL,R])(implicit M:Monad[F]):EitherT[F,LL,R]	=
 			EitherT(
 				(M flatMap value) {
-					_ mapLeft func cata (
+					_ leftMap func cata (
 						_.value,
 						Either.right[LL,R] _ andThen M.pure
 					)
 				}
 			)
 			
-	def flattenLeft[LL](implicit ev:L=>EitherT[F,LL,R], M:Monad[F]):EitherT[F,LL,R]	=
-			flatMapLeft(ev)
+	def leftFlatten[LL](implicit ev:L=>EitherT[F,LL,R], M:Monad[F]):EitherT[F,LL,R]	=
+			leftFlatMap(ev)
 		
 	//------------------------------------------------------------------------------
 	

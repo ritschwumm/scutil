@@ -4,7 +4,7 @@ object Prisms {
 	def eitherLeft[A,B]:Prism[Either[A,B],A]		= Prism(_.left.toOption,	Left.apply)
 	def eitherRight[A,B]:Prism[Either[A,B],B]		= Prism(_.right.toOption,	Right.apply)
 	
-	def validatedBad[A,B]:Prism[Validated[A,B],A]	= Prism(_.badOption,		Bad.apply)
+	def validatedBad[A,B]:Prism[Validated[A,B],A]	= Prism(_.badToOption,		Bad.apply)
 	def validatedGood[A,B]:Prism[Validated[A,B],B]	= Prism(_.toOption,			Good.apply)
 	
 	def listCons[T]:Prism[List[T],(T,List[T])]	=

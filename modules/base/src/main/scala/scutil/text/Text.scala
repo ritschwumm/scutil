@@ -45,7 +45,7 @@ object Text {
 			s.lines collect { case Strip(it) => it } mkString "\n"
 	
 	def table(rows:ISeq[ISeq[String]]):ISeq[String]	= {
-		val widths	= 
+		val widths	=
 				(rows foldLeft Vector.empty[Int]) { (widths, row) =>
 					widths zipAll (row map (_.length), 0, 0) map { case (a,b) => a max b }
 				}

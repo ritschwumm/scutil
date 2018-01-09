@@ -64,6 +64,16 @@ trait TraversableImplicits {
 			(builder1.result, builder2.result)
 		}
 		
+		def partitionValidated[U,V](implicit ev:T=>Validated[U,V], cbf1:CanBuildFrom[CC[T],U,CC[U]], cbf2:CanBuildFrom[CC[T],V,CC[V]]):(CC[U],CC[V])	= {
+			val	builder1	= cbf1()
+			val	builder2	= cbf2()
+			peer map ev foreach {
+				case Bad(x)		=> builder1	+= x
+				case Good(x)	=> builder2	+= x
+			}
+			(builder1.result, builder2.result)
+		}
+		
 		/** create a map from all elements with a given function to generate the keys */
 		def mapBy[S](key:T=>S):Map[S,T]	=
 				mapToMap(it => (key(it), it))

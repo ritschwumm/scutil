@@ -106,8 +106,37 @@ sealed trait Validated[+E,+T] {
 			}
 			
 	//------------------------------------------------------------------------------
-
-	def badOption:Option[E]	=
+	
+	def swap:Validated[T,E]	=
+			cata(Validated.good, Validated.bad)
+		
+	def withSwapped[EE,TT](func:Validated[T,E]=>Validated[TT,EE]):Validated[EE,TT]	=
+			func(swap).swap
+		
+	def bimap[EE,TT](badFunc:E=>EE, goodFunc:T=>TT):Validated[EE,TT]	=
+			this match {
+				case Bad(x)		=> Bad(badFunc(x))
+				case Good(x)	=> Good(goodFunc(x))
+			}
+		
+	//------------------------------------------------------------------------------
+		
+	def badMap[EE](func:E=>EE):Validated[EE,T]	=
+			this match {
+				case Bad(x)		=> Bad(func(x))
+				case Good(x)	=> Good(x)
+			}
+			
+	def badFlatMap[EE,TT>:T](func:E=>Validated[EE,TT]):Validated[EE,TT]	=
+			this match {
+				case Bad(x)		=> func(x)
+				case Good(x)	=> Good(x)
+			}
+			
+	def badFlatten[EE,TT>:T](implicit ev:E=>Validated[EE,TT]):Validated[EE,TT]	=
+			badFlatMap(ev)
+			
+	def badToOption:Option[E]	=
 			cata(Some.apply, _ => None)
 			
 	//------------------------------------------------------------------------------
@@ -127,6 +156,9 @@ sealed trait Validated[+E,+T] {
 		
 	def getOrError(s: =>String):T	=
 			getOrElse(sys error s)
+		
+	def getOrThrow(func:E=>Throwable):T	=
+			cata(it => throw func(it), identity)
 		
 	//------------------------------------------------------------------------------
 	
@@ -156,7 +188,7 @@ sealed trait Validated[+E,+T] {
 	}
 	
 	def badEffect(effect:Effect[E]):this.type	= {
-		badOption foreach effect
+		badToOption foreach effect
 		this
 	}
 	
