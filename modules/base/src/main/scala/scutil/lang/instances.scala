@@ -53,12 +53,7 @@ trait instances extends instancesLow {
 	implicit def OptionMonoid[T](implicit S:Semigroup[T]):Monoid[Option[T]]	=
 			Monoid instance (
 				None,
-				(a,b) => (a,b) match {
-					case (None,		None)		=> None
-					case (Some(aa),	None)		=> Some(aa)
-					case (None,		Some(bb))	=> Some(bb)
-					case (Some(aa),	Some(bb))	=> Some(S concat (aa, bb))
-				}
+				(a,b) => (a oneOrTwo b)(S.concat)
 			)
 			
 	/*

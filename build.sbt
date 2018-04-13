@@ -3,7 +3,7 @@ import spray.boilerplate.BoilerplatePlugin
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.135.0",
+	version			:= "0.136.0",
 	
 	scalaVersion	:= "2.12.4",
 	scalacOptions	++= Seq(
@@ -185,7 +185,7 @@ lazy val `scutil-xml`	=
 				// "-language:experimental.macros",
 			),
 			libraryDependencies	++= Seq(
-				"org.scala-lang.modules"	%% "scala-xml"	% "1.0.6"	% "compile"
+				"org.scala-lang.modules"	%% "scala-xml"	% "1.1.0"	% "compile"
 			)
 		)
 		.dependsOn(

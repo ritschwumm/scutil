@@ -171,6 +171,16 @@ trait OptionImplicits {
 				}
 				
 		// TODO state support StateT
+		
+		//------------------------------------------------------------------------------
+		
+		def oneOrTwo(that:Option[T])(concat:(T,T)=>T):Option[T]	=
+				(peer, that) match {
+					case (None,		None)		=> None
+					case (Some(aa),	None)		=> Some(aa)
+					case (None,		Some(bb))	=> Some(bb)
+					case (Some(aa),	Some(bb))	=> Some(concat(aa, bb))
+				}
 				
 		//------------------------------------------------------------------------------
 		

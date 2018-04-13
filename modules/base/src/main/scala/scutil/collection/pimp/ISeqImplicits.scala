@@ -137,10 +137,20 @@ trait ISeqImplicits {
 		
 		/** triple every item with its previous and next item */
 		def adjacents:ISeq[(Option[T],T,Option[T])]	= {
+			/*
 			val somes	= peer map Some.apply
 			val prevs	= None +: (somes dropRight 1)
 			val nexts	= (somes drop 1) :+ None
 			prevs zip peer zip nexts map assoc.unarrow3
+			*/
+			val last	= peer.size-1
+			0 until peer.size map { idx =>
+				(
+					if (idx > 0)	Some(peer(idx-1)) else None,
+					peer(idx),
+					if (idx < last)	Some(peer(idx+1)) else None
+				)
+			}
 		}
 		
 		/** optionally insert something between two items */

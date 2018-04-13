@@ -60,6 +60,21 @@ class ISeqImplicitsTest extends Specification {
 	}
 	*/
 	
+	"adjacents" should {
+		"work with 0 elements" in {
+			ISeq.empty[Int].adjacents mustEqual ISeq.empty
+		}
+		"work with 1 element" in {
+			ISeq(1).adjacents mustEqual ISeq((None,1,None))
+		}
+		"work with 2 elements" in {
+			ISeq(1,2).adjacents mustEqual ISeq((None,1,Some(2)), (Some(1),2,None))
+		}
+		"work with 3 elements" in {
+			ISeq(1,2,3).adjacents mustEqual ISeq((None,1,Some(2)), (Some(1),2,Some(3)), (Some(2),3,None))
+		}
+	}
+	
 	"splitWhere" should {
 		val p:Int=>Boolean	= _ == 1
 		
