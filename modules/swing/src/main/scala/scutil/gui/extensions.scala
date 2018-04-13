@@ -20,7 +20,6 @@ trait extensions
 		with	GraphicsImplicits
 		with	ImageImplicits
 		with	ImageIconImplicits
-		with	InsetsImplicits
 		with	JComponentImplicits
 		with	PointImplicits
 		with	Point2DImplicits

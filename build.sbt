@@ -3,7 +3,7 @@ import spray.boilerplate.BoilerplatePlugin
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.134.0",
+	version			:= "0.135.0",
 	
 	scalaVersion	:= "2.12.4",
 	scalacOptions	++= Seq(
@@ -20,7 +20,7 @@ inThisBuild(Seq(
 	conflictManager	:= ConflictManager.strict,
 	resolvers		+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
 	resolvers 		+= Resolver sonatypeRepo "releases",
-	addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.5")
+	addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.6")
 ))
 
 lazy val fixConsoleSettings	=
@@ -99,7 +99,7 @@ lazy val `scutil-base`	=
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "4.0.2"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "4.0.3"				% "test"
 			),
 			boilerplateSource in Compile := baseDirectory.value.getParentFile / "src" / "main" / "boilerplate"
 		)
@@ -127,7 +127,7 @@ lazy val `scutil-core`	=
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "4.0.2"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "4.0.3"				% "test"
 			),
 			
 			//------------------------------------------------------------------------------

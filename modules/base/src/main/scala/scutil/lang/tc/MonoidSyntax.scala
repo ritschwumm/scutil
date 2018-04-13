@@ -8,4 +8,7 @@ trait MonoidSyntax {
 	}
 	
 	// TODO add foldable
+	implicit class IterableMonoidSyntaxExt[T](peer:Iterable[T])(implicit SG:Monoid[T]) {
+		def concatAll:T	= (peer foldLeft SG.empty)(SG.concat)
+	}
 }

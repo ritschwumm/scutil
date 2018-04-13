@@ -1,6 +1,6 @@
 package scutil.geom
 
-import scala.math.sqrt
+import scala.{ math => smath }
 
 object DoublePoint {
 	val zero:DoublePoint	= DoublePoint(0, 0)
@@ -45,7 +45,9 @@ final case class DoublePoint(x:Double, y:Double) {
 	def rectSize(that:DoublePoint):DoubleRect	= DoubleRect topLeftWithSize 		(this, that)
 			
 	//------------------------------------------------------------------------------
-			
+	
+	def angle:Double	= smath atan2 (y, x)
+	
 	def lengthQ:Double	= x*x + y*y
-	def length:Double	= sqrt(lengthQ)
+	def length:Double	= smath sqrt lengthQ
 }

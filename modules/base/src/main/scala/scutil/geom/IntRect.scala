@@ -29,9 +29,6 @@ object IntRect {
 			
 	def horizontalWithVertical(horizontal:IntSpan, vertical:IntSpan):IntRect	=
 			new IntRect(horizontal, vertical)
-		
-	@deprecated("use IntRect#horizontalWithVertical", "0.134.0")
-	def apply(horizontal:IntSpan, vertical:IntSpan):IntRect	= horizontalWithVertical(horizontal, vertical)
 }
 
 final class IntRect private (val horizontal:IntSpan, val vertical:IntSpan) {

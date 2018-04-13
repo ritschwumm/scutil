@@ -6,9 +6,6 @@ object IntSpan {
 	def startSize(start:Int, size:Int):IntSpan	= new IntSpan(start, size)
 	def endSize(end:Int, size:Int):IntSpan		= new IntSpan(end - size, size)
 	def startEnd(start:Int, end:Int):IntSpan	= new IntSpan(start, end-start)
-	
-	@deprecated("use IntSpan#startSize", "0.134.0")
-	def apply(start:Int, size:Int):IntSpan	= startSize(start, size)
 }
 
 final class IntSpan private (val start:Int, val size:Int) {

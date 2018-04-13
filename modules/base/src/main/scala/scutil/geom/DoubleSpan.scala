@@ -6,9 +6,6 @@ object DoubleSpan {
 	def startSize(start:Double, size:Double):DoubleSpan	= new DoubleSpan(start, size)
 	def endSize(end:Double, size:Double):DoubleSpan		= new DoubleSpan(end - size, size)
 	def startEnd(start:Double, end:Double):DoubleSpan	= new DoubleSpan(start, end - start)
-	
-	@deprecated("use DoubleSpan#startSize", "0.134.0")
-	def apply(start:Double, size:Double):DoubleSpan	= startSize(start, size)
 }
 
 final class DoubleSpan private (val start:Double, val size:Double) {

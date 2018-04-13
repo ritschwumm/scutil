@@ -29,9 +29,6 @@ object DoubleRect {
 			
 	def horizontalWithVertical(horizontal:DoubleSpan, vertical:DoubleSpan):DoubleRect	=
 			new DoubleRect(horizontal, vertical)
-		
-	@deprecated("use DoubleRect#horizontalWithVertical", "0.134.0")
-	def apply(horizontal:DoubleSpan, vertical:DoubleSpan):DoubleRect	= horizontalWithVertical(horizontal, vertical)
 }
 
 final class DoubleRect private (val horizontal:DoubleSpan, val vertical:DoubleSpan) {
@@ -41,6 +38,8 @@ final class DoubleRect private (val horizontal:DoubleSpan, val vertical:DoubleSp
 	def bottom:Double	= vertical.end
 	def width:Double	= horizontal.size
 	def height:Double	= vertical.size
+	
+	def center:DoublePoint	= DoublePoint(horizontal.center, vertical.center)
 	
 	def size:DoublePoint	= DoublePoint(horizontal.size,	vertical.size)
 	
