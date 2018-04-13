@@ -2,6 +2,7 @@ package scutil.lang
 
 import org.specs2.mutable._
 
+case object CaseObj
 final case class Unary(a:Int)
 final case class Binary(a:Int, b:Short)
 final case class Container(x:Unary)
@@ -23,6 +24,11 @@ object Wrapper {
 @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
 class BijectionGenTest extends Specification {
 	"BijectionGen" should {
+		"work with case objects" in {
+			val value		= CaseObj
+			val	bijection	= BijectionGen[CaseObj.type]
+			bijection get value mustEqual (())
+		}
 		"work with unary case classes" in {
 			val value		= Unary(1)
 			val	bijection	= BijectionGen[Unary]

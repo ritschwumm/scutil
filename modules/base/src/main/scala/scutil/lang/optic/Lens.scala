@@ -50,8 +50,14 @@ final case class Lens[S,T](get:S=>T, set:T=>S=>S) {
 	def setState(it:T):State[S,Unit]	=
 			embedState(State set it)
 		
+	def setOldState(it:T):State[S,T]	=
+			embedState(State setOld it)
+		
 	def modState(func:T=>T):State[S,Unit]	=
 			embedState(State mod func)
+		
+	def modOldState(func:T=>T):State[S,T]	=
+			embedState(State modOld func)
 		
 	def transformState:State[T,?] ~> State[S,?]	=
 			new (State[T,?] ~> State[S,?]) {
@@ -75,8 +81,14 @@ final case class Lens[S,T](get:S=>T, set:T=>S=>S) {
 	def setStateT[F[_]:Applicative](it:T):StateT[F,S,Unit]	=
 			embedStateT(StateT set it)
 		
+	def setOldStateT[F[_]:Applicative](it:T):StateT[F,S,T]	=
+			embedStateT(StateT setOld it)
+		
 	def modStateT[F[_]:Applicative](func:Endo[T]):StateT[F,S,Unit]	=
 			embedStateT(StateT mod func)
+		
+	def modOldStateT[F[_]:Applicative](func:Endo[T]):StateT[F,S,T]	=
+			embedStateT(StateT modOld func)
 		
 	def transformStateT[F[_]:Functor]:StateT[F,T,?] ~> StateT[F,S,?]	=
 			new (StateT[F,T,?] ~> StateT[F,S,?]) {

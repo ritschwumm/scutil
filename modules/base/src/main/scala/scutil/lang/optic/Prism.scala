@@ -15,6 +15,9 @@ object Prism extends PrismInstances {
 		
 	def always[T]:Prism[Option[T],T]	=
 			Prism(Predef.identity, Some.apply)
+		
+	def trivial[T](value:T):Prism[T,Unit]	=
+			Prism(_ => Some(()), _ => value)
 			
 	def filtered[T](pred:T=>Boolean):Prism[T,T]	=
 			Prism(

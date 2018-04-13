@@ -16,7 +16,6 @@ object Optional extends OptionalInstances {
 	def identity[T]:Optional[T,T]	=
 			Optional total (Predef.identity, Predef.identity)
 		
-	// TODO is this a good idea?
 	def trivial[T]:Optional[T,Unit]	=
 			Optional(
 				get	= t 		=> Some(()),
