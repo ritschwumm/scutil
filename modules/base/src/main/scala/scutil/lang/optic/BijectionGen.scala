@@ -15,7 +15,6 @@ object BijectionGen {
 private final class BijectionGen(val c:Context) {
 	import c.universe._
 	
-	// TODO handle case objects and zero-param case classes
 	def compile[T:c.WeakTypeTag]:Tree	= {
 		val selfType:Type	= weakTypeOf[T]
 		val selfTypeSymbol	= selfType.typeSymbol
@@ -26,7 +25,7 @@ private final class BijectionGen(val c:Context) {
 				if (selfTypeSymbol.asClass.isModuleClass) {
 					Right(
 						q"""
-							_root_.scutil.lang.Bijection[$selfType,Unit](
+							_root_.scutil.lang.Bijection[$selfType,_root_.scala.Unit](
 								_	=> (),
 								_	=> ${selfType.termSymbol}
 							)

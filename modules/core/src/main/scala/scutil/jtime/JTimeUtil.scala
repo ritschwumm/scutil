@@ -1,7 +1,8 @@
 package scutil.jtime
 
 import java.util._
-import java.text.SimpleDateFormat
+import java.text._
+import java.time.Instant
 
 import scutil.lang._
 import scutil.time._
@@ -51,9 +52,27 @@ object JTimeUtil {
 	
 	//------------------------------------------------------------------------------
 	
-	def dateToISO8601(date:Date):String	= {
+	def milliInstantToInstant(it:MilliInstant):Instant	=
+			Instant ofEpochMilli it.millis
+		
+	def instantToMilliInstant(it:Instant):MilliInstant	=
+			MilliInstant(it.toEpochMilli)
+		
+	//------------------------------------------------------------------------------
+	
+	def dateToISO8601(date:Date):String	=
+			iso88601() format date
+	
+	def iso8601ToDate(it:String):Either[ParseException,Date]	=
+			try { Right(iso88601() parse it) }
+			catch { case e:ParseException => Left(e) }
+		
+	// DateFormat is not thread safe
+	private def iso88601():DateFormat	= {
 		val	df	= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-		df setTimeZone (TimeZone getTimeZone "UTC")
-		df format date
+		df setTimeZone	(TimeZone getTimeZone "UTC")
+		df setLenient	false
+		df
 	}
+			
 }

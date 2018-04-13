@@ -1,26 +1,18 @@
 package scutil.jtime.pimp
 
-import java.util.Date
-import java.util.TimeZone
-import java.text.SimpleDateFormat
+import java.time.Instant
 
 import scutil.time._
 import scutil.jtime._
 
-object DateImplicits extends DateImplicits
+object InstantImplicits extends InstantImplicits
 
-trait DateImplicits {
-	implicit final class DateExt(peer:Date) {
-		def format(fmt:String, tz:TimeZone = TimeZone.getDefault):String	= {
-			val df	= new SimpleDateFormat(fmt)
-			df setTimeZone tz
-			df format peer
-		}
-		
+trait InstantImplicits {
+	implicit final class InstantExt(peer:Instant) {
 		def toISO8601:String	=
-				JTimeUtil dateToISO8601 peer
+				peer.toString
 		
 		def toMilliInstant:MilliInstant	=
-				JTimeUtil dateToMilliInstant peer
+				JTimeUtil instantToMilliInstant peer
 	}
 }

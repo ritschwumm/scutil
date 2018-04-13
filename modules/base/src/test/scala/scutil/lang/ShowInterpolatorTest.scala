@@ -50,7 +50,7 @@ class ShowInterpolatorTest extends Specification {
 		*/
 		
 		"allow escapes" in {
-			show"\t" mustEqual s"\t"
+			show"\t" mustEqual "\t"
 		}
 		
 		"allow escapes" in {

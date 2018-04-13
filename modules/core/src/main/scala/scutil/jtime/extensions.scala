@@ -4,8 +4,9 @@ import scutil.jtime.pimp._
 
 object extensions extends extensions
 trait extensions
-		extends	DateImplicits
+		extends	CalendarImplicits
+		with	DateImplicits
 		with	DateFormatImplicits
-		with	CalendarImplicits
+		with	InstantImplicits
 		with	MilliInstantImplicits
 		with	MilliDurationImplicits
