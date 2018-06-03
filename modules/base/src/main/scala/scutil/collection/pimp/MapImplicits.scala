@@ -16,11 +16,24 @@ trait MapImplicits {
 				peer get s map { t => (t, peer - s) }
 			
 		/** inverse filterKeys */
+		@deprecated("use strictFilterNotKeys", "0.141.0")
 		def filterNotKeys(pred:Predicate[S]):Map[S,T]	=
 				peer filterKeys { it => !pred(it) }
 			
 		def partitionKeys(pred:Predicate[S]):(Map[S,T],Map[S,T])	=
 				peer partition { case (k, _)	=> pred(k) }
+			
+		/** filterKeys keeps a reference to the original Map, this does not */
+		def strictFilterKeys(pred:Predicate[S]):Map[S,T]	=
+				peer filter { case (s, _)	=> pred(s) }
+			
+		/** inverse strictFilterKeys */
+		def strictFilterNotKeys(pred:Predicate[S]):Map[S,T]	=
+				peer filter { case (s, _)	=> !pred(s) }
+			
+		/** mapValues keeps a reference to the original Map, this does not */
+		def strictMapValues[U](func:T=>U):Map[S,U]	=
+				peer map { case (s, t) => (s, func(t)) }
 			
 		def where[U](that:Map[S,U]):Map[S,Where[T,U]]	=
 				(peer.keySet ++ that.keySet)
@@ -29,9 +42,6 @@ trait MapImplicits {
 				}
 				.toMap
 				
-		def strictMapValues[U](func:T=>U):Map[S,U]	=
-				peer map { case (s, t) => (s, func(t)) }
-			
 		/** set or remove the value */
 		def set(key:S, value:Option[T]):Map[S,T]	=
 				value match {

@@ -127,7 +127,7 @@ trait FileImplicits {
 		def readString(charset:Charset):String					= withReader(charset) { _ readFully () }
 		def writeString(charset:Charset, string:String):Unit	= withWriter(charset) { _ write string }
 		
-		// BETTER  use a specific line separator
+		// BETTER use a specific line separator
 		def readLines(charset:Charset):ISeq[String]	=
 				withReader(charset) { _ readLines () }
 		def writeLines(charset:Charset, lines:ISeq[String]):Unit	=
