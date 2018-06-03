@@ -67,8 +67,6 @@ trait instances extends instancesLow {
 			}
 	*/
 		
-	// TODO Pair Monoid
-		
 	//------------------------------------------------------------------------------
 	//## builtin Functor/Applicative/Monad
 	
@@ -77,12 +75,12 @@ trait instances extends instancesLow {
 				def map[A,B](it:Function[S,A])(func:A=>B):Function[S,B]	= it andThen func
 			}
 			
+	// TODO can we have a TraversedMonad here?
+	
 	implicit def PairFunctor[S]:Functor[(S,?)]	=
 			new Functor[(S,?)] {
 				def map[A,B](it:(S,A))(func:A=>B):(S,B)	= (it._1, func(it._2))
 			}
-			
-	// TODO Semigroup[Pair]
 			
 	implicit def OptionTraversedMonad:TraversedMonad[Option]	=
 			new TraversedMonad[Option] {

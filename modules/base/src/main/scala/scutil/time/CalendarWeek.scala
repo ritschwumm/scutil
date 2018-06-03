@@ -3,8 +3,6 @@ package scutil.time
 import scutil.lang.tc._
 
 object CalendarWeek extends CalendarWeekInstances {
-	// TODO smart constructor
-	
 	val days	= 7
 	
 	def fromIndex(index:Int):CalendarWeek	=

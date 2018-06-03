@@ -148,7 +148,11 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 	
 	//------------------------------------------------------------------------------
 		
-	// TODO swap, getOrElse
+	def swap(implicit M:Functor[F]):EitherT[F,R,L]	=
+			EitherT(M.map(value)(_.swap))
+		
+	def getOrElse(default: =>R)(implicit M:Functor[F]):F[R]	=
+			M.map(value)(_ getOrElse default)
 }
 
 trait EitherTInstances {

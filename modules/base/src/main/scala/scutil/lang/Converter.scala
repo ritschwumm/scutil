@@ -158,6 +158,14 @@ final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 			
 	//------------------------------------------------------------------------------
 			
+	def liftTraversed[F[_]](implicit F:Traversed[F], CC:Semigroup[E]):Converter[E,F[S],F[T]]	=
+			Converter { it =>
+				// NOTE this uses the Traverse instance instead of a native implementation
+				it traverse convert
+			}
+			
+	//------------------------------------------------------------------------------
+			
 	def liftFirst[X]:Converter[E,(S,X),(T,X)]	=
 			Converter { case (s,x) =>
 				convert(s) map { (_, x) }
@@ -170,11 +178,9 @@ final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 			
 	def liftOption:Converter[E,Option[S],Option[T]]	=
 			Converter { it =>
-				(it map convert).sequenceValidated
+				it traverseValidated convert
 			}
 		
-	// TODO liftTraversable
-			
 	def liftISeq(implicit cc:Semigroup[E]):Converter[E,ISeq[S],ISeq[T]]	=
 			Converter { it =>
 				it traverseValidated convert

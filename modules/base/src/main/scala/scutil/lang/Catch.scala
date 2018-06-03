@@ -29,10 +29,6 @@ object Catch {
 			
 	def byPrism[E<:Throwable](subtype:Prism[Throwable,E]):Catch[E]	=
 			Catch(subtype.get)
-		
-	@deprecated("use Prism", "0.139.0")
-	def bySubtype[E<:Throwable](subtype:Subtype[Throwable,E]):Catch[E]	=
-			Catch(subtype.downcast)
 }
 
 final class Catch[E<:Throwable](func:PFunction[Throwable,E]) {

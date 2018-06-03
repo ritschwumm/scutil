@@ -1,6 +1,6 @@
 package scutil.regex.pimp
 
-import java.util.regex.Pattern
+import java.util.regex._
 
 import scala.util.matching.Regex
 
@@ -10,6 +10,18 @@ object RegexImplicits extends RegexImplicits
 
 trait RegexImplicits {
 	implicit final class RegexCompanionExt(peer:Regex.type) {
+		val prism:Prism[String,Regex]	=
+				Prism(compile(_).toOption, _.pattern.toString)
+		
+		def compile(str:String):Either[PatternSyntaxException,Regex]	=
+				try		{ Right(new Regex(str)) }
+				catch	{ case e:PatternSyntaxException => Left(e) }
+				
+		def validate(s:String):Boolean	=
+				compile(s).isRight
+		
+		//------------------------------------------------------------------------------
+				
 		def quote(str:String):String	= Pattern quote str
 		
 		def quoteCharacterClass(str:String):String	= {
