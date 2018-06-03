@@ -59,7 +59,7 @@ sealed abstract class Month {
 				case December	=> 31
 			}
 			
-	/** starting at monday with 0 */
+	/** starting at january with 0 */
 	def index:Int	=
 			this match {
 				case January	=> 0

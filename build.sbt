@@ -3,7 +3,7 @@ import spray.boilerplate.BoilerplatePlugin
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.138.0",
+	version			:= "0.139.0",
 	
 	scalaVersion	:= "2.12.5",
 	scalacOptions	++= Seq(
@@ -99,7 +99,7 @@ lazy val `scutil-base`	=
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "4.0.3"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "4.0.4"				% "test"
 			),
 			boilerplateSource in Compile := baseDirectory.value.getParentFile / "src" / "main" / "boilerplate"
 		)
@@ -127,7 +127,7 @@ lazy val `scutil-core`	=
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "4.0.3"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "4.0.4"				% "test"
 			),
 			
 			//------------------------------------------------------------------------------
