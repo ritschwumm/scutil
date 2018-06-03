@@ -11,7 +11,7 @@ object Human {
 	private val one		= BigDecimal(1)
 	
 	def multi(head:HumanUnit, tail:HumanUnit*):Human	=
-			Human(Nes(head, (tail:Traversable[HumanUnit]).toISeq))
+			Human(Nes(head, tail.toVector))
 
 	//------------------------------------------------------------------------------
 	//## predefined tables

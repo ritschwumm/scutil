@@ -119,8 +119,10 @@ trait FileImplicits {
 		//------------------------------------------------------------------------------
 		//## file only: complete read
 		
-		// TODO Files readAllBytes delegate
-		// TODO Files write (delegate, content)
+		// BETTER use this?
+		//def readByteString():ByteString				= ByteString unsafeFromArray (Files readAllBytes peer.toPath)
+		//def writeByteString(bytes:ByteString):Unit	= Files write (peer.toPath, bytes.unsafeValue)
+		
 		def readByteString():ByteString				= withInputStream	{ _ readFullyByteString ()	}
 		def writeByteString(bytes:ByteString):Unit	= withOutputStream	{ _ writeByteString bytes	}
 		

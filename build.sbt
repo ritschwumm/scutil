@@ -1,9 +1,9 @@
-import org.scalajs.sbtplugin.cross.CrossProject
 import spray.boilerplate.BoilerplatePlugin
+import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.141.0",
+	version			:= "0.142.0",
 	
 	scalaVersion	:= "2.12.6",
 	scalacOptions	++= Seq(
@@ -20,7 +20,7 @@ inThisBuild(Seq(
 	conflictManager	:= ConflictManager.strict,
 	resolvers		+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
 	resolvers 		+= Resolver sonatypeRepo "releases",
-	addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.6")
+	addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7")
 ))
 
 lazy val fixConsoleSettings	=
@@ -61,7 +61,19 @@ lazy val wartRemoverSetting	=
 		
 // (crossProject crossType CrossType.Pure in base)
 def myCrossProject(id:String, base:File):CrossProject	=
-		CrossProject(id + "-jvm", id + "-js", base, CrossType.Pure).settings(name := id)
+		CrossProject(
+			id		= id,
+			base	= base,
+		)(
+			JVMPlatform,
+			JSPlatform
+		)
+		.crossType(CrossType.Pure)
+		.settings(
+			name := id
+		)
+		.configurePlatform(JVMPlatform)	(_ withId (id + "-jvm"))
+		.configurePlatform(JSPlatform)	(_ withId (id + "-js"))
 	
 lazy val `scutil`	=
 		(project	in	file("."))

@@ -10,4 +10,5 @@ trait extensions
 		with	MapImplicits
 		with	QueueImplicits
 		with	SetImplicits
-		with	TraversableImplicits
+		with	IterableImplicits
+		

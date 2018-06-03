@@ -150,42 +150,64 @@ trait EitherImplicits {
 			
 		//------------------------------------------------------------------------------
 		
-		// TODO use pattern matching instead of cata here
-		
 		def rescue[RR>:R](func:PFunction[L,RR]):Either[L,RR]	=
-				cata(it => func(it) map Right.apply getOrElse Left(it), Right.apply)
+				peer match {
+					case Left(x)	=> func(x) map Right.apply getOrElse Left(x)
+					case Right(x)	=> Right(x)
+				}
 		
 		def rescuePartial[RR>:R](func:PartialFunction[L,RR]):Either[L,RR]	=
 				rescue(func.lift)
 			
 		def reject[LL>:L](func:PFunction[R,LL]):Either[LL,R]	=
-				cata(Left.apply, it => func(it) map Left.apply getOrElse Right(it))
+				peer match {
+					case Left(x)	=> Left(x)
+					case Right(x)	=> func(x) map Left.apply getOrElse Right(x)
+				}
 			
 		def rejectPartial[LL>:L](func:PartialFunction[R,LL]):Either[LL,R]	=
 				reject(func.lift)
 			
 		def rightByOr[LL>:L](func:Predicate[R], fail: =>LL):Either[LL,R]	=
-				cata(Left.apply, it => if (func(it)) Right(it) else Left(fail))
+				peer match {
+					case Left(x)	=> Left(x)
+					case Right(x)	=> if (func(x)) Right(x) else Left(fail)
+				}
 				
 		def rightNotByOr[LL>:L](func:Predicate[R], fail: =>LL):Either[LL,R]	=
-				cata(Left.apply, it => if (!func(it)) Right(it) else Left(fail))
+				peer match {
+					case Left(x)	=> Left(x)
+					case Right(x)	=> if (!func(x)) Right(x) else Left(fail)
+				}
 				
 		def collapseOr[LL>:L,RR](func:PFunction[R,RR], fail: =>LL):Either[LL,RR]	=
-				cata(Left.apply, it => func(it) map Right.apply getOrElse Left(fail))
+				peer match {
+					case Left(x)	=> Left(x)
+					case Right(x)	=> func(x) map Right.apply getOrElse Left(fail)
+				}
 			
 		def collectOr[LL>:L,RR](func:PartialFunction[R,RR], fail: =>LL):Either[LL,RR]	=
-				cata(Left.apply, it => if (func isDefinedAt it) Right(func(it)) else Left(fail))
+				collapseOr(func.lift, fail)
 		
 		//------------------------------------------------------------------------------
 	
 		def throwThrowable(implicit ev:L=>Throwable):R	=
-				cata(throw _, identity)
+				peer match {
+					case Left(x)	=> throw x
+					case Right(x)	=> x
+				}
 		
 		def throwException(implicit ev:L=>Exception):R	=
-				cata(throw _, identity)
+				peer match {
+					case Left(x)	=> throw x
+					case Right(x)	=> x
+				}
 			
 		def getOrThrow(func:L=>Throwable):R	=
-				cata(it => throw func(it), identity)
+				peer match {
+					case Left(x)	=> throw func(x)
+					case Right(x)	=> x
+				}
 				
 		//------------------------------------------------------------------------------
 	

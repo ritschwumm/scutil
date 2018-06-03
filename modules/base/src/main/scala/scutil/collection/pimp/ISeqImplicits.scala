@@ -13,8 +13,8 @@ trait ISeqImplicits {
 		def prepend(it:T):ISeq[T]	= it +: peer
 		def append(it:T):ISeq[T]	= peer :+ it
 		
-		def prependAll(it:Traversable[T]):ISeq[T]	= it ++: peer
-		def appendAll(it:Traversable[T]):ISeq[T]	= peer ++ it
+		def prependAll(it:Iterable[T]):ISeq[T]	= it ++: peer
+		def appendAll(it:Iterable[T]):ISeq[T]	= peer ++ it
 		
 		def lastIndex:Int		= peer.size-1
 		
@@ -59,7 +59,7 @@ trait ISeqImplicits {
 		def collapseLast[U](implicit ev:PFunction[T,U]):Option[U]	=
 				collapseMapLast(ev)
 		
-		// NOTE this is in TraversableImplicits
+		// NOTE this is in IterableImplicits
 		// def collapseMapFirst[U](find:PFunction[T,U]):Option[U]
 		
 		/** like collectLast but using a PFunction */

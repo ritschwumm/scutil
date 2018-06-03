@@ -38,15 +38,10 @@ trait AnyImplicits {
 		
 		/** match lifted to an Option */
 		def matchOption[U](pf:PartialFunction[T,U]):Option[U] =
-				if (pf isDefinedAt peer)	Some(pf(peer))
-				else						None
-				// pf.lift apply peer	
-				// Some(peer) collect pf
-				// PartialFunction.condOpt(pf)(peer)
+				PartialFunction.condOpt(peer)(pf)
 				
 		def flatMatchOption[U](pf:PartialFunction[T,Option[U]]):Option[U] =
-				if (pf isDefinedAt peer)	pf(peer)
-				else						None
+				PartialFunction.condOpt(peer)(pf).flatten
 			
 		def matchBoolean[U](pf:PartialFunction[T,Unit]):Boolean =
 				pf isDefinedAt peer

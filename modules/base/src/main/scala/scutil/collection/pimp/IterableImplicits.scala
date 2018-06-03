@@ -5,10 +5,10 @@ import scala.collection.generic.CanBuildFrom
 import scutil.lang._
 import scutil.lang.tc._
 
-object TraversableImplicits extends TraversableImplicits
+object IterableImplicits extends IterableImplicits
 
-trait TraversableImplicits {
-	implicit final class TraversableExt[T,CC[T]<:Traversable[T]](peer:CC[T]) {
+trait IterableImplicits {
+	implicit final class IterableExt[T,CC[T]<:Iterable[T]](peer:CC[T]) {
 		/** Some if the collection contains exactly one element, else None */
 		def singleOption:Option[T]	= {
 			var out:Option[T]	= None
@@ -44,7 +44,7 @@ trait TraversableImplicits {
 		}
 		
 		/** combine elements of two collections using a function */
-		def zipWith[U,V](that:Traversable[U])(f:(T,U)=>V)(implicit cbf:CanBuildFrom[CC[T],V,CC[V]]):CC[V]	= {
+		def zipWith[U,V](that:Iterable[U])(f:(T,U)=>V)(implicit cbf:CanBuildFrom[CC[T],V,CC[V]]):CC[V]	= {
 			val builder	= cbf()
 			val	xi	= peer.toIterator
 			val yi	= that.toIterator

@@ -50,7 +50,7 @@ trait MapImplicits {
 				}
 				
 		/** set or remove multiple values */
-		def setMany(it:Traversable[(S,Option[T])]):Map[S,T]	=
+		def setMany(it:Iterable[(S,Option[T])]):Map[S,T]	=
 				(it foldLeft peer) { (orig, change) =>
 					change match {
 						case (k, Some(v))	=> orig + (k -> v)

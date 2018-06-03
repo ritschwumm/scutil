@@ -5,9 +5,9 @@ import scutil.lang.tc._
 object Extractor extends ExtractorInstances {
 	def total[S,T](func:S=>T):Extractor[S,T]	=
 			Extractor(s	=> Some(func(s)))
-	
+		
 	def partial[S,T](func:PartialFunction[S,T]):Extractor[S,T]	=
-			Extractor(s	=> if (func isDefinedAt s) Some(func apply s) else None)
+			Extractor(func.lift)
 	
 	def filtered[T](pred:Predicate[T]):Extractor[T,T]	=
 			Extractor(it => if (pred(it)) Some(it) else None)

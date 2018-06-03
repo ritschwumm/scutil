@@ -124,11 +124,11 @@ trait OptionImplicits {
 				}
 				
 		/** peer is traversable (in the haskell sense), ISeq is an idiom. */
-		def sequenceTraversable[CC[_]<:Traversable[U],U](implicit ev:T=>CC[U], cbf:CanBuildFrom[CC[T],Option[U],CC[Option[U]]]):CC[Option[U]]	=
-				traverseTraversable(ev)
+		def sequenceIterable[CC[_]<:Iterable[U],U](implicit ev:T=>CC[U], cbf:CanBuildFrom[CC[T],Option[U],CC[Option[U]]]):CC[Option[U]]	=
+				traverseIterable(ev)
 			
 		/** peer is traversable (in the haskell sense), ISeq is an idiom. */
-		def traverseTraversable[CC[_]<:Traversable[U],U](func:T=>CC[U])(implicit cbf:CanBuildFrom[CC[T],Option[U],CC[Option[U]]]):CC[Option[U]]	= {
+		def traverseIterable[CC[_]<:Iterable[U],U](func:T=>CC[U])(implicit cbf:CanBuildFrom[CC[T],Option[U],CC[Option[U]]]):CC[Option[U]]	= {
 			val builder	= cbf()
 			peer map func match {
 				case None		=> builder.result
