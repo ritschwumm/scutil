@@ -25,6 +25,7 @@ trait DateFormatImplicits {
 		// cloning should be generalized, but @see https://issues.scala-lang.org/browse/SI-3197
 		
 		/** DateFormat is not threadsafe, cloning helps */
+		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 		def cloned:DateFormat	=
 				peer.clone.asInstanceOf[DateFormat]
 	}

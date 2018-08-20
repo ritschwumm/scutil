@@ -26,6 +26,7 @@ final class IoRef[T](initial:T) {
 	
 	def modify[U](func:T=>(T,U)):Io[U]	=
 			Io delay {
+				@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 				var out:U	= null.asInstanceOf[U]
 				ref getAndUpdate { old =>
 					val (next, res)	= func apply old

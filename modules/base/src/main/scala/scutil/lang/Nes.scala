@@ -9,6 +9,7 @@ object Nes extends NesInstances {
 	def multi[T](head:T, tail:T*):Nes[T]	=
 			Nes(head, tail.toVector)
 		
+	@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 	def fromISeq[T](it:ISeq[T]):Option[Nes[T]]	=
 			if (it.nonEmpty)	Some(Nes(it.head, it.tail))
 			else				None
@@ -24,11 +25,10 @@ object Nes extends NesInstances {
 
 final case class Nes[+T](head:T, tail:ISeq[T]) {
 	def last:T	=
-			if (tail.nonEmpty)	tail.last
-			else				head
+			tail.lastOption getOrElse head
 			
 	def init:ISeq[T]	=
-			if (tail.nonEmpty)	head +: tail.init
+			if (tail.nonEmpty)	head +: (tail dropRight 1)
 			else				Vector(head)
 			
 	def size:Int	= tail.size + 1
@@ -70,7 +70,7 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 	
 	def initNes:Option[Nes[T]]	=
 			if (tail.isEmpty)	None
-			else				Some(Nes(head, tail.init))
+			else				Some(Nes(head, tail dropRight 1))
 	
 	def map[U](func:T=>U):Nes[U]	=
 			Nes(func(head), tail map func)
@@ -90,6 +90,7 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 	def filterNot(pred:Predicate[T]):Option[Nes[T]]	=
 			Nes fromISeq (toISeq filterNot pred)
 		
+	@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 	def reverse:Nes[T]	=
 			if (tail.nonEmpty)	Nes(tail.last, tail.init.reverse :+ head)
 			else				this
@@ -106,6 +107,7 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 	def append[U>:T](item:U):Nes[U]	=
 			Nes(this.head, this.tail :+ item)
 		
+	@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 	def prependMany[U>:T](items:ISeq[U]):Nes[U]	=
 			if (items.nonEmpty)	Nes(items.head, items.tail ++ this.toVector)
 			else				this

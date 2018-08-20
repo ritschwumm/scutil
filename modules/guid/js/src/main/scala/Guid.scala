@@ -9,6 +9,7 @@ import scutil.lang._
 
 object Guid extends GuidBase {
 	// org.scalajs.dom.crypto.GlobalCrypto.crypto
+	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 	private lazy val undefOrCrypto:UndefOr[Crypto]	=
 			js.Dynamic.global.crypto.asInstanceOf[UndefOr[Crypto]]	orElse
 			js.Dynamic.global.msCrypto.asInstanceOf[UndefOr[Crypto]]

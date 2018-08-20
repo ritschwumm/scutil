@@ -24,13 +24,7 @@ trait SetImplicits {
 				
 		/** get one element and all other elements */
 		def extractSingleOption:Option[(T,Set[T])]	=
-				if (peer.nonEmpty)	{
-					val head	= peer.head
-					Some((head, peer - head))
-				}
-				else {
-					None
-				}
+				peer.headOption map { head => (head, peer - head) }
 			
 		/** set or remove the value */
 		def set(value:T, in:Boolean):Set[T]	=

@@ -65,7 +65,7 @@ object Text {
 		
 		val spersed	=
 			if (lines.isEmpty)	Vector.empty[String]
-			else				lines.flatMap(it => Vector(it, midRuler)).init
+			else				lines flatMap { it => Vector(it, midRuler) } dropRight 1
 			
 		Vector(topRuler) ++ spersed ++ Vector(bottomRuler)
 	}

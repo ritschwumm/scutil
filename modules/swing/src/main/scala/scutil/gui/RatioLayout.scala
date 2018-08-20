@@ -32,6 +32,7 @@ final class RatioLayout(horizontal:Boolean, gap:Int, parts:Seq[Double]) extends 
 	def preferredLayoutSize(c:Container):Dimension	=
 			minimumLayoutSize(c)
 		
+	@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 	def minimumLayoutSize(c:Container):Dimension	= {
 		val components	= c.getComponents.toVector
 		if (components.isEmpty)	return new Dimension(0, 0)
@@ -77,7 +78,7 @@ final class RatioLayout(horizontal:Boolean, gap:Int, parts:Seq[Double]) extends 
 		// component starts
 		val starts	= (sizes scanLeft start) { (start, size) => start + size + gap }
 		// component spans
-		val spans	= starts.init zip sizes
+		val spans	= starts dropRight 1 zip sizes
 		
 		// other direction
 		val startO	= rid rectangleLocation	bounds

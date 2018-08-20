@@ -49,12 +49,20 @@ trait ISeqImplicits {
 				peer lift index getOrElse default
 			
 		/** like find but searching from the end to the front */
-		def findLast(predicate:Predicate[T]):Option[T]	=
-				peer.reverse find predicate
-	
+		def findLast(predicate:Predicate[T]):Option[T]	=  {
+			// behaves like peer.reverse find predicate
+			val iter	= peer.reverseIterator
+			while (iter.hasNext) {
+				val out	= iter.next()
+				if (predicate(out))	return Some(out)
+			}
+			None
+		}
+				
 		/** like collectFirst but searching from the end to the front */		
 		def collectLast[U](pf:PartialFunction[T,U]):Option[U]	=
-				peer.reverse collectFirst pf
+				// behaves like peer.reverse collectFirst pf
+				collapseLast(pf.lift)
 			
 		def collapseLast[U](implicit ev:PFunction[T,U]):Option[U]	=
 				collapseMapLast(ev)
@@ -64,8 +72,9 @@ trait ISeqImplicits {
 		
 		/** like collectLast but using a PFunction */
 		def collapseMapLast[U](find:PFunction[T,U]):Option[U]	= {
-			peer.reverse foreach { it =>
-				val out	= find(it)
+			val iter	= peer.reverseIterator
+			while (iter.hasNext) {
+				val out	= find(iter.next())
 				if (out.isDefined)	return out
 			}
 			None
@@ -80,10 +89,12 @@ trait ISeqImplicits {
 					(k, kvs map { _._2 })
 				}
 		
+		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def tailOption:Option[ISeq[T]]	=
 				if (peer.nonEmpty)	Some(peer.tail)
 				else				None
 		
+		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def initOption:Option[ISeq[T]]	=
 				if (peer.nonEmpty)	Some(peer.init)
 				else				None
@@ -95,11 +106,13 @@ trait ISeqImplicits {
 				}
 			
 		/** get first item and rest of the ISeq if possible */
+		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def extractHead:Option[(T,ISeq[T])]	=
 				if (peer.nonEmpty)	Some((peer.head, peer.tail))
 				else				None
 			
 		/** get last item and rest of the ISeq if possible */
+		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def extractLast:Option[(T,ISeq[T])]	=
 				if (peer.nonEmpty)	Some((peer.last, peer.init))
 				else				None
@@ -121,6 +134,7 @@ trait ISeqImplicits {
 				distinctWith { extract(_) == extract(_) }
 			
 		/** pairwise neighbors */
+		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def zipTail:ISeq[(T,T)]	=
 				if (peer.nonEmpty)	peer zip peer.tail
 				else				Vector.empty
@@ -132,7 +146,7 @@ trait ISeqImplicits {
 			
 		/** insert a separator between elements */	
 		def intersperse[U>:T](separator: =>U):ISeq[U]	=
-				if (peer.nonEmpty)	(peer flatMap { ISeq(separator, _) }).tail
+				if (peer.nonEmpty)	peer flatMap { ISeq(separator, _) } drop 1
 				else				peer
 		
 		/** triple every item with its previous and next item */
@@ -154,6 +168,7 @@ trait ISeqImplicits {
 		}
 		
 		/** optionally insert something between two items */
+		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def insertBetween[U](mod:T=>U, func:(T,T)=>Option[U]):ISeq[U]	=
 				if (peer.size < 2)	peer map mod
 				else {
@@ -179,6 +194,7 @@ trait ISeqImplicits {
 	
 		/** equivalent elements go into own ISeqs */
 		def equivalentSpans(equivalent:(T,T)=>Boolean):ISeq[ISeq[T]]	= {
+			@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 			def impl(in:ISeq[T]):ISeq[ISeq[T]]	= {
 				val (a,b)	= in span { equivalent(in.head, _) }
 				if (b.nonEmpty)	a +: impl(b)

@@ -21,6 +21,7 @@ object Catch {
 	def byType[E<:Throwable:ClassTag]:Catch[E]	=
 			partial { case e:E	=> e }
 		
+	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 	def byClass[E<:Throwable](clazz:Class[E]):Catch[E]	=
 			Catch { e =>
 				if (clazz isInstance e)	Some(e.asInstanceOf[E])

@@ -3,7 +3,7 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.144.0",
+	version			:= "0.145.0",
 	
 	scalaVersion	:= "2.12.6",
 	scalacOptions	++= Seq(
@@ -20,7 +20,30 @@ inThisBuild(Seq(
 	conflictManager	:= ConflictManager.strict,
 	resolvers		+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
 	resolvers 		+= Resolver sonatypeRepo "releases",
-	addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7")
+	addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7"),
+	
+	wartremoverErrors	++= Seq(
+		Wart.AsInstanceOf,
+		Wart.IsInstanceOf,
+		Wart.StringPlusAny,
+		Wart.EitherProjectionPartial,
+		Wart.OptionPartial,
+		Wart.Enumeration,
+		Wart.FinalCaseClass,
+		Wart.JavaConversions,
+		Wart.Option2Iterable,
+		Wart.TryPartial,
+		Wart.JavaSerializable,
+		//Wart.Any,
+		Wart.AnyVal,
+		//Wart.Nothing,
+		Wart.ArrayEquals,
+		Wart.ExplicitImplicitTypes,
+		Wart.LeakingSealed,
+		//Wart.Overloading,
+		//Wart.PublicInference,
+		Wart.TraversableOps,
+	)
 ))
 
 lazy val fixConsoleSettings	=
@@ -35,28 +58,6 @@ lazy val noTestSettings	=
 		Seq(
 			test		:= {},
 			testQuick	:= {}
-		)
-
-lazy val wartRemoverSetting	=
-		wartremoverErrors	++= Seq(
-			Wart.StringPlusAny,
-			Wart.EitherProjectionPartial,
-			Wart.OptionPartial,
-			Wart.Enumeration,
-			Wart.FinalCaseClass,
-			Wart.JavaConversions,
-			Wart.Option2Iterable,
-			Wart.TryPartial,
-			Wart.JavaSerializable,
-			//Wart.Any,
-			Wart.AnyVal,
-			//Wart.Nothing,
-			Wart.ArrayEquals,
-			Wart.ExplicitImplicitTypes,
-			Wart.LeakingSealed
-			//Wart.Overloading
-			//Wart.PublicInference,
-			//Wart.TraversableOps
 		)
 		
 // (crossProject crossType CrossType.Pure in base)
@@ -83,7 +84,6 @@ lazy val `scutil`	=
 			`scutil-core`,
 			`scutil-swing`,
 			`scutil-xml`,
-			`scutil-uid`,
 			`scutil-guid-jvm`,
 			`scutil-guid-js`
 		)
@@ -100,7 +100,6 @@ lazy val `scutil-base`	=
 		)
 		.settings(
 			fixConsoleSettings,
-			wartRemoverSetting,
 			scalacOptions	++= Seq(
 				// "-language:implicitConversions",
 				// "-language:existentials",
@@ -113,7 +112,7 @@ lazy val `scutil-base`	=
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "4.2.0"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "4.3.3"				% "test"
 			),
 			boilerplateSource in Compile := baseDirectory.value.getParentFile / "src" / "main" / "boilerplate"
 		)
@@ -128,7 +127,6 @@ lazy val `scutil-core`	=
 		(project	in	file("modules/core"))
 		.settings(
 			fixConsoleSettings,
-			wartRemoverSetting,
 			scalacOptions	++= Seq(
 				"-language:implicitConversions"
 				// "-language:existentials",
@@ -141,7 +139,7 @@ lazy val `scutil-core`	=
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "4.2.0"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "4.3.3"				% "test"
 			),
 			
 			//------------------------------------------------------------------------------
@@ -169,7 +167,6 @@ lazy val `scutil-swing`	=
 		(project	in	file("modules/swing"))
 		.settings(
 			fixConsoleSettings,
-			wartRemoverSetting,
 			scalacOptions	++= Seq(
 				"-language:implicitConversions"
 				// "-language:existentials",
@@ -188,7 +185,6 @@ lazy val `scutil-xml`	=
 		(project	in	file("modules/xml"))
 		.settings(
 			fixConsoleSettings,
-			wartRemoverSetting,
 			scalacOptions	++= Seq(
 				// "-language:implicitConversions",
 				// "-language:existentials",
@@ -206,31 +202,10 @@ lazy val `scutil-xml`	=
 			`scutil-core`
 		)
 		
-// TODO get rid of this
-lazy val `scutil-uid`	=
-		(project	in	file("modules/uid"))
-		.settings(
-			fixConsoleSettings,
-			wartRemoverSetting,
-			scalacOptions	++= Seq(
-				//"-language:implicitConversions",
-				// "-language:existentials",
-				// "-language:higherKinds",
-				// "-language:reflectiveCalls",
-				// "-language:dynamics",
-				// "-language:postfixOps",
-				// "-language:experimental.macros",
-			)
-		)
-		.dependsOn(
-			`scutil-core`
-		)
-		
 lazy val `scutil-guid`	=
 		myCrossProject("scutil-guid", file("modules/guid"), CrossType.Full)
 		.settings(
 			fixConsoleSettings,
-			wartRemoverSetting,
 			scalacOptions	++= Seq(
 				//"-language:implicitConversions",
 				// "-language:existentials",

@@ -9,6 +9,8 @@ protected abstract class GuidBase {
 	
 	private val counter	= new AtomicInteger(0)
 		
+	val freshIo:Io[String]	= Io delay fresh()
+	
 	def fresh():String	= {
 		val rand	= Hex encodeByteString randomBytes(randomCount)
 		val stamp	= Hex encodeByteString timestamp()

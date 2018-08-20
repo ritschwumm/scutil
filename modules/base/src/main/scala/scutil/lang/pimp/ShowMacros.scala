@@ -26,7 +26,9 @@ private final class ShowMacros(val c:Context) {
 			
 		val inserts:Seq[c.Tree]		= args	map { expr => q"""_root_.scutil.lang.tc.Show.doit($expr)""" }
 	
+		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		val parts:Seq[c.Tree]		= (escapeds zip inserts flatMap { case (lit, ins) => Seq(lit, ins) }) :+ q"""${escapeds.last}"""
+		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		val full:c.Tree				= parts reduce { (a, b) => q"""$a + $b""" }
 		c.Expr[String](full)
 	}

@@ -68,6 +68,7 @@ object DndFileImport {
 					extractTransferData[T](support, flavor) leftMap Nes.single into (_.toValidated) flatMap extractor
 				}
 				
+		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 		private def extractTransferData[T](support:TransferSupport, flavor:DataFlavor):Either[Exception,T]	=
 				Catch.exception in (support.getTransferable getTransferData flavor).asInstanceOf[T]
 				

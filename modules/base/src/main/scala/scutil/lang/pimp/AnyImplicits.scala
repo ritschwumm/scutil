@@ -11,6 +11,7 @@ object AnyImplicits extends AnyImplicits
 trait AnyImplicits {
 	implicit final class AnyExt[T](peer:T) {
 		/** ensure we get the java wrapper */
+		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 		def boxed:AnyRef	= peer.asInstanceOf[AnyRef]
 		
 		/** type-invariant equality */

@@ -48,6 +48,7 @@ object PropertiesUtil {
 	def loadOrdered(ist:InputStream):ISeq[(String,String)]	= {
 		var out	= Vector.empty[(String,String)]
 		val p	= new Properties() {
+			@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 			override def put(key:AnyRef, value:AnyRef):AnyRef	= {
 				out	:+= (key.asInstanceOf[String] -> value.asInstanceOf[String])
 				super.put(key, value)

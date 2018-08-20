@@ -36,7 +36,7 @@ object FieldNames {
 	}
 	
 	private def singleOption[T](it:Iterable[T]):Option[T]	=
-			if (it.size == 1)	Some(it.head)
+			if (it.size <= 1)	it.headOption
 			else				None
 }
 
