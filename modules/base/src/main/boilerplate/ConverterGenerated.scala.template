@@ -6,21 +6,21 @@ trait ConverterGenerated {
 	//------------------------------------------------------------------------------
 	// zip
 	
-	[2..#def zip1[E:Semigroup,S,[#T1#]]([#t1:Converter[E,S,T1]#]):Converter[E,S,([#T1#])]	=
+	[2..#@deprecated("use TupleN.zipN", "0.xxx.0") def zip1[E:Semigroup,S,[#T1#]]([#t1:Converter[E,S,T1]#]):Converter[E,S,([#T1#])]	=
 			Converter { it => Validated zip1 ([#t1 convert it#]) }#
 	]
 	
 	//------------------------------------------------------------------------------
 	// lift
 	
-	[2..#def lift1[E:Semigroup,R,[#S1#],T](func:([#S1#])=>T):([#Converter[E,R,S1]#])=>Converter[E,R,T]	=
+	[2..#@deprecated("use TupleN.zipN or TupleN.mapN", "0.xxx.0") def lift1[E:Semigroup,R,[#S1#],T](func:([#S1#])=>T):([#Converter[E,R,S1]#])=>Converter[E,R,T]	=
 			([#c1#])	=> Converter { it => Validated lift1 func apply ([#c1 convert it#]) }#
 	]
 	
 	//------------------------------------------------------------------------------
 	// map
 	
-	[2..#def map1[E:Semigroup,R,[#S1#],T]([#c1:Converter[E,R,S1]#]):(([#S1#])=>T)=>Converter[E,R,T]	=
+	[2..#@deprecated("use TupleN.mapN", "0.xxx.0") def map1[E:Semigroup,R,[#S1#],T]([#c1:Converter[E,R,S1]#]):(([#S1#])=>T)=>Converter[E,R,T]	=
 			func => Converter { it => Validated map1 ([#c1 convert it#]) apply func }#
 	]
 }

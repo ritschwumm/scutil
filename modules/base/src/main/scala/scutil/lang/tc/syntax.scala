@@ -10,3 +10,4 @@ trait syntax
 		with	MonoidSyntax
 		with	ShowSyntax
 		with	TraversedSyntax
+		with	ApplicativeTupleNSyntaxGenerated

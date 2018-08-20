@@ -15,11 +15,6 @@ trait MapImplicits {
 		def extractAt(s:S):Option[(T,Map[S,T])]	=
 				peer get s map { t => (t, peer - s) }
 			
-		/** inverse filterKeys */
-		@deprecated("use strictFilterNotKeys", "0.141.0")
-		def filterNotKeys(pred:Predicate[S]):Map[S,T]	=
-				peer filterKeys { it => !pred(it) }
-			
 		def partitionKeys(pred:Predicate[S]):(Map[S,T],Map[S,T])	=
 				peer partition { case (k, _)	=> pred(k) }
 			

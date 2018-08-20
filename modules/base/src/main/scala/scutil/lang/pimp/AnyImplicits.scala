@@ -1,6 +1,8 @@
 package scutil.lang.pimp
 
 import scala.annotation.tailrec
+import scala.util.{ Try, Success, Failure }
+import scala.concurrent.Future
 
 import scutil.lang._
 
@@ -55,6 +57,30 @@ trait AnyImplicits {
 			else						None
 		}
 		*/
+		
+		//------------------------------------------------------------------------------
+		
+		def inSome:Option[T]			= Some(peer)
+		
+		def inRight[L]:Either[L,T]		= Right(peer)
+		def inLeft[R]:Either[T,R]		= Left(peer)
+		
+		def inGood[L]:Validated[L,T]	= Good(peer)
+		def inBad[R]:Validated[T,R]		= Bad(peer)
+		
+		def inHere[B]:Where[T,B]		= Here(peer)
+		def inThere[A]:Where[A,T]		= There(peer)
+		def inBoth:Where[T,T]			= Both(peer, peer)
+		
+		def inNes:Nes[T]				= Nes.single(peer)
+		
+		def inVector:Vector[T]			= Vector(peer)
+		def inList:List[T]				= List(peer)
+		
+		def inSuccess:Try[T]								= Success(peer)
+		def inFailure[X](implicit ev:T=>Throwable):Try[X]	= Failure(peer)
+		
+		def inFuture:Future[T]			= Future successful peer
 		
 		//------------------------------------------------------------------------------
 		
