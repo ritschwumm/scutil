@@ -20,15 +20,3 @@ trait ApplicativeSyntax {
 	}
 	*/
 }
-
-object ApplicativeGen {
-	final implicit class Applicative2[F[_],S1,S2](items:(F[S1], F[S2])) {
-		def zipN(implicit F:Applicative[F]):F[(S1,S2)]	= mapN((_,_))
-		def mapN[T](func:(S1,S2)=>T)(implicit F:Applicative[F]):F[T]	= {
-			val f0	= func.curried
-			val f1	= (F map	items._1)(f0)
-			val f2	= (F ap		items._2)(f1)
-			f2
-		}
-	}
-}

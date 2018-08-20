@@ -4,7 +4,7 @@ import scala.collection.generic.CanBuildFrom
 
 import scutil.lang.tc._
 
-object Validated extends ValidatedGenerated with ValidatedInstances {
+object Validated extends ValidatedInstances {
 	def good[E,T](value:T):Validated[E,T]	= Good(value)
 	def bad[E,T](problems:E):Validated[E,T]	= Bad(problems)
 	
@@ -21,24 +21,6 @@ object Validated extends ValidatedGenerated with ValidatedInstances {
 					case Good(x)	=> x
 				}
 	}
-	
-	//------------------------------------------------------------------------------
-	
-	/*
-	// these we get from ValidatedGenerated
-	
-	def zip2[E:Semigroup,S1, S2](s1:Validated[E,S1], s2:Validated[E,S2]):Validated[E,(S1, S2)]	=
-		s1 zip s2 map assoc.unarrow2
-		
-	def zip3[E:Semigroup,S1, S2, S3](s1:Validated[E,S1], s2:Validated[E,S2], s3:Validated[E,S3]):Validated[E,(S1, S2, S3)]	=
-		s1 zip s2 zip s3 map assoc.unarrow3
-		
-	def lift2[E:Semigroup,S1, S2,T](func:(S1, S2)=>T):(Validated[E,S1], Validated[E,S2])=>Validated[E,T]	=
-			(s1:Validated[E,S1], s2:Validated[E,S2]) => Validated good func.curried ap s1 ap s2
-			
-	def map2[E:Semigroup,R1, R2,RR](r1:Validated[E,R1], r2:Validated[E,R2]):((R1, R2)=>RR)=>Validated[E,RR]	=
-			func => Validated good func.curried ap r1 ap r2
-	*/
 }
 
 sealed trait Validated[+E,+T] {

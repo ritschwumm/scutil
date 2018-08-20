@@ -3,6 +3,7 @@ package scutil.uid
 import scutil.lang._
 import scutil.base.implicits._
 
+@deprecated("use scutil.guid.Guid", "0.144.0")
 object UidPrisms {
 	val ByteString:Prism[ByteString,Uid]	=
 			Prism(
@@ -29,12 +30,14 @@ object UidPrisms {
 				(it:String)	=> {
 					try {
 						val number	= BigInt(it, 16)
-						Some(Uid(
-							machine	= (number >> 192).toLong,
-							counter	= (number >> 128).toLong,
-							time	= (number >>  64).toLong,
-							random	= (number >>   0).toLong
-						))
+						Some(
+							Uid(
+								machine	= (number >> 192).toLong,
+								counter	= (number >> 128).toLong,
+								time	= (number >>  64).toLong,
+								random	= (number >>   0).toLong
+							)
+						)
 					}
 					catch { case e:NumberFormatException	=>
 						None

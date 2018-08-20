@@ -9,7 +9,7 @@ import scutil.lang.tc._
 object EitherImplicits extends EitherImplicits
 
 trait EitherImplicits {
-	implicit final class EitherCompanionImplicits(peer:Either.type) extends EitherGenerated {
+	implicit final class EitherCompanionImplicits(peer:Either.type) {
 		def pure[L,R](it:R):Either[L,R]		= right(it)
 		def error[L,R](it:L):Either[L,R]	= left(it)
 		

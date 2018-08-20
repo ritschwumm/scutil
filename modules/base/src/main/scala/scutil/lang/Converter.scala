@@ -3,7 +3,7 @@ package scutil.lang
 import scutil.base.implicits._
 import scutil.lang.tc._
 
-object Converter extends ConverterGenerated with ConverterInstances {
+object Converter extends ConverterInstances {
 	def identity[E,T]:Converter[E,T,T]	=
 			Converter { it =>
 				Validated good it
@@ -44,21 +44,6 @@ object Converter extends ConverterGenerated with ConverterInstances {
 			Converter { input =>
 				base convert input flatMap { _ toGood bad }
 			}
-			
-	//------------------------------------------------------------------------------
-	
-	/*
-	// these we get from ConverterGenerated
-	
-	def zip2[E:Semigroup,S,T1, T2](t1:Converter[E,S,T1], t2:Converter[E,S,T2]):Converter[E,S,(T1, T2)]	=
-			Converter { it => Validated zip2 (t1 convert it, t2 convert it) }
-	
-	def lift2[E:Semigroup,R,S1, S2,T](func:(S1, S2)=>T):(Converter[E,R,S1], Converter[E,R,S2])=>Converter[E,R,T]	=
-			(c1, c2)	=> Converter { it => Validated lift2 func apply (c1 convert it, c2 convert it) }
-	
-	def map2[E:Semigroup,R,S1, S2,T](c1:Converter[E,R,S1], c2:Converter[E,R,S2]):((S1, S2)=>T)=>Converter[E,R,T]	=
-			func => Converter { it => Validated map2 (c1 convert it, c2 convert it) apply func }
-	*/
 	
 	//------------------------------------------------------------------------------
 	

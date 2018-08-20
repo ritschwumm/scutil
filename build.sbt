@@ -3,7 +3,7 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.143.0",
+	version			:= "0.144.0",
 	
 	scalaVersion	:= "2.12.6",
 	scalacOptions	++= Seq(
@@ -60,7 +60,7 @@ lazy val wartRemoverSetting	=
 		)
 		
 // (crossProject crossType CrossType.Pure in base)
-def myCrossProject(id:String, base:File):CrossProject	=
+def myCrossProject(id:String, base:File, crossType:CrossType):CrossProject	=
 		CrossProject(
 			id		= id,
 			base	= base,
@@ -68,7 +68,7 @@ def myCrossProject(id:String, base:File):CrossProject	=
 			JVMPlatform,
 			JSPlatform
 		)
-		.crossType(CrossType.Pure)
+		.crossType(crossType)
 		.settings(
 			name := id
 		)
@@ -83,7 +83,9 @@ lazy val `scutil`	=
 			`scutil-core`,
 			`scutil-swing`,
 			`scutil-xml`,
-			`scutil-uid`
+			`scutil-uid`,
+			`scutil-guid-jvm`,
+			`scutil-guid-js`
 		)
 		.settings(
 			publishArtifact	:= false
@@ -92,7 +94,7 @@ lazy val `scutil`	=
 //------------------------------------------------------------------------------
 
 lazy val `scutil-base`	=
-		myCrossProject("scutil-base", file("modules/base"))
+		myCrossProject("scutil-base", file("modules/base"), CrossType.Pure)
 		.enablePlugins(
 			BoilerplatePlugin
 		)
@@ -100,14 +102,14 @@ lazy val `scutil-base`	=
 			fixConsoleSettings,
 			wartRemoverSetting,
 			scalacOptions	++= Seq(
-				// "-Ymacro-debug-lite",
-				"-language:implicitConversions",
+				// "-language:implicitConversions",
 				// "-language:existentials",
 				"-language:higherKinds"//,
 				// "-language:reflectiveCalls",
 				// "-language:dynamics",
 				// "-language:postfixOps",
 				// "-language:experimental.macros",
+				// "-Ymacro-debug-lite",
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
@@ -128,14 +130,14 @@ lazy val `scutil-core`	=
 			fixConsoleSettings,
 			wartRemoverSetting,
 			scalacOptions	++= Seq(
-				// "-Ymacro-debug-lite",
-				"-language:implicitConversions"//,
+				"-language:implicitConversions"
 				// "-language:existentials",
 				// "-language:higherKinds",
 				// "-language:reflectiveCalls",
 				// "-language:dynamics",
 				// "-language:postfixOps",
 				// "-language:experimental.macros",
+				// "-Ymacro-debug-lite",
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
@@ -169,7 +171,7 @@ lazy val `scutil-swing`	=
 			fixConsoleSettings,
 			wartRemoverSetting,
 			scalacOptions	++= Seq(
-				"-language:implicitConversions"//,
+				"-language:implicitConversions"
 				// "-language:existentials",
 				// "-language:higherKinds",
 				// "-language:reflectiveCalls",
@@ -188,7 +190,7 @@ lazy val `scutil-xml`	=
 			fixConsoleSettings,
 			wartRemoverSetting,
 			scalacOptions	++= Seq(
-				"-language:implicitConversions"//,
+				// "-language:implicitConversions",
 				// "-language:existentials",
 				// "-language:higherKinds",
 				// "-language:reflectiveCalls",
@@ -204,6 +206,7 @@ lazy val `scutil-xml`	=
 			`scutil-core`
 		)
 		
+// TODO get rid of this
 lazy val `scutil-uid`	=
 		(project	in	file("modules/uid"))
 		.settings(
@@ -222,3 +225,31 @@ lazy val `scutil-uid`	=
 		.dependsOn(
 			`scutil-core`
 		)
+		
+lazy val `scutil-guid`	=
+		myCrossProject("scutil-guid", file("modules/guid"), CrossType.Full)
+		.settings(
+			fixConsoleSettings,
+			wartRemoverSetting,
+			scalacOptions	++= Seq(
+				//"-language:implicitConversions",
+				// "-language:existentials",
+				// "-language:higherKinds",
+				// "-language:reflectiveCalls",
+				// "-language:dynamics",
+				// "-language:postfixOps",
+				// "-language:experimental.macros",
+			)
+		)
+		.dependsOn(
+			`scutil-base`
+		)
+		.jvmSettings()
+		.jsSettings(
+			noTestSettings,
+			libraryDependencies	++= Seq(
+				"org.scala-js"	%%%	"scalajs-dom"	% "0.9.6"	% "compile"
+			)
+		)
+lazy val `scutil-guid-jvm`	= `scutil-guid`.jvm
+lazy val `scutil-guid-js`	= `scutil-guid`.js
