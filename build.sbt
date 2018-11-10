@@ -3,7 +3,7 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.148.0",
+	version			:= "0.148.1",
 
 	scalaVersion	:= "2.12.7",
 	scalacOptions	++= Seq(
