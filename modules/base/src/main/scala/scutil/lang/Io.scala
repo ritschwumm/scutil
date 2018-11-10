@@ -11,11 +11,6 @@ object Io extends IoInstances {
 
 	//------------------------------------------------------------------------------
 
-	def newIoRef[T](initial: =>T):Io[IoRef[T]]	=
-			Io delay IoRef(initial)
-
-	//------------------------------------------------------------------------------
-
 	// TODO how about cokleisli?
 
 	def staticToKleisli[S,T](func:Io[S=>T]):(S => Io[T])	=
@@ -23,6 +18,13 @@ object Io extends IoInstances {
 
 	def kleisliToStatic[S,T](func:S=>Io[T]):Io[S=>T]	=
 			delay { s => func(s) unsafeRun () }
+
+	//------------------------------------------------------------------------------
+
+	val ToLater:NaturalTransformation[Io,Later]	=
+			new NaturalTransformation[Io,Later] {
+				def apply[T](orig:Io[T]):Later[T]	= orig.toLater
+			}
 }
 
 final case class Io[T](unsafeRun:()=>T) {
