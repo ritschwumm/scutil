@@ -86,7 +86,7 @@ final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 
 	def flatMap[U](func:T=>Converter[E,S,U]):Converter[E,S,U]	=
 			Converter { it =>
-				this convert it map func flatMap { _ convert it }
+				this convert it flatMap { jt => func(jt) convert it }
 			}
 
 	def contraMap[R](func:R=>S):Converter[E,R,T]	=
@@ -94,7 +94,10 @@ final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 				convert(func(it))
 			}
 
-	def tag[U](it:U):Converter[E,S,U]	=
+	@deprecated("use as like in Functor", "0.149.0")
+	def tag[U](it:U):Converter[E,S,U]	= as(it)
+
+	def as[U](it:U):Converter[E,S,U]	=
 			map(constant(it))
 
 	def pa[U](that:Converter[E,S,T=>U])(implicit cc:Semigroup[E]):Converter[E,S,U]	=
@@ -132,13 +135,9 @@ final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 				case Right(x)	=> that convert x map (Right(_))
 			}
 
-	def pair[SS,TT](that:Converter[E,SS,TT]):Converter[E,(S,SS),(T,TT)]	=
+	def pair[SS,TT](that:Converter[E,SS,TT])(implicit E:Semigroup[E]):Converter[E,(S,SS),(T,TT)]	=
 			Converter { case (s,ss) =>
-				this convert s flatMap { t =>
-					that convert ss map { tt =>
-						(t, tt)
-					}
-				}
+				(this convert s) zip (that convert ss)
 			}
 
 	//------------------------------------------------------------------------------

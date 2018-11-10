@@ -3,7 +3,7 @@ package scutil.lang
 import java.util.concurrent.atomic.AtomicReference
 
 object IoRef {
-	// TODO should initial be lazy here?
+	// NOTE initial could be lazy here
 	def apply[T](initial:T):Io[IoRef[T]]	=
 			Io delay new IoRef(initial)
 }

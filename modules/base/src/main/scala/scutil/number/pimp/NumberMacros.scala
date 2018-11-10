@@ -9,14 +9,14 @@ import scutil.number.BigRational
 private final class NumberMacros(val c:Context) {
 	import c.universe._
 
-	// TODO linter error if private
+	// NOTE linter error if private
 	protected implicit val liftJBigInteger:Liftable[JBigInteger]	=
 			Liftable[JBigInteger] { it =>
 				val bar	= it.toByteArray
 				q"new _root_.java.math.BigInteger($bar)"
 			}
 
-	// TODO linter error if private
+	// NOTE linter error if private
 	protected implicit val liftBigRational:Liftable[BigRational]	=
 			Liftable[BigRational] { it =>
 				val num:JBigInteger	= it.numerator

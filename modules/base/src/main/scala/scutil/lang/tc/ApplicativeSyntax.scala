@@ -14,7 +14,7 @@ trait ApplicativeSyntax {
 
 	/*
 	implicit class ApplicativeArrowSyntaxExt[F[_],S,T](peer:F[S=>T])(implicit MF:Applicative[F]) {
-		// TODO this collides with the same method defined in e.g. EitherExt
+		// NOTE this collides with the same method defined in e.g. EitherExt
 		def ap(it:F[S]):F[T]	= (MF ap it)(peer)
 		def aping:F[S]=>F[T]	= pa _
 	}

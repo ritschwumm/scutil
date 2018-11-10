@@ -11,7 +11,6 @@ object CalendarWeek extends CalendarWeekInstances {
 
 /** ISO 8601 week, number is 1..53 */
 final case class CalendarWeek(number:Int, year:Int) extends Ordered[CalendarWeek] {
-	// TODO time should we use a Year instead of an Int?
 	val yearValue	= Year(year)
 
 	require(number >= 1,						"expected number >= 1")

@@ -11,8 +11,6 @@ object GregorianDate extends GregorianDateInstances {
 
 /** day in 1..31, month in 1..12 */
 final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[GregorianDate] {
-	// TODO time should be use a Month and a Year in here?
-
 	// TODO time check real values here
 	require(day		>= 1,	s"expected day >= 1, got $day")
 	require(day		<= 31,	s"expected day <= 31, got $day")

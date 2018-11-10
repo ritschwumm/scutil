@@ -29,6 +29,13 @@ object IntRect {
 
 	def horizontalWithVertical(horizontal:IntSpan, vertical:IntSpan):IntRect	=
 			new IntRect(horizontal, vertical)
+
+	//------------------------------------------------------------------------------
+
+	private def apply(horizontal:IntSpan, vertical:IntSpan):IntRect	= new IntRect(horizontal, vertical)
+
+	// NOTE hack: mark apply method as used
+	val _ = apply _
 }
 
 final class IntRect private (val horizontal:IntSpan, val vertical:IntSpan) {

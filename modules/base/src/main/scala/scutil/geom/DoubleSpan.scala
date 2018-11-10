@@ -6,6 +6,13 @@ object DoubleSpan {
 	def startSize(start:Double, size:Double):DoubleSpan	= new DoubleSpan(start, size)
 	def endSize(end:Double, size:Double):DoubleSpan		= new DoubleSpan(end - size, size)
 	def startEnd(start:Double, end:Double):DoubleSpan	= new DoubleSpan(start, end - start)
+
+	//------------------------------------------------------------------------------
+
+	private def apply(start:Double, size:Double):DoubleSpan	= new DoubleSpan(start, size)
+
+	// NOTE hack: mark apply method as used
+	val _ = apply _
 }
 
 final class DoubleSpan private (val start:Double, val size:Double) {

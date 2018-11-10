@@ -9,7 +9,7 @@ object RectangleImplicits extends RectangleImplicits
 
 trait RectangleImplicits {
 	implicit final class RectangleExt(peer:Rectangle) {
-		// TODO get rid of this
+		/*
 		def inset(insets:Insets):Rectangle	=
 				new Rectangle(
 					peer.x + insets.left,
@@ -17,6 +17,7 @@ trait RectangleImplicits {
 					peer.width	- insets.left	- insets.right,
 					peer.height	- insets.top	- insets.bottom
 				)
+		*/
 
 		def toIntRect:IntRect	=
 				geomConversion Rectangle_IntRect peer

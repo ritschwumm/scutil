@@ -8,12 +8,11 @@ import scutil.jtime.implicits._
 trait LoggingSyntax {
 	def logHandler:LogHandler
 
-	// TODO logging convert more types like JsonValue?
-	implicit def StringAsLogValue(it:String):LogValue				= LogValue string it
-	implicit def ThrowableAsLogValue(it:Throwable):LogValue			= LogValue throwable it
-	implicit def MultipleAsLogValue(it:ISeq[LogValue]):LogValue		= LogValue multiple it
+	implicit def StringAsLogValue(it:String):LogValue				= LogValue string		it
+	implicit def ThrowableAsLogValue(it:Throwable):LogValue			= LogValue throwable	it
+	implicit def MultipleAsLogValue(it:ISeq[LogValue]):LogValue		= LogValue multiple		it
 
-	implicit def ShowAsLogValue[T:Show](it:T):LogValue								= LogValue string (Show doit it)
+	implicit def ShowAsLogValue[T:Show](it:T):LogValue				= LogValue string (Show doit it)
 
 	implicit def ISeqShowAsLogValue[T](it:ISeq[T])(implicit S:Show[T]):LogValue	= LogValue multiple (it map S.show map LogValue.string)
 	implicit def SetShowAsLogValue[T](it:Set[T])(implicit S:Show[T]):LogValue	= ISeqShowAsLogValue(it.toVector)

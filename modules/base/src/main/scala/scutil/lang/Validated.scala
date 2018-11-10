@@ -156,8 +156,8 @@ sealed trait Validated[+E,+T] {
 	def orElse[EE>:E,TT>:T](that:Validated[EE,TT])(implicit cc:Semigroup[EE]):Validated[EE,TT]	=
 			(this, that) match {
 				case (Bad(a),	Bad(b))		=> Bad(cc concat (a, b))
-				case (Bad(a),	Good(b))	=> Good(b)
 				case (Good(a),	_)			=> Good(a)
+				case (_,		Good(b))	=> Good(b)
 			}
 
 	def getOrElse[TT>:T](that: =>TT):TT	=

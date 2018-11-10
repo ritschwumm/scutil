@@ -6,6 +6,13 @@ object IntSpan {
 	def startSize(start:Int, size:Int):IntSpan	= new IntSpan(start, size)
 	def endSize(end:Int, size:Int):IntSpan		= new IntSpan(end - size, size)
 	def startEnd(start:Int, end:Int):IntSpan	= new IntSpan(start, end-start)
+
+	//------------------------------------------------------------------------------
+
+	private def apply(start:Int, size:Int):IntSpan	= new IntSpan(start, size)
+
+	// NOTE hack: mark apply method as used
+	val _ = apply _
 }
 
 final class IntSpan private (val start:Int, val size:Int) {

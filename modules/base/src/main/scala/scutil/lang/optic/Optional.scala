@@ -106,16 +106,20 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 	def getState:State[S,Option[T]]	=
 			embedState(State.get)
 
-	// TODO return Boolean?
 	def setState(it:T):State[S,Option[Unit]]	=
 			embedState(State set it)
+
+	def setStateSuccess(it:T):State[S,Boolean]	=
+			setState(it) map (_.isDefined)
 
 	def setOldState(it:T):State[S,Option[T]]	=
 			embedState(State setOld it)
 
-	// TODO return Boolean?
 	def modState(func:T=>T):State[S,Option[Unit]]	=
 			embedState(State mod func)
+
+	def modStateSuccess(func:T=>T):State[S,Boolean]	=
+			embedState(State mod func) map (_.isDefined)
 
 	def modOldState(func:T=>T):State[S,Option[T]]	=
 			embedState(State modOld func)

@@ -5,15 +5,21 @@ import java.awt.event._
 import javax.swing._
 
 import scutil.lang._
-import scutil.gui.pimp.RectangleImplicits._
 import scutil.gui.pimp.RootPaneContainerImplicits._
 
 object JComponentImplicits extends JComponentImplicits
 
 trait JComponentImplicits {
 	implicit final class JComponentExt(peer:JComponent) {
-		def innerRectangle:Rectangle	=
-				new Rectangle(peer.getSize()) inset peer.getInsets
+		def innerRectangle:Rectangle	= {
+			val insets	= peer.getInsets
+			new Rectangle(
+				0 + insets.left,
+				0 + insets.top,
+				peer.getWidth	- insets.left	- insets.right,
+				peer.getHeight	- insets.top	- insets.bottom
+			)
+		}
 
 		def displayInFrame(size:Dimension, onClose:Thunk[Boolean] = thunk{true}):JFrame = {
 			val	frame	= new JFrame
