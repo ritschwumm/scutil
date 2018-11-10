@@ -187,18 +187,17 @@ trait IterableImplicits {
 		def sequenceState[S,U](implicit ev:T=>State[S,U], cbf:CanBuildFrom[CC[T],U,CC[U]]):State[S,CC[U]]	=
 				traverseState(ev)
 
-		def traverseState[S,U](func:T=>State[S,U])(implicit cbf:CanBuildFrom[CC[T],U,CC[U]]):State[S,CC[U]]	= {
-			State { s =>
-				var temp	= s
-				val builder	= cbf()
-				peer foreach { it =>
-					val (next, part)	= func(it) run temp
-					temp	= next
-					builder += part
+		def traverseState[S,U](func:T=>State[S,U])(implicit cbf:CanBuildFrom[CC[T],U,CC[U]]):State[S,CC[U]]	=
+				State { s =>
+					var temp	= s
+					val builder	= cbf()
+					peer foreach { it =>
+						val (next, part)	= func(it) run temp
+						temp	= next
+						builder += part
+					}
+					(temp, builder.result)
 				}
-				(temp, builder.result)
-			}
-		}
 
 		// TODO state support StateT
 

@@ -72,6 +72,23 @@ final case class Prism[S,T](get:PFunction[S,T], set:T=>S) {
 				.getOrElse	(s -> None)
 			}
 
+	def getState:State[S,Option[T]]	=
+			embedState(State.get)
+
+	def setState(it:T):State[S,Option[Unit]]	=
+			embedState(State set it)
+
+	def setOldState(it:T):State[S,Option[T]]	=
+			embedState(State setOld it)
+
+	def modState(func:T=>T):State[S,Option[Unit]]	=
+			embedState(State mod func)
+
+	def modOldState(func:T=>T):State[S,Option[T]]	=
+			embedState(State modOld func)
+
+	//------------------------------------------------------------------------------
+
 	def embedStateT[F[_],U](state:StateT[F,T,U])(implicit F:Applicative[F]):StateT[F,S,Option[U]]	=
 			StateT { s =>
 				get(s)
@@ -85,6 +102,23 @@ final case class Prism[S,T](get:PFunction[S,T], set:T=>S) {
 					F pure (s -> (None:Option[U]))
 				)
 			}
+
+	def getStateT[F[_]:Applicative]:StateT[F,S,Option[T]]	=
+			embedStateT(StateT.get)
+
+	def setStateT[F[_]:Applicative](it:T):StateT[F,S,Option[Unit]]	=
+			embedStateT(StateT set it)
+
+	def setOldStateT[F[_]:Applicative](it:T):StateT[F,S,Option[T]]	=
+			embedStateT(StateT setOld it)
+
+	def modStateT[F[_]:Applicative](func:Endo[T]):StateT[F,S,Option[Unit]]	=
+			embedStateT(StateT mod func)
+
+	def modOldStateT[F[_]:Applicative](func:Endo[T]):StateT[F,S,Option[T]]	=
+			embedStateT(StateT modOld func)
+
+	//------------------------------------------------------------------------------
 
 	def embedStateOpt[U](state:State[T,U]):StateT[Option,S,U]	=
 			StateT { (s:S) =>

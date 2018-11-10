@@ -93,7 +93,6 @@ object ByteString extends ByteStringInstances {
 
 	private def containsSlice(begin:Int, end:Int, size:Int):Boolean	=
 			begin >= 0 && begin <= end && end <= size
-
 }
 
 /** wraps an Array[Byte] to be immutable and provide sensible equals and hashCode implementations */

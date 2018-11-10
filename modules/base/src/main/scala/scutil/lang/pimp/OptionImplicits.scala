@@ -131,7 +131,7 @@ trait OptionImplicits {
 		def traverseIterable[CC[_]<:Iterable[U],U](func:T=>CC[U])(implicit cbf:CanBuildFrom[CC[T],Option[U],CC[Option[U]]]):CC[Option[U]]	= {
 			val builder	= cbf()
 			peer map func match {
-				case None		=> builder.result
+				case None		=> builder += None; builder.result
 				case Some(xs)	=> xs foreach { x => builder += Some(x) }
 			}
 			builder.result
