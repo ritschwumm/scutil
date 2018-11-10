@@ -8,7 +8,7 @@ import scutil.lang.implicits._
 class SearchTest extends Specification {
 	def single(s:String):Predicate[String]			= s into SearchParser.parse into SearchCompiler.single
 	def multi(s:String):Predicate[Iterable[String]]	= s into SearchParser.parse into SearchCompiler.multi
-	
+
 	"TokenMatcher for a single string" should {
 		"work 1"  in { single	("oo")			("foobar")	mustEqual true	}
 		"work 2"  in { single	("|oo")			("foobar")	mustEqual false	}

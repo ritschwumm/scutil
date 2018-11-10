@@ -22,7 +22,7 @@ object SearchParser {
 			neg map { _._2 }
 		)
 	}
-	
+
 	private def parseHit(descriptor:String):(Boolean,SearchToken) = {
 		val (exclude,	a)	= scan(descriptor,	_ cutPrefix "-")
 		val (start,		b)	= scan(a,			_ cutPrefix "|")
@@ -30,7 +30,7 @@ object SearchParser {
 		val noCase			= c == c.toLowerCase
 		(exclude, SearchToken(c, noCase, start, end))
 	}
-	
+
 	private def scan(s:String, func:String=>Option[String]):(Boolean,String)	= {
 		val t	= func(s) filter { _.nonEmpty } toRight s
 		(t.isRight, t.merge)

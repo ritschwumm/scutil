@@ -7,7 +7,7 @@ object ContainerImplicits extends ContainerImplicits
 trait ContainerImplicits {
 	implicit final class ContainerExt(peer:Container) {
 		def children:Seq[Component]	= childrenIterator.toVector
-		
+
 		def childrenIterator:Iterator[Component]	=
 				new Iterator[Component] {
 					var	index	= 0

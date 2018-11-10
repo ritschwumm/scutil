@@ -23,9 +23,9 @@ object DndFileExport {
 						}
 					}
 				}
-				
+
 		val dragSource	= DragSource.getDefaultDragSource
-		
+
 		// NOTE allowing ACTION_COPY_OR_MOVE (at least on linux) leads to a MOVE with nautilus
 		val dragGestureRecognizer	=
 				dragSource createDefaultDragGestureRecognizer (
@@ -33,12 +33,12 @@ object DndFileExport {
 					DnDConstants.ACTION_COPY,
 					dragGestureListener
 				)
-		
+
 		disposable {
 			dragGestureRecognizer setComponent null
 		}
 	}
-	
+
 	private val exportable:ISeq[DataFlavor]	=
 			OperatingSystem.current match {
 				case Some(OSX)		=>
@@ -55,14 +55,14 @@ object DndFileExport {
 				case None	=>
 					ISeq.empty
 			}
-			
+
 	private final class FileTransferable(files:Nes[File]) extends Transferable {
 		def isDataFlavorSupported(flavor:DataFlavor):Boolean	=
 				getTransferDataFlavors contains flavor
-		
+
 		def getTransferDataFlavors:Array[DataFlavor] =
 				exportable.toArray
-		
+
 		def getTransferData(flavor:DataFlavor):AnyRef	=
 				flavor match {
 					case DndFlavors.javaFileList	=>

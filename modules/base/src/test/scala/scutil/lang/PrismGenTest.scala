@@ -20,7 +20,7 @@ class PrismGenTest extends Specification {
 			val sup:PrismSuper			= sub
 			prism set sub mustEqual sup
 		}
-		
+
 		"get a case class" in {
 			val prism			= PrismGen[PrismSuper,PrismClass]
 			val sub:PrismClass	= PrismClass(1)

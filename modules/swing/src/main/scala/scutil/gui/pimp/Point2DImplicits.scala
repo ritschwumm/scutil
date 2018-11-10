@@ -14,7 +14,7 @@ trait Point2DImplicits {
 					peer.getX,
 					peer.getY
 				)
-				
+
 		def toDoublePoint:DoublePoint	=
 				geomConversion Point2D_DoublePoint peer
 	}

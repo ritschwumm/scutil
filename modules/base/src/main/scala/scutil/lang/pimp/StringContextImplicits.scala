@@ -14,10 +14,10 @@ trait StringContextImplicits {
 		def int():Int		= macro HexNumberMacros.intImpl
 		/** provide string interpolator for hex bytes */
 		def long():Long		= macro HexNumberMacros.longImpl
-		
+
 		/** provide a string interpolator "so" that allows nothing but String in $ escapes */
 		def so(args:String*):String		= peer.s(args:_*)
-		
+
 		/** provide a string interpolator "show" that requires a Show instance for all arguments */
 		def show(args:Any*):String	= macro ShowMacros.showImpl
 	}

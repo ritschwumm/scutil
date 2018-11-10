@@ -5,7 +5,7 @@ import scutil.core.implicits._
 
 object OperatingSystem {
 	val	all:Set[OperatingSystem]	= Set(OSX, Windows, Linux)
-	
+
 	def current:Option[OperatingSystem]	= {
 		val	osName	= SystemProperties.os.name.toLowerCase
 			 if (osName contains "linux")		Some(Linux)

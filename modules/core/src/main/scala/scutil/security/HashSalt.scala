@@ -12,7 +12,7 @@ import scutil.codec.Base64
 object HashSalt {
 	def main(args:Array[String]) {
 		import default._
-		
+
 		args match {
 			case Array(password)	=>
 				val cooked	= cook(password)
@@ -26,7 +26,7 @@ object HashSalt {
 				sys exit 2
 		}
 	}
-	
+
 	lazy val default	= new HashSalt(
 		encoding			= "utf-8",
 		normalizerForm		= Normalizer.Form.NFC,
@@ -53,7 +53,7 @@ final class HashSalt(
 	roundCount:Int
 ) {
 	private val	random	= SecureRandom getInstance randomAlgorithm
-	
+
 	/** salt and cook a raw password so it can safely be stored somewhere */
 	def cook(raw:String):String	= {
 		val	salt		= synchronized { random byteString saltSize }
@@ -62,7 +62,7 @@ final class HashSalt(
 		(Base64 encodeByteString salt)	+ "$" +
 		(Base64 encodeByteString prepared)
 	}
-		
+
 	/** check if a raw password, when cooked, matches the same password cooked before */
 	def taste(raw:String, cooked:String):Boolean = {
 		(for {
@@ -76,14 +76,14 @@ final class HashSalt(
 		})
 		.getOrElse(false)
 	}
-	
+
 	private def prepare(raw:String, salt:ByteString, rounds:Int):ByteString	=
 			raw 										|>
 			(Normalizer normalize (_, normalizerForm)) 	|>
 			(_ toByteString encoding) 					|>
 			(salt ++ _) 								|>
 			hash(rounds)
-	
+
 	private def hash(rounds:Int)(bytes:ByteString):ByteString	= {
 		// throws NoSuchAlgorithmException
 		val digest	= MessageDigest getInstance hashAlgorithm

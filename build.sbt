@@ -3,9 +3,9 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.145.0",
-	
-	scalaVersion	:= "2.12.6",
+	version			:= "0.146.0",
+
+	scalaVersion	:= "2.12.7",
 	scalacOptions	++= Seq(
 		"-deprecation",
 		"-unchecked",
@@ -16,12 +16,12 @@ inThisBuild(Seq(
 		"-Xlint",
 		"-Ypartial-unification"
 	),
-	
+
 	conflictManager	:= ConflictManager.strict,
 	resolvers		+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
 	resolvers 		+= Resolver sonatypeRepo "releases",
 	addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7"),
-	
+
 	wartremoverErrors	++= Seq(
 		Wart.AsInstanceOf,
 		Wart.IsInstanceOf,
@@ -53,13 +53,13 @@ lazy val fixConsoleSettings	=
 				"-Xfatal-warnings"
 			))
 		)
-		
+
 lazy val noTestSettings	=
 		Seq(
 			test		:= {},
 			testQuick	:= {}
 		)
-		
+
 // (crossProject crossType CrossType.Pure in base)
 def myCrossProject(id:String, base:File, crossType:CrossType):CrossProject	=
 		CrossProject(
@@ -75,7 +75,7 @@ def myCrossProject(id:String, base:File, crossType:CrossType):CrossProject	=
 		)
 		.configurePlatform(JVMPlatform)	(_ withId (id + "-jvm"))
 		.configurePlatform(JSPlatform)	(_ withId (id + "-js"))
-	
+
 lazy val `scutil`	=
 		(project	in	file("."))
 		.aggregate(
@@ -90,7 +90,7 @@ lazy val `scutil`	=
 		.settings(
 			publishArtifact	:= false
 		)
-		
+
 //------------------------------------------------------------------------------
 
 lazy val `scutil-base`	=
@@ -112,7 +112,7 @@ lazy val `scutil-base`	=
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "4.3.3"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "4.3.4"				% "test"
 			),
 			boilerplateSource in Compile := baseDirectory.value.getParentFile / "src" / "main" / "boilerplate"
 		)
@@ -139,11 +139,11 @@ lazy val `scutil-core`	=
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "4.3.3"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "4.3.4"				% "test"
 			),
-			
+
 			//------------------------------------------------------------------------------
-			
+
 			initialCommands in console	:= """
 				import scala.language.postfixOps
 				import java.io.File
@@ -180,7 +180,7 @@ lazy val `scutil-swing`	=
 		.dependsOn(
 			`scutil-core`
 		)
-		
+
 lazy val `scutil-xml`	=
 		(project	in	file("modules/xml"))
 		.settings(
@@ -195,13 +195,13 @@ lazy val `scutil-xml`	=
 				// "-language:experimental.macros",
 			),
 			libraryDependencies	++= Seq(
-				"org.scala-lang.modules"	%% "scala-xml"	% "1.1.0"	% "compile"
+				"org.scala-lang.modules"	%% "scala-xml"	% "1.1.1"	% "compile"
 			)
 		)
 		.dependsOn(
 			`scutil-core`
 		)
-		
+
 lazy val `scutil-guid`	=
 		myCrossProject("scutil-guid", file("modules/guid"), CrossType.Full)
 		.settings(

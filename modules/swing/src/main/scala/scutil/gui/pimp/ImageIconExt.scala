@@ -12,7 +12,7 @@ trait ImageIconImplicits {
 	implicit final class ImageIconExt(peer:ImageIcon) {
 		def withImage(func:Image=>Image):ImageIcon	=
 				new ImageIcon(func(peer.getImage))
-			
+
 		def filter(filter:ImageFilter):ImageIcon	=
 				withImage { _ filter filter }
 	}

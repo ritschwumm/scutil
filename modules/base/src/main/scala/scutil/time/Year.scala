@@ -16,36 +16,36 @@ object Year extends YearInstances {
 final case class Year(value:Int) extends Ordered[Year] {
 	def move(offset:Int):Year	= Year(value + offset)
 	def until(that:Year):Int	= that.value - this.value
-	
+
 	def compare(that:Year):Int	= this.value compare that.value
 	def min(that:Year):Year		= if (this < that) this else that
 	def max(that:Year):Year		= if (this > that) this else that
-	
+
 	def days:Int	=
 			if (gregorianLeap)	366
 			else				365
-	
+
 	lazy val firstDay:GregorianDate	= GregorianDate(1,	1,	value)
 	lazy val lastDay:GregorianDate	= GregorianDate(31,	12,	value)
-	
+
 	def monthYearAt(month:Month):MonthYear		= MonthYear fromValues (month, this)
 	def calendarWeekAt(number:Int):CalendarWeek	= CalendarWeek(number, value)
-		
+
 	lazy val firstCalendarWeek:CalendarWeek	= calendarWeekAt(1)
 	lazy val lastCalendarWeek:CalendarWeek	= calendarWeekAt(calendarWeeks)
-	
+
 	def calendarWeeks:Int	=
 			if (longCalendarWeeks)	53
 			else					52
-	
+
 	lazy val longCalendarWeeks:Boolean	=
 			Year.longYears contains moduloInt(value, 2000)
-		
+
 	lazy val gregorianLeap:Boolean	=
 			(value % 4 == 0) 	&&
 			!(value % 100 == 0) ||
 			(value % 400 == 0)
-			
+
 	override def toString:String	= value.toString
 }
 

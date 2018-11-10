@@ -16,12 +16,12 @@ object Diff {
 	private case object UpAndLeft	extends Direction
 
 	private def equalsMethod[T](a:T, b:T):Boolean	= a == b
-	
+
 	// BETTER only compare from the first different element to the last different element
 	def compile[T](a:ISeq[T], b:ISeq[T], equal:(T,T)=>Boolean = equalsMethod[T] _):Diff[T] = {
 		val n	= a.length
 		val m	= b.length
-		
+
 		val S	= Array.ofDim[Int]		(n+1, m+1)
 		val R	= Array.ofDim[Direction](n+1, m+1)
 
@@ -51,7 +51,7 @@ object Diff {
 				R(ii)(jj)	= Neither
 			}
 
-			if (S(ii-1)(jj) >= S(ii)(jj)) {	
+			if (S(ii-1)(jj) >= S(ii)(jj)) {
 				S(ii)(jj)	= S(ii-1)(jj)
 				R(ii)(jj)	= Up
 			}
@@ -61,10 +61,10 @@ object Diff {
 				R(ii)(jj)	= Left
 			}
 		}
-		
+
 		// The length of the longest substring is S[n][m]
 		//val pos		= S(n)(m) - 1
-		
+
 		// Trace the backtracking matrix.
 		var diffs	= Vector.empty[Delta[T]]
 		var ii	= n
@@ -84,7 +84,7 @@ object Diff {
 					// nothing to do here
 			}
 		}
-		
+
 		var offset	= 0
 		val deltas	= diffs map {
 			case Include(index, element) =>
@@ -94,7 +94,7 @@ object Diff {
 				offset	-= 1
 				Remove(index + offset + 1, element)
 		}
-		
+
 		Diff(deltas)
 	}
 }
@@ -107,5 +107,5 @@ final case class Diff[T](deltas:ISeq[Delta[T]]) {
 			case Remove(index, element)		=> out remove index
 		}
 		out.toVector
-	}		
+	}
 }

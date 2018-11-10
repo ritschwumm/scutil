@@ -29,7 +29,7 @@ class BitTest extends Specification {
 			(functions unsignedLong -1.toLong) mustEqual BigInt("18446744073709551615")
 		}
 	}
-	
+
 	"swapEndian" should {
 		"work for small shorts" in {
 			(functions swapEndianShort 0x1234.toShort)	mustEqual 0x3412.toShort

@@ -11,7 +11,7 @@ class ShowInterpolatorTest extends Specification {
 				case Some(x)	=> "some: " + (Show doit x)
 				case None		=> "none"
 			}
-			
+
 	"show interpolator" should {
 		"do an empty string" in {
 			show"""""" mustEqual ""
@@ -37,7 +37,7 @@ class ShowInterpolatorTest extends Specification {
 			val c = true
 			show"""aaa${a}bbb${b}ccc${c}""" mustEqual "aaa1bbb2ccctrue"
 		}
-		
+
 		"work with custom instances" in {
 			val o:Option[Int]	= Some(1)
 			show"""$o""" mustEqual "some: 1"
@@ -48,22 +48,22 @@ class ShowInterpolatorTest extends Specification {
 			show"""$o""" mustEqual "some: 1"
 		}
 		*/
-		
+
 		"allow escapes" in {
 			show"\t" mustEqual "\t"
 		}
-		
+
 		"allow escapes" in {
 			show"\u0000" mustEqual s"\u0000"
 		}
-		
+
 		/*
 		// this should fail at compile time
 		"allow escapes" in {
 			show"\x" mustEqual s"\t"
 		}
 		*/
-		
+
 		/*
 		// TODO allow escaped double quotes somehow
 		"allow escapes" in {

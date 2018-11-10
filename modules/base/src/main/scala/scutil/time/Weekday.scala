@@ -4,8 +4,6 @@ import scutil.lang.tc._
 import scutil.math.functions._
 
 object Weekday extends WeekdayInstances {
-	val count	= 7
-	
 	val all:Vector[Weekday]	=
 			Vector(
 				Monday,
@@ -16,7 +14,9 @@ object Weekday extends WeekdayInstances {
 				Saturday,
 				Sunday
 			)
-	
+
+	val count	= all.size
+
 	def fromIndex(index:Int):Weekday	=
 			moduloInt(index, count) match {
 				case 0	=> Monday
@@ -41,7 +41,7 @@ sealed abstract class Weekday {
 				case Saturday	=> 5
 				case Sunday		=> 6
 			}
-			
+
 	override def toString:String	=
 			this match {
 				case Monday		=> "Monday"
@@ -52,7 +52,7 @@ sealed abstract class Weekday {
 				case Saturday	=> "Saturday"
 				case Sunday		=> "Sunday"
 			}
-			
+
 }
 case object Monday		extends Weekday
 case object Tuesday		extends Weekday

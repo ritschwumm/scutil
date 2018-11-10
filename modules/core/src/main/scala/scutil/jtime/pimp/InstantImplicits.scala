@@ -16,10 +16,10 @@ trait DateImplicits {
 			df setTimeZone tz
 			df format peer
 		}
-		
+
 		def toISO8601:String	=
 				JTimeUtil dateToISO8601 peer
-		
+
 		def toMilliInstant:MilliInstant	=
 				JTimeUtil dateToMilliInstant peer
 	}

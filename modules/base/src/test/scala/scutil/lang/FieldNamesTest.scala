@@ -14,6 +14,6 @@ class FieldNamesTest extends Specification {
 			names mustEqual Seq("a", "b", "c")
 		}
 	}
-	
+
 	def getNames[T:FieldNames]:Seq[String]	=implicitly[FieldNames[Named]].names
 }

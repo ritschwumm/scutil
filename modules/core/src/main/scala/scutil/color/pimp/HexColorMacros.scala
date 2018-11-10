@@ -6,7 +6,7 @@ import scutil.color._
 
 private final class HexColorMacros(val c:Context) {
 	import c.universe._
-	
+
 	def rgbImpl():c.Tree	= {
 		val Apply(_, List(Apply(_, List(Literal(Constant(str:String))))))	= c.prefix.tree
 		RGB parseHex str match {
@@ -16,7 +16,7 @@ private final class HexColorMacros(val c:Context) {
 				c abort (c.enclosingPosition, s"invalid rgb literal ${str}")
 		}
 	}
-	
+
 	def rgbaImpl():c.Tree	= {
 		val Apply(_, List(Apply(_, List(Literal(Constant(str:String))))))	= c.prefix.tree
 		RGBA parseHex str match {

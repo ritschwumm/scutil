@@ -19,7 +19,7 @@ class ApplicativeTupleNSyntaxGeneratedTest extends Specification {
 		"map 3 elements" in {
 			(Vector(1), Vector(2), Vector(3)) mapN ((a,b,c) => (a,b,c)) mustEqual Vector((1,2,3))
 		}
-		
+
 		"zip vector" in {
 			(Vector(1), Vector(2), Vector(3)).zipN mustEqual Vector((1,2,3))
 		}

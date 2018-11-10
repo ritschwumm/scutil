@@ -12,18 +12,18 @@ trait RegexImplicits {
 	implicit final class RegexCompanionExt(peer:Regex.type) {
 		val prism:Prism[String,Regex]	=
 				Prism(compile(_).toOption, _.pattern.toString)
-		
+
 		def compile(str:String):Either[PatternSyntaxException,Regex]	=
 				try		{ Right(new Regex(str)) }
 				catch	{ case e:PatternSyntaxException => Left(e) }
-				
+
 		def validate(s:String):Boolean	=
 				compile(s).isRight
-		
+
 		//------------------------------------------------------------------------------
-				
+
 		def quote(str:String):String	= Pattern quote str
-		
+
 		def quoteCharacterClass(str:String):String	= {
 			val b	= new StringBuilder
 			var i	= 0
@@ -39,11 +39,11 @@ trait RegexImplicits {
 			b.toString
 		}
 	}
-	
+
 	implicit final class RegexExt(peer:Regex) {
 		def test(s:CharSequence):Boolean	=
 				(peer.pattern matcher s).matches
-		
+
 		def toPrism:Prism[String,String]	=
 				Prism filtered test
 	}

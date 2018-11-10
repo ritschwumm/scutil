@@ -3,10 +3,10 @@ package scutil.lang
 object Prisms {
 	def eitherLeft[A,B]:Prism[Either[A,B],A]		= Prism(_.left.toOption,	Left.apply)
 	def eitherRight[A,B]:Prism[Either[A,B],B]		= Prism(_.right.toOption,	Right.apply)
-	
+
 	def validatedBad[A,B]:Prism[Validated[A,B],A]	= Prism(_.badToOption,		Bad.apply)
 	def validatedGood[A,B]:Prism[Validated[A,B],B]	= Prism(_.toOption,			Good.apply)
-	
+
 	def listCons[T]:Prism[List[T],(T,List[T])]	=
 			Prism(
 				_ match {
@@ -15,7 +15,7 @@ object Prisms {
 				},
 				ht => ht._1 :: ht._2
 			)
-	
+
 	def listNil[T]:Prism[List[T],Unit]	=
 			Prism(
 				_ match {
@@ -24,7 +24,7 @@ object Prisms {
 				},
 				_ => Nil
 			)
-			
+
 	// @see extractHead
 	def iseqHead[T]:Prism[ISeq[T],(T,ISeq[T])]	=
 			Prism(
@@ -34,7 +34,7 @@ object Prisms {
 				},
 				ht => ht._1 +: ht._2
 			)
-			
+
 	// @see extractLast
 	def iseqLast[T]:Prism[ISeq[T],(ISeq[T],T)]	=
 			Prism(
@@ -44,7 +44,7 @@ object Prisms {
 				},
 				il => il._1 :+ il._2
 			)
-	
+
 	def iseqEmpty[T]:Prism[ISeq[T],Unit]	=
 			Prism(
 				_ match {

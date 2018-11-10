@@ -19,13 +19,13 @@ trait ElemImplicits {
 					case _	=> false
 				}
 				.map	{ _.value.text }
-		
+
 		def xmlAttrs:ISeq[(XmlAttr, String)]	=
 				peer.attributes.toVector map {
 					case it:PrefixedAttribute	=> XmlAttr(Some(it.pre),	it.key)	-> it.value.text
 					case it:UnprefixedAttribute	=> XmlAttr(None, 			it.key)	-> it.value.text
 				}
-				
+
 		def updateXmlAttrs(attrs:ISeq[(XmlAttr, String)]):Elem	=
 				peer copy (attributes =
 					(attrs foldLeft (Null:MetaData)) { (md, next) =>
@@ -34,18 +34,18 @@ trait ElemImplicits {
 						}
 					}
 				)
-	
+
 		def modifyXmlAttrs(func:Endo[ISeq[(XmlAttr, String)]]):Elem	=
 				updateXmlAttrs(func(xmlAttrs))
-				
+
 		def updateChildren(children:ISeq[Node]):Elem	=
 				peer copy (child = children)
-			
+
 		def modifyChildren(func:Endo[ISeq[Node]]):Elem	=
 				updateChildren(func(peer.child))
-			
+
 		//------------------------------------------------------------------------------
-			
+
 		def toStringWithDeclaration:String	=
 				"""<?xml version="1.0" encoding="utf-8"?>""" + "\n" +
 				peer.toString

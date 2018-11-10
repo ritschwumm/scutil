@@ -18,7 +18,7 @@ trait JMapImplicits {
 			}
 			out
 		}
-		
+
 		def toMap:Map[K,V]	= toHashMap
 	}
 }

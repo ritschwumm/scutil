@@ -34,7 +34,7 @@ class TextTest extends Specification {
 			Text stripMarginOnly "  |test\n foo\n| bar" mustEqual "test\n bar"
 		}
 	}
-	
+
 	"strip interpolator" should {
 		"just work" in {
 			strip"""
@@ -43,7 +43,7 @@ class TextTest extends Specification {
 			""" mustEqual "one\n two"
 		}
 	}
-	
+
 	"table helper" should {
 		"format correctly" in {
 			Text table Vector(Vector("a","bb","ccc"),Vector("ddd","cccc","e")) mustEqual

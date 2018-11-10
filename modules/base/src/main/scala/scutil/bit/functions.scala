@@ -7,7 +7,7 @@ object functions {
 				 if (it == 0)	0
 			else if (it == 1)	1
 			else 				(JLong highestOneBit (it-1)) << 1
-			
+
 	//------------------------------------------------------------------------------
 
 	def unsignedByte(value:Byte):Short	= (value & 0x000000ff).toShort
@@ -18,21 +18,21 @@ object functions {
 		if (tmp >= 0)	tmp
 		else			BigInt(Long.MaxValue)*2	- tmp
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def swapEndianShort(value:Short):Short	=
 			(
 				((value << 8) & 0xff00) |
 				((value >> 8) & 0x00ff)
 			).toShort
-			
+
 	def swapEndianInt(value:Int):Int	=
 			((value << 24) & 0xff000000)	|
 			((value >> 24) & 0x000000ff)	|
 			((value <<  8) & 0x00ff0000)	|
 			((value >>  8) & 0x0000ff00)
-			
+
 	def swapEndianLong(value:Long):Long	=
 			((value << 56) & 0xff00000000000000L)	|
 			((value >> 56) & 0x00000000000000ffL)	|
@@ -42,27 +42,27 @@ object functions {
 			((value >> 24) & 0x0000000000ff0000L)	|
 			((value <<  8) & 0x000000ff00000000L)	|
 			((value >>  8) & 0x00000000ff000000L)
-			
+
 	def swapEndianChar(value:Char):Char	=
 			(
 				((value << 8) & 0xff00) |
 				((value >> 8) & 0x00ff)
 			).toChar
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def maskTestByte(value:Byte, onMask:Byte, offMask:Byte):Boolean =
 			(value & (onMask | offMask)) == onMask
-		
+
 	def maskTestShort(value:Short, onMask:Short, offMask:Short):Boolean =
 			(value & (onMask | offMask)) == onMask
-		
+
 	def maskTestInt(value:Int, onMask:Int, offMask:Int):Boolean =
 			(value & (onMask | offMask)) == onMask
-		
+
 	def maskTestLong(value:Long, onMask:Long, offMask:Long):Boolean =
 			(value & (onMask | offMask)) == onMask
-		
+
 	def maskTestChar(value:Char, onMask:Char, offMask:Char):Boolean =
 			(value & (onMask | offMask)) == onMask
 }

@@ -9,7 +9,7 @@ object PrismGen {
 
 private final class PrismGen(val c:Context) {
 	import c.universe._
-			
+
 	def compile[S:c.WeakTypeTag,T:c.WeakTypeTag]:Tree	= {
 		val superType:Type	= weakTypeOf[S]
 		val subType:Type	= weakTypeOf[T]

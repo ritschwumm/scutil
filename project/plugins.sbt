@@ -1,5 +1,5 @@
 addSbtPlugin("io.get-coursier"		% "sbt-coursier"				% "1.0.3")
 addSbtPlugin("io.spray"				% "sbt-boilerplate"				% "0.6.1")
-addSbtPlugin("org.wartremover"		% "sbt-wartremover" 			% "2.3.4")
+addSbtPlugin("org.wartremover"		% "sbt-wartremover" 			% "2.3.7")
 addSbtPlugin("org.portable-scala"	% "sbt-scalajs-crossproject"	% "0.4.0")
-addSbtPlugin("org.scala-js"			% "sbt-scalajs"					% "0.6.24")
+addSbtPlugin("org.scala-js"			% "sbt-scalajs"					% "0.6.25")

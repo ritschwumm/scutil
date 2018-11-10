@@ -17,7 +17,7 @@ trait ExecutorImplicits {
 			peer(thunk { out put (Catch.exception get job) })
 			thunk { out.get.throwException }
 		}
-		
+
 		def toJavaExecutor:JExecutor	=
 				new JExecutor {
 					def execute(command:Runnable) {

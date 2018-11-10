@@ -7,7 +7,7 @@ import java.io.File
 
 object SourceLocation {
 	implicit def sourceLocation:SourceLocation	= macro sourceLocationImpl
-	
+
 	def sourceLocationImpl(c:Context):c.Tree	= {
 		import c.universe._
 		val pos	= c.macroApplication.pos

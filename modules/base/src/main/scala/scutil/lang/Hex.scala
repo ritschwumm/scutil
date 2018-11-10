@@ -2,28 +2,28 @@ package scutil.lang
 
 object Hex {
 	val byteStringPrism	= Prism(decodeByteString,	encodeByteString)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def encodeByteString(bytes:ByteString):String	=
 			encodeImpl(bytes.unsafeValue)
-	
+
 	private def encodeImpl(bytes:Array[Byte]):String	=
 			bytes map nibbles mkString ""
-		
+
 	def nibbles(it:Byte):String	=
 			(nibble charAt ((it >> 4) & 0xf)).toString	+
 			(nibble charAt ((it >> 0) & 0xf)).toString
-		
+
 	private val nibble	= "0123456789abcdef"
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	private val invalid	= -1
-	
+
 	def decodeByteString(s:String):Option[ByteString]	=
 			decodeImpl(s) map ByteString.unsafeFromArray
-		
+
 	private def decodeImpl(s:String):Option[Array[Byte]]	= {
 		val count	= s.length / 2
 		if (s.length != count*2)	return None
@@ -39,14 +39,14 @@ object Hex {
 		}
 		Some(out)
 	}
-	
+
 	private def byte(ch:Char, cl:Char):Int	= {
 		val dh	= digit(ch)
 		val dl	= digit(cl)
 		if (dh != invalid && dl != invalid)	(dh << 4) | (dl << 0)
 		else								invalid
 	}
-	
+
 	private def digit(c:Char):Int	=
 				 if (c >= '0' && c <= '9')	c - '0'
 			else if (c >= 'a' && c <= 'f')	c - 'a' + 10

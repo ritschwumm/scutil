@@ -9,16 +9,16 @@ encodes and decodes byte arrays into strings using the base64 encoding method.
 */
 object Base64 {
 	val byteStringPrism	= Prism(decodeByteString,	encodeByteString)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	private val whitespaceRE	= """\s+"""
-	
+
 	private val padding:Char	= '='
-	
+
 	// TODO allow alternate alphabet ending in "-_"
 	private val alphabet:Array[Char]	= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray
-	
+
 	private val invalidFlag	= -1.toByte
 	private val paddingFlag	= -2.toByte
 	private val	table:Array[Byte]	= {
@@ -28,7 +28,7 @@ object Base64 {
 		out(padding)	= paddingFlag
 		out
 	}
-	
+
 	private def validInput(s:String):Boolean	=
 			(s.length % 4 == 0)	&& {
 				var pad	= false
@@ -45,15 +45,15 @@ object Base64 {
 				}
 				true
 			}
-			
+
 	private val emptyOutput	= Array.empty[Byte]
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	/** standard alphabet, no line feeds, adds padding */
 	def encodeByteString(data:ByteString):String =
 			encodeImpl(data.unsafeValue)
-		
+
 	private def encodeImpl(data:Array[Byte]):String = {
 		val	packetsSize		= data.length / 3
 		val extraSize		= data.length % 3
@@ -82,19 +82,19 @@ object Base64 {
 		}
 		output.toString
 	}
-	
+
 	//------------------------------------------------------------------------------
 
 	/** standard alphabet, whitespace is ignored, padding is required */
 	def decodeByteString(text:String):Option[ByteString] =
 			decodeImpl(text) map ByteString.unsafeFromArray
-	
+
 	private def decodeImpl(text:String):Option[Array[Byte]] = {
 		// TODO ignoring all whitespace input might be stupid
 		val cleanText	= text replaceAll (whitespaceRE, "")
 		if (cleanText.length == 0)	return Some(emptyOutput)
 		if (!validInput(cleanText))	return None
-		
+
 		val	input		= cleanText.toCharArray
 		val	inputSize	= input.length
 		val	outputSize	=
@@ -102,7 +102,7 @@ object Base64 {
 				(if (input(inputSize-1) == padding) 1 else 0)	-
 				(if (input(inputSize-2) == padding) 1 else 0)
 		val	output		= new Array[Byte](outputSize)
-		
+
 		var inputIndex	= 0
 		var	outputIndex	= 0
 		var	bitShift	= 0
@@ -124,30 +124,30 @@ object Base64 {
 		}
 		Some(output)
 	}
-		
+
 	//------------------------------------------------------------------------------
 	//## padding helper
-	
+
 	def addPadding(s:String):String	=
 			s + (
 				"=" * (3 - (s.length + 3) % 4)
 			)
-			
+
 	def removePadding(s:String):String	=
 			s replaceAll ("=+$", "")
-			
+
 	//------------------------------------------------------------------------------
 	//## line break helper
-	
+
 	def breakLines76(s:String):String	=
 			breakLines(s, 76)
-		
+
 	def breakLines64(s:String):String	=
 			breakLines(s, 64)
-		
+
 	private def breakLines(s:String, length:Int):String	=
 			(s grouped length) mkString "\r\n"
-		
+
 	def unbreakLines(s:String):String	=
 			s replaceAll ("\r\n", "")
 }

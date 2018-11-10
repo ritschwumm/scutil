@@ -17,7 +17,7 @@ trait RectangleImplicits {
 					peer.width	- insets.left	- insets.right,
 					peer.height	- insets.top	- insets.bottom
 				)
-				
+
 		def toIntRect:IntRect	=
 				geomConversion Rectangle_IntRect peer
 	}

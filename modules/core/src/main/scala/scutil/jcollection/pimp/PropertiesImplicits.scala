@@ -18,7 +18,7 @@ trait PropertiesImplicits {
 			}
 			out
 		}
-		
+
 		def toMap:Map[String,String]	= toHashMap
 	}
 }

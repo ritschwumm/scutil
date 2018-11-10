@@ -10,15 +10,15 @@ import scutil.lang.pimp.EitherImplicits._
 
 object URIComponent {
 	val utf_8	= forCharset(Charsets.utf_8)
-	
+
 	def forCharset(charset:Charset):URIComponent	=
 			new URIComponent(charset)
 }
-	
+
 final class URIComponent(charset:Charset) {
 	//------------------------------------------------------------------------------
 	//## encoding
-	
+
 	/** percent-escapes everything except alphabetic, decimal digits, - _ . ! ~ * ' ( ) */
 	def encode(s:String):String = {
 		val bytes	= s getBytes charset
@@ -38,12 +38,12 @@ final class URIComponent(charset:Charset) {
 		}
 		out.toString
 	}
-	
+
 	@inline
 	private def encodeNibble(nibble:Int):Char =
 			if (nibble < 10)	(nibble + '0'		).toChar
 			else				(nibble + 'A' - 10	).toChar
-	
+
 	@inline
 	private def safe(byte:Int):Boolean =
 			byte >= 'a' && byte <= 'z'	||
@@ -58,10 +58,10 @@ final class URIComponent(charset:Charset) {
 			byte == '(' ||
 			byte == ')' ||
 			byte == '\''
-	
+
 	//------------------------------------------------------------------------------
 	//## decoding
-	
+
 	def decode(s:String):Either[URIComponentProblem,String]	= {
 		val b	= new mutable.ArrayBuffer[Byte]
 		var i	= 0
@@ -73,12 +73,12 @@ final class URIComponent(charset:Charset) {
 				if (i >= s.length)	return Left(URIComponentInvalid(i))
 				val n1	= decodeNibble(s charAt i)
 				if (n1 == -1)		return Left(URIComponentInvalid(i))
-				
+
 				i	+= 1
 				if (i >= s.length)	return Left(URIComponentInvalid(i))
 				val n2	= decodeNibble(s charAt i)
 				if (n2 == -1)		return Left(URIComponentInvalid(i))
-				
+
 				b	+= ((n1 << 4) | (n2 << 0)).toByte
 				i	+= 1
 			}
@@ -89,7 +89,7 @@ final class URIComponent(charset:Charset) {
 		}
 		charset decodeEitherByteString (ByteString fromArrayBuffer b) leftMap URIComponentException
 	}
-	
+
 	private def decodeNibble(nibble:Char):Int	=
 				 if (nibble >= '0' && nibble <= '9')	nibble - '0'
 			else if (nibble >= 'a' && nibble <= 'f')	nibble - 'a' + 10

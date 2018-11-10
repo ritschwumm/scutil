@@ -17,7 +17,7 @@ trait RandomImplicits {
 			}
 			out.toString
 		}
-		
+
 		def byteString(length:Int):ByteString	=
 				(ByteString makeWithArray length)(peer.nextBytes _)
 	}

@@ -11,40 +11,40 @@ class DateTest extends Specification {
 			GregorianDate(7,11,2016).toJulianDay mustEqual JulianDay(2457700)
 		}
 	}
-	
+
 	"GregorianDate comparison" should {
 		"compare equal days correctly" in {
 			GregorianDate(7,8,2012) compare GregorianDate(7,8,2012) mustEqual 0
 		}
-		
+
 		"compare earlier day correctly" in {
 			GregorianDate(6,7,2012) compare GregorianDate(7,8,2012) mustEqual -1
 		}
 		"compare later day correctly" in {
 			GregorianDate(8,8,2012) compare GregorianDate(7,8,2012) mustEqual +1
 		}
-		
+
 		"compare earlier month correctly" in {
 			GregorianDate(7,7,2012) compare GregorianDate(7,8,2012) mustEqual -1
 		}
 		"compare later month correctly" in {
 			GregorianDate(7,9,2012) compare GregorianDate(7,8,2012) mustEqual +1
 		}
-		
+
 		"compare earlier year correctly" in {
 			GregorianDate(7,8,2011) compare GregorianDate(7,8,2012) mustEqual -1
 		}
 		"compare later year correctly" in {
 			GregorianDate(7,8,2013) compare GregorianDate(7,8,2012) mustEqual +1
 		}
-		
+
 		"prefer year over month" in {
 			GregorianDate(7,8,2012) compare GregorianDate(7,9,2013) mustEqual -1
 		}
 		"prefer month over day" in {
 			GregorianDate(7,8,2012) compare GregorianDate(6,9,2012) mustEqual -1
 		}
-		
+
 		"have the correct week day" in {
 			GregorianDate(1,1,2005).weekday mustEqual Saturday
 		}
@@ -103,7 +103,7 @@ class DateTest extends Specification {
 			GregorianDate(3,1,2010).weekday mustEqual Sunday
 		}
 	}
-	
+
 	"GregorianDate week day" should {
 		"have the correct week day" in {
 			GregorianDate(1,1,2005).weekday mustEqual Saturday
@@ -163,7 +163,7 @@ class DateTest extends Specification {
 			GregorianDate(3,1,2010).weekday mustEqual Sunday
 		}
 	}
-	
+
 	"GregorianDate calendar week day" should {
 		"calculate the correct week for 22.12.2003" in {
 			GregorianDate(22, 12, 2003).calendarWeek mustEqual CalendarWeek(52, 2003)
@@ -177,7 +177,7 @@ class DateTest extends Specification {
 		"calculate the correct week for 4.1.2004" in {
 			GregorianDate(4, 1, 2004).calendarWeek mustEqual CalendarWeek(1, 2004)
 		}
-		
+
 		"calculate the correct week" in {
 			GregorianDate(1,1,2005).calendarWeek mustEqual CalendarWeek(53, 2004)
 		}
@@ -236,12 +236,12 @@ class DateTest extends Specification {
 			GregorianDate(3,1,2010).calendarWeek mustEqual CalendarWeek(53, 2009)
 		}
 	}
-	
+
 	"CalendarWeek dates" should {
 		"calculate the correct date" in {
 			CalendarWeek(39, 2008) gregorianDayAt Saturday mustEqual GregorianDate(27,9,2008)
 		}
-		
+
 		"calculate the correct date" in {
 			CalendarWeek(53, 2004) gregorianDayAt Saturday mustEqual GregorianDate(1,1,2005)
 		}
@@ -300,7 +300,7 @@ class DateTest extends Specification {
 			CalendarWeek(53, 2009) gregorianDayAt Sunday mustEqual GregorianDate(3,1,2010)
 		}
 	}
-	
+
 	"CalendarWeek" should {
 		"roundtrip index" in {
 			0 until 10000 by 3 map { i =>
@@ -312,7 +312,7 @@ class DateTest extends Specification {
 			}
 		}
 	}
-	
+
 	"MonthYear" should {
 		"roundtrip index" in {
 			0 until 10000 by 3 map { i =>

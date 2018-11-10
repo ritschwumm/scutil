@@ -11,5 +11,5 @@ object SwingExecutionContext {
 				def execute(runnable:Runnable) {
 					SwingUtilities invokeLater runnable
 				}
-			}	
+			}
 }

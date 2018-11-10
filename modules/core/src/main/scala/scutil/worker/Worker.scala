@@ -8,56 +8,56 @@ import scutil.time._
 
 final class Worker(name:String, delay:MilliDuration, task:Thunk[Unit], error:Effect[Exception] = _ => ()) extends Disposable {
 	private val shortly	= 50.millis
-	
+
 	@volatile
 	private var state:WorkerState					= WorkerWaiting
 	private val queue:WorkerQueue[WorkerCommand]	= new WorkerQueue[WorkerCommand]
-			
+
 	private object thread extends Thread {
 		setName(name)
 		setPriority(Thread.MIN_PRIORITY)
 		override def run() { loop() }
 		start()
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	/** start working */
 	def start() {
 		// access thread to instantiate it
 		thread
 		queue push WorkerStart
 	}
-	
+
 	/** stop working, can be restarted */
 	def stop() {
 		queue push WorkerStop
 	}
-	
+
 	/** stop working, release resources asap, then die */
 	def dispose() {
 		queue push WorkerDie
 	}
-	
+
 	/** to be called after stop or dispose to make sure the task is not executed any more */
 	def awaitWorkless() {
 		while (state == WorkerWorking) {
 			nap(shortly)
 		}
 	}
-	
+
 	def join() {
 		thread.join()
 	}
-	
+
 	def disposeAndWait() {
 		dispose()
 		awaitWorkless()
 		join()
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	@tailrec
 	private def loop() {
 		val command	= queue.shift()
@@ -85,7 +85,7 @@ final class Worker(name:String, delay:MilliDuration, task:Thunk[Unit], error:Eff
 			case WorkerDead			=>
 		}
 	}
-	
+
 	private def work() {
 		try {
 			task()
@@ -94,7 +94,7 @@ final class Worker(name:String, delay:MilliDuration, task:Thunk[Unit], error:Eff
 			error(e)
 		}
 	}
-	
+
 	private def nap(duration:MilliDuration) {
 		Thread sleep duration.millis
 	}

@@ -16,7 +16,7 @@ trait MapJCollectionSyntaxImplicits {
 			peer foreach { case (k,v) => out put (k, v) }
 			JCollections unmodifiableMap out
 		}
-		
+
 		def toProperties(implicit sev:S=>String, tev:T=>String):Properties	= {
 			val out	= new Properties
 			peer foreach { case (k, v) => out setProperty (k, v) }

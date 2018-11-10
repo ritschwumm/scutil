@@ -10,7 +10,7 @@ class Base64Test extends Specification {
 			(ByteString makeWithArray 256) { tmp =>
 				for (i <- 0 until tmp.length) tmp(i) = i.toByte
 			}
-	
+
 	"Base64" should {
 		"handle roundtripping 0 bytes at all" in {
 			val bytes	= ByteString.empty
@@ -22,7 +22,7 @@ class Base64Test extends Specification {
 			val round	= Base64 decodeByteString (Base64 encodeByteString bytes)
 			round.get mustEqual bytes
 		}
-		
+
 		"handle roundtripping 1 bytes at all" in {
 			val bytes	= ByteString(0)
 			val round	= Base64 decodeByteString (Base64 encodeByteString bytes)
@@ -33,7 +33,7 @@ class Base64Test extends Specification {
 			val round	= Base64 decodeByteString (Base64 encodeByteString bytes)
 			round.get mustEqual bytes
 		}
-		
+
 		"handle roundtripping 2 bytes at all" in {
 			val bytes	= ByteString(1,2)
 			val round	= Base64 decodeByteString (Base64 encodeByteString bytes)
@@ -44,7 +44,7 @@ class Base64Test extends Specification {
 			val round	= Base64 decodeByteString (Base64 encodeByteString bytes)
 			round.get mustEqual bytes
 		}
-		
+
 		"handle roundtripping 3 bytes at all" in {
 			val bytes	= ByteString(3,4,5)
 			val round	= Base64 decodeByteString (Base64 encodeByteString bytes)
@@ -55,7 +55,7 @@ class Base64Test extends Specification {
 			val round	= Base64 decodeByteString (Base64 encodeByteString bytes)
 			round.get mustEqual bytes
 		}
-		
+
 		"handle roundtripping 4 bytes at all" in {
 			val bytes	= ByteString(6,7,8,9)
 			val round	= Base64 decodeByteString (Base64 encodeByteString bytes)
@@ -66,7 +66,7 @@ class Base64Test extends Specification {
 			val round	= Base64 decodeByteString (Base64 encodeByteString bytes)
 			round.get mustEqual bytes
 		}
-		
+
 		"handle roundtripping every possible byte at all" in {
 			val bytes	= possible
 			val round	= Base64 decodeByteString (Base64 encodeByteString bytes)

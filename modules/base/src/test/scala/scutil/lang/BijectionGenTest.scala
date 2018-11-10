@@ -15,7 +15,7 @@ final case class Parametrized2[A,B](x:Fooz[A], y:Fooz[B])
 @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
 object Wrapper {
 	final case class Inner(t:Int)
-	
+
 	val bij	= BijectionGen[Inner]
 }
 

@@ -18,7 +18,7 @@ trait Rectangle2DImplicits {
 					peer.height	- insets.top	- insets.bottom
 				)
 		*/
-				
+
 		def toDoubleRect:DoubleRect	=
 				geomConversion Rectangle2D_DoubleRect peer
 	}

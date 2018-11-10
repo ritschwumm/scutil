@@ -2,7 +2,7 @@ package scutil.lang.tc
 
 object Resource {
 	def apply[T](ev:Resource[T]):Resource[T]	= ev
-	
+
 	def instance[T](disposeFunc:T=>Unit):Resource[T]	=
 			new Resource[T] {
 				def dispose(it:T):Unit	= disposeFunc(it)
@@ -11,7 +11,7 @@ object Resource {
 
 trait Resource[T] {
 	def dispose(it:T):Unit
-	
+
 	final def use[U](resource:T)(consume:T=>U):U	= {
 		var primary:Throwable	= null
 		try {

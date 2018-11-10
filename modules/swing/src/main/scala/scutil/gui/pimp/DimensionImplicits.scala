@@ -14,7 +14,7 @@ trait DimensionImplicits {
 					peer.width,
 					peer.height
 				)
-				
+
 		def toIntPoint:IntPoint	=
 				geomConversion Dimension_IntPoint peer
 	}

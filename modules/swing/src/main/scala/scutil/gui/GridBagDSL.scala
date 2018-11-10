@@ -7,17 +7,17 @@ import scutil.base.implicits._
 
 object GridBagDSL {
 	def GBC = new GridBagConstraints
-	
+
 	implicit def toGridBagDSL(c:GridBagConstraints):GridBagDSL	= new GridBagDSL(c)
-	
+
 	sealed abstract class GridBagConstraintsExtra(val v:Int)
 	case object RELATIVE	extends GridBagConstraintsExtra(GridBagConstraints.RELATIVE)
 	case object REMAINDER	extends GridBagConstraintsExtra(GridBagConstraints.REMAINDER)
-	
+
 	final case class GridBagConstraintsPosition(val v:Int)
 	implicit def toGridBagConstraintsPosition(v:Int):GridBagConstraintsPosition				= GridBagConstraintsPosition(v)
 	implicit def toGridBagConstraintsPosition(v:RELATIVE.type):GridBagConstraintsPosition	= GridBagConstraintsPosition(v.v)
-	
+
 	final case class GridBagConstraintsSize(val v:Int)
 	implicit def toGridBagConstraintsSize(v:Int):GridBagConstraintsSize						= GridBagConstraintsSize(v)
 	implicit def toGridBagConstraintsSize(v:RELATIVE.type):GridBagConstraintsSize			= GridBagConstraintsSize(v.v)
@@ -50,13 +50,13 @@ object GridBagDSL {
 	case object BELOW_BASELINE			extends GridBagConstraintsAnchor(GridBagConstraints.BELOW_BASELINE)
 	case object BELOW_BASELINE_LEADING	extends GridBagConstraintsAnchor(GridBagConstraints.BELOW_BASELINE_LEADING)
 	case object BELOW_BASELINE_TRAILING	extends GridBagConstraintsAnchor(GridBagConstraints.BELOW_BASELINE_TRAILING)
-	
+
 	sealed abstract class GridBagConstraintsFill(val v:Int)
 	case object NONE		extends GridBagConstraintsFill(GridBagConstraints.NONE)
 	case object HORIZONTAL	extends GridBagConstraintsFill(GridBagConstraints.HORIZONTAL)
 	case object VERTICAL	extends GridBagConstraintsFill(GridBagConstraints.VERTICAL)
 	case object BOTH		extends GridBagConstraintsFill(GridBagConstraints.BOTH)
-	
+
 	def TopLeft(hgap:Int, vgap:Int):Insets		= new Insets(0,		0,		vgap,	hgap)
 	def TopCenter(hgap:Int, vgap:Int):Insets	= new Insets(0,		hgap,	vgap,	hgap)
 	def TopRight(hgap:Int, vgap:Int):Insets		= new Insets(0,		hgap,	vgap,	0)
@@ -74,25 +74,25 @@ object GridBagDSL {
 	def BottomAlone(hgap:Int, vgap:Int):Insets	= new Insets(vgap,	0,		0,		0)
 	def AloneAlone(hgap:Int, vgap:Int):Insets	= new Insets(0,		0,		0,		0)
 }
-	
+
 final class GridBagDSL(peer:GridBagConstraints) {
 	import GridBagDSL._
-	
+
 	def pos(x:GridBagConstraintsPosition, y:GridBagConstraintsPosition):GridBagConstraints	= modified { c => c.gridx		= x.v;	c.gridy			= y.v	}
 	def size(x:GridBagConstraintsSize, y:GridBagConstraintsSize):GridBagConstraints			= modified { c => c.gridwidth	= x.v;	c.gridheight	= y.v	}
 	def weight(x:Double, y:Double):GridBagConstraints										= modified { c => c.weightx		= x;	c.weighty		= y		}
 	def ipad(x:Int, y:Int):GridBagConstraints												= modified { c => c.ipadx		= x; 	c.ipady			= y 	}
-	
+
 	def anchor(v:GridBagConstraintsAnchor):GridBagConstraints								= modified { c => c.anchor	= v.v	}
 	def fill(v:GridBagConstraintsFill):GridBagConstraints									= modified { c => c.fill	= v.v	}
-	
+
 	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 	def insets(v:Insets):GridBagConstraints													= modified { c => c.insets	= v.clone.asInstanceOf[Insets]			}
 	def insetsTLBR(top:Int, left:Int, bottom:Int, right:Int):GridBagConstraints				= modified { c => c.insets	= new Insets(top, left, bottom, right)	}
-	
+
 	def modified(effect:GridBagConstraints=>Unit):GridBagConstraints =
 			cloned |>> effect
-	
+
 	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 	def cloned:GridBagConstraints	= peer.clone.asInstanceOf[GridBagConstraints]
 }

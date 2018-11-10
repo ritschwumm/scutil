@@ -10,7 +10,7 @@ import AdapterInstances._
 object ListenerInstances {
 	//==============================================================================
 	//## bean
-	
+
 	def mkPropertyChangeListener(callback:PropertyChangeEvent=>Unit):PropertyChangeListener = new PropertyChangeListener {
 		def propertyChange(ev:PropertyChangeEvent) { callback(ev) }
 	}
@@ -18,7 +18,7 @@ object ListenerInstances {
 
 	//==============================================================================
 	//## awt
-	
+
 	// NOTE a generic mk*Listener does not work because we have multiple event types here
 	// NOTE DropTargetAdapter does not implement drop itself
 	def on_dragEnter(callback:DropTargetDragEvent=>Unit):DropTargetListener	= new DropTargetAdapter {
@@ -42,14 +42,14 @@ object ListenerInstances {
 	}
 
 	//------------------------------------------------------------------------------
-	
+
 	def mkAdjustmentListener(callback:AdjustmentEvent=>Unit):AdjustmentListener = new AdjustmentListener {
 		def adjustmentValueChanged(ev:AdjustmentEvent) { callback(ev) }
 	}
 	def on_adjustmentValueChanged(callback:AdjustmentEvent=>Unit):AdjustmentListener = mkAdjustmentListener(callback)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkWindowListener(callback:WindowEvent=>Unit):WindowListener = new WindowListener {
 		def windowOpened(ev:WindowEvent)		{ callback(ev) }
 		def windowClosing(ev:WindowEvent)		{ callback(ev) }
@@ -80,16 +80,16 @@ object ListenerInstances {
 	def on_windowDeactivated(callback:WindowEvent=>Unit):WindowListener = new WindowAdapter {
 		override def windowDeactivated(ev:WindowEvent)	{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkWindowStateListener(callback:WindowEvent=>Unit):WindowStateListener = new WindowStateListener {
 		def windowStateChanged(ev:WindowEvent) { callback(ev) }
 	}
 	def on_windowStateChanged(callback:WindowEvent=>Unit):WindowStateListener = mkWindowStateListener(callback)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkWindowFocusListener(callback:WindowEvent=>Unit):WindowFocusListener = new WindowFocusListener {
 		def windowGainedFocus(ev:WindowEvent)	{ callback(ev) }
 		def windowLostFocus(ev:WindowEvent)		{ callback(ev) }
@@ -100,9 +100,9 @@ object ListenerInstances {
 	def on_windowLostFocus(callback:WindowEvent=>Unit):WindowFocusListener = new WindowFocusAdapter {
 		override def windowLostFocus(ev:WindowEvent)	{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkFocusListener(callback:FocusEvent=>Unit):FocusListener = new FocusListener {
 		def focusGained(ev:FocusEvent)	{ callback(ev) }
 		def focusLost(ev:FocusEvent)	{ callback(ev) }
@@ -113,9 +113,9 @@ object ListenerInstances {
 	def on_focusLost(callback:FocusEvent=>Unit):FocusListener = new FocusAdapter {
 		override def focusLost(ev:FocusEvent)	{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkComponentListener(callback:ComponentEvent=>Unit):ComponentListener = new ComponentListener {
 		def componentResized(ev:ComponentEvent)	{ callback(ev) }
 		def componentMoved(ev:ComponentEvent)	{ callback(ev) }
@@ -134,9 +134,9 @@ object ListenerInstances {
 	def on_componentHidden(callback:ComponentEvent=>Unit):ComponentListener = new ComponentAdapter {
 		override def componentHidden(ev:ComponentEvent)		{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkContainerListener(callback:ContainerEvent=>Unit):ContainerListener = new ContainerListener {
 		def componentAdded(ev:ContainerEvent)	{ callback(ev) }
 		def componentRemoved(ev:ContainerEvent)	{ callback(ev) }
@@ -147,23 +147,23 @@ object ListenerInstances {
 	def on_componentRemoved(callback:ContainerEvent=>Unit):ContainerListener = new ContainerAdapter {
 		override def componentRemoved(ev:ContainerEvent)	{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkItemListener(callback:ItemEvent=>Unit):ItemListener = new ItemListener {
 		def itemStateChanged(ev:ItemEvent) { callback(ev) }
 	}
 	def on_itemStateChanged(callback:ItemEvent=>Unit):ItemListener = mkItemListener(callback)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkActionListener(callback:ActionEvent=>Unit):ActionListener = new ActionListener {
 		def actionPerformed(ev:ActionEvent) { callback(ev) }
 	}
 	def on_actionPerformed(callback:ActionEvent=>Unit):ActionListener = mkActionListener(callback)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkKeyListener(callback:KeyEvent=>Unit):KeyListener = new KeyListener {
 		def keyTyped(ev:KeyEvent)		{ callback(ev) }
 		def keyPressed(ev:KeyEvent)		{ callback(ev) }
@@ -178,9 +178,9 @@ object ListenerInstances {
 	def on_keyReleased(callback:KeyEvent=>Unit):KeyListener = new KeyAdapter {
 		override def keyReleased(ev:KeyEvent)	{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkMouseListener(callback:MouseEvent=>Unit):MouseListener = new MouseListener {
 		def mouseClicked(ev:MouseEvent)		{ callback(ev) }
 		def mousePressed(ev:MouseEvent)		{ callback(ev) }
@@ -203,9 +203,9 @@ object ListenerInstances {
 	def on_mouseExited(callback:MouseEvent=>Unit):MouseListener = new MouseAdapter {
 		override def mouseExited(ev:MouseEvent)		{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkMouseMotionListener(callback:MouseEvent=>Unit):MouseMotionListener = new MouseMotionListener {
 		def mouseDragged(ev:MouseEvent)	{ callback(ev) }
 		def mouseMoved(ev:MouseEvent)	{ callback(ev) }
@@ -216,16 +216,16 @@ object ListenerInstances {
 	def on_mouseMoved(callback:MouseEvent=>Unit):MouseMotionListener = new MouseMotionAdapter {
 		override def mouseMoved(ev:MouseEvent)		{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkMouseWheelListener(callback:MouseWheelEvent=>Unit):MouseWheelListener = new MouseWheelListener {
 		def mouseWheelMoved(ev:MouseWheelEvent) { callback(ev) }
 	}
 	def on_mouseWheelMoved(callback:MouseWheelEvent=>Unit):MouseWheelListener = mkMouseWheelListener(callback)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkHierarchyBoundsListener(callback:HierarchyEvent=>Unit):HierarchyBoundsListener = new HierarchyBoundsListener {
 		def ancestorMoved(ev:HierarchyEvent)	{ callback(ev) }
 		def ancestorResized(ev:HierarchyEvent)	{ callback(ev) }
@@ -236,16 +236,16 @@ object ListenerInstances {
 	def on_ancestorResized(callback:HierarchyEvent=>Unit):HierarchyBoundsListener = new HierarchyBoundsAdapter {
 		override def ancestorResized(ev:HierarchyEvent)	{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkHierarchyListener(callback:HierarchyEvent=>Unit):HierarchyListener = new HierarchyListener {
 		def hierarchyChanged(ev:HierarchyEvent) { callback(ev) }
 	}
 	def on_hierarchyChanged(callback:HierarchyEvent=>Unit):HierarchyListener = mkHierarchyListener(callback)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkInputMethodListener(callback:InputMethodEvent=>Unit):InputMethodListener = new InputMethodListener {
 		def inputMethodTextChanged(ev:InputMethodEvent)	{ callback(ev) }
 		def caretPositionChanged(ev:InputMethodEvent)	{ callback(ev) }
@@ -256,9 +256,9 @@ object ListenerInstances {
 	def on_caretPositionChanged(callback:InputMethodEvent=>Unit):InputMethodListener = new InputMethodAdapter {
 		override def caretPositionChanged(ev:InputMethodEvent)		{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkTextListener(callback:TextEvent=>Unit):TextListener = new TextListener {
 		def textValueChanged(ev:TextEvent) { callback(ev) }
 	}
@@ -266,7 +266,7 @@ object ListenerInstances {
 
 	//==============================================================================
 	//## swing
-	
+
 	def mkCellEditorListener(callback:ChangeEvent=>Unit):CellEditorListener = new CellEditorListener {
 		def editingStopped(ev:ChangeEvent)	{ callback(ev) }
 		def editingCanceled(ev:ChangeEvent)	{ callback(ev) }
@@ -277,9 +277,9 @@ object ListenerInstances {
 	def on_editingCanceled(callback:ChangeEvent=>Unit):CellEditorListener = new CellEditorAdapter {
 		override def editingCanceled(ev:ChangeEvent)	{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkInternalFrameListener(callback:InternalFrameEvent=>Unit):InternalFrameListener = new InternalFrameListener {
 		def internalFrameOpened(ev:InternalFrameEvent)		{ callback(ev) }
 		def internalFrameClosing(ev:InternalFrameEvent)		{ callback(ev) }
@@ -310,9 +310,9 @@ object ListenerInstances {
 	def on_internalFrameDeactivated(callback:InternalFrameEvent=>Unit):InternalFrameListener = new InternalFrameAdapter {
 		override def internalFrameDeactivated(ev:InternalFrameEvent)	{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkMenuDragMouseListener(callback:MenuDragMouseEvent=>Unit):MenuDragMouseListener = new MenuDragMouseListener {
 		def menuDragMouseEntered(ev:MenuDragMouseEvent)		{ callback(ev) }
 		def menuDragMouseExited(ev:MenuDragMouseEvent)		{ callback(ev) }
@@ -331,9 +331,9 @@ object ListenerInstances {
 	def on_menuDragMouseReleased(callback:MenuDragMouseEvent=>Unit):MenuDragMouseListener = new MenuDragMouseAdapter {
 		override def menuDragMouseReleased(ev:MenuDragMouseEvent)	{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkMenuKeyListener(callback:MenuKeyEvent=>Unit):MenuKeyListener = new MenuKeyListener {
 		def menuKeyTyped(ev:MenuKeyEvent)		{ callback(ev) }
 		def menuKeyPressed(ev:MenuKeyEvent)		{ callback(ev) }
@@ -348,16 +348,16 @@ object ListenerInstances {
 	def on_menuKeyReleased(callback:MenuKeyEvent=>Unit):MenuKeyListener = new MenuKeyAdapter {
 		override def menuKeyReleased(ev:MenuKeyEvent)	{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkRowSorterListener(callback:RowSorterEvent=>Unit):RowSorterListener = new RowSorterListener {
 		def sorterChanged(ev:RowSorterEvent) { callback(ev) }
 	}
 	def on_sorterChanged(callback:RowSorterEvent=>Unit):RowSorterListener = mkRowSorterListener(callback)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkListDataListener(callback:ListDataEvent=>Unit):ListDataListener = new ListDataListener {
 		def intervalAdded(ev:ListDataEvent)		{ callback(ev) }
 		def intervalRemoved(ev:ListDataEvent)	{ callback(ev) }
@@ -372,16 +372,16 @@ object ListenerInstances {
 	def on_contentsChanged(callback:ListDataEvent=>Unit):ListDataListener = new ListDataAdapter {
 		override def contentsChanged(ev:ListDataEvent)	{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkListSelectionListener(callback:ListSelectionEvent=>Unit):ListSelectionListener = new ListSelectionListener {
 		def valueChanged(ev:ListSelectionEvent) { callback(ev) }
 	}
 	def on_valueChanged(callback:ListSelectionEvent=>Unit):ListSelectionListener = mkListSelectionListener(callback)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkAncestorListener(callback:AncestorEvent=>Unit):AncestorListener = new AncestorListener {
 		def ancestorAdded(ev:AncestorEvent)		{ callback(ev) }
 		def ancestorRemoved(ev:AncestorEvent)	{ callback(ev) }
@@ -396,30 +396,30 @@ object ListenerInstances {
 	def on_ancestorMoved(callback:AncestorEvent=>Unit):AncestorListener = new AncestorAdapter {
 		override def ancestorMoved(ev:AncestorEvent)	{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkCaretListener(callback:CaretEvent=>Unit):CaretListener = new CaretListener {
 		def caretUpdate(ev:CaretEvent) { callback(ev) }
 	}
 	def on_caretUpdate(callback:CaretEvent=>Unit):CaretListener = mkCaretListener(callback)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkHyperlinkListener(callback:HyperlinkEvent=>Unit):HyperlinkListener = new HyperlinkListener {
 		def hyperlinkUpdate(ev:HyperlinkEvent) { callback(ev) }
 	}
 	def on_hyperlinkUpdate(callback:HyperlinkEvent=>Unit):HyperlinkListener = mkHyperlinkListener(callback)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkChangeListener(callback:ChangeEvent=>Unit):ChangeListener = new ChangeListener {
 		def stateChanged(ev:ChangeEvent) { callback(ev) }
 	}
 	def on_stateChanged(callback:ChangeEvent=>Unit):ChangeListener = mkChangeListener(callback)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkDocumentListener(callback:DocumentEvent=>Unit):DocumentListener = new DocumentListener {
 		def insertUpdate(ev:DocumentEvent)	{ callback(ev) }
 		def removeUpdate(ev:DocumentEvent)	{ callback(ev) }
@@ -434,9 +434,9 @@ object ListenerInstances {
 	def on_changedUpdate(callback:DocumentEvent=>Unit):DocumentListener = new DocumentAdapter {
 		override def changedUpdate(ev:DocumentEvent)	{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkMenuListener(callback:MenuEvent=>Unit):MenuListener = new MenuListener {
 		def menuSelected(ev:MenuEvent)		{ callback(ev) }
 		def menuDeselected(ev:MenuEvent)	{ callback(ev) }
@@ -451,9 +451,9 @@ object ListenerInstances {
 	def on_menuCanceled(callback:MenuEvent=>Unit):MenuListener = new MenuAdapter {
 		override def menuCanceled(ev:MenuEvent)		{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkPopupMenuListener(callback:PopupMenuEvent=>Unit):PopupMenuListener = new PopupMenuListener {
 		def popupMenuWillBecomeVisible(ev:PopupMenuEvent)	{ callback(ev) }
 		def popupMenuWillBecomeInvisible(ev:PopupMenuEvent)	{ callback(ev) }
@@ -468,16 +468,16 @@ object ListenerInstances {
 	def on_popupMenuCanceled(callback:PopupMenuEvent=>Unit):PopupMenuListener = new PopupMenuAdapter {
 		override def popupMenuCanceled(ev:PopupMenuEvent)				{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkTableModelListener(callback:TableModelEvent=>Unit):TableModelListener = new TableModelListener {
 		def tableChanged(ev:TableModelEvent) { callback(ev) }
 	}
 	def on_tableChanged(callback:TableModelEvent=>Unit):TableModelListener = mkTableModelListener(callback)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	/*
 	// NOTE a generic mk*Listener does not work because we have multiple event types here
 	def mkTableColumnModelListener(callback:TableColumnModelEvent=>Unit, marginCallback:ChangeEvent=>Unit, selectionCallback:ListSelectionEvent=>Unit):TableColumnModelListener = new TableColumnModelListener {
@@ -503,9 +503,9 @@ object ListenerInstances {
 	def on_columnSelectionChanged(callback:ListSelectionEvent=>Unit):TableColumnModelListener = new TableColumnModelAdapter {
 		override def columnSelectionChanged(ev:ListSelectionEvent)	{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkTreeModelListener(callback:TreeModelEvent=>Unit):TreeModelListener = new TreeModelListener {
 		def treeNodesChanged(ev:TreeModelEvent)		{ callback(ev) }
 		def treeNodesInserted(ev:TreeModelEvent)	{ callback(ev) }
@@ -524,16 +524,16 @@ object ListenerInstances {
 	def on_treeStructureChanged(callback:TreeModelEvent=>Unit):TreeModelListener = new TreeModelAdapter {
 		override def treeStructureChanged(ev:TreeModelEvent)	{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkTreeSelectionListener(callback:TreeSelectionEvent=>Unit):TreeSelectionListener = new TreeSelectionListener {
 		def valueChanged(ev:TreeSelectionEvent) { callback(ev) }
-	}	
+	}
 	def on_valueChanged(callback:TreeSelectionEvent=>Unit):TreeSelectionListener = mkTreeSelectionListener(callback)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkTreeWillExpandListener(callback:TreeExpansionEvent=>Unit):TreeWillExpandListener = new TreeWillExpandListener {
 		def treeWillExpand(ev:TreeExpansionEvent)	{ callback(ev) }
 		def treeWillCollapse(ev:TreeExpansionEvent)	{ callback(ev) }
@@ -544,9 +544,9 @@ object ListenerInstances {
 	def on_treeWillCollapse(callback:TreeExpansionEvent=>Unit):TreeWillExpandListener = new TreeWillExpandAdapter {
 		override def treeWillCollapse(ev:TreeExpansionEvent)	{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkTreeExpansionListener(callback:TreeExpansionEvent=>Unit):TreeExpansionListener = new TreeExpansionListener {
 		def treeExpanded(ev:TreeExpansionEvent)		{ callback(ev) }
 		def treeCollapsed(ev:TreeExpansionEvent)	{ callback(ev) }
@@ -557,9 +557,9 @@ object ListenerInstances {
 	def on_treeCollapsed(callback:TreeExpansionEvent=>Unit):TreeExpansionListener = new TreeExpansionAdapter {
 		override def treeCollapsed(ev:TreeExpansionEvent)	{ callback(ev) }
 	}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mkUndoableEditListener(callback:UndoableEditEvent=>Unit):UndoableEditListener = new UndoableEditListener {
 		def undoableEditHappened(ev:UndoableEditEvent) { callback(ev) }
 	}

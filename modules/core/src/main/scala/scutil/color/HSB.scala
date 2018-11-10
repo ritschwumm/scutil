@@ -11,18 +11,18 @@ object HSB {
 final case class HSB(h:Float, s:Float, b:Float) {
 	def diff(that:HSB):Float	=
 			diff3(that) / 3f
-			
+
 	private[color] def diff3(that:HSB):Float	=
 			abs(this.h - that.h) +
 			abs(this.s - that.s) +
 			abs(this.b - that.b)
-	
+
 	def withAlpha(alpha:Alpha):HSBA	=
 			HSBA(this, alpha)
-		
+
 	def toRGB:RGB	= {
 		if (s == 0)	return RGB(b, b, b)
-		
+
 		val	H	= (h - floor(h).toFloat) * 6f
 		val F	= H - floor(H).toFloat
 		val P	= b * (1f - s)

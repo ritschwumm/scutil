@@ -4,7 +4,7 @@ import scala.reflect.macros.blackbox.Context
 
 private final class ShowMacros(val c:Context) {
 	import c.universe._
-	
+
 	def showImpl(args:c.Expr[Any]*):c.Expr[String]	= {
 		// literals are a Seq of Literal(Constant(String))
 		val Apply(_, List(Apply(_, literals)))	= c.prefix.tree
@@ -23,9 +23,9 @@ private final class ShowMacros(val c:Context) {
 					case x	=>
 						c abort (c.enclosingPosition,  s"expected a string literal, found $x")
 				}
-			
+
 		val inserts:Seq[c.Tree]		= args	map { expr => q"""_root_.scutil.lang.tc.Show.doit($expr)""" }
-	
+
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		val parts:Seq[c.Tree]		= (escapeds zip inserts flatMap { case (lit, ins) => Seq(lit, ins) }) :+ q"""${escapeds.last}"""
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))

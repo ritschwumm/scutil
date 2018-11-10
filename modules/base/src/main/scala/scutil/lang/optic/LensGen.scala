@@ -17,7 +17,7 @@ final class LensGen[T] extends Dynamic {
 
 private final class LensGenImpl(val c:Context) {
 	import c.universe._
-		
+
 	def compile[T:c.WeakTypeTag](propName:c.Tree):c.Tree	= {
 		val out:Either[String,Tree]	=
 				for {
@@ -44,7 +44,7 @@ private final class LensGenImpl(val c:Context) {
 						set	= ($valueName:$valueType) => ($containerName:$containerType) => $containerName.copy($fieldName=$valueName)
 					)
 				"""
-				
+
 		out cata (
 			c abort (c.enclosingPosition, _),
 			c untypecheck _

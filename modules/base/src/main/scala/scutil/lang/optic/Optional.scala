@@ -6,46 +6,52 @@ import scutil.lang.tc._
 object Optional extends OptionalInstances {
 	def partial[S,T](get:PartialFunction[S,T], set:T=>S):Optional[S,T] =
 			Optional(get.lift, t => s => set(t))
-		
+
 	def total[S,T](get:S=>T, set:T=>S):Optional[S,T]	=
 			Optional(
 				get	= get andThen Some.apply,
 				set	= t => s => set(t)
 			)
-			
+
 	def identity[T]:Optional[T,T]	=
 			Optional total (Predef.identity, Predef.identity)
-		
+
 	def trivial[T]:Optional[T,Unit]	=
 			Optional(
 				get	= t 		=> Some(()),
 				set	= x => t	=> t
 			)
-			
+
 	def void[S,T]:Optional[S,T]	=
 			Optional(
 				get	= t 		=> None,
 				set	= t => s	=> s
 			)
-			
+
 	def always[T]:Optional[Option[T],T]	=
 			Optional(Predef.identity, x => t => Some(x))
-		
+
 	def filtered[T](pred:T=>Boolean):Optional[T,T]	=
 			Optional(
-				it		=> if (pred(it)) Some(it) else None,
+				s => if (pred(s)) Some(s) else None,
 				x => t => x
 			)
-			
+
 	def codiag[T]:Optional[Either[T,T],T]	=
 			identity[T] sum identity[T]
+
+	def fromLensToOption[S,T](lens:Lens[S,Option[T]]):Optional[S,T]	=
+			Optional(
+				s => lens get s,
+				t => s => if (lens.get(s).isDefined) lens.set(Some(t))(s) else s
+			)
 }
 
 final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 	def setThe(s:S, t:T):S	= set(t)(s)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def mod(func:Endo[T]):Endo[S]	=
 			s	=> {
 				get(s)
@@ -53,21 +59,21 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 				.getOrElse	(s)
 			}
 	def modThe(s:S, func:Endo[T]):S	= mod(func) apply s
-			
+
 	def modF[F[_]](func:FEndo[F,T])(implicit F:Applicative[F]):FEndo[F,S]	= s	=> modOptF(func) apply s getOrElse (F pure s)
 	def modTheF[F[_]](s:S, func:FEndo[F,T])(implicit F:Applicative[F]):F[S]	= modF(func) apply s
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def setOpt(t:T):S=>Option[S]	=
 			s =>
 			if (get(s).isDefined)	Some(set(t)(s))
 			else					None
-		
+
 	def setTheOpt(s:S, t:T):Option[S]	= setOpt(t)(s)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def modOpt(func:Endo[T]):PEndo[S]	=
 			s	=> {
 				get(s) map { t =>
@@ -75,7 +81,7 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 				}
 			}
 	def modTheOpt(s:S, func:Endo[T]):Option[S]	= modOpt(func) apply s
-	
+
 	def modOptF[F[_]](func:FEndo[F,T])(implicit F:Functor[F]):S=>Option[F[S]]	=
 			s	=> {
 				get(s) map { t =>
@@ -84,9 +90,9 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 				}
 			}
 	def modTheOptF[F[_]](s:S, func:FEndo[F,T])(implicit F:Functor[F]):Option[F[S]]	= modOptF(func) apply s
-		
+
 	//------------------------------------------------------------------------------
-	
+
 	def embedState[U](state:State[T,U]):State[S,Option[U]]	=
 			State { s =>
 				get(s)
@@ -96,7 +102,7 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 				}
 				.getOrElse (s -> None)
 			}
-			
+
 	def embedStateT[F[_],U](state:StateT[F,T,U])(implicit F:Applicative[F]):StateT[F,S,Option[U]]	=
 			StateT { s =>
 				get(s)
@@ -110,7 +116,7 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 					F pure (s -> (None:Option[U]))
 				)
 			}
-			
+
 	def embedStateOpt[U](state:State[T,U]):StateT[Option,S,U]	=
 			StateT { (s:S) =>
 				get(s) map { t1 =>
@@ -118,42 +124,42 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 					set(t2)(s) -> u
 				}
 			}
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	def orElse(that:Optional[S,T]):Optional[S,T]	=
 			Optional(
 				get	= s	=> (this get s) orElse (that get s),
 				set	= set
 			)
-			
+
 	/** filter the source value */
 	def filterBefore(pred:Predicate[S]):Optional[S,T]	=
 			Optional(
 				get	= s	=> if (pred(s)) get(s) else None,
 				set	= set
 			)
-			
+
 	/** filter the target value */
 	def filterAfter(pred:Predicate[T]):Optional[S,T]	=
 			Optional(
 				get	= s	=> get(s) filter pred,
 				set	= set
 			)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	/** symbolic alias for andThen */
 	def >=>[U](that:Optional[T,U]):Optional[S,U]	=
 			this andThen that
-		
+
 	/** symbolic alias for compose */
 	def <=<[R](that:Optional[R,S]):Optional[R,T]	=
 			this compose that
-		
+
 	def compose[R](that:Optional[R,S]):Optional[R,T]	=
 			that andThen this
-		
+
 	def andThen[U](that:Optional[T,U]):Optional[S,U]	=
 			Optional(
 				get	= s => this get s flatMap that.get,
@@ -165,16 +171,16 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 					.getOrElse(s)
 				}
 			)
-	
+
 	//------------------------------------------------------------------------------
-	
+
 	// TODO optics does this mean we have an Applicative instance?
 	def zip[U](that:Optional[S,U]):Optional[S,(T,U)]	=
 			Optional(
 				get	= s			=> (this get s) zip (that get s),
 				set	= tu => s	=> that set tu._2 apply (this set tu._1 apply s)
 			)
-			
+
 	def sum[SS](that:Optional[SS,T]):Optional[Either[S,SS],T]	=
 			Optional(
 				get	=
@@ -188,7 +194,7 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 						case Right(ss)	=> Right(that set t apply ss)
 					}
 			)
-			
+
 	def product[SS,TT](that:Optional[SS,TT]):Optional[(S,SS),(T,TT)]	=
 			Optional(
 				get	= sss			=> (this get sss._1) zip (that get sss._2),

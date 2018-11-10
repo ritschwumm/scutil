@@ -26,7 +26,7 @@ class HexNumberMacrosTest extends Specification {
 			typed[Byte](it)
 			it mustEqual 255.toByte
 		}
-		
+
 		"decode 0000" in {
 			val it	= short"0000"
 			typed[Short](it)
@@ -47,7 +47,7 @@ class HexNumberMacrosTest extends Specification {
 			typed[Short](it)
 			it mustEqual 65535.toShort
 		}
-		
+
 		"decode 00000000" in {
 			val it	= int"00000000"
 			typed[Int](it)
@@ -68,7 +68,7 @@ class HexNumberMacrosTest extends Specification {
 			typed[Int](it)
 			it mustEqual -1.toInt
 		}
-		
+
 		"decode 0000000000000000" in {
 			val it	= long"0000000000000000"
 			typed[Long](it)
@@ -89,13 +89,13 @@ class HexNumberMacrosTest extends Specification {
 			typed[Long](it)
 			it mustEqual -1L
 		}
-		
+
 		"handle upper case letters" in {
 			val it	= byte"Ea"
 			typed[Byte](it)
 			it mustEqual 234.toByte
 		}
-		
+
 		/*
 		"fail at compile time for invalid string" in {
 		 	hex"xx" == 0

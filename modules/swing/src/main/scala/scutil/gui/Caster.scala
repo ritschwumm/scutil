@@ -9,7 +9,7 @@ abstract class Caster[L,E] private[gui] (
 ) {
 	def connect(callback:E=>Unit):Disposable =
 			listen(createListener(callback))
-	
+
 	def listen(listener:L):Disposable = {
 		{
 			addListener(listener)

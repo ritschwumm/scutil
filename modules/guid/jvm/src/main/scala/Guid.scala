@@ -10,7 +10,7 @@ object Guid extends GuidBase {
 	// NOTE SecureRandom.getInstanceStrong() make this hang
 	// NOTE SecureRandom is guaranteed to be thread safe
 	private val random	= new SecureRandom()
-	
+
 	protected def randomBytes(size:Int):ByteString	=
 			random byteString size
 }

@@ -16,10 +16,10 @@ trait instances extends instancesLow {
 							(xs, x) => (AP combine (xs, x))(_ :+ _)
 						}
 			}
-			
+
 	implicit def VectorMonoid[T]:Monoid[Vector[T]]	=
 			Monoid instance (Vector.empty, _ ++ _)
-			
+
 	implicit def ListTraversedMonad:TraversedMonad[List]	=
 			new TraversedMonad[List] {
 				override def map[A,B](it:List[A])(func:A=>B):List[B]			= it map func
@@ -30,15 +30,15 @@ trait instances extends instancesLow {
 							(xs, x) => (AP combine (xs, x))(_ :+ _)
 						}
 			}
-			
+
 	implicit def ListMonoid[T]:Monoid[List[T]]	=
 			Monoid instance (Nil, _ ++ _)
-		
+
 	// no Functor[Set]
-	
+
 	implicit def SetMonoid[T]:Monoid[Set[T]]	=
 			Monoid instance (Set.empty, _ ++ _)
-		
+
 	// no Functor[Map]
 
 	implicit def MapMonoid[K,V]:Monoid[Map[K,V]]	=
@@ -56,7 +56,7 @@ trait instancesLow {
 							(xs, x) => (AP combine (xs, x))(_ :+ _)
 						}
 			}
-			
+
 	implicit def ISeqMonoid[T]:Monoid[ISeq[T]]	=
 			Monoid instance (ISeq.empty, _ ++ _)
 }

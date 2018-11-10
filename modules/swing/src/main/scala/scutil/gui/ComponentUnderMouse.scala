@@ -17,7 +17,7 @@ import scutil.gui.SwingUtil._
 
 object ComponentUnderMouse {
 	private type Callback	= Effect[Boolean]
-	
+
 	private final case class Entry(state:Boolean, callbacks:ISeq[WeakReference[Callback]]) {
 		def referencedCallbacks:ISeq[WeakReference[Callback]]	= callbacks filterNot { _.get eq null }
 	}
@@ -30,9 +30,9 @@ moves fast or something is dragged over the component.
 */
 final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Exception)=>Unit) {
 	import ComponentUnderMouse._
-	
+
 	private var entries	= new mutable.WeakHashMap[Component,Entry]
-	
+
 	/** keep a hard reference to the component and either the callback or the resulting disposable or updates will stop */
 	def listen(component:Component, callback:Callback):Disposable	= {
 		val nowUnderMouse	= underMousePredicate() apply component
@@ -42,7 +42,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 					case Some(entry)	=> entry.referencedCallbacks :+ componentRef
 					case None			=> Vector(componentRef)
 				}
-		entries	+= (component -> Entry(nowUnderMouse, newCallbacks))		
+		entries	+= (component -> Entry(nowUnderMouse, newCallbacks))
 		disposable {
 			entries	=
 					entries flatMap { case (component, entry) =>
@@ -57,7 +57,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 					}
 		}
 	}
-	
+
 	private def update() {
 		val predicate	= underMousePredicate()
 		val updates	=
@@ -84,23 +84,23 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 			}
 		}
 	}
-	
+
 	private def underMousePredicate():Predicate[Component]	=
 			mouseLocation cata (
 				Predicates.constFalse,
 				mouse	=> underMousePoint(mouse, _)
 			)
-		
+
 	/** this is expensive, avoid calls if possible */
 	private def mouseLocation:Option[Point]	=
 			Option(MouseInfo.getPointerInfo) map { _.getLocation }
-			
+
 	private def underMousePoint(mouse:Point, component:Component):Boolean	= {
 		val local	= convertPointFromScreen(mouse, component)
 		local.x >= 0	&& local.x	< component.getWidth	&&
 		local.y >= 0	&& local.y	< component.getHeight
 	}
-	
+
 	private def convertPointFromScreen(point:Point, component:Component):Point	= {
 		var x:Int		= point.x
 		var y:Int		= point.y
@@ -130,7 +130,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 		}
 		nothing
 	}
-	
+
 	private val testThread	=
 			new Thread {
 				override def run() {

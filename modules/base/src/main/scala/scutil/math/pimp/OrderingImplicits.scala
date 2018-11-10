@@ -16,7 +16,7 @@ trait OrderingImplicits {
 				new Ordering[T] {
 					def compare(x:T, y:T):Int	= 0
 				}
-				
+
 		/**
 		useful with case classes where unapply always returns a Some,
 		fails with an Exception if None is returned.
@@ -25,7 +25,7 @@ trait OrderingImplicits {
 				Ordering by (unapplyFunc andThen { it =>
 					(it fold (sys error "unexpected None"))(identity)
 				})
-				
+
 		/** orders lexicographically from left to right */
 		def sequence[T](missingFirst:Boolean)(implicit base:Ordering[T]):Ordering[ISeq[T]]	=
 			new Ordering[ISeq[T]] {
@@ -48,7 +48,7 @@ trait OrderingImplicits {
 				}
 			}
 	}
-	
+
 	implicit final class OrderingExt[T](peer:Ordering[T]) {
 		/** Ordering should be contravariant */
 		def vary[U<:T]:Ordering[U]	=
@@ -57,10 +57,10 @@ trait OrderingImplicits {
 						peer compare (x, y)
 					}
 				}
-				
+
 		def contraMap[S](func:S=>T):Ordering[S]	=
 				peer on func
-			
+
 		/**
 		alternative to the implicit (Ordering[T],Ordering[T]) => Ordering[T] conversion in Ordering.Implicits
 		and Comparator's thenCompare. forms a Monoid with Orderings#trivial

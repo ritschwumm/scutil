@@ -16,7 +16,7 @@ class BigRationalTest extends Specification {
 			br"7/11" mustEqual (BigRational fromLongs (7,11) getOrError "oops")
 		}
 	}
-	
+
 	"bigrational syntax" should {
 		"convert an int" in {
 			1.toBigRational mustEqual BigRational.one

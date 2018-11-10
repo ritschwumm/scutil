@@ -2,7 +2,7 @@ package scutil.lang.tc
 
 object Monoid {
 	def apply[F](implicit ev:Monoid[F]):Monoid[F]	= ev
-	
+
 	def instance[T](empty1:T, func:(T,T)=>T):Monoid[T]	=
 			new Monoid[T] {
 				def empty:T				= empty1
@@ -13,6 +13,6 @@ object Monoid {
 trait Monoid[F] extends Semigroup[F] {
 	//------------------------------------------------------------------------------
 	//## own
-	
+
 	def empty:F
 }

@@ -14,7 +14,7 @@ trait PointImplicits {
 					peer.x,
 					peer.y
 				)
-				
+
 		def toIntPoint:IntPoint	=
 				geomConversion Point_IntPoint peer
 	}

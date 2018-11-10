@@ -14,7 +14,7 @@ trait Dimension2DImplicits {
 					peer.getWidth,
 					peer.getHeight
 				)
-				
+
 		def toDoublePoint:DoublePoint	=
 				geomConversion Dimension2D_DoublePoint peer
 	}

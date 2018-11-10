@@ -22,7 +22,7 @@ class URIComponentTest extends Specification {
 			val	dec	= URIComponent.utf_8 decode enc
 			dec mustEqual Right(str)
 		}
-		
+
 		"encode plus as %2B" in {
 			URIComponent.utf_8 encode "+" mustEqual "%2B"
 		}
@@ -32,49 +32,49 @@ class URIComponentTest extends Specification {
 		"decode plus as plus" in {
 			URIComponent.utf_8 decode "+" mustEqual Right("+")
 		}
-		
+
 		val interestingRaw	= "~!@#$%^&*(){}[]=:/,;?+'\"\\"
 		val interestingCode	= "~!%40%23%24%25%5E%26*()%7B%7D%5B%5D%3D%3A%2F%2C%3B%3F%2B'%22%5C"
-		
+
 		"encode interesting chars just like encodeURIComponent" in {
 			URIComponent.utf_8 encode interestingRaw mustEqual interestingCode
 		}
-		
+
 		"decode interesting chars just like decodeURIComponent" in {
 			URIComponent.utf_8 decode interestingCode mustEqual Right(interestingRaw)
 		}
-		
+
 		"encode german umlauts" in {
 			URIComponent.utf_8 encode "äöü" mustEqual "%C3%A4%C3%B6%C3%BC"
 		}
-		
+
 		"decode german umlauts" in {
 			URIComponent.utf_8 decode "%C3%A4%C3%B6%C3%BC" mustEqual Right("äöü")
 		}
-		
+
 		"fail with invalid % sequences (1)" in {
 			URIComponent.utf_8 decode "%" mustEqual Left(URIComponentInvalid((1)))
 		}
-		
+
 		"fail with invalid % sequences (2)" in {
 			URIComponent.utf_8 decode " %" mustEqual Left(URIComponentInvalid((2)))
 		}
-		
+
 		"fail with invalid % sequences (3)" in {
 			URIComponent.utf_8 decode "%x" mustEqual Left(URIComponentInvalid((1)))
 		}
-		
+
 		"fail with invalid % sequences (4)" in {
 			URIComponent.utf_8 decode "%1x" mustEqual Left(URIComponentInvalid((2)))
 		}
-		
+
 		"fail with invalid % sequences (5)" in {
 			URIComponent.utf_8 decode "%%" mustEqual Left(URIComponentInvalid((1)))
 		}
-		
+
 		/*
 		import javax.script.ScriptEngineManager
-		
+
 		"encode everything just like encodeURIComponent" in {
 			val engine	= new ScriptEngineManager getEngineByName "JavaScript"
 			val str	= 0 until 256 map { _.toChar } mkString ""
@@ -83,7 +83,7 @@ class URIComponentTest extends Specification {
 			val s2	= engine eval """encodeURIComponent(str)"""
 			s1 mustEqual s2
 		}
-		
+
 		"decode everything just like encodeURIComponent" in {
 			val engine	= new ScriptEngineManager getEngineByName "JavaScript"
 			val str	= 0 until 256 map { _.toChar } mkString ""

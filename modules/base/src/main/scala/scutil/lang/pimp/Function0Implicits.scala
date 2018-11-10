@@ -12,7 +12,7 @@ trait Function0Implicits {
 						peer()
 					}
 				}
-		
+
 		def toCallable:Callable[T]	=
 				new Callable[T] {
 					def call() = peer()

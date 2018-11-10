@@ -14,7 +14,7 @@ import ListenerInstances._
 object CasterInstances {
 	//==============================================================================
 	//## bean
-	
+
 	type PropertyChangeCaster = {
 		def addPropertyChangeListener(listener:PropertyChangeListener):Unit
 		def removePropertyChangeListener(listener:PropertyChangeListener):Unit
@@ -23,7 +23,7 @@ object CasterInstances {
 		def onPropertyChange(callback:PropertyChangeEvent=>Unit):Disposable	= listen(on_propertyChange(callback))
 	}
 	implicit def generifyPropertyChangeCaster(caster:PropertyChangeCaster):PropertyChangeCasterExt	= new PropertyChangeCasterExt(caster)
-	
+
 	/*
 	type NamedPropertyChangeCaster = {
 		def addPropertyChangeListener(name:String, listener:PropertyChangeListener):Unit
@@ -36,10 +36,10 @@ object CasterInstances {
 		def createListener(callback:PropertyChangeEvent=>Unit)	= mkPropertyChangeListener(callback)
 	}
 	*/
-	
+
 	//==============================================================================
 	//## awt
-	
+
 	type DropTargetCaster = {
 		def addDropTargetListener(listener:DropTargetListener):Unit
 		def removeDropTargetListener(listener:DropTargetListener):Unit
@@ -53,7 +53,7 @@ object CasterInstances {
 		def onDrop(callback:DropTargetDropEvent=>Unit):Disposable				= listen(on_drop(callback))
 		def onDropActionChanged(callback:DropTargetDragEvent=>Unit):Disposable	= listen(on_dropActionChanged(callback))
 	}
-	
+
 	type AdjustmentCaster = {
 		def addAdjustmentListener(listener:AdjustmentListener):Unit
 		def removeAdjustmentListener(listener:AdjustmentListener):Unit
@@ -62,7 +62,7 @@ object CasterInstances {
 	final class AdjustmentCasterExt(caster:AdjustmentCaster) extends Caster(caster.addAdjustmentListener, caster.removeAdjustmentListener, mkAdjustmentListener) {
 		def onAdjustmentValueChanged(callback:AdjustmentEvent=>Unit):Disposable	= listen(on_adjustmentValueChanged(callback))
 	}
-	
+
 	type WindowCaster = {
 		def addWindowListener(listener:WindowListener):Unit
 		def removeWindowListener(listener:WindowListener):Unit
@@ -96,7 +96,7 @@ object CasterInstances {
 		def onWindowGainedFocus(callback:WindowEvent=>Unit):Disposable	= listen(on_windowGainedFocus(callback))
 		def onWindowLostFocus(callback:WindowEvent=>Unit):Disposable	= listen(on_windowLostFocus(callback))
 	}
-	
+
 	type FocusCaster = {
 		def addFocusListener(listener:FocusListener):Unit
 		def removeFocusListener(listener:FocusListener):Unit
@@ -106,7 +106,7 @@ object CasterInstances {
 		def onFocusGained(callback:FocusEvent=>Unit):Disposable	= listen(on_focusGained(callback))
 		def onFocusLost(callback:FocusEvent=>Unit):Disposable	= listen(on_focusLost(callback))
 	}
-	
+
 	type ComponentCaster = {
 		def addComponentListener(listener:ComponentListener):Unit
 		def removeComponentListener(listener:ComponentListener):Unit
@@ -118,7 +118,7 @@ object CasterInstances {
 		def onComponentShown(callback:ComponentEvent=>Unit):Disposable		= listen(on_componentShown(callback))
 		def onComponentHidden(callback:ComponentEvent=>Unit):Disposable		= listen(on_componentHidden(callback))
 	}
-	
+
 	type ContainerCaster = {
 		def addContainerListener(listener:ContainerListener):Unit
 		def removeContainerListener(listener:ContainerListener):Unit
@@ -128,7 +128,7 @@ object CasterInstances {
 		def onComponentAdded(callback:ContainerEvent=>Unit):Disposable		= listen(on_componentAdded(callback))
 		def onComponentRemoved(callback:ContainerEvent=>Unit):Disposable	= listen(on_componentRemoved(callback))
 	}
-	
+
 	type ItemCaster = {
 		def addItemListener(listener:ItemListener):Unit
 		def removeItemListener(listener:ItemListener):Unit
@@ -146,7 +146,7 @@ object CasterInstances {
 	final class ActionCasterExt(caster:ActionCaster) extends Caster(caster.addActionListener, caster.removeActionListener, mkActionListener) {
 		def onActionPerformed(callback:ActionEvent=>Unit):Disposable	= listen(on_actionPerformed(callback))
 	}
-	
+
 	type KeyCaster = {
 		def addKeyListener(listener:KeyListener):Unit
 		def removeKeyListener(listener:KeyListener):Unit
@@ -157,7 +157,7 @@ object CasterInstances {
 		def onKeyPressed(callback:KeyEvent=>Unit):Disposable	= listen(on_keyPressed(callback))
 		def onKeyReleased(callback:KeyEvent=>Unit):Disposable	= listen(on_keyReleased(callback))
 	}
-	
+
 	type MouseCaster = {
 		def addMouseListener(listener:MouseListener):Unit
 		def removeMouseListener(listener:MouseListener):Unit
@@ -180,7 +180,7 @@ object CasterInstances {
 		def onMouseDragged(callback:MouseEvent=>Unit):Disposable	= listen(on_mouseDragged(callback))
 		def onMouseMoved(callback:MouseEvent=>Unit):Disposable		= listen(on_mouseMoved(callback))
 	}
-	
+
 	type MouseWheelCaster = {
 		def addMouseWheelListener(listener:MouseWheelListener):Unit
 		def removeMouseWheelListener(listener:MouseWheelListener):Unit
@@ -189,7 +189,7 @@ object CasterInstances {
 	final class MouseWheelCasterExt(caster:MouseWheelCaster) extends Caster(caster.addMouseWheelListener, caster.removeMouseWheelListener, mkMouseWheelListener) {
 		def onMouseWheelMoved(callback:MouseWheelEvent=>Unit):Disposable	= listen(on_mouseWheelMoved(callback))
 	}
-	
+
 	type HierarchyBoundsCaster = {
 		def addHierarchyBoundsListener(listener:HierarchyBoundsListener):Unit
 		def removeHierarchyBoundsListener(listener:HierarchyBoundsListener):Unit
@@ -199,7 +199,7 @@ object CasterInstances {
 		def onAncestorMoved(callback:HierarchyEvent=>Unit):Disposable	= listen(on_ancestorMoved(callback))
 		def onAncestorResized(callback:HierarchyEvent=>Unit):Disposable	= listen(on_ancestorResized(callback))
 	}
-	
+
 	type HierarchyCaster = {
 		def addHierarchyListener(listener:HierarchyListener):Unit
 		def removeHierarchyListener(listener:HierarchyListener):Unit
@@ -208,7 +208,7 @@ object CasterInstances {
 	final class HierarchyCasterExt(caster:HierarchyCaster) extends Caster(caster.addHierarchyListener, caster.removeHierarchyListener, mkHierarchyListener) {
 		def onHierarchyChanged(callback:HierarchyEvent=>Unit):Disposable	= listen(on_hierarchyChanged(callback))
 	}
-	
+
 	type InputMethodCaster = {
 		def addInputMethodListener(listener:InputMethodListener):Unit
 		def removeInputMethodListener(listener:InputMethodListener):Unit
@@ -218,7 +218,7 @@ object CasterInstances {
 		def onInputMethodTextChanged(callback:InputMethodEvent=>Unit):Disposable	= listen(on_inputMethodTextChanged(callback))
 		def onCaretPositionChanged(callback:InputMethodEvent=>Unit):Disposable		= listen(on_caretPositionChanged(callback))
 	}
-	
+
 	type TextCaster = {
 		def addTextListener(listener:TextListener):Unit
 		def removeTextListener(listener:TextListener):Unit
@@ -227,10 +227,10 @@ object CasterInstances {
 	final class TextCasterExt(caster:TextCaster) extends Caster(caster.addTextListener, caster.removeTextListener, mkTextListener) {
 		def onTextValueChanged(callback:TextEvent=>Unit):Disposable	= listen(on_textValueChanged(callback))
 	}
-			
+
 	//==============================================================================
 	//## swing
-	
+
 	type CellEditorCaster = {
 		def addCellEditorListener(listener:CellEditorListener):Unit
 		def removeCellEditorListener(listener:CellEditorListener):Unit
@@ -240,7 +240,7 @@ object CasterInstances {
 		def onEditingStopped(callback:ChangeEvent=>Unit):Disposable		= listen(on_editingStopped(callback))
 		def onEditingCanceled(callback:ChangeEvent=>Unit):Disposable	= listen(on_editingCanceled(callback))
 	}
-	
+
 	type InternalFrameCaster = {
 		def addInternalFrameListener(listener:InternalFrameListener):Unit
 		def removeInternalFrameListener(listener:InternalFrameListener):Unit
@@ -255,7 +255,7 @@ object CasterInstances {
 		def onInternalFrameActivated(callback:InternalFrameEvent=>Unit):Disposable		= listen(on_internalFrameActivated(callback))
 		def onInternalFrameDeactivated(callback:InternalFrameEvent=>Unit):Disposable	= listen(on_internalFrameDeactivated(callback))
 	}
-	
+
 	type MenuDragMouseCaster = {
 		def addMenuDragMouseListener(listener:MenuDragMouseListener):Unit
 		def removeMenuDragMouseListener(listener:MenuDragMouseListener):Unit
@@ -267,7 +267,7 @@ object CasterInstances {
 		def onMenuDragMouseDragged(callback:MenuDragMouseEvent=>Unit):Disposable	= listen(on_menuDragMouseDragged(callback))
 		def onMenuDragMouseReleased(callback:MenuDragMouseEvent=>Unit):Disposable	= listen(on_menuDragMouseReleased(callback))
 	}
-	
+
 	type MenuKeyCaster = {
 		def addMenuKeyListener(listener:MenuKeyListener):Unit
 		def removeMenuKeyListener(listener:MenuKeyListener):Unit
@@ -278,7 +278,7 @@ object CasterInstances {
 		def onMenuKeyPressed(callback:MenuKeyEvent=>Unit):Disposable	= listen(on_menuKeyPressed(callback))
 		def onMenuKeyReleased(callback:MenuKeyEvent=>Unit):Disposable	= listen(on_menuKeyReleased(callback))
 	}
-	
+
 	type RowSorterCaster = {
 		def addRowSorterListener(listener:RowSorterListener):Unit
 		def removeRowSorterListener(listener:RowSorterListener):Unit
@@ -287,7 +287,7 @@ object CasterInstances {
 	final class RowSorterCasterExt(caster:RowSorterCaster) extends Caster(caster.addRowSorterListener, caster.removeRowSorterListener, mkRowSorterListener) {
 		def onSorterChanged(callback:RowSorterEvent=>Unit):Disposable	= listen(on_sorterChanged(callback))
 	}
-	
+
 	type ListDataCaster = {
 		def addListDataListener(listener:ListDataListener):Unit
 		def removeListDataListener(listener:ListDataListener):Unit
@@ -298,7 +298,7 @@ object CasterInstances {
 		def onIntervalRemoved(callback:ListDataEvent=>Unit):Disposable	= listen(on_intervalRemoved(callback))
 		def onContentsChanged(callback:ListDataEvent=>Unit):Disposable	= listen(on_contentsChanged(callback))
 	}
-	
+
 	type ListSelectionCaster = {
 		def addListSelectionListener(listener:ListSelectionListener):Unit
 		def removeListSelectionListener(listener:ListSelectionListener):Unit
@@ -307,7 +307,7 @@ object CasterInstances {
 	final class ListSelectionCasterExt(caster:ListSelectionCaster) extends Caster(caster.addListSelectionListener, caster.removeListSelectionListener, mkListSelectionListener) {
 		def onValueChanged(callback:ListSelectionEvent=>Unit):Disposable	= listen(on_valueChanged(callback))
 	}
-	
+
 	type AncestorCaster = {
 		def addAncestorListener(listener:AncestorListener):Unit
 		def removeAncestorListener(listener:AncestorListener):Unit
@@ -318,7 +318,7 @@ object CasterInstances {
 		def onAncestorRemoved(callback:AncestorEvent=>Unit):Disposable	= listen(on_ancestorRemoved(callback))
 		def onAncestorMoved(callback:AncestorEvent=>Unit):Disposable	= listen(on_ancestorMoved(callback))
 	}
-	
+
 	type CaretCaster = {
 		def addCaretListener(listener:CaretListener):Unit
 		def removeCaretListener(listener:CaretListener):Unit
@@ -327,7 +327,7 @@ object CasterInstances {
 	final class CaretCasterExt(caster:CaretCaster) extends Caster(caster.addCaretListener, caster.removeCaretListener, mkCaretListener) {
 		def onCaretUpdate(callback:CaretEvent=>Unit):Disposable	= listen(on_caretUpdate(callback))
 	}
-	
+
 	type HyperlinkCaster = {
 		def addHyperlinkListener(listener:HyperlinkListener):Unit
 		def removeHyperlinkListener(listener:HyperlinkListener):Unit
@@ -336,7 +336,7 @@ object CasterInstances {
 	final class HyperlinkCasterExt(caster:HyperlinkCaster) extends Caster(caster.addHyperlinkListener, caster.removeHyperlinkListener, mkHyperlinkListener) {
 		def onHyperlinkUpdate(callback:HyperlinkEvent=>Unit):Disposable	= listen(on_hyperlinkUpdate(callback))
 	}
-	
+
 	type ChangeCaster = {
 		def addChangeListener(listener:ChangeListener):Unit
 		def removeChangeListener(listener:ChangeListener):Unit
@@ -345,7 +345,7 @@ object CasterInstances {
 	final class ChangeCasterExt(caster:ChangeCaster) extends Caster(caster.addChangeListener, caster.removeChangeListener, mkChangeListener) {
 		def onStateChanged(callback:ChangeEvent=>Unit):Disposable	= listen(on_stateChanged(callback))
 	}
-	
+
 	type DocumentCaster = {
 		def addDocumentListener(listener:DocumentListener):Unit
 		def removeDocumentListener(listener:DocumentListener):Unit
@@ -356,7 +356,7 @@ object CasterInstances {
 		def onRemoveUpdate(callback:DocumentEvent=>Unit):Disposable		= listen(on_removeUpdate(callback))
 		def onChangedUpdate(callback:DocumentEvent=>Unit):Disposable	= listen(on_changedUpdate(callback))
 	}
-	
+
 	type MenuCaster = {
 		def addMenuListener(listener:MenuListener):Unit
 		def removeMenuListener(listener:MenuListener):Unit
@@ -367,7 +367,7 @@ object CasterInstances {
 		def onMenuDeselected(callback:MenuEvent=>Unit):Disposable	= listen(on_menuDeselected(callback))
 		def onMenuCanceled(callback:MenuEvent=>Unit):Disposable		= listen(on_menuCanceled(callback))
 	}
-	
+
 	type PopupMenuCaster = {
 		def addPopupMenuListener(listener:PopupMenuListener):Unit
 		def removePopupMenuListener(listener:PopupMenuListener):Unit
@@ -378,7 +378,7 @@ object CasterInstances {
 		def onPopupMenuWillBecomeInvisible(callback:PopupMenuEvent=>Unit):Disposable	= listen(on_popupMenuWillBecomeInvisible(callback))
 		def onPopupMenuCanceled(callback:PopupMenuEvent=>Unit):Disposable				= listen(on_popupMenuCanceled(callback))
 	}
-	
+
 	type TableModelCaster = {
 		def addTableModelListener(listener:TableModelListener):Unit
 		def removeTableModelListener(listener:TableModelListener):Unit
@@ -387,12 +387,12 @@ object CasterInstances {
 	final class TableModelCasterExt(caster:TableModelCaster) extends Caster(caster.addTableModelListener, caster.removeTableModelListener, mkTableModelListener) {
 		def onTableChanged(callback:TableModelEvent=>Unit):Disposable	= listen(on_tableChanged(callback))
 	}
-	
+
 	type TableColumnModelCaster = {
 		def addTableColumnModelListener(listener:TableColumnModelListener):Unit
 		def removeTableColumnModelListener(listener:TableColumnModelListener):Unit
 	}
-	
+
 	implicit def generifyTableColumnModelCaster(caster:TableColumnModelCaster):TableColumnModelCasterExt	= new TableColumnModelCasterExt(caster)
 	// NOTE a generic mk*Listener does not work because we have multiple event types here
 	final class TableColumnModelCasterExt(caster:TableColumnModelCaster) extends Caster(caster.addTableColumnModelListener, caster.removeTableColumnModelListener, sorryNotImplemented[TableColumnModelListener]) {
@@ -402,7 +402,7 @@ object CasterInstances {
 		def onColumnMarginChanged(callback:ChangeEvent=>Unit):Disposable			= listen(on_columnMarginChanged(callback))
 		def onColumnSelectionChanged(callback:ListSelectionEvent=>Unit):Disposable	= listen(on_columnSelectionChanged(callback))
 	}
-	
+
 	type TreeModelCaster = {
 		def addTreeModelListener(listener:TreeModelListener):Unit
 		def removeTreeModelListener(listener:TreeModelListener):Unit
@@ -423,7 +423,7 @@ object CasterInstances {
 	final class TreeSelectionCasterExt(caster:TreeSelectionCaster) extends Caster(caster.addTreeSelectionListener, caster.removeTreeSelectionListener, mkTreeSelectionListener) {
 		def onValueChanged(callback:TreeSelectionEvent=>Unit):Disposable	= listen(on_valueChanged(callback))
 	}
-	
+
 	type TreeWillExpandCaster = {
 		def addTreeWillExpandListener(listener:TreeWillExpandListener):Unit
 		def removeTreeWillExpandListener(listener:TreeWillExpandListener):Unit
@@ -444,7 +444,7 @@ object CasterInstances {
 		def onTreeExpanded(callback:TreeExpansionEvent=>Unit):Disposable	= listen(on_treeExpanded(callback))
 		def onTreeCollapsed(callback:TreeExpansionEvent=>Unit):Disposable	= listen(on_treeCollapsed(callback))
 	}
-	
+
 	type UndoableEditCaster = {
 		def addUndoableEditListener(listener:UndoableEditListener):Unit
 		def removeUndoableEditListener(listener:UndoableEditListener):Unit
@@ -453,8 +453,8 @@ object CasterInstances {
 	final class UndoableEditCasterExt(caster:UndoableEditCaster) extends Caster(caster.addUndoableEditListener, caster.removeUndoableEditListener, mkUndoableEditListener) {
 		def onUndoableEditHappened(callback:UndoableEditEvent=>Unit):Disposable	= listen(on_undoableEditHappened(callback))
 	}
-	
+
 	//==============================================================================
-	
+
 	private def sorryNotImplemented[T](a:Any):T	= sys error "not implemented"
 }

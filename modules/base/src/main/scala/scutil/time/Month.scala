@@ -4,8 +4,6 @@ import scutil.lang.tc._
 import scutil.math.functions._
 
 object Month extends MonthInstances {
-	val count	= 12
-	
 	val all:Vector[Month]	=
 			Vector(
 				January,
@@ -21,7 +19,9 @@ object Month extends MonthInstances {
 				November,
 				December
 			)
-	
+
+	val count	= all.size
+
 	def fromIndex(index:Int):Month	=
 			moduloInt(index, count) match {
 				case 0	=> January
@@ -42,7 +42,7 @@ object Month extends MonthInstances {
 sealed abstract class Month {
 	def daysInYear(year:Year):Int	=
 			days(year.gregorianLeap)
-		
+
 	def days(leapYear:Boolean):Int	=
 			this match {
 				case January	=> 31
@@ -58,7 +58,7 @@ sealed abstract class Month {
 				case November	=> 30
 				case December	=> 31
 			}
-			
+
 	/** starting at january with 0 */
 	def index:Int	=
 			this match {
@@ -75,9 +75,9 @@ sealed abstract class Month {
 				case November	=> 10
 				case December	=> 11
 			}
-			
+
 	def monthYearAt(year:Year):MonthYear	= MonthYear fromValues (this, year)
-	
+
 	override def toString:String	=
 			this match {
 				case January	=> "January"
@@ -110,4 +110,3 @@ case object December	extends Month
 trait MonthInstances {
 	implicit val MonthShow:Show[Month]	= Show.toStringInstance
 }
-

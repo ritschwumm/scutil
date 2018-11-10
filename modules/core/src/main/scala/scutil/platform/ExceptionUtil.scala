@@ -4,11 +4,11 @@ object ExceptionUtil {
 	def logAllExceptions(onError:(Thread,Throwable)=>Unit) {
 		Thread setDefaultUncaughtExceptionHandler new LoggingUncaughtExceptionHandler(onError)
 	}
-	
+
 	def logThreadExceptions(thread:Thread, onError:(Thread,Throwable)=>Unit) {
 		thread setUncaughtExceptionHandler new LoggingUncaughtExceptionHandler(onError)
 	}
-	
+
 	/** replacement for logThreadExceptions(EDT) which does work in java 7, but not java 6 */
 	def logAWTExceptions(onError:(Thread,Throwable)=>Unit) {
 		java6AwtHandler	= onError
@@ -16,7 +16,7 @@ object ExceptionUtil {
 				"sun.awt.exception.handler",
 				classOf[Java6AWTExceptionHandler].getName)
 	}
-	
+
 	private[scutil]
 	var java6AwtHandler:(Thread,Throwable)=>Unit	= null
 }
@@ -26,7 +26,7 @@ private final class LoggingUncaughtExceptionHandler(onError:(Thread,Throwable)=>
 		onError(thread, throwable)
 	}
 }
-	
+
 /** must have a public no-args constructor and a handle method with the right signature */
 private final class Java6AWTExceptionHandler {
 	def handle(throwable:Throwable) {

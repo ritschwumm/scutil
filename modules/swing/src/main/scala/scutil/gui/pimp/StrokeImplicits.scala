@@ -11,11 +11,11 @@ trait StrokeImplicits {
 		/** symbolic alias for andThen */
 		def >=>(that:Stroke):Stroke	=
 				this andThen that
-			
+
 		/** symbolic alias for compose */
 		def <=<(that:Stroke):Stroke	=
 				this compose that
-			
+
 		def compose(that:Stroke):Stroke	= new CompositeStroke(peer, that)
 		def andThen(that:Stroke):Stroke	= new CompositeStroke(that, peer)
 	}

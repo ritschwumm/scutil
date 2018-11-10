@@ -35,49 +35,49 @@ disable doctypes checking:
 */
 object FixedXML extends XMLLoader[Elem] {
 	val encoding	= Charsets.utf_8
-	
+
 	/*
 	def loadXML(file:File):Node =
 			loadXML(Source fromFile file)
-			
+
 	def loadXML(string:String):Node	=
 			loadXML(Source fromString string)
-	
+
 	def loadXML(source:Source):Node = {
 		val prs	= ConstructingParser fromSource (source, true)
 		val	doc	= prs.document
 		require(doc != null, "cannot parse XML file: " + source)
 		doc.docElem
 	}
-	
+
 	def saveXML(file:File, node:Node) {
 		file writeString (encoding, node.toString)
 	}
 	*/
-	
+
 	def saveFile(file:File, node:Node, xmlDecl:Boolean=true, docType:Option[DocType]=None, minimizeTags:MinimizeMode.Value=MinimizeMode.Default) {
 		(file withWriter encoding) { write(node, xmlDecl, docType, minimizeTags) }
 	}
-	
+
 	private def write(node:Node, xmlDecl:Boolean, docType:Option[DocType], minimizeTags:MinimizeMode.Value)(writer:Writer) {
 		xmlDecl option s"<?xml version='1.0' encoding='${encoding.name}'?>\n" foreach writer.write
 		docType map { _.toString + "\n" } foreach writer.write
 		writer write (Utility serialize (node, minimizeTags = minimizeTags)).toString
 	}
-	
+
 	override def parser:SAXParser	= {
 		val f	= SAXParserFactory.newInstance()
 		f	setNamespaceAware	false
-		
+
 		// ignore doctype
 		f	setValidating		false
-		
+
 		// do not load external stuff
 		f	setFeature			("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
-		
+
 		// disallow doctype
 		// f	setFeature		("http://apache.org/xml/features/disallow-doctype-decl", true)
-		
+
 		f.newSAXParser()
 	}
 }

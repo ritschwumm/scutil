@@ -11,7 +11,7 @@ object ReaderImplicits extends ReaderImplicits
 trait ReaderImplicits {
 	implicit final class ReaderExt(peer:Reader) {
 		val blockSize	= 16384
-		
+
 		/** read as much into the buffer as possible, return how much */
 		def readExactly(buffer:Array[Char]):Int	= {
 			val length	= buffer.length
@@ -23,7 +23,7 @@ trait ReaderImplicits {
 			}
 			offset
 		}
-		
+
 		/** read the complete content */
 		def readFully():String = {
 			val	buffer	= new Array[Char](blockSize)
@@ -36,7 +36,7 @@ trait ReaderImplicits {
 			}
 			out.toString
 		}
-		
+
 		/** skip as much as desired if possible, return how much */
 		def skipExactly(count:Long):Long	= {
 			var done	= 0L
@@ -47,7 +47,7 @@ trait ReaderImplicits {
 			}
 			done
 		}
-		
+
 		/** skip to end */
 		def skipFully() {
 			val	buffer	= new Array[Char](blockSize)
@@ -57,7 +57,7 @@ trait ReaderImplicits {
 				if (len == -1)	running	= false
 			}
 		}
-		
+
 		/** copy everything */
 		def transferTo(out:Writer) {
 			val	buffer	= new Array[Char](blockSize)
@@ -68,9 +68,9 @@ trait ReaderImplicits {
 				else			running	= false
 			}
 		}
-		
+
 		//------------------------------------------------------------------------------
-		
+
 		// BETTER  use a specific line separator
 		def readLines():ISeq[String]	= {
 			val in		= new BufferedReader(peer)
@@ -83,9 +83,9 @@ trait ReaderImplicits {
 			}
 			buffer.toVector
 		}
-		
+
 		//------------------------------------------------------------------------------
-		
+
 		def buffered:BufferedReader	=
 				new BufferedReader(peer)
 	}

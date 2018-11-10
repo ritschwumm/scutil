@@ -14,16 +14,16 @@ object Lenses {
 				get	= p			=> p._2,
 				set	=  t => p	=> (p._1, t)
 			)
-	
+
 	def set[T](t:T):Lens[Set[T],Boolean]	=
 			Lens(
 				get	= _ contains t,
 				set	= v => c	=> if (v) c + t else c - t
 			)
-						
+
 	def map[K,V](k:K):Lens[Map[K,V],Option[V]]	=
 			Lens fromStoreAt (_ optionStoreAt k)
-		
+
 	def mapWithDefault[S,T](key:S, default:T):Lens[Map[S,T],T]	=
 			Lens(
 				get	= map =>

@@ -11,7 +11,7 @@ trait PathImplicits {
 	implicit final class PathExt(peer:Path) {
 		/** add a component to this Paths's path */
 		def /(name:String):Path 		= peer resolve name
-		
+
 		/** add multiple components to this Paths's path */
 		def /+(path:ISeq[String]):Path	= (path foldLeft peer) { _ resolve _ }
 	}
