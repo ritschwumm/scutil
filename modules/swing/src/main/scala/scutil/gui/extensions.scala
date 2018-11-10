@@ -28,3 +28,4 @@ trait extensions
 		with	RootPaneContainerImplicits
 		with	StrokeImplicits
 		with	WindowImplicits
+		with	AffineTransformImplicits

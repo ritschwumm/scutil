@@ -7,10 +7,13 @@ object Colors {
 	val transparentWhite:Color	= new Color(255, 255, 255, 0)
 
 	def decodeOption(s:String):Option[Color]	=
+			decodeEither(s).toOption
+
+	def decodeEither(s:String):Either[NumberFormatException,Color]	=
 			try {
-				Some(Color decode s)
+				Right(Color decode s)
 			}
 			catch { case e:NumberFormatException =>
-				None
+				Left(e)
 			}
 }

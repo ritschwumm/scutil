@@ -1,6 +1,6 @@
 package scutil.geom
 
-import scala.math.sqrt
+import scala.{ math => smath }
 
 object IntPoint {
 	val zero	= IntPoint(0, 0)
@@ -36,6 +36,8 @@ final case class IntPoint(x:Int, y:Int) {
 	def scale(f:Int):IntPoint	= IntPoint(x * f, y * f)
 	def unscale(f:Int):IntPoint	= IntPoint(x / f, y / f)
 
+	def signum:IntPoint	= IntPoint(smath signum x, smath signum y)
+
 	//------------------------------------------------------------------------------
 
 	def rectTo(that:IntPoint):IntRect	= IntRect topLeftToBottomRight	(this, that)
@@ -43,8 +45,12 @@ final case class IntPoint(x:Int, y:Int) {
 
 	//------------------------------------------------------------------------------
 
+	def angle:Double	= smath atan2 (y, x)
+
+	def length:Double	= smath sqrt lengthQ
 	def lengthQ:Long	= x*x + y*y
-	def length:Double	= sqrt(lengthQ)
+
+	//------------------------------------------------------------------------------
 
 	def toDoublePoint:DoublePoint	= DoublePoint(x, y)
 }

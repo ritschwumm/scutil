@@ -12,6 +12,12 @@ trait Applicative[F[_]] extends Functor[F] {
 	def ap[S,T](its:F[S])(func:F[S=>T]):F[T]
 
 	//------------------------------------------------------------------------------
+	//## super
+
+	def map[S,T](its:F[S])(func:S=>T):F[T]	=
+			ap(its)(pure(func))
+
+	//------------------------------------------------------------------------------
 	//## derived
 
 	final def pureUnit:F[Unit]	= pure(())
@@ -20,8 +26,17 @@ trait Applicative[F[_]] extends Functor[F] {
 			ap(bs)(map(as)(func.curried))
 
 	//------------------------------------------------------------------------------
-	//## super
 
-	def map[S,T](its:F[S])(func:S=>T):F[T]	=
-			ap(its)(pure(func))
+	// TODO have syntax for these?
+	// TODO allow F[T] forall T for these?
+
+	def ifA(cond:Boolean)(value:F[Unit]):F[Unit]	=
+			if (cond)	value
+			else		pureUnit
+
+	def optionalA[T](value:Option[T])(action:T=>F[Unit]):F[Unit]	=
+			value match {
+				case Some(x)	=> action(x)
+				case None		=> pureUnit
+			}
 }

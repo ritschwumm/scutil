@@ -39,6 +39,8 @@ final case class DoublePoint(x:Double, y:Double) {
 	def scale(f:Double):DoublePoint		= DoublePoint(x * f, y * f)
 	def unscale(f:Double):DoublePoint	= DoublePoint(x / f, y / f)
 
+	def signum:DoublePoint	= DoublePoint(smath signum x, smath signum y)
+
 	//------------------------------------------------------------------------------
 
 	def rectTo(that:DoublePoint):DoubleRect		= DoubleRect topLeftToBottomRight	(this, that)
@@ -48,6 +50,14 @@ final case class DoublePoint(x:Double, y:Double) {
 
 	def angle:Double	= smath atan2 (y, x)
 
-	def lengthQ:Double	= x*x + y*y
 	def length:Double	= smath sqrt lengthQ
+	def lengthQ:Double	= x*x + y*y
+
+	def rotate(angle:Double):DoublePoint	= {
+		val	s	= smath sin angle
+		val	c	= smath cos angle
+		val xx	= x * c - y * s
+		val yy	= x * s + y * c
+		DoublePoint(xx, yy)
+	}
 }
