@@ -9,7 +9,9 @@ object Converter extends ConverterInstances {
 				Validated good it
 			}
 
-	def constant[E,S,T](it:T):Converter[E,S,T]	=
+	def constant[E,S,T](it:T):Converter[E,S,T]	= pure(it)
+
+	def pure[E,S,T](it:T):Converter[E,S,T]	=
 			Converter { _ =>
 				Validated good it
 			}
@@ -31,6 +33,11 @@ object Converter extends ConverterInstances {
 
 	def partial[E,S,T](func:PartialFunction[S,T], bad: =>E):Converter[E,S,T]	=
 			optional(func.lift, bad)
+
+	def validate[E,S,T](func:PFunction[S,T], bad: S=>E):Converter[E,S,T]	=
+			Converter { it =>
+				func(it) toGood bad(it)
+			}
 
 	def rejecting[E,T](func:PFunction[T,E]):Converter[E,T,T]	=
 			Converter { it =>
@@ -100,11 +107,13 @@ final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 	def as[U](it:U):Converter[E,S,U]	=
 			map(constant(it))
 
+	/** function effect first */
 	def pa[U](that:Converter[E,S,T=>U])(implicit cc:Semigroup[E]):Converter[E,S,U]	=
 			Converter { it =>
 				(this convert it) pa (that convert it)
 			}
 
+	/** function effect first */
 	def ap[U,V](that:Converter[E,S,U])(implicit ev:T=>U=>V, cc:Semigroup[E]):Converter[E,S,V]	=
 			that pa (this map ev)
 
@@ -198,13 +207,20 @@ final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 }
 
 trait ConverterInstances {
-	// TODO restrict this to applicative?
+	implicit def ConverterApplicative[E,S](implicit E:Semigroup[E]):Applicative[Converter[E,S,?]]	=
+			new Applicative[Converter[E,S,?]] {
+				override def pure[A](it:A):Converter[E,S,A]												= Converter pure it
+				override def ap[A,B](its:Converter[E,S,A])(func:Converter[E,S,A=>B]):Converter[E,S,B]	= its pa func
+			}
+
+	/*
 	implicit def ConverterMonad[E,S]:Monad[Converter[E,S,?]]	=
 			new Monad[Converter[E,S,?]] {
-				override def pure[A](it:A):Converter[E,S,A]													= Converter constant it
+				override def pure[A](it:A):Converter[E,S,A]													= Converter pure it
 				override def map[A,B](it:Converter[E,S,A])(func:A=>B):Converter[E,S,B]						= it map func
 				override def flatMap[A,B](it:Converter[E,S,A])(func:A=>Converter[E,S,B]):Converter[E,S,B]	= it flatMap func
 			}
+	*/
 
 	implicit def ConverterSemigroup[E:Semigroup,S,T]:Semigroup[Converter[E,S,T]]	=
 			Semigroup instance (_ orElse _)

@@ -27,14 +27,13 @@ trait Applicative[F[_]] extends Functor[F] {
 
 	//------------------------------------------------------------------------------
 
-	// TODO have syntax for these?
 	// TODO allow F[T] forall T for these?
 
-	def ifA(cond:Boolean)(value:F[Unit]):F[Unit]	=
+	final def ifA(cond:Boolean)(value:F[Unit]):F[Unit]	=
 			if (cond)	value
 			else		pureUnit
 
-	def optionalA[T](value:Option[T])(action:T=>F[Unit]):F[Unit]	=
+	final def optionalA[T](value:Option[T])(action:T=>F[Unit]):F[Unit]	=
 			value match {
 				case Some(x)	=> action(x)
 				case None		=> pureUnit

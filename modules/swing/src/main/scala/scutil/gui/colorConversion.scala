@@ -12,7 +12,7 @@ object colorConversion {
 	}
 
 	def RGBA_Color(it:RGBA):Color	= new Color(it.rgb.r, it.rgb.g, it.rgb.b, it.alpha.a)
-	def Color_RGBA(it:Color):RGBA	=  {
+	def Color_RGBA(it:Color):RGBA	= {
 		val Array(r, g, b, a)	= it getRGBComponents null
 		RGBA(RGB(r, g, b), Alpha(a))
 	}

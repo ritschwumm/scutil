@@ -2,6 +2,7 @@ package scutil.lang.pimp
 
 import java.nio.charset.Charset
 
+import scala.annotation.tailrec
 import scala.collection.mutable
 
 import scutil.lang._
@@ -10,32 +11,32 @@ object StringImplicits extends StringImplicits
 
 trait StringImplicits {
 	implicit final class LangStringExt(peer:String) {
-		def toBooleanOption:Option[Boolean]	= toBooleanEither.toOption
-		def toByteOption:Option[Byte]		= toByteEither.toOption
-		def toShortOption:Option[Short]		= toShortEither.toOption
-		def toIntOption:Option[Int]			= toIntEither.toOption
-		def toLongOption:Option[Long]		= toLongEither.toOption
-		def toFloatOption:Option[Float]		= toFloatEither.toOption
-		def toDoubleOption:Option[Double]	= toDoubleEither.toOption
-		def toBigIntOption:Option[BigInt]	= toBigIntEither.toOption
+		def toBooleanOption:Option[Boolean]	= parseBoolean.toOption
+		def toByteOption:Option[Byte]		= parseByte.toOption
+		def toShortOption:Option[Short]		= parseShort.toOption
+		def toIntOption:Option[Int]			= parseInt.toOption
+		def toLongOption:Option[Long]		= parseLong.toOption
+		def toFloatOption:Option[Float]		= parseFloat.toOption
+		def toDoubleOption:Option[Double]	= parseDouble.toOption
+		def toBigIntOption:Option[BigInt]	= parseBigInt.toOption
 
 		// toBoolean throws an IllegalArgumentException, not a NumberFormatException
-		def toBooleanEither:Either[NumberFormatException,Boolean]	=
+		def parseBoolean:Either[NumberFormatException,Boolean]	=
 				peer match {
 					case "true"		=> Right(true)
 					case "false"	=> Right(false)
 					case null		=> Left(new NumberFormatException("null is not a boolean"))
 					case x			=> Left(new NumberFormatException("not a boolean: " + x))
 				}
-		def toByteEither:Either[NumberFormatException,Byte]		= toNumberEither(_.toByte)
-		def toShortEither:Either[NumberFormatException,Short]	= toNumberEither(_.toShort)
-		def toIntEither:Either[NumberFormatException,Int]		= toNumberEither(_.toInt)
-		def toLongEither:Either[NumberFormatException,Long]		= toNumberEither(_.toLong)
-		def toFloatEither:Either[NumberFormatException,Float]	= toNumberEither(_.toFloat)
-		def toDoubleEither:Either[NumberFormatException,Double]	= toNumberEither(_.toDouble)
-		def toBigIntEither:Either[NumberFormatException,BigInt]	= toNumberEither(BigInt(_))
+		def parseByte:Either[NumberFormatException,Byte]		= parseNumber(_.toByte)
+		def parseShort:Either[NumberFormatException,Short]		= parseNumber(_.toShort)
+		def parseInt:Either[NumberFormatException,Int]			= parseNumber(_.toInt)
+		def parseLong:Either[NumberFormatException,Long]		= parseNumber(_.toLong)
+		def parseFloat:Either[NumberFormatException,Float]		= parseNumber(_.toFloat)
+		def parseDouble:Either[NumberFormatException,Double]	= parseNumber(_.toDouble)
+		def parseBigInt:Either[NumberFormatException,BigInt]	= parseNumber(BigInt(_))
 
-		private def toNumberEither[T](func:String=>T):Either[NumberFormatException,T]	=
+		private def parseNumber[T](func:String=>T):Either[NumberFormatException,T]	=
 				Catch.byType[NumberFormatException] in func(peer)
 
 		//------------------------------------------------------------------------------
@@ -79,7 +80,7 @@ trait StringImplicits {
 		/** excludes the separator string itself */
 		def splitAroundString(separator:String):ISeq[String] = {
 			val	out	= new mutable.ArrayBuffer[String]
-			@scala.annotation.tailrec
+			@tailrec
 			def loop(pos:Int):ISeq[String]	=
 					peer indexOf (separator, pos) match {
 						case -1 =>

@@ -3,13 +3,14 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.150.0",
+	version			:= "0.151.0",
 
-	scalaVersion	:= "2.12.7",
+	scalaVersion	:= "2.12.8",
 	scalacOptions	++= Seq(
 		"-deprecation",
 		"-unchecked",
 		"-feature",
+		"-opt:l:method",
 		"-opt:l:inline",
 		"-opt-inline-from:scutil.**",
 		"-Xfatal-warnings",
@@ -20,7 +21,7 @@ inThisBuild(Seq(
 	conflictManager	:= ConflictManager.strict,
 	resolvers		+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
 	resolvers 		+= Resolver sonatypeRepo "releases",
-	addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.8"),
+	addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.9"),
 
 	wartremoverErrors	++= Seq(
 		Wart.AsInstanceOf,
@@ -48,7 +49,7 @@ inThisBuild(Seq(
 
 lazy val fixConsoleSettings	=
 		Seq(
-			scalacOptions in (Compile, console) ~= (opts => opts filterNot Set(
+			Compile / console / scalacOptions ~= (opts => opts filterNot Set(
 				"-Xlint",
 				"-Xfatal-warnings"
 			))
@@ -112,9 +113,9 @@ lazy val `scutil-base`	=
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "4.3.5"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "4.3.6"				% "test"
 			),
-			boilerplateSource in Compile := baseDirectory.value.getParentFile / "src" / "main" / "boilerplate"
+			Compile / boilerplateSource	:= baseDirectory.value.getParentFile / "src" / "main" / "boilerplate"
 		)
 		.jvmSettings()
 		.jsSettings(
@@ -139,12 +140,12 @@ lazy val `scutil-core`	=
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "4.3.5"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "4.3.6"				% "test"
 			),
 
 			//------------------------------------------------------------------------------
 
-			initialCommands in console	:= """
+			console / initialCommands	:= """
 				import scala.language.postfixOps
 				import java.io.File
 				import scutil.lang._

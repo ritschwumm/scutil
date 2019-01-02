@@ -181,8 +181,8 @@ final class ByteString private (private val value:Array[Byte]) {
 
 	//------------------------------------------------------------------------------
 
-	def asString(charset:Charset):String		= new String(value, charset)
-	def asUtf8String(charset:Charset):String	= asString(Charsets.utf_8)
+	def asString(charset:Charset):String	= new String(value, charset)
+	def asUtf8String:String					= asString(Charsets.utf_8)
 
 	def toArray:Array[Byte]	= {
 		val tmp	= new Array[Byte](size)

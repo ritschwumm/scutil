@@ -24,6 +24,18 @@ trait InputStreamImplicits {
 			offset
 		}
 
+		def readLimitedByteString(length:Int):Option[ByteString]	= {
+			val buffer	= new Array[Byte](length)
+			val found	= peer read buffer
+				 if (found == -1)	None
+			else if (found == 0)	Some(ByteString.empty)
+			else Some(
+				(ByteString makeWithArray found) { out =>
+					System arraycopy (buffer, 0, out, 0, found)
+				}
+			)
+		}
+
 		/** read the complete content */
 		def readFullyByteString():ByteString	=
 				ByteString unsafeFromArray readFullyImpl()
