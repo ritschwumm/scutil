@@ -42,7 +42,7 @@ object Text {
 	differently from stripMargin it ignores lines where stripping cannot be applied.
 	*/
 	def stripMarginOnly(s:String):String	=
-			s.lines collect { case Strip(it) => it } mkString "\n"
+			s.linesIterator collect { case Strip(it) => it } mkString "\n"
 
 	def table(rows:ISeq[ISeq[String]]):ISeq[String]	= {
 		val widths	=

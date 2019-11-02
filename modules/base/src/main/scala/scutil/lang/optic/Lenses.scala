@@ -24,6 +24,12 @@ object Lenses {
 	def map[K,V](k:K):Lens[Map[K,V],Option[V]]	=
 			Lens fromStoreAt (_ optionStoreAt k)
 
+	/*
+	// TODO check this works
+	def mapWithDefault2[S,T](key:S, default:T):Lens[Map[S,T],T]	=
+			map(key) >=> (Bijections withDefault default).toLens
+	*/
+
 	def mapWithDefault[S,T](key:S, default:T):Lens[Map[S,T],T]	=
 			Lens(
 				get	= map =>
