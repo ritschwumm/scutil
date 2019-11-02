@@ -1,13 +1,15 @@
 package scutil.lang
 
+import scala.annotation.tailrec
+
 import scutil.lang.tc._
 
 object Io extends IoInstances {
-	def pure[T](it:T):Io[T]			= Io(() => it)
-	def delay[T](it: =>T):Io[T]		= Io(() => it)
-	def thunk[T](it:Thunk[T]):Io[T]	= Io(it)
+	def pure[T](it:T):Io[T]			= Io.Pure(it)
+	def delay[T](it: =>T):Io[T]		= Io.Suspend(() => it)
+	def thunk[T](it:Thunk[T]):Io[T]	= Io.Suspend(it)
 
-	def pureUnit:Io[Unit]	= Io(()=>())
+	def pureUnit:Io[Unit]	= Io.Pure(())
 
 	//------------------------------------------------------------------------------
 
@@ -25,51 +27,79 @@ object Io extends IoInstances {
 			new NaturalTransformation[Io,Later] {
 				def apply[T](orig:Io[T]):Later[T]	= orig.toLater
 			}
+
+	//------------------------------------------------------------------------------
+
+	final case class Pure[T](value:T) 							extends Io[T]
+	final case class Suspend[T](thunk:()=>T) 					extends Io[T]
+	final case class Map[S,T](base:Io[S], func:S=>T) 			extends Io[T]
+	final case class FlatMap[S,T](base:Io[S], func:S=>Io[T]) 	extends Io[T]
 }
 
-final case class Io[T](unsafeRun:()=>T) {
-	def attempt:Io[Either[Exception,T]]	=
-			Io { () =>
+sealed trait Io[T] {
+	@tailrec
+	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
+	final def unsafeRun():T	=
+			this match {
+				case Io.Pure(value)		=> value
+				case Io.Suspend(thunk)	=> thunk()
+				case Io.Map(base2, func2)	=>
+					base2 match {
+						case Io.Pure(value)				=> func2(value)
+						case Io.Suspend(thunk)			=> func2(thunk())
+						case Io.Map(base1, func1)		=> Io.Map(base1, func1 andThen func2).asInstanceOf[Io[T]].unsafeRun()
+						case Io.FlatMap(base1, func1)	=> Io.FlatMap(base1, (it:Any) => Io.Map(func1(it), func2)).asInstanceOf[Io[T]].unsafeRun()
+					}
+				case Io.FlatMap(base2, func2)	=>
+					base2 match {
+						case Io.Pure(value)				=> func2(value).unsafeRun()
+						case Io.Suspend(thunk)			=> func2(thunk()).unsafeRun()
+						case Io.Map(base1, func1)		=> Io.FlatMap(base1, func1 andThen func2).asInstanceOf[Io[T]].unsafeRun()
+						case Io.FlatMap(base1, func1)	=> Io.FlatMap(base1, (it:Any) => Io.FlatMap(func1(it), func2)).asInstanceOf[Io[T]].unsafeRun()
+					}
+			}
+
+	final def attempt:Io[Either[Exception,T]]	=
+			Io.Suspend { () =>
 				try { Right(unsafeRun()) }
 				catch { case e:Exception => Left(e) }
 			}
 
-	def map[U](func:T=>U):Io[U]	=
-			Io { () =>
-				func(unsafeRun())
-			}
+	final def map[U](func:T=>U):Io[U]	=
+			Io.Map(this, func)
 
 	/** function effect first */
-	def pa[U](that:Io[T=>U]):Io[U]	=
-			Io { () =>
-				that.unsafeRun()(unsafeRun())
-			}
+	final def pa[U](that:Io[T=>U]):Io[U]	=
+			Io.FlatMap(that, (tu:(T=>U)) => Io.Map(this, (t:T) => tu(t)))
+			//for { f <- that; v <- this } yield f(v)
 
 	/** function effect first */
-	def ap[U,V](that:Io[U])(implicit ev:T=>U=>V):Io[V]	=
+	final def ap[U,V](that:Io[U])(implicit ev:T=>U=>V):Io[V]	=
 			that pa (this map ev)
 
-	def flatMap[U](func:T=>Io[U]):Io[U]	=
-			Io { () =>
-				func(unsafeRun()).unsafeRun()
-			}
+	final def flatMap[U](func:T=>Io[U]):Io[U]	=
+			Io.FlatMap(this, func)
 
-	def flatten[U](implicit ev:T=>Io[U]):Io[U]	=
+	final def flatten[U](implicit ev:T=>Io[U]):Io[U]	=
 			flatMap(ev)
 
-	def zip[U](that:Io[U]):Io[(T,U)]	=
-			for { t	<- this; u	<- that } yield (t,u)
+	final def zip[U](that:Io[U]):Io[(T,U)]	=
+			Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => (t,u)))
+			//for { t	<- this; u	<- that } yield (t,u)
 
-	def zipWith[U,V](that:Io[U])(func:(T,U)=>V):Io[V]	=
-			for { t	<- this; u	<- that } yield func(t,u)
+	final def zipWith[U,V](that:Io[U])(func:(T,U)=>V):Io[V]	=
+			Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => func(t,u)))
+			//for { t	<- this; u	<- that } yield func(t,u)
 
-	def first[U](that:Io[U]):Io[T]	=
-			for { t	<- this; _	<- that } yield t
+	final def first[U](that:Io[U]):Io[T]	=
+			Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => t))
+			//for { t	<- this; _	<- that } yield t
 
-	def second[U](that:Io[U]):Io[U]	=
-			for { _	<- this; u	<- that } yield u
+	final def second[U](that:Io[U]):Io[U]	=
+			Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => u))
+			//for { _	<- this; u	<- that } yield u
 
-	def toLater:Later[T]	=
+	final def toLater:Later[T]	=
 			Later { cont =>
 				cont(unsafeRun())
 			}

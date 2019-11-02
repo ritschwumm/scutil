@@ -23,7 +23,7 @@ object Disposable extends DisposableInstances {
 	def allVar(subs:Disposable*):Disposable	= all(subs.toVector)
 
 	def fromIo(io:Io[Unit]):Disposable	=
-			Disposable(io.unsafeRun)
+			Disposable(io.unsafeRun _)
 }
 
 /** something with a destructor */

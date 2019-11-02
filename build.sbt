@@ -3,7 +3,7 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.157.0",
+	version			:= "0.158.0",
 
 	scalaVersion	:= "2.12.8",
 	scalacOptions	++= Seq(
@@ -21,7 +21,7 @@ inThisBuild(Seq(
 	conflictManager	:= ConflictManager.strict,
 	resolvers		+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
 	resolvers 		+= Resolver sonatypeRepo "releases",
-	addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.1"),
+	addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
 
 	wartremoverErrors	++= Seq(
 		Wart.AsInstanceOf,
@@ -116,7 +116,7 @@ lazy val `scutil-base`	=
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "4.5.1"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "4.6.0"				% "test"
 			),
 			Compile / boilerplateSource	:= baseDirectory.value.getParentFile / "src" / "main" / "boilerplate"
 		)
@@ -143,7 +143,7 @@ lazy val `scutil-core`	=
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "4.5.1"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "4.6.0"				% "test"
 			),
 
 			//------------------------------------------------------------------------------
