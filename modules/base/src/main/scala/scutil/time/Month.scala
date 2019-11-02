@@ -38,6 +38,12 @@ object Month extends MonthInstances {
 				case 11	=> December
 			}
 
+	def ordering(first:Month):Ordering[Month]	=
+			Ordering[Int] on { month =>
+				if (month.index >= first.index)	month.index
+				else							month.index + count
+			}
+
 	//------------------------------------------------------------------------------
 
 	case object January		extends Month

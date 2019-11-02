@@ -20,5 +20,24 @@ class AssocTest extends Specification {
 			typed[ String -> Int -> Long ](a)
 			a mustEqual a
 		}
+
+		//------------------------------------------------------------------------------
+
+		"construct right-associative" in {
+			val a	= "a" ->: 1 ->: 2L
+			a mustEqual (("a", (1, 2L)))
+		}
+
+		"destruct right-associative" in {
+			val a	= "a" ->: 1 ->: 2L
+			val b	= a match { case x ->: y ->: z => (x,y,z) }
+			b mustEqual (("a", 1, 2L))
+		}
+
+		"type right-associative" in {
+			val a	= ("a",(1,2L))
+			typed[ String ->: Int ->: Long ](a)
+			a mustEqual a
+		}
 	}
 }

@@ -3,9 +3,9 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.159.0",
+	version			:= "0.160.0",
 
-	scalaVersion	:= "2.12.8",
+	scalaVersion	:= "2.12.10",
 	scalacOptions	++= Seq(
 		"-deprecation",
 		"-unchecked",
@@ -18,10 +18,9 @@ inThisBuild(Seq(
 		"-Ypartial-unification"
 	),
 
-	conflictManager	:= ConflictManager.strict,
-	resolvers		+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
+	conflictManager	:= ConflictManager.strict withOrganization "^(?!(org\\.scala-lang|org\\.scala-js)(\\..*)?)$",
 	resolvers 		+= Resolver sonatypeRepo "releases",
-	addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+	addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full),
 
 	wartremoverErrors	++= Seq(
 		Wart.AsInstanceOf,
@@ -110,13 +109,12 @@ lazy val `scutil-base`	=
 				"-language:higherKinds"//,
 				// "-language:reflectiveCalls",
 				// "-language:dynamics",
-				// "-language:postfixOps",
 				// "-language:experimental.macros",
 				// "-Ymacro-debug-lite",
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "4.6.0"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "4.8.0"				% "test"
 			),
 			Compile / boilerplateSource	:= baseDirectory.value.getParentFile / "src" / "main" / "boilerplate"
 		)
@@ -137,13 +135,12 @@ lazy val `scutil-core`	=
 				// "-language:higherKinds",
 				// "-language:reflectiveCalls",
 				// "-language:dynamics",
-				// "-language:postfixOps",
 				// "-language:experimental.macros",
 				// "-Ymacro-debug-lite",
 			),
 			libraryDependencies	++= Seq(
 				"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-				"org.specs2"		%%	"specs2-core"	% "4.6.0"				% "test"
+				"org.specs2"		%%	"specs2-core"	% "4.8.0"				% "test"
 			),
 
 			//------------------------------------------------------------------------------
@@ -177,7 +174,6 @@ lazy val `scutil-swing`	=
 				// "-language:higherKinds",
 				// "-language:reflectiveCalls",
 				// "-language:dynamics",
-				// "-language:postfixOps",
 				// "-language:experimental.macros",
 			)
 		)
@@ -195,7 +191,6 @@ lazy val `scutil-xml`	=
 				// "-language:higherKinds",
 				// "-language:reflectiveCalls",
 				// "-language:dynamics",
-				// "-language:postfixOps",
 				// "-language:experimental.macros",
 			),
 			libraryDependencies	++= Seq(
@@ -216,7 +211,6 @@ lazy val `scutil-guid`	=
 				// "-language:higherKinds",
 				// "-language:reflectiveCalls",
 				// "-language:dynamics",
-				// "-language:postfixOps",
 				// "-language:experimental.macros",
 			)
 		)

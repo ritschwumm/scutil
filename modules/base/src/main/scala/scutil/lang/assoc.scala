@@ -8,6 +8,22 @@ trait assocBase {
 	object -> {
 		def unapply[S,T](value:(S,T)):Option[(S,T)]	= Some(value)
 	}
+
+	//------------------------------------------------------------------------------
+	//## right-associative variant of ->
+
+	/** like the -> type, but right-associative */
+	type ->:[A,B]	= (A,B)
+
+	implicit final class AssocAnyExt[T](peer:T) {
+		/** like the -> method, but right-associative */
+		def ->: [S](that:S):(S,T)	= that -> peer
+	}
+
+	/** like the -> extractor, but right-associative */
+	object ->: {
+		def unapply[S,T](value:(S,T)):Option[(S,T)]	= Some(value)
+	}
 }
 
 // trait assocGenerated extends assocBase

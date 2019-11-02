@@ -74,6 +74,10 @@ trait IterableImplicits {
 			(builder1.result, builder2.result)
 		}
 
+		/** create a set from all elements with a given function to generate the items */
+		def setBy[U](func:T=>U):Set[U]	=
+				peer.map(func).toSet
+
 		/** create a map from all elements with a given function to generate the keys */
 		def mapBy[S](key:T=>S):Map[S,T]	=
 				mapToMap(it => (key(it), it))

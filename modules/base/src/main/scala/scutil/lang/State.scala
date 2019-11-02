@@ -20,6 +20,11 @@ object State extends StateInstances {
 }
 
 final case class State[S,+T](run:S=>(S,T)) {
+	def runState(it:S):S	= run(it)._1
+	def runResult(it:S):T	= run(it)._2
+
+	//------------------------------------------------------------------------------
+
 	def map[U](func:T=>U):State[S,U]	=
 			State { s1 =>
 				val (s2, t)	= run(s1)
