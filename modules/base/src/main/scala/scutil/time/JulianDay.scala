@@ -51,7 +51,7 @@ final case class JulianDay(value:Int) extends Ordered[JulianDay] {
 	lazy val weekday:Weekday	=
 			Weekday fromIndex value
 
-	override def toString:String	= s"JD$value"
+	override def toString:String	= s"JD${value.toString}"
 }
 
 trait JulianDayInstances {

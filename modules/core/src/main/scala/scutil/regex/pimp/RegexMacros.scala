@@ -16,7 +16,7 @@ private final class RegexMacros(val c:Context) {
 		catch { case e:PatternSyntaxException =>
 			c abort (
 				c.enclosingPosition,
-				s"invalid regex literal ${str} at index ${e.getIndex}: " + e.getDescription
+				s"invalid regex literal ${str} at index ${e.getIndex.toString}: " + e.getDescription
 			)
 		}
 	}

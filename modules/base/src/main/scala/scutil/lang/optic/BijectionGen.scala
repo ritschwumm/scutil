@@ -34,11 +34,11 @@ private final class BijectionGen(val c:Context) {
 				}
 				else {
 					for {
-						_					<-	selfTypeSymbol.isClass && selfTypeSymbol.asClass.isCaseClass	guardEither	s"${selfTypeSymbol} is not a case class"
+						_					<-	selfTypeSymbol.isClass && selfTypeSymbol.asClass.isCaseClass	guardEither	s"${selfTypeSymbol.toString} is not a case class"
 
 						companionSymbol		<-	selfTypeSymbol.companion
 												.optionNotBy	{ _ == NoSymbol }
-												.toRight		(s"unexpected NoSymbol for companion of ${selfTypeSymbol}")
+												.toRight		(s"unexpected NoSymbol for companion of ${selfTypeSymbol.toString}")
 
 						// TODO use this?
 						// companionModule	= companionSymbol.asModule
@@ -67,7 +67,7 @@ private final class BijectionGen(val c:Context) {
 
 						unapplySignature	<-	unapplySingle
 												.matchOption	{ case t @ TypeRef(_, _, _)	=> t }
-												.toRight		(s"unexpected unapply return ${unapplySingle}")
+												.toRight		(s"unexpected unapply return ${unapplySingle.toString}")
 
 						applySymbol			<-	getDeclaration(companionType, "apply")
 						applyMethods		=	applySymbol.asMethod.alternatives
@@ -140,5 +140,5 @@ private final class BijectionGen(val c:Context) {
 	private def getDeclaration(typ:Type, name:String):Either[String,Symbol]	=
 			(typ decl TermName(name))
 			.optionNotBy	{ _ == NoSymbol }
-			.toRight		(s"unexpected NoSymbol for companion declaration ${name} of type ${typ}")
+			.toRight		(s"unexpected NoSymbol for companion declaration ${name} of type ${typ.toString}")
 }

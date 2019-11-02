@@ -58,5 +58,5 @@ final class IoRef[T](initial:T) {
 			modifyInIo(state map (_.run))
 
 	override def toString:String	=
-			s"IoRef(${get.unsafeRun()})"
+			"IoRef(...)"
 }

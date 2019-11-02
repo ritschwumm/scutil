@@ -91,5 +91,5 @@ final class DoubleRect private (val horizontal:DoubleSpan, val vertical:DoubleSp
 
 	override def hashCode():Int		= this.horizontal.hashCode ^ this.vertical.hashCode
 
-	override def toString:String	= s"DoubleRect(left=$left, top=$top, right=$right, bottom=$bottom, width=$width, height=$height)"
+	override def toString:String	= s"DoubleRect(left=${left.toString}, top=${top.toString}, right=${right.toString}, bottom=${bottom.toString}, width=${width.toString}, height=${height.toString})"
 }

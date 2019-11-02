@@ -9,12 +9,6 @@ based on Scala	code by nafg		at https://github.com/nafg/reactive/blob/master/rea
 based on Java	code by Neil Jones	at http://bix.ucsd.edu/bioalgorithms/downloads/code/LCS.java
 */
 object Diff {
-	private sealed trait Direction
-	private case object Neither		extends Direction
-	private case object Up			extends Direction
-	private case object Left		extends Direction
-	private case object UpAndLeft	extends Direction
-
 	private def equalsMethod[T](a:T, b:T):Boolean	= a == b
 
 	// BETTER only compare from the first different element to the last different element
@@ -22,18 +16,18 @@ object Diff {
 		val n	= a.length
 		val m	= b.length
 
-		val S	= Array.ofDim[Int]		(n+1, m+1)
-		val R	= Array.ofDim[Direction](n+1, m+1)
+		val S	= Array.ofDim[Int]			(n+1, m+1)
+		val R	= Array.ofDim[DiffDirection](n+1, m+1)
 
 		// It is important to use to, not until.
 		// The next two for-loops are initialization
 		for (ii <- 0 to n) {
 			S(ii)(0) = 0
-			R(ii)(0) = Up
+			R(ii)(0) = DiffDirection.Up
 		}
 		for (jj <- 0 to m) {
 			S(0)(jj) = 0
-			R(0)(jj) = Left
+			R(0)(jj) = DiffDirection.Left
 		}
 
 		// This is the main dynamic programming loop that
@@ -44,21 +38,21 @@ object Diff {
 		} {
 			if (equal(a(ii-1), b(jj-1))) {
 				S(ii)(jj)	= S(ii-1)(jj-1) + 1
-				R(ii)(jj)	= UpAndLeft
+				R(ii)(jj)	= DiffDirection.UpAndLeft
 			}
 			else {
 				S(ii)(jj)	= S(ii-1)(jj-1) + 0
-				R(ii)(jj)	= Neither
+				R(ii)(jj)	= DiffDirection.Neither
 			}
 
 			if (S(ii-1)(jj) >= S(ii)(jj)) {
 				S(ii)(jj)	= S(ii-1)(jj)
-				R(ii)(jj)	= Up
+				R(ii)(jj)	= DiffDirection.Up
 			}
 
 			if (S(ii)(jj-1) >= S(ii)(jj)) {
 				S(ii)(jj)	= S(ii)(jj-1)
-				R(ii)(jj)	= Left
+				R(ii)(jj)	= DiffDirection.Left
 			}
 		}
 
@@ -71,28 +65,28 @@ object Diff {
 		var jj	= m
 		while (ii > 0 || jj > 0) {
 			R(ii)(jj) match {
-				case UpAndLeft =>
+				case DiffDirection.UpAndLeft =>
 					ii		-= 1
 					jj		-= 1
-				case Up =>
+				case DiffDirection.Up =>
 					ii		-= 1
-					diffs	+:= Remove(ii, a(ii))
-				case Left =>
+					diffs	+:= Delta.Remove(ii, a(ii))
+				case DiffDirection.Left =>
 					jj		-= 1
-					diffs	+:= Include(jj, b(jj))
-				case Neither =>
+					diffs	+:= Delta.Include(jj, b(jj))
+				case DiffDirection.Neither =>
 					// nothing to do here
 			}
 		}
 
 		var offset	= 0
 		val deltas	= diffs map {
-			case Include(index, element) =>
+			case Delta.Include(index, element) =>
 				offset	+= 1
-				Include(index, element)
-			case Remove(index, element) =>
+				Delta.Include(index, element)
+			case Delta.Remove(index, element) =>
 				offset	-= 1
-				Remove(index + offset + 1, element)
+				Delta.Remove(index + offset + 1, element)
 		}
 
 		Diff(deltas)
@@ -103,8 +97,8 @@ final case class Diff[T](deltas:ISeq[Delta[T]]) {
 	def patch(iseq:ISeq[T]):ISeq[T]	= {
 		val out	= mutable.ArrayBuffer(iseq:_*)
 		deltas foreach {
-			case Include(index, element)	=> out insert (index, element)
-			case Remove(index, element)		=> out remove index
+			case Delta.Include(index, element)	=> out insert (index, element)
+			case Delta.Remove(index, element)	=> out remove index
 		}
 		out.toVector
 	}

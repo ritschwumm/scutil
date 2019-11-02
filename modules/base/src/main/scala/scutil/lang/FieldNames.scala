@@ -21,8 +21,8 @@ object FieldNames {
 
 		val names:Either[String,Tree]	=
 				for {
-					primaryCtor		<- singleOption(primaryCtors)			toRight s"primary constructor not found in ${selfType}"
-					paramNames		<- singleOption(primaryCtor.paramLists)	toRight s"primary constructor has multiple parameter lists in ${selfType}"
+					primaryCtor		<- singleOption(primaryCtors)			toRight s"primary constructor not found in ${selfType.toString}"
+					paramNames		<- singleOption(primaryCtor.paramLists)	toRight s"primary constructor has multiple parameter lists in ${selfType.toString}"
 					decodedNames	= paramNames map { _.name.decodedName.toString }
 				}
 				yield {

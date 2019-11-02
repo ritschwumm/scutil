@@ -97,7 +97,7 @@ object DndFileImport {
 		private def fileFromURI2(s:String):Either[Exception,File]	=
 				Catch.exception in {
 					val file	= new File(s)
-					if (!file.exists)	throw new FileNotFoundException(s"file does not exist: $file")
+					if (!file.exists)	throw new FileNotFoundException(s"file does not exist: ${file.toString}")
 					file
 				}
 
@@ -105,7 +105,7 @@ object DndFileImport {
 				jlist.toISeq.toNesOption toGood badMessage(s"empty file list")
 
 		private def filesFromURL(url:URL):Validated[Nes[Exception],Nes[File]]	=
-				url.toFile toGood badMessage(s"not a file url: ${url}") map Nes.single
+				url.toFile toGood badMessage(s"not a file url: ${url.toString}") map Nes.single
 
 		//------------------------------------------------------------------------------
 

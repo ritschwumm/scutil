@@ -65,5 +65,5 @@ final class DoubleSpan private (val start:Double, val size:Double) {
 
 	override def hashCode():Int		= this.start.hashCode ^ this.size.hashCode
 
-	override def toString:String	= s"DoubleSpan(start=$start, end=$end, size=$size)"
+	override def toString:String	= s"DoubleSpan(start=${start.toString}, end=${end.toString}, size=${size.toString})"
 }

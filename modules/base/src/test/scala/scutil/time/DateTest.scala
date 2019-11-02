@@ -46,121 +46,121 @@ class DateTest extends Specification {
 		}
 
 		"have the correct week day" in {
-			GregorianDate(1,1,2005).weekday mustEqual Saturday
+			GregorianDate(1,1,2005).weekday mustEqual Weekday.Saturday
 		}
 		"have the correct week day" in {
-			GregorianDate(2,1,2005).weekday mustEqual Sunday
+			GregorianDate(2,1,2005).weekday mustEqual Weekday.Sunday
 		}
 		"have the correct week day" in {
-			GregorianDate(31,12,2005).weekday mustEqual Saturday
+			GregorianDate(31,12,2005).weekday mustEqual Weekday.Saturday
 		}
 		"have the correct week day" in {
-			GregorianDate(1,1,2006).weekday mustEqual Sunday
+			GregorianDate(1,1,2006).weekday mustEqual Weekday.Sunday
 		}
 		"have the correct week day" in {
-			GregorianDate(2,1,2006).weekday mustEqual Monday
+			GregorianDate(2,1,2006).weekday mustEqual Weekday.Monday
 		}
 		"have the correct week day" in {
-			GregorianDate(31,12,2006).weekday mustEqual Sunday
+			GregorianDate(31,12,2006).weekday mustEqual Weekday.Sunday
 		}
 		"have the correct week day" in {
-			GregorianDate(1,1,2007).weekday mustEqual Monday
+			GregorianDate(1,1,2007).weekday mustEqual Weekday.Monday
 		}
 		"have the correct week day" in {
-			GregorianDate(30,12,2007).weekday mustEqual Sunday
+			GregorianDate(30,12,2007).weekday mustEqual Weekday.Sunday
 		}
 		"have the correct week day" in {
-			GregorianDate(31,12,2007).weekday mustEqual Monday
+			GregorianDate(31,12,2007).weekday mustEqual Weekday.Monday
 		}
 		"have the correct week day" in {
-			GregorianDate(1,1,2008).weekday mustEqual Tuesday
+			GregorianDate(1,1,2008).weekday mustEqual Weekday.Tuesday
 		}
 		"have the correct week day" in {
-			GregorianDate(28,12,2008).weekday mustEqual Sunday
+			GregorianDate(28,12,2008).weekday mustEqual Weekday.Sunday
 		}
 		"have the correct week day" in {
-			GregorianDate(29,12,2008).weekday mustEqual Monday
+			GregorianDate(29,12,2008).weekday mustEqual Weekday.Monday
 		}
 		"have the correct week day" in {
-			GregorianDate(30,12,2008).weekday mustEqual Tuesday
+			GregorianDate(30,12,2008).weekday mustEqual Weekday.Tuesday
 		}
 		"have the correct week day" in {
-			GregorianDate(31,12,2008).weekday mustEqual Wednesday
+			GregorianDate(31,12,2008).weekday mustEqual Weekday.Wednesday
 		}
 		"have the correct week day" in {
-			GregorianDate(1,1,2009).weekday mustEqual Thursday
+			GregorianDate(1,1,2009).weekday mustEqual Weekday.Thursday
 		}
 		"have the correct week day" in {
-			GregorianDate(31,12,2009).weekday mustEqual Thursday
+			GregorianDate(31,12,2009).weekday mustEqual Weekday.Thursday
 		}
 		"have the correct week day" in {
-			GregorianDate(1,1,2010).weekday mustEqual Friday
+			GregorianDate(1,1,2010).weekday mustEqual Weekday.Friday
 		}
 		"have the correct week day" in {
-			GregorianDate(2,1,2010).weekday mustEqual Saturday
+			GregorianDate(2,1,2010).weekday mustEqual Weekday.Saturday
 		}
 		"have the correct week day" in {
-			GregorianDate(3,1,2010).weekday mustEqual Sunday
+			GregorianDate(3,1,2010).weekday mustEqual Weekday.Sunday
 		}
 	}
 
 	"GregorianDate week day" should {
 		"have the correct week day" in {
-			GregorianDate(1,1,2005).weekday mustEqual Saturday
+			GregorianDate(1,1,2005).weekday mustEqual Weekday.Saturday
 		}
 		"have the correct week day" in {
-			GregorianDate(2,1,2005).weekday mustEqual Sunday
+			GregorianDate(2,1,2005).weekday mustEqual Weekday.Sunday
 		}
 		"have the correct week day" in {
-			GregorianDate(31,12,2005).weekday mustEqual Saturday
+			GregorianDate(31,12,2005).weekday mustEqual Weekday.Saturday
 		}
 		"have the correct week day" in {
-			GregorianDate(1,1,2006).weekday mustEqual Sunday
+			GregorianDate(1,1,2006).weekday mustEqual Weekday.Sunday
 		}
 		"have the correct week day" in {
-			GregorianDate(2,1,2006).weekday mustEqual Monday
+			GregorianDate(2,1,2006).weekday mustEqual Weekday.Monday
 		}
 		"have the correct week day" in {
-			GregorianDate(31,12,2006).weekday mustEqual Sunday
+			GregorianDate(31,12,2006).weekday mustEqual Weekday.Sunday
 		}
 		"have the correct week day" in {
-			GregorianDate(1,1,2007).weekday mustEqual Monday
+			GregorianDate(1,1,2007).weekday mustEqual Weekday.Monday
 		}
 		"have the correct week day" in {
-			GregorianDate(30,12,2007).weekday mustEqual Sunday
+			GregorianDate(30,12,2007).weekday mustEqual Weekday.Sunday
 		}
 		"have the correct week day" in {
-			GregorianDate(31,12,2007).weekday mustEqual Monday
+			GregorianDate(31,12,2007).weekday mustEqual Weekday.Monday
 		}
 		"have the correct week day" in {
-			GregorianDate(1,1,2008).weekday mustEqual Tuesday
+			GregorianDate(1,1,2008).weekday mustEqual Weekday.Tuesday
 		}
 		"have the correct week day" in {
-			GregorianDate(28,12,2008).weekday mustEqual Sunday
+			GregorianDate(28,12,2008).weekday mustEqual Weekday.Sunday
 		}
 		"have the correct week day" in {
-			GregorianDate(29,12,2008).weekday mustEqual Monday
+			GregorianDate(29,12,2008).weekday mustEqual Weekday.Monday
 		}
 		"have the correct week day" in {
-			GregorianDate(30,12,2008).weekday mustEqual Tuesday
+			GregorianDate(30,12,2008).weekday mustEqual Weekday.Tuesday
 		}
 		"have the correct week day" in {
-			GregorianDate(31,12,2008).weekday mustEqual Wednesday
+			GregorianDate(31,12,2008).weekday mustEqual Weekday.Wednesday
 		}
 		"have the correct week day" in {
-			GregorianDate(1,1,2009).weekday mustEqual Thursday
+			GregorianDate(1,1,2009).weekday mustEqual Weekday.Thursday
 		}
 		"have the correct week day" in {
-			GregorianDate(31,12,2009).weekday mustEqual Thursday
+			GregorianDate(31,12,2009).weekday mustEqual Weekday.Thursday
 		}
 		"have the correct week day" in {
-			GregorianDate(1,1,2010).weekday mustEqual Friday
+			GregorianDate(1,1,2010).weekday mustEqual Weekday.Friday
 		}
 		"have the correct week day" in {
-			GregorianDate(2,1,2010).weekday mustEqual Saturday
+			GregorianDate(2,1,2010).weekday mustEqual Weekday.Saturday
 		}
 		"have the correct week day" in {
-			GregorianDate(3,1,2010).weekday mustEqual Sunday
+			GregorianDate(3,1,2010).weekday mustEqual Weekday.Sunday
 		}
 	}
 
@@ -239,65 +239,65 @@ class DateTest extends Specification {
 
 	"CalendarWeek dates" should {
 		"calculate the correct date" in {
-			CalendarWeek(39, 2008) gregorianDayAt Saturday mustEqual GregorianDate(27,9,2008)
+			CalendarWeek(39, 2008) gregorianDayAt Weekday.Saturday mustEqual GregorianDate(27,9,2008)
 		}
 
 		"calculate the correct date" in {
-			CalendarWeek(53, 2004) gregorianDayAt Saturday mustEqual GregorianDate(1,1,2005)
+			CalendarWeek(53, 2004) gregorianDayAt Weekday.Saturday mustEqual GregorianDate(1,1,2005)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(53, 2004) gregorianDayAt Sunday mustEqual GregorianDate(2,1,2005)
+			CalendarWeek(53, 2004) gregorianDayAt Weekday.Sunday mustEqual GregorianDate(2,1,2005)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(52, 2005) gregorianDayAt Saturday mustEqual GregorianDate(31,12,2005)
+			CalendarWeek(52, 2005) gregorianDayAt Weekday.Saturday mustEqual GregorianDate(31,12,2005)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(52, 2005) gregorianDayAt Sunday mustEqual GregorianDate(1,1,2006)
+			CalendarWeek(52, 2005) gregorianDayAt Weekday.Sunday mustEqual GregorianDate(1,1,2006)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(1, 2006) gregorianDayAt Monday mustEqual GregorianDate(2,1,2006)
+			CalendarWeek(1, 2006) gregorianDayAt Weekday.Monday mustEqual GregorianDate(2,1,2006)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(52, 2006) gregorianDayAt Sunday mustEqual GregorianDate(31,12,2006)
+			CalendarWeek(52, 2006) gregorianDayAt Weekday.Sunday mustEqual GregorianDate(31,12,2006)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(1, 2007) gregorianDayAt Monday mustEqual GregorianDate(1,1,2007)
+			CalendarWeek(1, 2007) gregorianDayAt Weekday.Monday mustEqual GregorianDate(1,1,2007)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(52, 2007) gregorianDayAt Sunday mustEqual GregorianDate(30,12,2007)
+			CalendarWeek(52, 2007) gregorianDayAt Weekday.Sunday mustEqual GregorianDate(30,12,2007)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(1, 2008) gregorianDayAt Monday mustEqual GregorianDate(31,12,2007)
+			CalendarWeek(1, 2008) gregorianDayAt Weekday.Monday mustEqual GregorianDate(31,12,2007)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(1, 2008) gregorianDayAt Tuesday mustEqual GregorianDate(1,1,2008)
+			CalendarWeek(1, 2008) gregorianDayAt Weekday.Tuesday mustEqual GregorianDate(1,1,2008)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(52, 2008) gregorianDayAt Sunday mustEqual GregorianDate(28,12,2008)
+			CalendarWeek(52, 2008) gregorianDayAt Weekday.Sunday mustEqual GregorianDate(28,12,2008)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(1, 2009) gregorianDayAt Monday mustEqual GregorianDate(29,12,2008)
+			CalendarWeek(1, 2009) gregorianDayAt Weekday.Monday mustEqual GregorianDate(29,12,2008)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(1, 2009) gregorianDayAt Tuesday mustEqual GregorianDate(30,12,2008)
+			CalendarWeek(1, 2009) gregorianDayAt Weekday.Tuesday mustEqual GregorianDate(30,12,2008)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(1, 2009) gregorianDayAt Wednesday mustEqual GregorianDate(31,12,2008)
+			CalendarWeek(1, 2009) gregorianDayAt Weekday.Wednesday mustEqual GregorianDate(31,12,2008)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(1, 2009) gregorianDayAt Thursday mustEqual GregorianDate(1,1,2009)
+			CalendarWeek(1, 2009) gregorianDayAt Weekday.Thursday mustEqual GregorianDate(1,1,2009)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(53, 2009) gregorianDayAt Thursday mustEqual GregorianDate(31,12,2009)
+			CalendarWeek(53, 2009) gregorianDayAt Weekday.Thursday mustEqual GregorianDate(31,12,2009)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(53, 2009) gregorianDayAt Friday mustEqual GregorianDate(1,1,2010)
+			CalendarWeek(53, 2009) gregorianDayAt Weekday.Friday mustEqual GregorianDate(1,1,2010)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(53, 2009) gregorianDayAt Saturday mustEqual GregorianDate(2,1,2010)
+			CalendarWeek(53, 2009) gregorianDayAt Weekday.Saturday mustEqual GregorianDate(2,1,2010)
 		}
 		"calculate the correct date" in {
-			CalendarWeek(53, 2009) gregorianDayAt Sunday mustEqual GregorianDate(3,1,2010)
+			CalendarWeek(53, 2009) gregorianDayAt Weekday.Sunday mustEqual GregorianDate(3,1,2010)
 		}
 	}
 

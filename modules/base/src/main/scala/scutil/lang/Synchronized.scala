@@ -30,5 +30,5 @@ final class Synchronized[T](initial:T) {
 			modify(State mod func)
 
 	override def toString:String	=
-			s"Synchronized(${get})"
+			s"Synchronized(${get().toString})"
 }

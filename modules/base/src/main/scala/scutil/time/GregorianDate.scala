@@ -12,10 +12,10 @@ object GregorianDate extends GregorianDateInstances {
 /** day in 1..31, month in 1..12 */
 final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[GregorianDate] {
 	// TODO time check real values here
-	require(day		>= 1,	s"expected day >= 1, got $day")
-	require(day		<= 31,	s"expected day <= 31, got $day")
-	require(month	>= 1,	s"expected month >= 1, got $month")
-	require(month	<= 12,	s"expected month <= 12, got $month")
+	require(day		>= 1,	s"expected day >= 1, got ${day.toString}")
+	require(day		<= 31,	s"expected day <= 31, got ${day.toString}")
+	require(month	>= 1,	s"expected month >= 1, got ${month.toString}")
+	require(month	<= 12,	s"expected month <= 12, got ${month.toString}")
 
 	def move(offset:Int):GregorianDate	=
 			(toJulianDay move offset).toGregorianDate
@@ -47,7 +47,7 @@ final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[Gre
 		val jan1Julian	= GregorianDate(day = 1, month = 1, year = year).toJulianDay
 
 		val dayOfYear	= jan1Julian until thisJulian
-		val rawNumber	= (dayOfYear - weekday.index + Weekday.count + Thursday.index) / Weekday.count
+		val rawNumber	= (dayOfYear - weekday.index + Weekday.count + Weekday.Thursday.index) / Weekday.count
 		val lastNumber	= yearValue.lastCalendarWeek.number
 
 			 if (rawNumber < 1)				(yearValue move -1).lastCalendarWeek
@@ -72,7 +72,7 @@ final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[Gre
 		JulianDay(x.toInt)
 	}
 
-	override def toString:String	= s"$year-$month-$day"
+	override def toString:String	= s"${year.toString}-${month.toString}-${day.toString}"
 }
 
 trait GregorianDateInstances {

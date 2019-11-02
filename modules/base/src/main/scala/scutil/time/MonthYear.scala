@@ -18,8 +18,8 @@ object MonthYear extends MonthYearInstances {
 
 /** month in 1..12 */
 final case class MonthYear(month:Int, year:Int) extends Ordered[MonthYear] {
-	require(month >= 1,		s"expected month >= 1, got $month")
-	require(month <= 12,	s"expected month <= 12, got $month")
+	require(month >= 1,		s"expected month >= 1, got ${month.toString}")
+	require(month <= 12,	s"expected month <= 12, got ${month.toString}")
 
 	def move(offset:Int):MonthYear	= MonthYear fromIndex (toIndex + offset)
 	def until(that:MonthYear):Int	= that.toIndex - this.toIndex
@@ -46,7 +46,7 @@ final case class MonthYear(month:Int, year:Int) extends Ordered[MonthYear] {
 
 	lazy val toIndex:Int	= monthIndex + year * 12
 
-	override def toString:String	= s"$year-$month"
+	override def toString:String	= s"${year.toString}-${month.toString}"
 }
 
 trait MonthYearInstances {

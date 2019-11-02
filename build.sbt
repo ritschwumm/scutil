@@ -3,7 +3,7 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.154.0",
+	version			:= "0.155.0",
 
 	scalaVersion	:= "2.12.8",
 	scalacOptions	++= Seq(
@@ -21,7 +21,7 @@ inThisBuild(Seq(
 	conflictManager	:= ConflictManager.strict,
 	resolvers		+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
 	resolvers 		+= Resolver sonatypeRepo "releases",
-	addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.9"),
+	addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.0"),
 
 	wartremoverErrors	++= Seq(
 		Wart.AsInstanceOf,
@@ -196,7 +196,7 @@ lazy val `scutil-xml`	=
 				// "-language:experimental.macros",
 			),
 			libraryDependencies	++= Seq(
-				"org.scala-lang.modules"	%% "scala-xml"	% "1.1.1"	% "compile"
+				"org.scala-lang.modules"	%% "scala-xml"	% "1.2.0"	% "compile"
 			)
 		)
 		.dependsOn(
@@ -224,7 +224,7 @@ lazy val `scutil-guid`	=
 		.jsSettings(
 			noTestSettings,
 			libraryDependencies	++= Seq(
-				"org.scala-js"	%%%	"scalajs-dom"	% "0.9.6"	% "compile"
+				"org.scala-js"	%%%	"scalajs-dom"	% "0.9.7"	% "compile"
 			)
 		)
 lazy val `scutil-guid-jvm`	= `scutil-guid`.jvm

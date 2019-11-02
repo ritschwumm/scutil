@@ -24,17 +24,17 @@ private final class LensGenImpl(val c:Context) {
 					name			<-
 							propName
 							.matchOption	{ case Literal(Constant(name:String))	=> name }
-							.toRight		(s"unexpected propName: ${propName}")
+							.toRight		(s"unexpected propName: ${propName.toString}")
 					fieldName		= TermName(name)
 					containerType	= c.weakTypeOf[T]
 					member			<-
 							(containerType member fieldName)
 							.optionBy		{ _ != NoSymbol }
-							.toRight		(s"value ${name} is not a member of ${containerType}")
+							.toRight		(s"value ${name} is not a member of ${containerType.toString}")
 					valueType		<-
 							(member typeSignatureIn containerType)
 							.matchOption	{ case NullaryMethodType(tpe) => tpe }
-							.toRight		(s"member ${name} of ${containerType} is not a field")
+							.toRight		(s"member ${name} of ${containerType.toString} is not a field")
 					containerName	= TermName("c$")
 					valueName		= TermName("v$")
 				}

@@ -79,7 +79,7 @@ object DndFileExport {
 						// NOTE does not work on windows
 						files.head.newInputStream()
 					case x	=>
-						sys error s"unexpected DataFlavor ${x}"
+						sys error s"unexpected DataFlavor ${x.toString}"
 				}
 	}
 }

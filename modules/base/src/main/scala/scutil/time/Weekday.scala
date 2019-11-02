@@ -27,40 +27,43 @@ object Weekday extends WeekdayInstances {
 				case 5	=> Saturday
 				case 6	=> Sunday
 			}
+
+	//------------------------------------------------------------------------------
+
+	case object Monday		extends Weekday
+	case object Tuesday		extends Weekday
+	case object Wednesday	extends Weekday
+	case object Thursday	extends Weekday
+	case object Friday		extends Weekday
+	case object Saturday	extends Weekday
+	case object Sunday		extends Weekday
 }
 
 sealed abstract class Weekday {
 	/** starting at monday with 0 */
 	def index:Int	=
 			this match {
-				case Monday		=> 0
-				case Tuesday	=> 1
-				case Wednesday	=> 2
-				case Thursday	=> 3
-				case Friday		=> 4
-				case Saturday	=> 5
-				case Sunday		=> 6
+				case Weekday.Monday		=> 0
+				case Weekday.Tuesday	=> 1
+				case Weekday.Wednesday	=> 2
+				case Weekday.Thursday	=> 3
+				case Weekday.Friday		=> 4
+				case Weekday.Saturday	=> 5
+				case Weekday.Sunday		=> 6
 			}
 
 	override def toString:String	=
 			this match {
-				case Monday		=> "Monday"
-				case Tuesday	=> "Tuesday"
-				case Wednesday	=> "Wednesday"
-				case Thursday	=> "Thursday"
-				case Friday		=> "Friday"
-				case Saturday	=> "Saturday"
-				case Sunday		=> "Sunday"
+				case Weekday.Monday		=> "Monday"
+				case Weekday.Tuesday	=> "Tuesday"
+				case Weekday.Wednesday	=> "Wednesday"
+				case Weekday.Thursday	=> "Thursday"
+				case Weekday.Friday		=> "Friday"
+				case Weekday.Saturday	=> "Saturday"
+				case Weekday.Sunday		=> "Sunday"
 			}
 
 }
-case object Monday		extends Weekday
-case object Tuesday		extends Weekday
-case object Wednesday	extends Weekday
-case object Thursday	extends Weekday
-case object Friday		extends Weekday
-case object Saturday	extends Weekday
-case object Sunday		extends Weekday
 
 
 trait WeekdayInstances {

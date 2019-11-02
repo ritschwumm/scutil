@@ -67,5 +67,5 @@ final class IntSpan private (val start:Int, val size:Int) {
 
 	override def hashCode():Int		= this.start ^ this.size
 
-	override def toString:String	= s"IntSpan(start=$start, end=$end, size=$size)"
+	override def toString:String	= s"IntSpan(start=${start.toString}, end=${end.toString}, size=${size.toString})"
 }
