@@ -47,6 +47,12 @@ trait OrderingImplicits {
 					loop(0)
 				}
 			}
+
+		def many[T](orderings:ISeq[Ordering[T]]):Ordering[T]	=
+				(orderings foldLeft Ordering.trivial[T])(_ orElse _)
+
+		def manyVar[T](orderings:Ordering[T]*):Ordering[T]	=
+			many(orderings.toVector)
 	}
 
 	implicit final class OrderingExt[T](peer:Ordering[T]) {

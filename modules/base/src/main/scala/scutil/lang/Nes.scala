@@ -128,6 +128,15 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 	def +:[U>:T](item:U):Nes[U]	=
 			this prepend item
 
+	def updatedBy[U>:T](index:Int, func:Endo[U]):Option[Nes[U]]	=
+			if (containsIndex(index)) {
+				Some(
+					if (index == 0)	Nes(func(head), tail)
+					else			Nes(head, tail updated (index-1, func(tail.apply(index-1))))
+				)
+			}
+			else None
+
 	def updatedAt[U>:T](index:Int, item:U):Option[Nes[U]]	=
 			if (containsIndex(index)) {
 				Some(

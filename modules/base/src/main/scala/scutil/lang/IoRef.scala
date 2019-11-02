@@ -28,6 +28,16 @@ final class IoRef[T](initial:T) {
 
 	def modify[U](func:T=>(T,U)):Io[U]	=
 			Io delay {
+				RefUtil modify (ref, func)
+			}
+
+	def modifyState[U](state:State[T,U]):Io[U] =
+			modify(state.run)
+
+	/*
+	// NOTE this does not work in scala-js because getAndUpdate is not implemented
+	def modify[U](func:T=>(T,U)):Io[U]	=
+			Io delay {
 				@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 				var out:U	= null.asInstanceOf[U]
 				ref getAndUpdate { old =>
@@ -37,25 +47,9 @@ final class IoRef[T](initial:T) {
 				}
 				out
 			}
+	*/
 
-	def modifyInIo[U](func:Io[T=>(T,U)]):Io[U]	=
-			modify { old =>
-				func unsafeRun () apply old
-			}
-
-	def modifyToIo[U](func:T=>Io[(T,U)]):Io[U]	=
-			modify { old =>
-				func(old) unsafeRun ()
-			}
-
-	def modifyState[U](state:State[T,U]):Io[U] =
-			modify(state.run)
-
-	def modifyStateT[U](stateT:StateT[Io,T,U])	=
-			modifyToIo(stateT.run)
-
-	def modifyIoState[U](state:Io[State[T,U]]):Io[U] =
-			modifyInIo(state map (_.run))
+	//------------------------------------------------------------------------------
 
 	override def toString:String	=
 			"IoRef(...)"

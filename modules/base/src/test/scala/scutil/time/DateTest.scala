@@ -324,4 +324,19 @@ class DateTest extends Specification {
 			}
 		}
 	}
+
+	"Weekday" should {
+		"create useful orderings (1)" in {
+			Weekday.all.sorted(Weekday.ordering(Weekday.Monday)) mustEqual Weekday.all
+		}
+		"create useful orderings (2)" in {
+			Weekday.all.reverse.sorted(Weekday.ordering(Weekday.Monday)) mustEqual Weekday.all
+		}
+		"create useful orderings (1)" in {
+			Weekday.all.sorted(Weekday.ordering(Weekday.Sunday)) mustEqual Weekday.all.drop(7-1) ++ Weekday.all.dropRight(0+1)
+		}
+		"create useful orderings (2)" in {
+			Weekday.all.reverse.sorted(Weekday.ordering(Weekday.Sunday)) mustEqual Weekday.all.drop(7-1) ++ Weekday.all.dropRight(0+1)
+		}
+	}
 }

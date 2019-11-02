@@ -29,3 +29,4 @@ trait extensions
 		with	StrokeImplicits
 		with	WindowImplicits
 		with	AffineTransformImplicits
+		with	MouseEventImplicits

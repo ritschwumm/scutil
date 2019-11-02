@@ -1,5 +1,7 @@
 package scutil.geom
 
+import scutil.lang._
+
 object DoubleRect {
 	val zero	= new DoubleRect(DoubleSpan.zero, DoubleSpan.zero)
 
@@ -80,6 +82,15 @@ final class DoubleRect private (val horizontal:DoubleSpan, val vertical:DoubleSp
 				case (Some(horizontal), Some(vertical))	=> Some(new DoubleRect(horizontal, vertical))
 				case _									=> None
 			}
+
+	def inset(left:Double, top:Double, right:Double,  bottom:Double):DoubleRect	=
+			DoubleRect(
+				horizontal	inset (left,	right),
+				vertical	inset (top,		bottom)
+			)
+
+	def transformer(that:DoubleRect):Endo[DoublePoint]	=
+			pos => (pos - this.topLeft) * that.size / this.size + that.topLeft
 
 	//------------------------------------------------------------------------------
 

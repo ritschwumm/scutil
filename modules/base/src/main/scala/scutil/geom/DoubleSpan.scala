@@ -1,5 +1,7 @@
 package scutil.geom
 
+import scutil.lang._
+
 object DoubleSpan {
 	val zero	= new DoubleSpan(0, 0)
 
@@ -54,6 +56,12 @@ final class DoubleSpan private (val start:Double, val size:Double) {
 
 	def rectWith(that:DoubleSpan):DoubleRect	=
 			DoubleRect horizontalWithVertical (this, that)
+
+	def inset(start:Double, end:Double):DoubleSpan	=
+			DoubleSpan startEnd (this.start + start, this.end - end)
+
+	def transformer(that:DoubleSpan):Endo[Double]	=
+			pos => (pos - this.start) * that.size / this.size + that.start
 
 	//------------------------------------------------------------------------------
 

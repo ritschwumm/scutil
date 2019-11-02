@@ -106,14 +106,11 @@ sealed trait Io[T] {
 }
 
 trait IoInstances {
-	implicit val IoUnitMonoid:Monoid[Io[Unit]]	=
-			Monoid instance (
-				Io.pureUnit,
-				(a, b) =>
-							 if (a == Io.pureUnit)	b
-						else if (b == Io.pureUnit)	a
-						else						a second b
-			)
+	implicit def IoMonoid[T](implicit F:Monoid[T]):Monoid[Io[T]]	=
+			new Monoid[Io[T]] {
+				def empty:Io[T]						= Io pure F.empty
+				def concat(a:Io[T], b:Io[T]):Io[T]	= (a zipWith b)(F.concat)
+			}
 
 	implicit val IoMonad:Monad[Io]	=
 			new Monad[Io] {
@@ -125,5 +122,12 @@ trait IoInstances {
 	implicit val IoDelay:Delay[Io]	=
 			new Delay[Io] {
 				override def delay[T](it: =>T):Io[T]	= Io delay it
+			}
+}
+
+trait IoInstancesLow {
+	implicit def IoSemigroup[T](implicit F:Semigroup[T]):Semigroup[Io[T]]	=
+			new Semigroup[Io[T]] {
+				def concat(a:Io[T], b:Io[T]):Io[T]	= (a zipWith b)(F.concat)
 			}
 }

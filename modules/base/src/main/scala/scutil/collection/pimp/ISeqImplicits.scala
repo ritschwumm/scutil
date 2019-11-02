@@ -210,8 +210,8 @@ trait ISeqImplicits {
 
 		/** map the value for a single index */
 		def updatedBy(index:Int, func:Endo[T]):Option[ISeq[T]]	=
-				if (index >= 0 && index < peer.size)	Some(peer updated (index, func(peer(index))))
-				else									None
+				if (containsIndex(index))	Some(peer updated (index, func(peer(index))))
+				else						None
 
 		/** None when the index is outside our bounds */
 		def updatedAt(index:Int, item:T):Option[ISeq[T]]	=
@@ -220,17 +220,13 @@ trait ISeqImplicits {
 
 		/** insert an item at a given index if possible */
 		def insertAt(gap:Int, item:T):Option[ISeq[T]]	=
-				if (containsGap(gap)) {
-					Some(peer patch (gap, ISeq(item), 0))
-				}
-				else None
+				if (containsGap(gap))	Some(peer patch (gap, ISeq(item), 0))
+				else 					None
 
 		/** remove the item at a given index if possible */
 		def removeAt(index:Int):Option[ISeq[T]]	=
-				if (containsIndex(index)) {
-					Some(peer patch (index, ISeq.empty, 1))
-				}
-				else None
+				if (containsIndex(index))	Some(peer patch (index, ISeq.empty, 1))
+				else						None
 
 		/** move an item from a given item index to an inter-item gap */
 		def moveAt(fromIndex:Int, toGap:Int):Option[ISeq[T]]	=
