@@ -4,32 +4,32 @@ import scala.collection.immutable
 
 import scutil.lang._
 
-object ISeqImplicits extends ISeqImplicits
+object SeqImplicits extends SeqImplicits
 
-trait ISeqImplicits {
-	implicit final class ISeqExt[T](peer:ISeq[T]) {
+trait SeqImplicits {
+	implicit final class SeqExt[T](peer:Seq[T]) {
 		// aliases with low precendence
 
-		def prepend(it:T):ISeq[T]	= it +: peer
-		def append(it:T):ISeq[T]	= peer :+ it
+		def prepend(it:T):Seq[T]	= it +: peer
+		def append(it:T):Seq[T]		= peer :+ it
 
-		def prependAll(it:Iterable[T]):ISeq[T]	= it ++: peer
-		def appendAll(it:Iterable[T]):ISeq[T]	= peer ++ it
+		def prependAll(it:Iterable[T]):Seq[T]	= it ++: peer
+		def appendAll(it:Iterable[T]):Seq[T]	= peer ++ it
 
 		def lastIndex:Int		= peer.size-1
 
-		def indices:ISeq[Int]	= 0 until peer.size
+		def indices:Seq[Int]	= 0 until peer.size
 
-		/** whether index is a gap between elements of this ISeq */
+		/** whether index is a gap between elements of this Seq */
 		def containsGap(index:Int):Boolean	=
 				index >= 0 && index <= peer.size
 
-		/** whether index is an item in this ISeq */
+		/** whether index is an item in this Seq */
 		def containsIndex(index:Int):Boolean	=
 				index >= 0 && index < peer.size
 
-		/** concatenate the ISeq with itself n times */
-		def times(count:Int):ISeq[T]	=
+		/** concatenate the Seq with itself n times */
+		def times(count:Int):Seq[T]	=
 				(0 until count).toVector flatMap { _ => peer }
 
 		def indexOfOption(item:T):Option[Int]	=
@@ -81,8 +81,16 @@ trait ISeqImplicits {
 		}
 
 		/** group values by keys, both from a function */
-		// TODO 312 already exists there
-		def groupMap[K,V](func:T=>(K,V)):Map[K,ISeq[V]]	=
+		@deprecated("use groupMapPaired or the builtin groupMap with 2 parameter lists", "0.162.0")
+		def groupMap[K,V](func:T=>(K,V)):Map[K,Seq[V]]	=
+				groupMapPaired(func)
+
+		/**
+		 * group values by keys, both from a function.
+		 * functionally this is the same as the builtin groupMap,
+		 * but might trade some calculation for object allocations
+		 */
+		def groupMapPaired[K,V](func:T=>(K,V)):Map[K,Seq[V]]	=
 				peer
 				.map		(func)
 				.groupBy	{ _._1 }
@@ -91,39 +99,39 @@ trait ISeqImplicits {
 				}
 
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def tailOption:Option[ISeq[T]]	=
+		def tailOption:Option[Seq[T]]	=
 				if (peer.nonEmpty)	Some(peer.tail)
 				else				None
 
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def initOption:Option[ISeq[T]]	=
+		def initOption:Option[Seq[T]]	=
 				if (peer.nonEmpty)	Some(peer.init)
 				else				None
 
-		/** get item at index and the ISeq without that element if possible */
-		def extractAt(index:Int):Option[(T,ISeq[T])]	=
+		/** get item at index and the Seq without that element if possible */
+		def extractAt(index:Int):Option[(T,Seq[T])]	=
 				peer lift index map { it =>
-					(it, peer patch (index, ISeq.empty, 1))
+					(it, peer patch (index, Seq.empty, 1))
 				}
 
-		/** get first item and rest of the ISeq if possible */
+		/** get first item and rest of the Seq if possible */
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def extractHead:Option[(T,ISeq[T])]	=
+		def extractHead:Option[(T,Seq[T])]	=
 				if (peer.nonEmpty)	Some((peer.head, peer.tail))
 				else				None
 
-		/** get last item and rest of the ISeq if possible */
+		/** get last item and rest of the Seq if possible */
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def extractLast:Option[(T,ISeq[T])]	=
+		def extractLast:Option[(T,Seq[T])]	=
 				if (peer.nonEmpty)	Some((peer.last, peer.init))
 				else				None
 
-		def withReverse(func:Endo[ISeq[T]]):ISeq[T]	=
+		def withReverse(func:Endo[Seq[T]]):Seq[T]	=
 				func(peer.reverse).reverse
 
 		/** distinct with a custom equality check */
-		def distinctWith(same:(T,T)=>Boolean):ISeq[T] =
-				((peer foldLeft ISeq.empty[T]) { (retained:ISeq[T], candidate:T) =>
+		def distinctWith(same:(T,T)=>Boolean):Seq[T] =
+				((peer foldLeft Seq.empty[T]) { (retained:Seq[T], candidate:T) =>
 					retained find { same(_,candidate) } match {
 						case Some(_)	=> retained
 						case None		=> candidate +: retained
@@ -131,27 +139,27 @@ trait ISeqImplicits {
 				}).reverse
 
 		/** distinct on a single property */
-		def distinctBy[U](extract:T=>U):ISeq[T] =
+		def distinctBy[U](extract:T=>U):Seq[T] =
 				distinctWith { extract(_) == extract(_) }
 
 		/** pairwise neighbors */
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def zipTail:ISeq[(T,T)]	=
+		def zipTail:Seq[(T,T)]	=
 				if (peer.nonEmpty)	peer zip peer.tail
 				else				Vector.empty
 
 		/** insert a separator between elements, before the first and after the last item */
-		def surround[U>:T](separator: =>U):ISeq[U]	=
-				if (peer.nonEmpty)	(peer flatMap { ISeq(separator, _) }) :+ separator
+		def surround[U>:T](separator: =>U):Seq[U]	=
+				if (peer.nonEmpty)	(peer flatMap { Seq(separator, _) }) :+ separator
 				else				peer
 
 		/** insert a separator between elements */
-		def intersperse[U>:T](separator: =>U):ISeq[U]	=
-				if (peer.nonEmpty)	peer flatMap { ISeq(separator, _) } drop 1
+		def intersperse[U>:T](separator: =>U):Seq[U]	=
+				if (peer.nonEmpty)	peer flatMap { Seq(separator, _) } drop 1
 				else				peer
 
 		/** triple every item with its previous and next item */
-		def adjacents:ISeq[(Option[T],T,Option[T])]	= {
+		def adjacents:Seq[(Option[T],T,Option[T])]	= {
 			/*
 			val somes	= peer map Some.apply
 			val prevs	= None +: (somes dropRight 1)
@@ -170,7 +178,7 @@ trait ISeqImplicits {
 
 		/** optionally insert something between two items */
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def insertBetween[U](mod:T=>U, func:(T,T)=>Option[U]):ISeq[U]	=
+		def insertBetween[U](mod:T=>U, func:(T,T)=>Option[U]):Seq[U]	=
 				if (peer.size < 2)	peer map mod
 				else {
 					val	out	= new immutable.VectorBuilder[U]
@@ -182,8 +190,8 @@ trait ISeqImplicits {
 					out.result
 				}
 
-		/** separators go to the Left, the rest goes into Right ISeqs  */
-		def splitWhere(separator:Predicate[T]):ISeq[Either[T,ISeq[T]]] =
+		/** separators go to the Left, the rest goes into Right Seqs  */
+		def splitWhere(separator:Predicate[T]):Seq[Either[T,Seq[T]]] =
 				if (peer.nonEmpty) {
 					val indices = peer.zipWithIndex collect { case (t,i) if (separator(t)) => i }
 					(-1 +: indices) zip (indices :+ peer.size) flatMap { case (a,b) =>
@@ -193,10 +201,10 @@ trait ISeqImplicits {
 				}
 				else Vector.empty
 
-		/** equivalent elements go into own ISeqs */
-		def equivalentSpans(equivalent:(T,T)=>Boolean):ISeq[ISeq[T]]	= {
+		/** equivalent elements go into own Seqs */
+		def equivalentSpans(equivalent:(T,T)=>Boolean):Seq[Seq[T]]	= {
 			@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-			def impl(in:ISeq[T]):ISeq[ISeq[T]]	= {
+			def impl(in:Seq[T]):Seq[Seq[T]]	= {
 				val (a,b)	= in span { equivalent(in.head, _) }
 				if (b.nonEmpty)	a +: impl(b)
 				else			Vector(a)
@@ -206,44 +214,44 @@ trait ISeqImplicits {
 		}
 
 		/** equivalentSpans on a single property */
-		def equivalentSpansBy[U](extract:T=>U):ISeq[ISeq[T]]	=
+		def equivalentSpansBy[U](extract:T=>U):Seq[Seq[T]]	=
 				equivalentSpans { extract(_) == extract(_) }
 
 		/** map the value for a single index */
-		def updatedBy(index:Int, func:Endo[T]):Option[ISeq[T]]	=
+		def updatedBy(index:Int, func:Endo[T]):Option[Seq[T]]	=
 				if (containsIndex(index))	Some(peer updated (index, func(peer(index))))
 				else						None
 
 		/** None when the index is outside our bounds */
-		def updatedAt(index:Int, item:T):Option[ISeq[T]]	=
+		def updatedAt(index:Int, item:T):Option[Seq[T]]	=
 				if (containsIndex(index))	Some(peer updated (index, item))
 				else						None
 
 		/** insert an item at a given index if possible */
-		def insertAt(gap:Int, item:T):Option[ISeq[T]]	=
-				if (containsGap(gap))	Some(peer patch (gap, ISeq(item), 0))
+		def insertAt(gap:Int, item:T):Option[Seq[T]]	=
+				if (containsGap(gap))	Some(peer patch (gap, Seq(item), 0))
 				else 					None
 
 		/** remove the item at a given index if possible */
-		def removeAt(index:Int):Option[ISeq[T]]	=
-				if (containsIndex(index))	Some(peer patch (index, ISeq.empty, 1))
+		def removeAt(index:Int):Option[Seq[T]]	=
+				if (containsIndex(index))	Some(peer patch (index, Seq.empty, 1))
 				else						None
 
 		/** move an item from a given item index to an inter-item gap */
-		def moveAt(fromIndex:Int, toGap:Int):Option[ISeq[T]]	=
+		def moveAt(fromIndex:Int, toGap:Int):Option[Seq[T]]	=
 				if (containsIndex(fromIndex) && containsGap(toGap)) {
 					if (fromIndex < toGap-1) {
 						Some(
 							peer
-							.patch(toGap,		ISeq(peer(fromIndex)),	0)
-							.patch(fromIndex,	ISeq.empty,			1)
+							.patch(toGap,		Seq(peer(fromIndex)),	0)
+							.patch(fromIndex,	Seq.empty,			1)
 						)
 					}
 					else if (fromIndex > toGap) {
 						Some(
 							peer
-							.patch(fromIndex,	ISeq.empty,			1)
-							.patch(toGap,		ISeq(peer(fromIndex)),	0)
+							.patch(fromIndex,	Seq.empty,			1)
+							.patch(toGap,		Seq(peer(fromIndex)),	0)
 						)
 					}
 					else None
@@ -251,7 +259,7 @@ trait ISeqImplicits {
 				else None
 
 		/** move multiple items item from a given index to a inter-item gap of another index if possible */
-		def moveManyAt(fromIndex:Int, count:Int, toGap:Int):Option[ISeq[T]]	=
+		def moveManyAt(fromIndex:Int, count:Int, toGap:Int):Option[Seq[T]]	=
 				if (
 					fromIndex	>= 0 && fromIndex+count	<= peer.size &&
 					toGap		>= 0 && toGap			<= peer.size
@@ -276,16 +284,16 @@ trait ISeqImplicits {
 				}
 				else None
 
-		def storeAt(index:Int):Option[Store[ISeq[T],T]]	=
+		def storeAt(index:Int):Option[Store[Seq[T],T]]	=
 				peer lift index map { item =>
-					Store[ISeq[T],T](
+					Store[Seq[T],T](
 						item,
 						peer updated (index, _)
 					)
 				}
 
 		def toNesOption:Option[Nes[T]]	=
-				Nes fromISeq peer
+				Nes fromSeq peer
 
 		private def indexOption(index:Int):Option[Int]	=
 				if (index != -1)	Some(index)

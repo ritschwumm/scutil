@@ -4,8 +4,6 @@ import java.io._
 
 import scala.collection.mutable
 
-import scutil.lang.ISeq
-
 object ReaderImplicits extends ReaderImplicits
 
 trait ReaderImplicits {
@@ -81,7 +79,7 @@ trait ReaderImplicits {
 		//------------------------------------------------------------------------------
 
 		// BETTER  use a specific line separator
-		def readLines():ISeq[String]	= {
+		def readLines():Seq[String]	= {
 			val in		= new BufferedReader(peer)
 			val buffer	= new mutable.ArrayBuffer[String]
 			var running	= true

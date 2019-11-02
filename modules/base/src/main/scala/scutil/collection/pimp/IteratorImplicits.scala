@@ -10,6 +10,11 @@ trait IteratorImplicits {
 				if (peer.hasNext)	Some(peer.next)
 				else				None
 
-		def toISeq:ISeq[T]	= peer.toVector
+		@deprecated("use toSeq", "0.162.0")
+		def toISeq:ISeq[T]	=
+			toSeq
+
+		// TODO is this still necessary with scala 2.12?
+		def toSeq:Seq[T]	= peer.toVector
 	}
 }

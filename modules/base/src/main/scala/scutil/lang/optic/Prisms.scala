@@ -25,8 +25,15 @@ object Prisms {
 				_ => Nil
 			)
 
+	@deprecated("use seqHead", "0.162.0")
+	def iseqHead[T]:Prism[ISeq[T],(T,ISeq[T])]	= seqHead
+	@deprecated("use seqLast", "0.162.0")
+	def iseqLast[T]:Prism[ISeq[T],(ISeq[T],T)]	= seqLast
+	@deprecated("use seqEmpty", "0.162.0")
+	def iseqEmpty[T]:Prism[ISeq[T],Unit]		= seqEmpty
+
 	// @see extractHead
-	def iseqHead[T]:Prism[ISeq[T],(T,ISeq[T])]	=
+	def seqHead[T]:Prism[Seq[T],(T,Seq[T])]	=
 			Prism(
 				_ match {
 					case h +: t	=> Some((h, t))
@@ -36,7 +43,7 @@ object Prisms {
 			)
 
 	// @see extractLast
-	def iseqLast[T]:Prism[ISeq[T],(ISeq[T],T)]	=
+	def seqLast[T]:Prism[Seq[T],(Seq[T],T)]	=
 			Prism(
 				_ match {
 					case i :+ l	=> Some((i, l))
@@ -45,10 +52,10 @@ object Prisms {
 				il => il._1 :+ il._2
 			)
 
-	def iseqEmpty[T]:Prism[ISeq[T],Unit]	=
+	def seqEmpty[T]:Prism[Seq[T],Unit]	=
 			Prism(
 				_ match {
-					case ISeq()	=> Some(())
+					case Seq()	=> Some(())
 					case _		=> None
 				},
 				_ => Vector.empty

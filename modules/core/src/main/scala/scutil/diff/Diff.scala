@@ -2,8 +2,6 @@ package scutil.diff
 
 import scala.collection.mutable
 
-import scutil.lang.ISeq
-
 /**
 based on Scala	code by nafg		at https://github.com/nafg/reactive/blob/master/reactive-core/src/main/scala/reactive/LCS.scala
 based on Java	code by Neil Jones	at http://bix.ucsd.edu/bioalgorithms/downloads/code/LCS.java
@@ -12,7 +10,7 @@ object Diff {
 	private def equalsMethod[T](a:T, b:T):Boolean	= a == b
 
 	// BETTER only compare from the first different element to the last different element
-	def compile[T](a:ISeq[T], b:ISeq[T], equal:(T,T)=>Boolean = equalsMethod[T] _):Diff[T] = {
+	def compile[T](a:Seq[T], b:Seq[T], equal:(T,T)=>Boolean = equalsMethod[T] _):Diff[T] = {
 		val n	= a.length
 		val m	= b.length
 
@@ -93,8 +91,8 @@ object Diff {
 	}
 }
 
-final case class Diff[T](deltas:ISeq[Delta[T]]) {
-	def patch(iseq:ISeq[T]):ISeq[T]	= {
+final case class Diff[T](deltas:Seq[Delta[T]]) {
+	def patch(iseq:Seq[T]):Seq[T]	= {
 		val out	= mutable.ArrayBuffer(iseq:_*)
 		deltas foreach {
 			case Delta.Include(index, element)	=> out insert (index, element)

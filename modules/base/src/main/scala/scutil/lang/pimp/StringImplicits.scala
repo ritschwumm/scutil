@@ -81,14 +81,14 @@ trait StringImplicits {
 		//------------------------------------------------------------------------------
 
 		/** excludes the separator char itself */
-		def splitAroundChar(separator:Char):ISeq[String] =
+		def splitAroundChar(separator:Char):Seq[String] =
 				splitAroundString(separator.toString)
 
 		/** excludes the separator string itself */
-		def splitAroundString(separator:String):ISeq[String] = {
+		def splitAroundString(separator:String):Seq[String] = {
 			val	out	= new mutable.ArrayBuffer[String]
 			@tailrec
-			def loop(pos:Int):ISeq[String]	=
+			def loop(pos:Int):Seq[String]	=
 					peer indexOf (separator, pos) match {
 						case -1 =>
 							out	+= peer substring pos

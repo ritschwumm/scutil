@@ -12,7 +12,11 @@ object Optionals {
 
 	//------------------------------------------------------------------------------
 
+	@deprecated("use seq", "0.162.0")
 	def iseq[T](i:Int):Optional[ISeq[T],T]	=
+			seq(i)
+
+	def seq[T](i:Int):Optional[Seq[T],T]	=
 			Optional(
 				get	= s 		=> s lift i,
 				set	= t => s	=> s updatedAt (i, t) getOrElse s
@@ -32,24 +36,40 @@ object Optionals {
 
 	//------------------------------------------------------------------------------
 
+	@deprecated("use seqWhere", "0.162.0")
 	def iseqWhere[T](pred:Predicate[T]):Optional[ISeq[T],T]	=
+			seqWhere(pred)
+
+	@deprecated("use seqWhereEqual", "0.162.0")
+	def iseqWhereEqual[S,T](extract:S=>T, id:T):Optional[ISeq[S],S]	=
+			seqWhereEqual(extract, id)
+
+	@deprecated("use seqHead", "0.162.0")
+	def iseqHead[T]:Optional[ISeq[T],T]	=
+			seqHead
+
+	@deprecated("use seqLast", "0.162.0")
+	def iseqLast[T]:Optional[ISeq[T],T]	=
+			seqLast
+
+	def seqWhere[T](pred:Predicate[T]):Optional[Seq[T],T]	=
 			Optional(
 				get	= items			=> items find pred,
 				set	= item => items	=> items indexWhereOption pred  cata (items, index => items updated (index, item))
 			)
 
-	def iseqWhereEqual[S,T](extract:S=>T, id:T):Optional[ISeq[S],S]	=
-			iseqWhere { it =>
+	def seqWhereEqual[S,T](extract:S=>T, id:T):Optional[Seq[S],S]	=
+			seqWhere { it =>
 				extract(it) ==== id
 			}
 
-	def iseqHead[T]:Optional[ISeq[T],T]	=
+	def seqHead[T]:Optional[Seq[T],T]	=
 			Optional(
 				get	=			s	=> s.headOption,
 				set	=	t	=>	s	=> if (s.nonEmpty) s updated (0, t) else s
 			)
 
-	def iseqLast[T]:Optional[ISeq[T],T]	=
+	def seqLast[T]:Optional[Seq[T],T]	=
 			Optional(
 				get	=			s	=> s.lastOption,
 				set	=	t	=>	s	=> if (s.nonEmpty) s updated (s.size-1, t) else s

@@ -15,7 +15,9 @@ trait JOptionalImplicits {
 		def toOption:Option[T]		= cata(None,			Some.apply)
 		def toVector:Vector[T]		= cata(Vector.empty,	Vector(_))
 		def toList:List[T]			= cata(List.empty,		List(_))
-		def toISeq:ISeq[T]			= toVector
+		@deprecated("use toSeq", "0.162.0")
+		def toISeq:ISeq[T]			= toSeq
+		def toSeq:Seq[T]			= toVector
 		def toIterable:Iterable[T]	= toVector
 		def toSet:Set[T]			= cata(Set.empty,		Set(_))
 	}

@@ -66,7 +66,7 @@ final class HashSalt(
 	/** check if a raw password, when cooked, matches the same password cooked before */
 	def taste(raw:String, cooked:String):Boolean = {
 		(for {
-			ISeq(r,s,p)	<- cooked splitAroundChar '$' optionBy { _.size == 3 }
+			Seq(r,s,p)	<- cooked splitAroundChar '$' optionBy { _.size == 3 }
 			rounds		<- r.toIntOption
 			salt		<- Base64 decodeByteString s
 			prepared	<- Base64 decodeByteString p

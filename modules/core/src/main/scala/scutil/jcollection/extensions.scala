@@ -13,7 +13,7 @@ trait extensions
 		with	JOptionalImplicits
 		with	JSetImplicits
 		with	PropertiesImplicits
-		with	ISeqJCollectionSyntaxImplicits
+		with	SeqJCollectionSyntaxImplicits
 		with	IterableJCollectionSyntaxImplicits
 		with	IteratorJCollectionSyntaxImplicits
 		with	MapJCollectionSyntaxImplicits

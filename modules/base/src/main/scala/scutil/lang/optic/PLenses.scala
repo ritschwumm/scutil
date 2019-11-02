@@ -16,7 +16,11 @@ object PLenses {
 
 	//------------------------------------------------------------------------------
 
+	@deprecated("use seq", "0.162.0")
 	def iseq[T](i:Int):PLens[ISeq[T],T]	=
+			seq(i)
+
+	def seq[T](i:Int):PLens[Seq[T],T]	=
 			PLens { _ storeAt i }
 
 	def map[K,V](k:K):PLens[Map[K,V],V]	=
@@ -27,15 +31,23 @@ object PLenses {
 
 	//------------------------------------------------------------------------------
 
+	@deprecated("use seqWhere", "0.162.0")
 	def iseqWhere[T](pred:Predicate[T]):PLens[ISeq[T],T]	=
+			seqWhere(pred)
+
+	@deprecated("use seqWhereEqual", "0.162.0")
+	def iseqWhereEqual[S,T](extract:S=>T, id:T):PLens[ISeq[S],S]	=
+			seqWhereEqual(extract, id)
+
+	def seqWhere[T](pred:Predicate[T]):PLens[Seq[T],T]	=
 			PLens { items =>
 				items indexWhereOption pred flatMap {
-					PLenses iseq _ on items
+					PLenses seq _ on items
 				}
 			}
 
-	def iseqWhereEqual[S,T](extract:S=>T, id:T):PLens[ISeq[S],S]	=
-			iseqWhere { it =>
+	def seqWhereEqual[S,T](extract:S=>T, id:T):PLens[Seq[S],S]	=
+			seqWhere { it =>
 				extract(it) ==== id
 			}
 }

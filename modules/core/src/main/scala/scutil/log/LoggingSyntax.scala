@@ -10,13 +10,13 @@ trait LoggingSyntax {
 
 	implicit def StringAsLogValue(it:String):LogValue				= LogValue string		it
 	implicit def ThrowableAsLogValue(it:Throwable):LogValue			= LogValue throwable	it
-	implicit def MultipleAsLogValue(it:ISeq[LogValue]):LogValue		= LogValue multiple		it
+	implicit def MultipleAsLogValue(it:Seq[LogValue]):LogValue		= LogValue multiple		it
 
 	implicit def ShowAsLogValue[T:Show](it:T):LogValue				= LogValue string (Show doit it)
 
-	implicit def ISeqShowAsLogValue[T](it:ISeq[T])(implicit S:Show[T]):LogValue	= LogValue multiple (it map S.show map LogValue.string)
-	implicit def SetShowAsLogValue[T](it:Set[T])(implicit S:Show[T]):LogValue	= ISeqShowAsLogValue(it.toVector)
-	implicit def NesShowAsLogValue[T](it:Nes[T])(implicit S:Show[T]):LogValue	= ISeqShowAsLogValue(it.toISeq)
+	implicit def SeqShowAsLogValue[T](it:Seq[T])(implicit S:Show[T]):LogValue	= LogValue multiple (it map S.show map LogValue.string)
+	implicit def SetShowAsLogValue[T](it:Set[T])(implicit S:Show[T]):LogValue	= SeqShowAsLogValue(it.toVector)
+	implicit def NesShowAsLogValue[T](it:Nes[T])(implicit S:Show[T]):LogValue	= SeqShowAsLogValue(it.toSeq)
 
 	@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
 	implicit class LogLevelAsLogger(level:LogLevel) {
@@ -31,7 +31,7 @@ trait LoggingSyntax {
 			out
 		}
 
-		def log(elements:ISeq[LogValue])(implicit sl:SourceLocation):Unit = {
+		def log(elements:Seq[LogValue])(implicit sl:SourceLocation):Unit = {
 			logHandler handle LogEvent(level, elements, MilliInstant.now, sl)
 		}
 	}

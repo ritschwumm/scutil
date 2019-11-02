@@ -18,8 +18,8 @@ import scutil.gui.SwingUtil._
 object ComponentUnderMouse {
 	private type Callback	= Effect[Boolean]
 
-	private final case class Entry(state:Boolean, callbacks:ISeq[WeakReference[Callback]]) {
-		def referencedCallbacks:ISeq[WeakReference[Callback]]	= callbacks filterNot { _.get eq null }
+	private final case class Entry(state:Boolean, callbacks:Seq[WeakReference[Callback]]) {
+		def referencedCallbacks:Seq[WeakReference[Callback]]	= callbacks filterNot { _.get eq null }
 	}
 }
 

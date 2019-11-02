@@ -1,9 +1,9 @@
 package scutil
 
 package object lang {
-	// TODO 213 get rid of this, Seq now does what we need
-	// use this instead of scala.collection.Seq provided in Predef
+	@deprecated("Seq is now immutable by default", "0.162.0")
 	type ISeq[+T]	= scala.collection.immutable.Seq[T]
+	@deprecated("Seq is now immutable by default", "0.162.0")
 	val ISeq		= scala.collection.immutable.Seq
 
 	//------------------------------------------------------------------------------

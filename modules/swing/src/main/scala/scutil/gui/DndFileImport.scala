@@ -102,7 +102,7 @@ object DndFileImport {
 				}
 
 		private def filesFromJList(jlist:JList[File]):Validated[Nes[Exception],Nes[File]]	=
-				jlist.toISeq.toNesOption toGood badMessage(s"empty file list")
+				jlist.toSeq.toNesOption toGood badMessage(s"empty file list")
 
 		private def filesFromURL(url:URL):Validated[Nes[Exception],Nes[File]]	=
 				url.toFile toGood badMessage(s"not a file url: ${url.toString}") map Nes.single

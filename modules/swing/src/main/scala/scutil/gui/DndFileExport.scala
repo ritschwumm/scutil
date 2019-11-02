@@ -39,21 +39,21 @@ object DndFileExport {
 		}
 	}
 
-	private val exportable:ISeq[DataFlavor]	=
+	private val exportable:Seq[DataFlavor]	=
 			OperatingSystem.current match {
 				case Some(OSX)		=>
-					ISeq(DndFlavors.javaFileList)
+					Seq(DndFlavors.javaFileList)
 				case Some(Windows)	=>
-					ISeq(DndFlavors.javaFileList)
+					Seq(DndFlavors.javaFileList)
 				case Some(Linux)	=>
-					ISeq(
+					Seq(
 						DndFlavors.javaFileList,
 						DndFlavors.uriList,
 						DndFlavors.url
 						// DndFlavors.binaryFlavor
 					)
 				case None	=>
-					ISeq.empty
+					Seq.empty
 			}
 
 	private final class FileTransferable(files:Nes[File]) extends Transferable {

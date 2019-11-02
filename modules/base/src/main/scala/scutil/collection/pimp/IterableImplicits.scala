@@ -225,10 +225,14 @@ trait IterableImplicits {
 
 		// TODO state support StateT
 
-		// TODO doesn't seem to work on _*
+		@deprecated("use toSeq", "0.162.0")
 		def toISeq:ISeq[T]	=
+				toSeq
+
+		// TODO doesn't seem to work on _*
+		def toSeq:Seq[T]	=
 				peer match {
-					case x:ISeq[T]	=> x
+					case x:Seq[T]	=> x
 					case x			=> x.toVector
 				}
 	}

@@ -32,11 +32,6 @@ trait Function1Implicits {
 					def apply(s:S):T				= peer(s)
 				}
 
-		/** inverse to PartialFunction#lift */
-		// TODO 213 will exist there
-		def unlift[X](implicit ev:PFunction[T,X]):PartialFunction[S,X]	=
-				Function unlift (peer andThen ev)
-
 		def toPartialFunction:PartialFunction[S,T]	=
 				{ case x => peer(x) }
 

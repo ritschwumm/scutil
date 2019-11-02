@@ -9,8 +9,12 @@ object Nes extends NesInstances {
 	def multi[T](head:T, tail:T*):Nes[T]	=
 			Nes(head, tail.toVector)
 
+	@deprecated("use fromSeq", "0.162.0")
+	def fromISeq[T](it:Seq[T]):Option[Nes[T]]	=
+			fromSeq(it)
+
 	@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-	def fromISeq[T](it:ISeq[T]):Option[Nes[T]]	=
+	def fromSeq[T](it:Seq[T]):Option[Nes[T]]	=
 			if (it.nonEmpty)	Some(Nes(it.head, it.tail))
 			else				None
 
@@ -18,16 +22,16 @@ object Nes extends NesInstances {
 		def apply[T](head:T, tail:T*):Nes[T]	=
 				Nes(head, tail.toVector)
 
-		def unapplySeq[T](nes:Nes[T]):Option[ISeq[T]]	=
+		def unapplySeq[T](nes:Nes[T]):Option[Seq[T]]	=
 				Some(nes.toVector)
 	}
 }
 
-final case class Nes[+T](head:T, tail:ISeq[T]) {
+final case class Nes[+T](head:T, tail:Seq[T]) {
 	def last:T	=
 			tail.lastOption getOrElse head
 
-	def init:ISeq[T]	=
+	def init:Seq[T]	=
 			if (tail.nonEmpty)	head +: (tail dropRight 1)
 			else				Vector(head)
 
@@ -54,19 +58,19 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 			pred(head) || (tail exists pred)
 
 	def drop(count:Int):Option[Nes[T]]	=
-			Nes fromISeq (toVector drop count)
+			Nes fromSeq (toVector drop count)
 
 	def take(count:Int):Option[Nes[T]]	=
-			Nes fromISeq (toVector take count)
+			Nes fromSeq (toVector take count)
 
 	def dropWhile(pred:Predicate[T]):Option[Nes[T]]	=
-			Nes fromISeq (toVector dropWhile pred)
+			Nes fromSeq (toVector dropWhile pred)
 
 	def takeWhile(pred:Predicate[T]):Option[Nes[T]]	=
-			Nes fromISeq (toVector takeWhile pred)
+			Nes fromSeq (toVector takeWhile pred)
 
 	def tailNes:Option[Nes[T]]	=
-			Nes fromISeq tail
+			Nes fromSeq tail
 
 	def initNes:Option[Nes[T]]	=
 			if (tail.isEmpty)	None
@@ -77,7 +81,7 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 
 	def flatMap[U](func:T=>Nes[U]):Nes[U]	= {
 		val Nes(h, t)	= func(head)
-		val tt			= tail flatMap { it => func(it).toISeq }
+		val tt			= tail flatMap { it => func(it).toSeq }
 		Nes(h, t ++ tt)
 	}
 
@@ -85,10 +89,10 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 			flatMap(ev)
 
 	def filter(pred:Predicate[T]):Option[Nes[T]]	=
-			Nes fromISeq (toISeq filter pred)
+			Nes fromSeq (toSeq filter pred)
 
 	def filterNot(pred:Predicate[T]):Option[Nes[T]]	=
-			Nes fromISeq (toISeq filterNot pred)
+			Nes fromSeq (toSeq filterNot pred)
 
 	@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 	def reverse:Nes[T]	=
@@ -102,17 +106,17 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 			Nes(this.head, (this.tail :+ that.head) ++ that.tail)
 
 	def prepend[U>:T](item:U):Nes[U]	=
-			Nes(item, toISeq)
+			Nes(item, toSeq)
 
 	def append[U>:T](item:U):Nes[U]	=
 			Nes(this.head, this.tail :+ item)
 
 	@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-	def prependMany[U>:T](items:ISeq[U]):Nes[U]	=
+	def prependMany[U>:T](items:Seq[U]):Nes[U]	=
 			if (items.nonEmpty)	Nes(items.head, items.tail ++ this.toVector)
 			else				this
 
-	def appendMany[U>:T](items:ISeq[U]):Nes[U]	=
+	def appendMany[U>:T](items:Seq[U]):Nes[U]	=
 			if (items.nonEmpty)	Nes(this.head, this.tail ++ items)
 			else				this
 
@@ -197,7 +201,11 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 	def toVector:Vector[T]	=
 			head +: tail.toVector
 
+	@deprecated("use toSeq", "0.162.0")
 	def toISeq:ISeq[T]	=
+			toVector
+
+	def toSeq:Seq[T]	=
 			toVector
 
 	def mkString(separator:String):String	=
@@ -209,8 +217,8 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 
 /** helper to allow easy construction and pattern matching */
 object VarNes {
-	def apply[T](head:T, tail:T*):Nes[T]			= Nes(head, tail.toVector)
-	def unapplySeq[T](it:Nes[T]):Option[ISeq[T]]	= Some(it.toVector)
+	def apply[T](head:T, tail:T*):Nes[T]		= Nes(head, tail.toVector)
+	def unapplySeq[T](it:Nes[T]):Option[Seq[T]]	= Some(it.toVector)
 }
 
 trait NesInstances {

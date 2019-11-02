@@ -8,9 +8,11 @@ object JListImplicits extends JListImplicits
 
 trait JListImplicits {
 	implicit final class JListExt[T](peer:JList[T]) {
-		def toVector:ISeq[T]		= toIterable.toVector
+		def toVector:Vector[T]		= toIterable.toVector
 		def toList:List[T]			= toIterable.toList
-		def toISeq:ISeq[T]			= toVector
+		@deprecated("use toSeq", "0.162.0")
+		def toISeq:ISeq[T]			= toSeq
+		def toSeq:Seq[T]			= toVector
 		def toIterable:Iterable[T]	= new JIterableAsIterable(peer)
 	}
 }

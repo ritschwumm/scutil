@@ -103,7 +103,7 @@ sealed trait Validated[+E,+T] {
 				case (Good(a),	Good(b))	=> Good(func(a, b))
 			}
 
-	/** handy replacement for tried.toISeq.flatten abusing Factory as a Zero typeclass */
+	/** handy replacement for tried.toSeq.flatten abusing Factory as a Zero typeclass */
 	def flattenMany[U,CC[_]](implicit ev:T=>CC[U], factory:Factory[U,CC[U]]):CC[U]	=
 			// toOption.flattenMany
 			this map ev match {
@@ -242,7 +242,11 @@ sealed trait Validated[+E,+T] {
 				case Good(x)	=> Some(x)
 			}
 
+	@deprecated("use toSeq", "0.162.0")
 	def toISeq:ISeq[T]	=
+			toSeq
+
+	def toSeq:Seq[T]	=
 			toVector
 
 	def toList:List[T]	=

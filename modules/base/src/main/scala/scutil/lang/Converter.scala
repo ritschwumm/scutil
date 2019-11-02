@@ -54,7 +54,7 @@ object Converter extends ConverterInstances {
 
 	//------------------------------------------------------------------------------
 
-	def sum[E,S,T](subs:ISeq[PFunction[S,Validated[E,T]]], bad: =>E):Converter[E,S,T]	=
+	def sum[E,S,T](subs:Seq[PFunction[S,Validated[E,T]]], bad: =>E):Converter[E,S,T]	=
 			Converter { it =>
 				subs
 				.collapseMapFirst	{ _ apply it }
@@ -171,7 +171,11 @@ final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 				it traverseValidated convert
 			}
 
+	@deprecated("use liftSeq", "0.162.0")
 	def liftISeq(implicit cc:Semigroup[E]):Converter[E,ISeq[S],ISeq[T]]	=
+			liftSeq
+
+	def liftSeq(implicit cc:Semigroup[E]):Converter[E,Seq[S],Seq[T]]	=
 			Converter { it =>
 				it traverseValidated convert
 			}

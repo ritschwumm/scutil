@@ -1,7 +1,5 @@
 package scutil.text
 
-import scutil.lang.ISeq
-
 object Text {
 	/** indent every line with a single tab */
 	def indent(prefix:String, str:String):String =
@@ -44,7 +42,7 @@ object Text {
 	def stripMarginOnly(s:String):String	=
 			s.linesIterator collect { case Strip(it) => it } mkString "\n"
 
-	def table(rows:ISeq[ISeq[String]]):ISeq[String]	= {
+	def table(rows:Seq[Seq[String]]):Seq[String]	= {
 		val widths	=
 				(rows foldLeft Vector.empty[Int]) { (widths, row) =>
 					widths zipAll (row map (_.length), 0, 0) map { case (a,b) => a max b }

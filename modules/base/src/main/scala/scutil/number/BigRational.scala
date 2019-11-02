@@ -9,7 +9,6 @@ import java.math.{
 	MathContext
 }
 
-import scutil.lang.ISeq
 import scutil.lang.tc.Show
 import scutil.lang.implicits._
 
@@ -60,7 +59,7 @@ object BigRational extends BigRationalInstances {
 	/** parse the output of #toString */
 	def parse(s:String):Option[BigRational] =
 			s splitAroundChar '/' match {
-				case ISeq(num, den)	=>
+				case Seq(num, den)	=>
 					try { Some(new BigRational(new JBigInteger(num), new JBigInteger(den))) }
 					catch { case e:NumberFormatException	=> None }
 				case _	=> None

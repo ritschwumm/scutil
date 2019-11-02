@@ -1,5 +1,3 @@
 package scutil.search
 
-import scutil.lang.ISeq
-
-final case class SearchPattern(positive:ISeq[SearchToken], negative:ISeq[SearchToken])
+final case class SearchPattern(positive:Seq[SearchToken], negative:Seq[SearchToken])

@@ -8,7 +8,6 @@ import java.util.Properties
 
 import scutil.base.implicits._
 import scutil.core.implicits._
-import scutil.lang._
 
 object PropertiesUtil {
 	def empty:Properties	= new Properties
@@ -45,7 +44,7 @@ object PropertiesUtil {
 
 	//------------------------------------------------------------------------------
 
-	def loadOrdered(ist:InputStream):ISeq[(String,String)]	= {
+	def loadOrdered(ist:InputStream):Seq[(String,String)]	= {
 		var out	= Vector.empty[(String,String)]
 		val p	= new Properties() {
 			@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))

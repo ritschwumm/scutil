@@ -23,6 +23,14 @@ object ByteString extends ByteStringInstances {
 			}
 
 	def fromSeq(it:Seq[Byte]):ByteString	=
+			fromCollectionSeq(it)
+
+	@deprecated("use fromSeq", "0.162.0")
+	def fromISeq(it:ISeq[Byte]):ByteString	=
+			fromSeq(it)
+
+	/** works even with mutable collections */
+	def fromCollectionSeq(it:scala.collection.Seq[Byte]):ByteString	=
 			makeWithArray(it.size) { tmp =>
 				val iter = it.iterator
 				var i = 0
@@ -31,9 +39,6 @@ object ByteString extends ByteStringInstances {
 					i	= i + 1
 				}
 			}
-
-	def fromISeq(it:ISeq[Byte]):ByteString	=
-			fromSeq(it)
 
 	def fromString(it:String, charset:Charset):ByteString	=
 			new ByteString(it getBytes charset)
@@ -84,7 +89,7 @@ object ByteString extends ByteStringInstances {
 			fromSeq(its)
 
 	def unapplySeq(it:ByteString):Option[Seq[Byte]]	=
-			Some(it.toISeq)
+			Some(it.toSeq)
 
 	//------------------------------------------------------------------------------
 
@@ -193,10 +198,12 @@ final class ByteString private (private val value:Array[Byte]) {
 	def toByteBuffer:ByteBuffer	=
 		 	ByteBuffer wrap toArray
 
-	def toISeq:ISeq[Byte]	= value.to(ISeq)
-	def toVector:ISeq[Byte]	= value.to(Vector)
-	def toList:ISeq[Byte]	= value.to(List)
-	def toSet:Set[Byte]		= value.to(Set)
+	@deprecated("use toSeq", "0.162.0")
+	def toISeq:ISeq[Byte]		= value.to(ISeq)
+	def toSeq:Seq[Byte]			= value.to(Seq)
+	def toVector:Vector[Byte]	= value.to(Vector)
+	def toList:List[Byte	]	= value.to(List)
+	def toSet:Set[Byte]			= value.to(Set)
 
 	def copyIntoArray(dest:Array[Byte], destPos:Int):Boolean	=
 			sliceIntoArray(0, dest, destPos, size)

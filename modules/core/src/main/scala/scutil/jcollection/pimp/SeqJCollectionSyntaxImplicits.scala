@@ -6,12 +6,10 @@ import java.util.{
 	Collections	=> JCollections
 }
 
-import scutil.lang.ISeq
+object SeqJCollectionSyntaxImplicits extends SeqJCollectionSyntaxImplicits
 
-object ISeqJCollectionSyntaxImplicits extends ISeqJCollectionSyntaxImplicits
-
-trait ISeqJCollectionSyntaxImplicits {
-	implicit final class ISeqJCollectionSyntaxExt[T](peer:ISeq[T]) {
+trait SeqJCollectionSyntaxImplicits {
+	implicit final class SeqJCollectionSyntaxExt[T](peer:Seq[T]) {
 		def toJList:JList[T]	=  {
 			val out	= new JArrayList[T]
 			peer foreach out.add

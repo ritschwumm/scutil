@@ -1,6 +1,5 @@
 package scutil.collection
 
-import scutil.lang.ISeq
 import scutil.lang.tc._
 
 object instances extends instances
@@ -46,17 +45,17 @@ trait instances extends instancesLow {
 }
 
 trait instancesLow {
-	implicit def ISeqTraversedMonad:TraversedMonad[ISeq]	=
-			new TraversedMonad[ISeq] {
-				override def map[A,B](it:ISeq[A])(func:A=>B):ISeq[B]			= it map func
-				override def pure[A](it:A):ISeq[A]								= ISeq(it)
-				override def flatMap[A,B](it:ISeq[A])(func:A=>ISeq[B]):ISeq[B]	= it flatMap func
-				override def traverse[G[_],S,T](it:ISeq[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[ISeq[T]]	=
-						(it map func foldLeft (AP pure ((Vector.empty[T]):ISeq[T]))) {
+	implicit def SeqTraversedMonad:TraversedMonad[Seq]	=
+			new TraversedMonad[Seq] {
+				override def map[A,B](it:Seq[A])(func:A=>B):Seq[B]			= it map func
+				override def pure[A](it:A):Seq[A]							= Seq(it)
+				override def flatMap[A,B](it:Seq[A])(func:A=>Seq[B]):Seq[B]	= it flatMap func
+				override def traverse[G[_],S,T](it:Seq[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[Seq[T]]	=
+						(it map func foldLeft (AP pure ((Vector.empty[T]):Seq[T]))) {
 							(xs, x) => (AP combine (xs, x))(_ :+ _)
 						}
 			}
 
-	implicit def ISeqMonoid[T]:Monoid[ISeq[T]]	=
-			Monoid instance (ISeq.empty, _ ++ _)
+	implicit def SeqMonoid[T]:Monoid[Seq[T]]	=
+			Monoid instance (Seq.empty, _ ++ _)
 }

@@ -1,6 +1,5 @@
 package scutil.xml.pimp
 
-import scala.collection.immutable.{ Seq => ISeq }
 import scala.xml._
 
 import scutil.lang._
@@ -20,13 +19,13 @@ trait ElemImplicits {
 				}
 				.map	{ _.value.text }
 
-		def xmlAttrs:ISeq[(XmlAttr, String)]	=
+		def xmlAttrs:Seq[(XmlAttr, String)]	=
 				peer.attributes.toVector map {
 					case it:PrefixedAttribute	=> XmlAttr(Some(it.pre),	it.key)	-> it.value.text
 					case it:UnprefixedAttribute	=> XmlAttr(None, 			it.key)	-> it.value.text
 				}
 
-		def updateXmlAttrs(attrs:ISeq[(XmlAttr, String)]):Elem	=
+		def updateXmlAttrs(attrs:Seq[(XmlAttr, String)]):Elem	=
 				peer copy (attributes =
 					(attrs foldLeft (Null:MetaData)) { (md, next) =>
 						next match {
@@ -35,13 +34,13 @@ trait ElemImplicits {
 					}
 				)
 
-		def modifyXmlAttrs(func:Endo[ISeq[(XmlAttr, String)]]):Elem	=
+		def modifyXmlAttrs(func:Endo[Seq[(XmlAttr, String)]]):Elem	=
 				updateXmlAttrs(func(xmlAttrs))
 
-		def updateChildren(children:ISeq[Node]):Elem	=
+		def updateChildren(children:Seq[Node]):Elem	=
 				peer copy (child = children)
 
-		def modifyChildren(func:Endo[ISeq[Node]]):Elem	=
+		def modifyChildren(func:Endo[Seq[Node]]):Elem	=
 				updateChildren(func(peer.child))
 
 		//------------------------------------------------------------------------------

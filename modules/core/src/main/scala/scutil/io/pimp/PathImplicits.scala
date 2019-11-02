@@ -2,8 +2,6 @@ package scutil.io.pimp
 
 import java.nio.file.Path
 
-import scutil.lang._
-
 object PathImplicits extends PathImplicits
 
 trait PathImplicits {
@@ -13,6 +11,6 @@ trait PathImplicits {
 		def /(name:String):Path 		= peer resolve name
 
 		/** add multiple components to this Paths's path */
-		def /+(path:ISeq[String]):Path	= (path foldLeft peer) { _ resolve _ }
+		def /+(path:Seq[String]):Path	= (path foldLeft peer) { _ resolve _ }
 	}
 }

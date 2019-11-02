@@ -6,8 +6,11 @@ object HomogenousPairImplicits extends HomogenousPairImplicits
 
 trait HomogenousPairImplicits {
 	implicit final class HomogenousPairExt[T](peer:Tuple2[T,T]) {
-		def toISeq:ISeq[T]	=
-				ISeq(peer._1, peer._2)
+		@deprecated("use toSeq", "0.162.0")
+		def toISeq:ISeq[T]	= toSeq
+
+		def toSeq:Seq[T]	=
+				Seq(peer._1, peer._2)
 
 		def toNes:Nes[T]	=
 				Nes multi (peer._1, peer._2)

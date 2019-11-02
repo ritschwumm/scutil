@@ -1,6 +1,5 @@
 package scutil.xml.pimp
 
-import scala.collection.immutable.{ Seq => ISeq }
 import scala.xml._
 
 import scutil.xml._
@@ -10,8 +9,8 @@ object NodeImplicits extends NodeImplicits
 trait NodeImplicits {
 	implicit final class NodeExt(peer:Node) {
 		// BETTER modify this?
-		def xmlNamespaces:ISeq[XmlNs]	= {
-			def loop(scope:NamespaceBinding):ISeq[XmlNs]	=
+		def xmlNamespaces:Seq[XmlNs]	= {
+			def loop(scope:NamespaceBinding):Seq[XmlNs]	=
 					if (scope == TopScope)	Vector.empty
 					else					loop(scope.parent) :+ XmlNs(Option(scope.prefix), scope.uri)
 			loop(peer.scope)

@@ -1,11 +1,10 @@
 package scutil.worker
 
 import scutil.base.implicits._
-import scutil.lang.ISeq
 
 /** a very simple synchronized queue */
 final class WorkerQueue[T] {
-	private var entries:ISeq[T]	= Vector.empty
+	private var entries:Seq[T]	= Vector.empty
 
 	def push(value:T):Unit	=
 			synchronized {

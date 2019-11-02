@@ -96,17 +96,22 @@ trait BooleanImplicits {
 				if (!peer)	Good(())
 				else		Bad(problems)
 
-		def guardISeq[T](trueValue: =>T):ISeq[T] =
+		@deprecated("use guardSeq", "0.162.0")
+		def guardISeq[T](trueValue: =>T):ISeq[T]	= guardSeq(trueValue)
+		@deprecated("use preventSeq", "0.162.0")
+		def preventISeq[T](falseValue: =>T):ISeq[T] = preventSeq(falseValue)
+
+		def guardSeq[T](trueValue: =>T):Seq[T] =
 				guardVector(trueValue)
 
-		def preventISeq[T](falseValue: =>T):ISeq[T] =
+		def preventSeq[T](falseValue: =>T):Seq[T] =
 				preventVector(falseValue)
 
 		def guardVector[T](trueValue: =>T):Vector[T] =
 				if (peer)	Vector(trueValue)
 				else		Vector.empty
 
-		def preventVector[T](falseValue: =>T):ISeq[T] =
+		def preventVector[T](falseValue: =>T):Vector[T] =
 				if (!peer)	Vector(falseValue)
 				else		Vector.empty
 

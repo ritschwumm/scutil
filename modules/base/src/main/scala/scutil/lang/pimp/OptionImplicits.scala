@@ -81,14 +81,14 @@ trait OptionImplicits {
 					case None			=> (None,		None)
 				}
 
-		/** handy replacement for opt.toISeq flatMap func abusing Factory as a Zero typeclass */
+		/** handy replacement for opt.toSeq flatMap func abusing Factory as a Zero typeclass */
 		def flatMapMany[U,CC[_]](func:T=>CC[U])(implicit factory:Factory[U,CC[U]]):CC[U]	=
 				peer map func match {
 					case Some(cc)	=> cc
 					case None		=> factory.newBuilder.result
 				}
 
-		/** handy replacement for opt.toISeq.flatten abusing Factory as a Zero typeclass */
+		/** handy replacement for opt.toSeq.flatten abusing Factory as a Zero typeclass */
 		def flattenMany[U,CC[_]](implicit ev:T=>CC[U], factory:Factory[U,CC[U]]):CC[U]	=
 				flatMapMany(ev)
 
@@ -118,22 +118,27 @@ trait OptionImplicits {
 					case x			=> x
 				}
 
-		/** peer is traversable (in the haskell sense), ISeq is an idiom. */
-		def sequenceISeq[U](implicit ev:T=>ISeq[U]):ISeq[Option[U]]	=
-				traverseISeq(ev)
+		@deprecated("use sequenceSeq", "0.162.0")
+		def sequenceISeq[U](implicit ev:T=>ISeq[U]):ISeq[Option[U]]	= sequenceSeq
+		@deprecated("use traverseSeq", "0.162.0")
+		def traverseISeq[U](func:T=>ISeq[U]):ISeq[Option[U]]		= traverseSeq(func)
 
-		/** peer is traversable (in the haskell sense), ISeq is an idiom. */
-		def traverseISeq[U](func:T=>ISeq[U]):ISeq[Option[U]]	=
+		/** peer is traversable (in the haskell sense), Seq is an idiom. */
+		def sequenceSeq[U](implicit ev:T=>Seq[U]):Seq[Option[U]]	=
+				traverseSeq(ev)
+
+		/** peer is traversable (in the haskell sense), Seq is an idiom. */
+		def traverseSeq[U](func:T=>Seq[U]):Seq[Option[U]]	=
 				peer map func match {
-					case None		=> ISeq(None)
+					case None		=> Seq(None)
 					case Some(xs)	=> xs map Some.apply
 				}
 
-		/** peer is traversable (in the haskell sense), ISeq is an idiom. */
+		/** peer is traversable (in the haskell sense), Iterable is an idiom. */
 		def sequenceIterable[CC[_]<:Iterable[U],U](implicit ev:T=>CC[U], factory:Factory[Option[U],CC[Option[U]]]):CC[Option[U]]	=
 				traverseIterable(ev)
 
-		/** peer is traversable (in the haskell sense), ISeq is an idiom. */
+		/** peer is traversable (in the haskell sense), Iterable is an idiom. */
 		def traverseIterable[CC[_]<:Iterable[U],U](func:T=>CC[U])(implicit factory:Factory[Option[U],CC[Option[U]]]):CC[Option[U]]	= {
 			val builder	= factory.newBuilder
 			peer map func match {
@@ -222,7 +227,11 @@ trait OptionImplicits {
 					case Some(x)	=> Bad(x)
 				}
 
+		@deprecated("use toSeq", "0.162.0")
 		def toISeq:ISeq[T]	=
+				toVector
+
+		def toSeq:Seq[T]	=
 				toVector
 
 		def toSet:Set[T]	=

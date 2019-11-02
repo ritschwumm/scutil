@@ -36,7 +36,7 @@ trait FileImplicits {
 		def /(name:String):File 		= new File(peer, name)
 
 		/** add multiple components to this Files's path */
-		def /+(path:ISeq[String]):File	= (path foldLeft peer) { new File(_,_) }
+		def /+(path:Seq[String]):File	= (path foldLeft peer) { new File(_,_) }
 
 		/** get the parent File the scala way */
 		def parentOption:Option[File]	=
@@ -70,16 +70,16 @@ trait FileImplicits {
 		//## directory only
 
 		/** list files in this directory */
-		def children:Option[ISeq[File]] =
+		def children:Option[Seq[File]] =
 				Option(peer.listFiles) map { _.toVector }
 
 		/** list files in this directory matching a predicate */
-		def childrenWhere(predicate:File=>Boolean):Option[ISeq[File]] =
+		def childrenWhere(predicate:File=>Boolean):Option[Seq[File]] =
 				Option(peer listFiles predicate) map { _.toVector }
 
 		/** the path upwards from another File to this File */
-		def containsRecursive(that:File):Option[ISeq[String]]	= {
-			def loop(test:File, path:ISeq[String]):Option[ISeq[String]]	=
+		def containsRecursive(that:File):Option[Seq[String]]	= {
+			def loop(test:File, path:Seq[String]):Option[Seq[String]]	=
 						 if (test == null)	None
 					else if (test == peer)	Some(path)
 					else					loop(test.getParentFile, test.getName +: path)
@@ -130,9 +130,9 @@ trait FileImplicits {
 		def writeString(charset:Charset, string:String):Unit	= withWriter(charset) { _ write string }
 
 		// BETTER use a specific line separator
-		def readLines(charset:Charset):ISeq[String]	=
+		def readLines(charset:Charset):Seq[String]	=
 				withReader(charset) { _.readLines() }
-		def writeLines(charset:Charset, lines:ISeq[String]):Unit	=
+		def writeLines(charset:Charset, lines:Seq[String]):Unit	=
 				withWriter(charset) { writer =>
 					lines foreach { line =>
 						writer write line

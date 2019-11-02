@@ -13,7 +13,7 @@ object Disposable extends DisposableInstances {
 				def dispose():Unit	= {}
 			}
 
-	def all(subs:ISeq[Disposable]):Disposable	=
+	def all(subs:Seq[Disposable]):Disposable	=
 			disposable {
 				subs foreach {
 					_.dispose()

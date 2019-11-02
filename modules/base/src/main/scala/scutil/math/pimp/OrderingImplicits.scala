@@ -27,9 +27,9 @@ trait OrderingImplicits {
 				})
 
 		/** orders lexicographically from left to right */
-		def sequence[T](missingFirst:Boolean)(implicit base:Ordering[T]):Ordering[ISeq[T]]	=
-			new Ordering[ISeq[T]] {
-				def compare(a:ISeq[T], b:ISeq[T]):Int	= {
+		def sequence[T](missingFirst:Boolean)(implicit base:Ordering[T]):Ordering[Seq[T]]	=
+			new Ordering[Seq[T]] {
+				def compare(a:Seq[T], b:Seq[T]):Int	= {
 					@tailrec
 					def loop(index:Int):Int	=
 							(a lift index, b lift index) match {
@@ -48,7 +48,7 @@ trait OrderingImplicits {
 				}
 			}
 
-		def many[T](orderings:ISeq[Ordering[T]]):Ordering[T]	=
+		def many[T](orderings:Seq[Ordering[T]]):Ordering[T]	=
 				(orderings foldLeft Ordering.trivial[T])(_ orElse _)
 
 		def manyVar[T](orderings:Ordering[T]*):Ordering[T]	=
