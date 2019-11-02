@@ -6,6 +6,7 @@ import scala.util.{ Try, Success, Failure }
 object FutureImplicits extends FutureImplicits
 
 trait FutureImplicits {
+	@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
 	implicit final class FutureExt[T](peer:Future[T]) {
 		def zipWith[U,V](that:Future[U])(func:(T,U)=>V)(implicit executor:ExecutionContext):Future[V]	=
 				peer zip that map func.tupled

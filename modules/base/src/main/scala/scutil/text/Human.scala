@@ -142,6 +142,3 @@ final case class Human(table:Nes[HumanUnit]) {
 					else					prefix + " " + renderRaw(tail, decimalPlaces, mod)
 			}
 }
-
-final case class HumanUnit(long:String, short:String, divisor:BigDecimal)
-final case class HumanConfig(maxUnits:Int = 10000, smallUnits:Int = 10000, decimalPlaces:Int = 0)

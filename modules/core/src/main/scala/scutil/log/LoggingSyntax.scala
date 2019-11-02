@@ -18,6 +18,7 @@ trait LoggingSyntax {
 	implicit def SetShowAsLogValue[T](it:Set[T])(implicit S:Show[T]):LogValue	= ISeqShowAsLogValue(it.toVector)
 	implicit def NesShowAsLogValue[T](it:Nes[T])(implicit S:Show[T]):LogValue	= ISeqShowAsLogValue(it.toISeq)
 
+	@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
 	implicit class LogLevelAsLogger(level:LogLevel) {
 		def apply(elements:LogValue*)(implicit sl:SourceLocation) {
 			log(elements.toVector)
