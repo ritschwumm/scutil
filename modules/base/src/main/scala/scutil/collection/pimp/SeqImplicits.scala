@@ -8,23 +8,10 @@ import scutil.lang._
 object SeqImplicits extends SeqImplicits
 
 trait SeqImplicits {
-	implicit final class SeqExt[CC[_] <: Seq[_],T](peer:Seq[T]) {
+	implicit final class SeqExt[CC[T] <: Seq[T],T](peer:CC[T]) {
 		// aliases with low precendence
 
-		@deprecated("use prepended", "0.163.0")
-		def prepend(it:T):Seq[T]	= peer prepended it
-		@deprecated("use appended", "0.163.0")
-		def append(it:T):Seq[T]		= peer appended it
-
-		@deprecated("use prependedAll", "0.163.0")
-		def prependAll(it:Iterable[T]):Seq[T]	= peer prependedAll it
-		@deprecated("use appendedAll", "0.163.0")
-		def appendAll(it:Iterable[T]):Seq[T]	= peer appendedAll it
-
 		def lastIndex:Int		= peer.size-1
-
-		@deprecated("this is builtin now, albeit returning a Range", "0.163.0")
-		def indices:Seq[Int]	= 0 until peer.size
 
 		/** whether index is a gap between elements of this Seq */
 		def containsGap(index:Int):Boolean	=
@@ -53,18 +40,6 @@ trait SeqImplicits {
 		/** get value at an index or return a default value */
 		def liftOrElse(index:Int, default:T):T	=
 				peer lift index getOrElse default
-
-		/** like find but searching from the end to the front */
-		@deprecated("this is builtin now", "0.163.0")
-		def findLast(predicate:Predicate[T]):Option[T]	=  {
-			// behaves like peer.reverse find predicate
-			val iter	= peer.reverseIterator
-			while (iter.hasNext) {
-				val out	= iter.next()
-				if (predicate(out))	return Some(out)
-			}
-			None
-		}
 
 		/** like collectFirst but searching from the end to the front */
 		def collectLast[U](pf:PartialFunction[T,U]):Option[U]	=
@@ -101,41 +76,12 @@ trait SeqImplicits {
 					(k, kvs map { _._2 } to factory)
 				}
 
-		/*
-		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def tailOption:Option[CC[T]]	=
-				if (peer.nonEmpty)	Some(peer.tail)
-				else				None
-
-		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def initOption:Option[Seq[T]]	=
-				if (peer.nonEmpty)	Some(peer.init)
-				else				None
-		*/
-
 		/** get item at index and the Seq without that element if possible */
 		def extractAt(index:Int)(implicit factory:Factory[T,CC[T]]):Option[(T,CC[T])]	=
 				// TODO generify without factory - but lift is not in SeqOps
 				peer lift index map { it =>
 					(it, peer.patch (index, Seq.empty, 1).to(factory))
 				}
-
-		/*
-		// get first item and rest of the Seq if possible
-		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def extractHead(implicit factory:Factory[T,CC[T]]):Option[(T,CC[T])]	=
-				if (peer.nonEmpty)	Some((peer.head, peer.tail.to(factory)))
-				else				None
-
-		// get last item and rest of the Seq if possible
-		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def extractLast(implicit factory:Factory[T,CC[T]]):Option[(T,CC[T])]	=
-				if (peer.nonEmpty)	Some((peer.last, peer.init.to(factory)))
-				else				None
-
-		def withReverse(func:Endo[Seq[T]]):Seq[T]	=
-				func(peer.reverse).reverse
-		*/
 
 		/** distinct with a custom equality check */
 		def distinctWith(same:(T,T)=>Boolean)(implicit factory:Factory[T,CC[T]]):CC[T] =
@@ -145,24 +91,6 @@ trait SeqImplicits {
 						case None		=> candidate +: retained
 					}
 				}).reverse.to(factory)
-
-		/** distinct on a single property */
-		@deprecated("this is builtin now", "0.163.0")
-		def distinctBy[U](extract:T=>U)(implicit factory:Factory[T,CC[T]]):CC[T] =
-				distinctWith { extract(_) == extract(_) }
-
-		/*
-		// pairwise neighbors
-		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def zipTail:Seq[(T,T)]	=
-				if (peer.nonEmpty)	peer zip peer.tail
-				else				Vector.empty
-
-		// insert a separator between elements
-		def intersperse[U>:T](separator: =>U):Seq[U]	=
-				if (peer.nonEmpty)	peer flatMap { Seq(separator, _) } drop 1
-				else				peer
-		*/
 
 		/** triple every item with its previous and next item */
 		def adjacents(implicit factory:Factory[(Option[T],T,Option[T]),CC[(Option[T],T,Option[T])]]):CC[(Option[T],T,Option[T])]	= {
@@ -227,28 +155,6 @@ trait SeqImplicits {
 		/** equivalentSpans on a single property */
 		def equivalentSpansBy[U](extract:T=>U):Seq[Seq[T]]	=
 				equivalentSpans { extract(_) == extract(_) }
-
-		/*
-		// map the value for a single index
-		def updatedBy(index:Int, func:Endo[T]):Option[Seq[T]]	=
-				if (containsIndex(index))	Some(peer updated (index, func(peer(index))))
-				else						None
-
-		// None when the index is outside our bounds
-		def updatedAt(index:Int, item:T):Option[Seq[T]]	=
-				if (containsIndex(index))	Some(peer updated (index, item))
-				else						None
-
-		// insert an item at a given index if possible
-		def insertAt(gap:Int, item:T):Option[Seq[T]]	=
-				if (containsGap(gap))	Some(peer patch (gap, Seq(item), 0))
-				else 					None
-
-		// remove the item at a given index if possible
-		def removeAt(index:Int):Option[Seq[T]]	=
-				if (containsIndex(index))	Some(peer patch (index, Seq.empty, 1))
-				else						None
-		*/
 
 		/** move an item from a given item index to an inter-item gap */
 		def moveAt(fromIndex:Int, toGap:Int)(implicit factory:Factory[T,CC[T]]):Option[CC[T]]	=
@@ -374,7 +280,7 @@ trait SeqImplicits {
 				index >= 0 && index <= peer.size
 	}
 
-	implicit final class SeqWithOpsExt[CC[_] <: Seq[T],T](peer:SeqOps[T,CC,CC[T]]) {
+	implicit final class SeqWithOpsExt[CC[T] <: Seq[T],T](peer:SeqOps[T,CC,CC[T]]) {
 		def withReverse(func:Endo[CC[T]])(implicit factory:Factory[T,CC[T]]):CC[T]	=
 				// TODO generify without factory - but the reverse returns the wrong type
 				func(peer.reverse).reverse.to(factory)

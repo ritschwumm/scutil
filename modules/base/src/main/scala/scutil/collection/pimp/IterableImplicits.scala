@@ -9,7 +9,7 @@ import scutil.lang.tc._
 object IterableImplicits extends IterableImplicits
 
 trait IterableImplicits {
-	implicit final class IterableExt[T,CC[T]<:Iterable[T]](peer:CC[T]) {
+	implicit final class IterableExt[CC[T]<:Iterable[T], T](peer:CC[T]) {
 		/** Some if the collection contains exactly one element, else None */
 		def singleOption:Option[T]	= {
 			val iter	= peer.iterator
@@ -30,23 +30,6 @@ trait IterableImplicits {
 
 		// NOTE these don't terminate for infinite collections!
 
-		/*
-		// NOTE this would work, too
-		def zipBy[U](func:T=>U)(implicit factory:Factory[(T,U),CC[(T,U)]]):CC[(T,U)]	=
-			factory fromSpecific (
-				peer map { it => (it, func(it)) }
-			)
-
-		// pair elements of a collection with a function applied to an element
-		def zipBy[U](func:T=>U)(implicit factory:Factory[(T,U),CC[(T,U)]]):CC[(T,U)]	= {
-			val builder	= factory.newBuilder
-			peer foreach { it =>
-				builder	+= ((it, func(it)))
-			}
-			builder.result
-		}
-		*/
-
 		/** combine elements of two collections using a function */
 		def zipWith[U,V](that:Iterable[U])(f:(T,U)=>V)(implicit factory:Factory[V,CC[V]]):CC[V]	= {
 			val builder	= factory.newBuilder
@@ -57,28 +40,6 @@ trait IterableImplicits {
 			}
 			builder.result
 		}
-
-		/*
-		def partitionEither[U,V](implicit ev:T=>Either[U,V], factory1:Factory[U,CC[U]], factory2:Factory[V,CC[V]]):(CC[U],CC[V])	= {
-			val	builder1	= factory1.newBuilder
-			val	builder2	= factory2.newBuilder
-			peer map ev foreach {
-				case Left(x)	=> builder1	+= x
-				case Right(x)	=> builder2	+= x
-			}
-			(builder1.result, builder2.result)
-		}
-
-		def partitionValidated[U,V](implicit ev:T=>Validated[U,V], factory1:Factory[U,CC[U]], factory2:Factory[V,CC[V]]):(CC[U],CC[V])	= {
-			val	builder1	= factory1.newBuilder
-			val	builder2	= factory2.newBuilder
-			peer map ev foreach {
-				case Bad(x)		=> builder1	+= x
-				case Good(x)	=> builder2	+= x
-			}
-			(builder1.result, builder2.result)
-		}
-		*/
 
 		/** create a set from all elements with a given function to generate the items */
 		def setBy[U](func:T=>U):Set[U]	=
@@ -123,18 +84,6 @@ trait IterableImplicits {
 			None
 		}
 
-		@deprecated("this is builtin now", "0.163.0")
-		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def maxOption(implicit ev:Ordering[T]):Option[T]	=
-				if (peer.nonEmpty)	Some(peer.max)
-				else				None
-
-		@deprecated("this is builtin now", "0.163.0")
-		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def minOption(implicit ev:Ordering[T]):Option[T]	=
-				if (peer.nonEmpty)	Some(peer.min)
-				else				None
-
 		/** insert a separator between elements */
 		def intersperse[U>:T](separator: =>U)(implicit factory:Factory[U,CC[U]]):CC[U]	=
 				// TODO generify without factory - but we have to know drop, and that peer is a CC[U], too
@@ -176,15 +125,6 @@ trait IterableImplicits {
 			Right(builder.result)
 		}
 
-		/*
-		// all Lefts if there is at least one, else all Rights
-		def validateEither[F,W](implicit ev:T=>Either[F,W], factory1:Factory[F,CC[F]], factory2:Factory[W,CC[W]]):Either[CC[F],CC[W]]	= {
-			val (lefts, rights)	= partitionEither
-			if (lefts.isEmpty)	Right(rights)
-			else				Left(lefts)
-		}
-		*/
-
 		/** peer is traversable (in the haskell sense), Validated is an idiom. */
 		def sequenceValidated[F,W](implicit ev:T=>Validated[F,W], factory:Factory[W,CC[W]], cc:Semigroup[F]):Validated[F,CC[W]]	=
 				traverseValidated(ev)
@@ -211,15 +151,6 @@ trait IterableImplicits {
 				case None		=> Good(builder.result)
 			}
 		}
-
-		/*
-		// all Lefts if there is at least one, else all Rights
-		def validateValidated[F,W](implicit ev:T=>Validated[F,W], factory1:Factory[F,CC[F]], factory2:Factory[W,CC[W]]):Validated[CC[F],CC[W]]	= {
-			val (bads, goods)	= partitionValidated
-			if (bads.isEmpty)	Good(goods)
-			else				Bad(bads)
-		}
-		*/
 
 		def sequenceState[S,U](implicit ev:T=>State[S,U], factory:Factory[U,CC[U]]):State[S,CC[U]]	=
 				traverseState(ev)

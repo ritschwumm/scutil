@@ -2,6 +2,7 @@ package scutil.collection
 
 import org.specs2.mutable._
 
+import scutil.lang._
 import scutil.collection.implicits._
 
 class SeqImplicitsTest extends Specification {
@@ -72,6 +73,12 @@ class SeqImplicitsTest extends Specification {
 		"work with 3 elements" in {
 			Seq(1,2,3).adjacents mustEqual Seq((None,1,Some(2)), (Some(1),2,Some(3)), (Some(2),3,None))
 		}
+
+		"return the right type" in {
+			val a	= Vector(1,2,3).adjacents
+			typed[ Vector[(Option[Int],Int,Option[Int])] ](a)
+			a mustEqual Seq((None,1,Some(2)), (Some(1),2,Some(3)), (Some(2),3,None))
+		}
 	}
 
 	"splitWhere" should {
@@ -133,6 +140,12 @@ class SeqImplicitsTest extends Specification {
 
 		"move to gap further right" in {
 			Seq(1,2,3,4) moveAt (1,3) mustEqual Some(Seq(1,3,2,4))
+		}
+	}
+
+	"zipTail" should {
+		"just work" in {
+			Vector(1,2,3).zipTail mustEqual Vector((1,2),(2,3))
 		}
 	}
 }
