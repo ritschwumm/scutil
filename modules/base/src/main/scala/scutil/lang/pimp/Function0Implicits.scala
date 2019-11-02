@@ -8,7 +8,7 @@ trait Function0Implicits {
 	implicit final class Function0Ext[T](peer:Function0[T]) {
 		def toRunnable:Runnable =
 				new Runnable {
-					def run() {
+					def run():Unit	= {
 						peer()
 					}
 				}

@@ -24,7 +24,7 @@ trait URLImplicits {
 		def openConnectionWithOptionalProxy(proxy:Option[Proxy]):URLConnection	=
 				proxy match {
 					case Some(proxy)	=> peer openConnection proxy
-					case None			=> peer openConnection ()
+					case None			=> peer.openConnection()
 				}
 
 		/**

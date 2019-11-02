@@ -10,7 +10,7 @@ object Disposable extends DisposableInstances {
 	/** forms a monoids with and */
 	val empty:Disposable	=
 			new Disposable {
-				def dispose() {}
+				def dispose():Unit	= {}
 			}
 
 	def all(subs:ISeq[Disposable]):Disposable	=
@@ -46,7 +46,7 @@ trait Disposable {
 }
 
 private final class TaskDisposable(task:Thunk[Unit]) extends Disposable {
-	def dispose() { task() }
+	def dispose():Unit	= { task() }
 }
 
 trait DisposableInstances {

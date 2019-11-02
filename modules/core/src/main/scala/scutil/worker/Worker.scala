@@ -16,41 +16,41 @@ final class Worker(name:String, delay:MilliDuration, task:Thunk[Unit], error:Eff
 	private object thread extends Thread {
 		setName(name)
 		setPriority(Thread.MIN_PRIORITY)
-		override def run() { loop() }
+		override def run():Unit = { loop() }
 		start()
 	}
 
 	//------------------------------------------------------------------------------
 
 	/** start working */
-	def start() {
+	def start():Unit = {
 		// access thread to instantiate it
 		thread
 		queue push WorkerStart
 	}
 
 	/** stop working, can be restarted */
-	def stop() {
+	def stop():Unit = {
 		queue push WorkerStop
 	}
 
 	/** stop working, release resources asap, then die */
-	def dispose() {
+	def dispose():Unit = {
 		queue push WorkerDie
 	}
 
 	/** to be called after stop or dispose to make sure the task is not executed any more */
-	def awaitWorkless() {
+	def awaitWorkless():Unit = {
 		while (state == WorkerWorking) {
 			nap(shortly)
 		}
 	}
 
-	def join() {
+	def join():Unit = {
 		thread.join()
 	}
 
-	def disposeAndWait() {
+	def disposeAndWait():Unit = {
 		dispose()
 		awaitWorkless()
 		join()
@@ -59,7 +59,7 @@ final class Worker(name:String, delay:MilliDuration, task:Thunk[Unit], error:Eff
 	//------------------------------------------------------------------------------
 
 	@tailrec
-	private def loop() {
+	private def loop():Unit = {
 		val command	= queue.shift()
 		state	= (state, command) match {
 			case (WorkerWaiting,		None)				=> WorkerWaiting
@@ -86,7 +86,7 @@ final class Worker(name:String, delay:MilliDuration, task:Thunk[Unit], error:Eff
 		}
 	}
 
-	private def work() {
+	private def work():Unit = {
 		try {
 			task()
 		}
@@ -95,7 +95,7 @@ final class Worker(name:String, delay:MilliDuration, task:Thunk[Unit], error:Eff
 		}
 	}
 
-	private def nap(duration:MilliDuration) {
+	private def nap(duration:MilliDuration):Unit = {
 		Thread sleep duration.millis
 	}
 }

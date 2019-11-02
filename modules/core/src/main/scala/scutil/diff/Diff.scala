@@ -83,10 +83,10 @@ object Diff {
 		val deltas	= diffs map {
 			case Delta.Include(index, element) =>
 				offset	+= 1
-				Delta.Include(index, element)
+				Delta.Include(index, element):Delta[T]
 			case Delta.Remove(index, element) =>
 				offset	-= 1
-				Delta.Remove(index + offset + 1, element)
+				Delta.Remove(index + offset + 1, element):Delta[T]
 		}
 
 		Diff(deltas)

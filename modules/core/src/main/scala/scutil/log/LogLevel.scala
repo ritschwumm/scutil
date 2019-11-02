@@ -5,7 +5,7 @@ import scutil.lang.ISeq
 object LogLevel {
 	/** in order of increasing severity */
 	val	all:ISeq[LogLevel]	=
-			Vector(
+			Vector[LogLevel](
 				TRACE,
 				DEBUG,
 				INFO,

@@ -1,6 +1,5 @@
 package scutil.lang
 
-import scutil.lang.implicits._
 import scutil.lang.tc._
 
 object Prism extends PrismInstances {

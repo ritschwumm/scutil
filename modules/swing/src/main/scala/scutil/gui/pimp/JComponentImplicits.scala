@@ -28,7 +28,7 @@ trait JComponentImplicits {
 			frame setSize			size
 			frame setDefaultCloseOperation WindowConstants.DO_NOTHING_ON_CLOSE
 
-			def doClose() {
+			def doClose():Unit	= {
 				if (onClose()) {
 					frame setVisible false
 					frame.dispose()
@@ -36,13 +36,13 @@ trait JComponentImplicits {
 			}
 
 			frame addWindowListener new WindowAdapter {
-				override def windowClosing(ev:WindowEvent) {
+				override def windowClosing(ev:WindowEvent):Unit	= {
 					doClose()
 				}
 			}
 			frame.getRootPane registerKeyboardAction (
 				new ActionListener {
-					def actionPerformed(ev:ActionEvent) {
+					def actionPerformed(ev:ActionEvent):Unit	= {
 						doClose()
 					}
 				},

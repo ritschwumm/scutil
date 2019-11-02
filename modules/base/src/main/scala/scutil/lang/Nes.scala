@@ -186,7 +186,7 @@ final case class Nes[+T](head:T, tail:ISeq[T]) {
 				)
 			}
 
-	def foreach(effect:Effect[T]) {
+	def foreach(effect:Effect[T]):Unit	= {
 		effect(head)
 		tail foreach effect
 	}

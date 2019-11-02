@@ -1,6 +1,7 @@
 package scutil
 
 package object lang {
+	// TODO 213 get rid of this, Seq now does what we need
 	// use this instead of scala.collection.Seq provided in Predef
 	type ISeq[+T]	= scala.collection.immutable.Seq[T]
 	val ISeq		= scala.collection.immutable.Seq
@@ -45,5 +46,5 @@ package object lang {
 	/** type inference helper */
 	def taking[S]	= new FunctionTaking[S]
 
-	def typed[T](t : => T) {}
+	def typed[T](t : => T):Unit	= {}
 }

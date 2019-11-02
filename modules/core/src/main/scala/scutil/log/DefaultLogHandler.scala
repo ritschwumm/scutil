@@ -10,7 +10,7 @@ import scutil.time._
 object DefaultLogHandler extends DefaultLogHandler
 
 trait DefaultLogHandler extends LogHandler {
-	def handle(event:LogEvent) {
+	def handle(event:LogEvent):Unit = {
 		if (accept(event)) {
 			print(formatEvent(event))
 		}
@@ -18,10 +18,10 @@ trait DefaultLogHandler extends LogHandler {
 
 	def accept(event:LogEvent):Boolean	= true
 
-	def print(s:String) {
+	def print(s:String):Unit = {
 		synchronized {
 			printStream println	s
-			printStream flush	()
+			printStream.flush()
 		}
 	}
 

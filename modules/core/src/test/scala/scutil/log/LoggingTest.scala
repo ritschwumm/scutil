@@ -23,11 +23,11 @@ trait TestLogging extends LoggingSyntax {
 class TestLogHandler extends DefaultLogHandler {
 	var strings	= Vector.empty[String]
 
-	def reset() {
+	def reset():Unit = {
 		strings	= Vector.empty
 	}
 
-	override def print(s:String) {
+	override def print(s:String):Unit = {
 		strings	:+= s
 	}
 }

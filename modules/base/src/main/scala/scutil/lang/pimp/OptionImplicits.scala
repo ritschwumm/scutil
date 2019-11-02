@@ -2,7 +2,7 @@ package scutil.lang.pimp
 
 import java.util.{ Optional => JOptional }
 
-import scala.collection.generic.CanBuildFrom
+import scala.collection.Factory
 
 import scutil.lang._
 import scutil.lang.tc._
@@ -45,12 +45,15 @@ trait OptionImplicits {
 		def partition(pred:Predicate[T]):(Option[T],Option[T])	=
 				(peer filter pred, peer filterNot pred)
 
-		/** the zip method defined on Iterable is useless */
+		/**
+		// NOTE this is no longer the case in scala 2.13
+		// the zip method defined on Iterable is useless
 		def zip[U](that:Option[U]):Option[(T,U)]	=
 				(peer, that) match {
 					case ((Some(t),Some(u)))	=> Some((t,u))
 					case _						=> None
 				}
+		 */
 
 		def zipBy[U](func:T=>U):Option[(T,U)]	=
 				peer map { it => (it,func(it)) }
@@ -61,12 +64,15 @@ trait OptionImplicits {
 					case _						=> None
 				}
 
-		/** the unzip method defined on Iterable is useless */
+		/**
+		// NOTE this is no longer the case in scala 2.13
+		// the unzip method defined on Iterable is useless
 		def unzip[U,V](implicit ev:T=>(U,V)):(Option[U],Option[V])	=
 				peer map ev match {
 					case Some((u,v))	=> (Some(u),	Some(v))
 					case None			=> (None,		None)
 				}
+		*/
 
 		def partitionEither[U,V](implicit ev:T=>Either[U,V]):(Option[U],Option[V])	=
 				peer map ev match {
@@ -75,15 +81,15 @@ trait OptionImplicits {
 					case None			=> (None,		None)
 				}
 
-		/** handy replacement for opt.toISeq flatMap func abusing CanBuildFrom as a Zero typeclass */
-		def flatMapMany[U,CC[_]](func:T=>CC[U])(implicit cbf:CanBuildFrom[CC[U],U,CC[U]]):CC[U]	=
+		/** handy replacement for opt.toISeq flatMap func abusing Factory as a Zero typeclass */
+		def flatMapMany[U,CC[_]](func:T=>CC[U])(implicit factory:Factory[U,CC[U]]):CC[U]	=
 				peer map func match {
 					case Some(cc)	=> cc
-					case None		=> cbf().result
+					case None		=> factory.newBuilder.result
 				}
 
-		/** handy replacement for opt.toISeq.flatten abusing CanBuildFrom as a Zero typeclass */
-		def flattenMany[U,CC[_]](implicit ev:T=>CC[U], cbf:CanBuildFrom[CC[U],U,CC[U]]):CC[U]	=
+		/** handy replacement for opt.toISeq.flatten abusing Factory as a Zero typeclass */
+		def flattenMany[U,CC[_]](implicit ev:T=>CC[U], factory:Factory[U,CC[U]]):CC[U]	=
 				flatMapMany(ev)
 
 		//------------------------------------------------------------------------------
@@ -124,12 +130,12 @@ trait OptionImplicits {
 				}
 
 		/** peer is traversable (in the haskell sense), ISeq is an idiom. */
-		def sequenceIterable[CC[_]<:Iterable[U],U](implicit ev:T=>CC[U], cbf:CanBuildFrom[CC[T],Option[U],CC[Option[U]]]):CC[Option[U]]	=
+		def sequenceIterable[CC[_]<:Iterable[U],U](implicit ev:T=>CC[U], factory:Factory[Option[U],CC[Option[U]]]):CC[Option[U]]	=
 				traverseIterable(ev)
 
 		/** peer is traversable (in the haskell sense), ISeq is an idiom. */
-		def traverseIterable[CC[_]<:Iterable[U],U](func:T=>CC[U])(implicit cbf:CanBuildFrom[CC[T],Option[U],CC[Option[U]]]):CC[Option[U]]	= {
-			val builder	= cbf()
+		def traverseIterable[CC[_]<:Iterable[U],U](func:T=>CC[U])(implicit factory:Factory[Option[U],CC[Option[U]]]):CC[Option[U]]	= {
+			val builder	= factory.newBuilder
 			peer map func match {
 				case None		=> builder += None; builder.result
 				case Some(xs)	=> xs foreach { x => builder += Some(x) }

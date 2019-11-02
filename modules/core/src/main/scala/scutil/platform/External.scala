@@ -26,7 +26,7 @@ object External {
 		new InputStreamReader(st) use { _.readLines() }
 	}
 
-	private def spewLines(st:OutputStream, lines:ISeq[String]) {
+	private def spewLines(st:OutputStream, lines:ISeq[String]):Unit = {
 		new OutputStreamWriter(st) use { writer =>
 			lines foreach { line =>
 				writer write line

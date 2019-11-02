@@ -84,7 +84,7 @@ object ByteString extends ByteStringInstances {
 			fromSeq(its)
 
 	def unapplySeq(it:ByteString):Option[Seq[Byte]]	=
-			Some(it.toArray)
+			Some(it.toISeq)
 
 	//------------------------------------------------------------------------------
 
@@ -193,10 +193,10 @@ final class ByteString private (private val value:Array[Byte]) {
 	def toByteBuffer:ByteBuffer	=
 		 	ByteBuffer wrap toArray
 
-	def toISeq:ISeq[Byte]	= value.to[ISeq]
-	def toVector:ISeq[Byte]	= value.to[Vector]
-	def toList:ISeq[Byte]	= value.to[List]
-	def toSet:Set[Byte]		= value.to[Set]
+	def toISeq:ISeq[Byte]	= value.to(ISeq)
+	def toVector:ISeq[Byte]	= value.to(Vector)
+	def toList:ISeq[Byte]	= value.to(List)
+	def toSet:Set[Byte]		= value.to(Set)
 
 	def copyIntoArray(dest:Array[Byte], destPos:Int):Boolean	=
 			sliceIntoArray(0, dest, destPos, size)

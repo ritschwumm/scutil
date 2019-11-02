@@ -13,7 +13,8 @@ private final class ShowMacros(val c:Context) {
 					case Literal(const@Constant(raw:String)) =>
 						val escaped	=
 								try {
-									StringContext.treatEscapes(raw)
+									// TODO 213 check this works
+									StringContext processEscapes raw
 								}
 								catch { case e:Exception =>
 									// TODO have a better position here

@@ -1,6 +1,6 @@
 package scutil.lang
 
-import scala.collection.generic.CanBuildFrom
+import scala.collection.Factory
 
 import scutil.lang.tc._
 
@@ -103,11 +103,11 @@ sealed trait Validated[+E,+T] {
 				case (Good(a),	Good(b))	=> Good(func(a, b))
 			}
 
-	/** handy replacement for tried.toISeq.flatten abusing CanBuildFrom as a Zero typeclass */
-	def flattenMany[U,CC[_]](implicit ev:T=>CC[U], cbf:CanBuildFrom[CC[U],U,CC[U]]):CC[U]	=
+	/** handy replacement for tried.toISeq.flatten abusing Factory as a Zero typeclass */
+	def flattenMany[U,CC[_]](implicit ev:T=>CC[U], factory:Factory[U,CC[U]]):CC[U]	=
 			// toOption.flattenMany
 			this map ev match {
-				case Bad(_)		=> cbf().result
+				case Bad(_)		=> factory.newBuilder.result
 				case Good(cc)	=> cc
 			}
 
@@ -185,14 +185,14 @@ sealed trait Validated[+E,+T] {
 
 	def rescue[TT>:T](func:PFunction[E,TT]):Validated[E,TT]	=
 			this match {
-				case Bad(x)		=> func(x) map Good.apply getOrElse Bad(x)
+				case Bad(x)		=> func(x) map Validated.good getOrElse Validated.bad(x)
 				case Good(x)	=> Good(x)
 			}
 
 	def reject[EE>:E](func:PFunction[T,EE]):Validated[EE,T]	=
 			this match {
 				case Bad(x)		=> Bad(x)
-				case Good(x)	=> func(x) map Bad.apply getOrElse Good(x)
+				case Good(x)	=> func(x) map Validated.bad getOrElse Validated.good(x)
 			}
 
 	def winByOr[EE>:E](func:Predicate[T], bad: =>EE):Validated[EE,T]	=
@@ -210,7 +210,7 @@ sealed trait Validated[+E,+T] {
 	def collapseOr[EE>:E,TT](func:PFunction[T,TT], bad: =>EE):Validated[EE,TT]	=
 			this match {
 				case Bad(x)		=> Bad(x)
-				case Good(x)	=> func(x) map Good.apply getOrElse Bad(bad)
+				case Good(x)	=> func(x) map Validated.good getOrElse Validated.bad(bad)
 			}
 
 	def collectOr[EE>:E,TT](func:PartialFunction[T,TT], bad: =>EE):Validated[EE,TT]	=

@@ -6,7 +6,7 @@ final class Dimension2D_Double(var width:Double, var height:Double) extends Dime
 	def getHeight():Double	= width
 	def getWidth():Double	= height
 
-	def setSize(width:Double, height:Double) {
+	def setSize(width:Double, height:Double):Unit	= {
 		this.width	= width
 		this.height	= height
 	}

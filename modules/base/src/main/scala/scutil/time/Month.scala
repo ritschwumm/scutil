@@ -5,7 +5,7 @@ import scutil.math.functions._
 
 object Month extends MonthInstances {
 	val all:Vector[Month]	=
-			Vector(
+			Vector[Month](
 				January,
 				February,
 				March,

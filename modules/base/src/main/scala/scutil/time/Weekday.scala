@@ -5,7 +5,7 @@ import scutil.math.functions._
 
 object Weekday extends WeekdayInstances {
 	val all:Vector[Weekday]	=
-			Vector(
+			Vector[Weekday](
 				Monday,
 				Tuesday,
 				Wednesday,

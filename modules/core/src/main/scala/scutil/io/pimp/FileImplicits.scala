@@ -123,15 +123,15 @@ trait FileImplicits {
 		//def readByteString():ByteString				= ByteString unsafeFromArray (Files readAllBytes peer.toPath)
 		//def writeByteString(bytes:ByteString):Unit	= Files write (peer.toPath, bytes.unsafeValue)
 
-		def readByteString():ByteString				= withInputStream	{ _ readFullyByteString ()	}
+		def readByteString():ByteString				= withInputStream	{ _.readFullyByteString()	}
 		def writeByteString(bytes:ByteString):Unit	= withOutputStream	{ _ writeByteString bytes	}
 
-		def readString(charset:Charset):String					= withReader(charset) { _ readFully () }
+		def readString(charset:Charset):String					= withReader(charset) { _.readFully() }
 		def writeString(charset:Charset, string:String):Unit	= withWriter(charset) { _ write string }
 
 		// BETTER use a specific line separator
 		def readLines(charset:Charset):ISeq[String]	=
-				withReader(charset) { _ readLines () }
+				withReader(charset) { _.readLines() }
 		def writeLines(charset:Charset, lines:ISeq[String]):Unit	=
 				withWriter(charset) { writer =>
 					lines foreach { line =>
@@ -144,7 +144,7 @@ trait FileImplicits {
 		//## manipulation
 
 		/** copy this File over another */
-		def copyTo(to:File, force:Boolean=false) {
+		def copyTo(to:File, force:Boolean=false):Unit = {
 			 if (!to.exists) {
 				to.createNewFile()
 			 }
@@ -162,8 +162,8 @@ trait FileImplicits {
 		}
 
 		/** delete all children and the file itself */
-		def deleteRecursive() {
-			def loop(file:File) {
+		def deleteRecursive():Unit = {
+			def loop(file:File):Unit = {
 				val deleted	= file.delete()
 				// NOTE this prevents deletion of the contents of symlinked directories
 				if (!deleted && file.isDirectory) {

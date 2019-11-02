@@ -99,8 +99,8 @@ trait instances extends instancesLow {
 	implicit def EitherTraversedMonad[S]:TraversedMonad[Either[S,?]]	=
 			new TraversedMonad[Either[S,?]] {
 				override def pure[A](it:A):Either[S,A]										= Right(it)
-				override def map[A,B](it:Either[S,A])(func:A=>B):Either[S,B]				= it.right map func
-				override def flatMap[A,B](it:Either[S,A])(func:A=>Either[S,B]):Either[S,B]	= it.right flatMap func
+				override def map[A,B](it:Either[S,A])(func:A=>B):Either[S,B]				= it map func
+				override def flatMap[A,B](it:Either[S,A])(func:A=>Either[S,B]):Either[S,B]	= it flatMap func
 
 				override def traverse[G[_],A,B](it:Either[S,A])(func:A=>G[B])(implicit AP:Applicative[G]):G[Either[S,B]]	=
 						it match {

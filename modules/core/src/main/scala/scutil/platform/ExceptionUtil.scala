@@ -1,16 +1,16 @@
 package scutil.platform
 
 object ExceptionUtil {
-	def logAllExceptions(onError:(Thread,Throwable)=>Unit) {
+	def logAllExceptions(onError:(Thread,Throwable)=>Unit):Unit = {
 		Thread setDefaultUncaughtExceptionHandler new LoggingUncaughtExceptionHandler(onError)
 	}
 
-	def logThreadExceptions(thread:Thread, onError:(Thread,Throwable)=>Unit) {
+	def logThreadExceptions(thread:Thread, onError:(Thread,Throwable)=>Unit):Unit = {
 		thread setUncaughtExceptionHandler new LoggingUncaughtExceptionHandler(onError)
 	}
 
 	/** replacement for logThreadExceptions(EDT) which does work in java 7, but not java 6 */
-	def logAWTExceptions(onError:(Thread,Throwable)=>Unit) {
+	def logAWTExceptions(onError:(Thread,Throwable)=>Unit):Unit = {
 		java6AwtHandler	= onError
 		System setProperty (
 				"sun.awt.exception.handler",
@@ -22,14 +22,14 @@ object ExceptionUtil {
 }
 
 private final class LoggingUncaughtExceptionHandler(onError:(Thread,Throwable)=>Unit) extends Thread.UncaughtExceptionHandler {
-	def uncaughtException(thread:Thread, throwable:Throwable) {
+	def uncaughtException(thread:Thread, throwable:Throwable):Unit = {
 		onError(thread, throwable)
 	}
 }
 
 /** must have a public no-args constructor and a handle method with the right signature */
 private final class Java6AWTExceptionHandler {
-	def handle(throwable:Throwable) {
+	def handle(throwable:Throwable):Unit = {
 		try {
 			if (ExceptionUtil.java6AwtHandler != null) {
 				ExceptionUtil.java6AwtHandler apply (Thread.currentThread, throwable)

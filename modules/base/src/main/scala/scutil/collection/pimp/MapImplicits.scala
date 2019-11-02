@@ -26,6 +26,7 @@ trait MapImplicits {
 		def strictFilterNotKeys(pred:Predicate[S]):Map[S,T]	=
 				peer filter { case (s, _)	=> !pred(s) }
 
+		// TODO 213 exists - check the others above!
 		/** mapValues keeps a reference to the original Map, this does not */
 		def strictMapValues[U](func:T=>U):Map[S,U]	=
 				peer map { case (s, t) => (s, func(t)) }

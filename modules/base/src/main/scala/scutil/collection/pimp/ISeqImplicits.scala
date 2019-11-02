@@ -81,6 +81,7 @@ trait ISeqImplicits {
 		}
 
 		/** group values by keys, both from a function */
+		// TODO 312 already exists there
 		def groupMap[K,V](func:T=>(K,V)):Map[K,ISeq[V]]	=
 				peer
 				.map		(func)

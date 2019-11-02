@@ -8,7 +8,7 @@ import scala.concurrent._
 object SwingExecutionContext {
 	implicit val self:ExecutionContext	=
 			ExecutionContext fromExecutor new JExecutor {
-				def execute(runnable:Runnable) {
+				def execute(runnable:Runnable):Unit	= {
 					SwingUtilities invokeLater runnable
 				}
 			}

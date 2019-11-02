@@ -49,8 +49,7 @@ final class IoRef[T](initial:T) {
 			}
 	*/
 
-	//------------------------------------------------------------------------------
-
+	// TODO bullshit
 	override def toString:String	=
 			"IoRef(...)"
 }

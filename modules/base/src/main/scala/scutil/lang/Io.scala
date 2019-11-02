@@ -16,10 +16,10 @@ object Io extends IoInstances {
 	// TODO how about cokleisli?
 
 	def staticToKleisli[S,T](func:Io[S=>T]):(S => Io[T])	=
-			s	=>  delay { func unsafeRun () apply s }
+			s	=>  delay { func.unsafeRun().apply(s) }
 
 	def kleisliToStatic[S,T](func:S=>Io[T]):Io[S=>T]	=
-			delay { s => func(s) unsafeRun () }
+			delay { s => func(s).unsafeRun() }
 
 	//------------------------------------------------------------------------------
 

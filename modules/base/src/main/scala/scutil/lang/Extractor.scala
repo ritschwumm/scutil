@@ -2,6 +2,7 @@ package scutil.lang
 
 import scutil.lang.tc._
 
+// TODO 213 PartialFunction will have unapply there, do we still need this?
 object Extractor extends ExtractorInstances {
 	def total[S,T](func:S=>T):Extractor[S,T]	=
 			Extractor(s	=> Some(func(s)))

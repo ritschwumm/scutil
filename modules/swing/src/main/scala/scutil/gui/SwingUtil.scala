@@ -20,7 +20,7 @@ object SwingUtil {
 	def edtWait[T](job: =>T):T			= edt(job)()
 
 	/** classical SwingWorker pattern without exception handling */
-	def swingWorker[T](calculate:Thunk[T], use:Effect[T]) {
+	def swingWorker[T](calculate:Thunk[T], use:Effect[T]):Unit	= {
 		worker {
 			val	value	= calculate()
 			edt {

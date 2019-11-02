@@ -62,7 +62,7 @@ trait InputStreamImplicits {
 		}
 
 		/** skip to end */
-		def skipFully() {
+		def skipFully():Unit = {
 			val buffer	= new Array[Byte](blockSize)
 			var running	= true
 			while (running) {
@@ -73,7 +73,7 @@ trait InputStreamImplicits {
 
 		/** copy everything */
 		// TODO kept only for compatibility with java 8, this exists in java 9 as transferTo
-		def transferToPre9(out:OutputStream) {
+		def transferToPre9(out:OutputStream):Unit = {
 			val	buffer	= new Array[Byte](blockSize)
 			var running	= true
 			while (running) {

@@ -58,7 +58,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 		}
 	}
 
-	private def update() {
+	private def update():Unit	= {
 		val predicate	= underMousePredicate()
 		val updates	=
 				for {
@@ -133,7 +133,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 
 	private val testThread	=
 			new Thread {
-				override def run() {
+				override def run():Unit	= {
 					while (true) {
 						Thread sleep testCycle.millis
 						edt {

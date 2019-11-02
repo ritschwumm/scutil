@@ -1,7 +1,7 @@
 package scutil.lang.pimp
 
 import scala.util.{ Try, Success, Failure }
-import scala.collection.generic.CanBuildFrom
+import scala.collection.Factory
 
 import scutil.lang._
 import scutil.lang.tc._
@@ -88,11 +88,11 @@ trait EitherImplicits {
 		def zipWith[LL>:L,X,Y](that:Either[LL,X])(func:(R,X)=>Y):Either[LL,Y]	=
 				peer zip that map func.tupled
 
-		/** handy replacement for tried.toISeq.flatten abusing CanBuildFrom as a Zero typeclass */
-		def flattenMany[U,CC[_]](implicit ev:R=>CC[U], cbf:CanBuildFrom[CC[U],U,CC[U]]):CC[U]	=
+		/** handy replacement for tried.toISeq.flatten abusing Factory as a Zero typeclass */
+		def flattenMany[U,CC[_]](implicit ev:R=>CC[U], factory:Factory[U,CC[U]]):CC[U]	=
 				// toOption.flattenMany
 				peer map ev match {
-					case Left(_)	=> cbf().result
+					case Left(_)	=> factory.newBuilder.result
 					case Right(cc)	=> cc
 				}
 

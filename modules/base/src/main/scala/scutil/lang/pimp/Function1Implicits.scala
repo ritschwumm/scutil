@@ -33,6 +33,7 @@ trait Function1Implicits {
 				}
 
 		/** inverse to PartialFunction#lift */
+		// TODO 213 will exist there
 		def unlift[X](implicit ev:PFunction[T,X]):PartialFunction[S,X]	=
 				Function unlift (peer andThen ev)
 

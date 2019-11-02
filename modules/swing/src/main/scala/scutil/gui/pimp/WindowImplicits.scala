@@ -9,7 +9,7 @@ object WindowImplicits extends WindowImplicits
 
 trait WindowImplicits {
 	implicit final class WindowExt(peer:Window) {
-		def restrictToScreen() {
+		def restrictToScreen():Unit	= {
 			val frame	= geomConversion Rectangle_IntRect peer.getBounds
 			val screen	= geomConversion Rectangle_IntRect peer.getGraphicsConfiguration.getBounds
 

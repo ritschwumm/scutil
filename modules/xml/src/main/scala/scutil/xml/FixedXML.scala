@@ -55,11 +55,11 @@ object FixedXML extends XMLLoader[Elem] {
 	}
 	*/
 
-	def saveFile(file:File, node:Node, xmlDecl:Boolean=true, docType:Option[DocType]=None, minimizeTags:MinimizeMode.Value=MinimizeMode.Default) {
+	def saveFile(file:File, node:Node, xmlDecl:Boolean=true, docType:Option[DocType]=None, minimizeTags:MinimizeMode.Value=MinimizeMode.Default):Unit = {
 		(file withWriter encoding) { write(node, xmlDecl, docType, minimizeTags) }
 	}
 
-	private def write(node:Node, xmlDecl:Boolean, docType:Option[DocType], minimizeTags:MinimizeMode.Value)(writer:Writer) {
+	private def write(node:Node, xmlDecl:Boolean, docType:Option[DocType], minimizeTags:MinimizeMode.Value)(writer:Writer):Unit = {
 		xmlDecl option s"<?xml version='1.0' encoding='${encoding.name}'?>\n" foreach writer.write
 		docType map { _.toString + "\n" } foreach writer.write
 		writer write (Utility serialize (node, minimizeTags = minimizeTags)).toString

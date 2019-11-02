@@ -20,7 +20,7 @@ trait LoggingSyntax {
 
 	@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
 	implicit class LogLevelAsLogger(level:LogLevel) {
-		def apply(elements:LogValue*)(implicit sl:SourceLocation) {
+		def apply(elements:LogValue*)(implicit sl:SourceLocation):Unit = {
 			log(elements.toVector)
 		}
 
@@ -31,7 +31,7 @@ trait LoggingSyntax {
 			out
 		}
 
-		def log(elements:ISeq[LogValue])(implicit sl:SourceLocation) {
+		def log(elements:ISeq[LogValue])(implicit sl:SourceLocation):Unit = {
 			logHandler handle LogEvent(level, elements, MilliInstant.now, sl)
 		}
 	}

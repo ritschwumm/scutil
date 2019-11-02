@@ -15,7 +15,7 @@ object DndFileExport {
 	def install(target:JComponent, provider:IntPoint=>Option[Nes[File]]):Disposable	= {
 		val dragGestureListener	=
 				new DragGestureListener {
-					def dragGestureRecognized(ev:DragGestureEvent) {
+					def dragGestureRecognized(ev:DragGestureEvent):Unit	= {
 						provider(ev.getDragOrigin.toIntPoint)
 						.map 		{ new FileTransferable(_) }
 						.foreach	{ it =>

@@ -11,6 +11,8 @@ object StringImplicits extends StringImplicits
 
 trait StringImplicits {
 	implicit final class LangStringExt(peer:String) {
+		/*
+		// NOTE 213 these already exist in the standard lib
 		def toBooleanOption:Option[Boolean]	= parseBoolean.toOption
 		def toByteOption:Option[Byte]		= parseByte.toOption
 		def toShortOption:Option[Short]		= parseShort.toOption
@@ -18,6 +20,7 @@ trait StringImplicits {
 		def toLongOption:Option[Long]		= parseLong.toOption
 		def toFloatOption:Option[Float]		= parseFloat.toOption
 		def toDoubleOption:Option[Double]	= parseDouble.toOption
+		*/
 		def toBigIntOption:Option[BigInt]	= parseBigInt.toOption
 
 		// toBoolean throws an IllegalArgumentException, not a NumberFormatException

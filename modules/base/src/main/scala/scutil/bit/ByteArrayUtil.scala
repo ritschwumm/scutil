@@ -68,31 +68,31 @@ object ByteArrayUtil {
 
 	//------------------------------------------------------------------------------
 
-	def putBigEndianShort(array:Array[Byte], byteOffset:Int, value:Short) {
+	def putBigEndianShort(array:Array[Byte], byteOffset:Int, value:Short):Unit	= {
 		array(byteOffset+0)	= (value >> 8).toByte
 		array(byteOffset+1)	= (value >> 0).toByte
 	}
 
-	def putLittleEndianShort(array:Array[Byte], byteOffset:Int, value:Short) {
+	def putLittleEndianShort(array:Array[Byte], byteOffset:Int, value:Short):Unit	= {
 		array(byteOffset+0)	= (value >> 0).toByte
 		array(byteOffset+1)	= (value >> 8).toByte
 	}
 
-	def putBigEndianInt(array:Array[Byte], byteOffset:Int, value:Int) {
+	def putBigEndianInt(array:Array[Byte], byteOffset:Int, value:Int):Unit	= {
 		array(byteOffset+0)	= (value >> 24).toByte
 		array(byteOffset+1)	= (value >> 16).toByte
 		array(byteOffset+2)	= (value >>  8).toByte
 		array(byteOffset+3)	= (value >>  0).toByte
 	}
 
-	def putLittleEndianInt(array:Array[Byte], byteOffset:Int, value:Int) {
+	def putLittleEndianInt(array:Array[Byte], byteOffset:Int, value:Int):Unit	= {
 		array(byteOffset+0)	= (value >>  0).toByte
 		array(byteOffset+1)	= (value >>  8).toByte
 		array(byteOffset+2)	= (value >> 16).toByte
 		array(byteOffset+3)	= (value >> 24).toByte
 	}
 
-	def putBigEndianLong(array:Array[Byte], byteOffset:Int, value:Long) {
+	def putBigEndianLong(array:Array[Byte], byteOffset:Int, value:Long):Unit	= {
 		array(byteOffset+0)	= (value >> 56).toByte
 		array(byteOffset+1)	= (value >> 48).toByte
 		array(byteOffset+2)	= (value >> 40).toByte
@@ -103,7 +103,7 @@ object ByteArrayUtil {
 		array(byteOffset+7)	= (value >>  0).toByte
 	}
 
-	def putLittleEndianLong(array:Array[Byte], byteOffset:Int, value:Long) {
+	def putLittleEndianLong(array:Array[Byte], byteOffset:Int, value:Long):Unit	= {
 		array(byteOffset+0)	= (value >>  0).toByte
 		array(byteOffset+1)	= (value >>  8).toByte
 		array(byteOffset+2)	= (value >> 16).toByte
@@ -116,14 +116,14 @@ object ByteArrayUtil {
 
 	//------------------------------------------------------------------------------
 
-	def swapEndianShort(array:Array[Byte], byteOffset:Int) {
+	def swapEndianShort(array:Array[Byte], byteOffset:Int):Unit	= {
 		val a	= array(byteOffset+0)
 		val b	= array(byteOffset+1)
 		array(byteOffset+1)	= a
 		array(byteOffset+0)	= b
 	}
 
-	def swapEndianInt(array:Array[Byte], byteOffset:Int) {
+	def swapEndianInt(array:Array[Byte], byteOffset:Int):Unit	= {
 		val a	= array(byteOffset+0)
 		val b	= array(byteOffset+1)
 		val c	= array(byteOffset+2)
@@ -134,7 +134,7 @@ object ByteArrayUtil {
 		array(byteOffset+0)	= d
 	}
 
-	def swapEndianLong(array:Array[Byte], byteOffset:Int) {
+	def swapEndianLong(array:Array[Byte], byteOffset:Int):Unit	= {
 		val a	= array(byteOffset+0)
 		val b	= array(byteOffset+1)
 		val c	= array(byteOffset+2)

@@ -38,7 +38,7 @@ trait ComponentImplicits {
 				)
 
 		/** sets minimum, preferred and maximum size */
-		def setAllSizes(size:Dimension) {
+		def setAllSizes(size:Dimension):Unit	= {
 			peer setMinimumSize		size
 			peer setMaximumSize		size
 			peer setPreferredSize	size

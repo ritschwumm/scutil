@@ -3,9 +3,9 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.160.0",
+	version			:= "0.161.0",
 
-	scalaVersion	:= "2.12.10",
+	scalaVersion	:= "2.13.1",
 	scalacOptions	++= Seq(
 		"-deprecation",
 		"-unchecked",
@@ -15,7 +15,6 @@ inThisBuild(Seq(
 		"-opt-inline-from:scutil.**",
 		"-Xfatal-warnings",
 		"-Xlint",
-		"-Ypartial-unification"
 	),
 
 	conflictManager	:= ConflictManager.strict withOrganization "^(?!(org\\.scala-lang|org\\.scala-js)(\\..*)?)$",
@@ -106,7 +105,6 @@ lazy val `scutil-base`	=
 			scalacOptions	++= Seq(
 				// "-language:implicitConversions",
 				// "-language:existentials",
-				"-language:higherKinds"//,
 				// "-language:reflectiveCalls",
 				// "-language:dynamics",
 				// "-language:experimental.macros",
@@ -132,7 +130,6 @@ lazy val `scutil-core`	=
 			scalacOptions	++= Seq(
 				"-language:implicitConversions"
 				// "-language:existentials",
-				// "-language:higherKinds",
 				// "-language:reflectiveCalls",
 				// "-language:dynamics",
 				// "-language:experimental.macros",
@@ -171,7 +168,6 @@ lazy val `scutil-swing`	=
 			scalacOptions	++= Seq(
 				"-language:implicitConversions"
 				// "-language:existentials",
-				// "-language:higherKinds",
 				// "-language:reflectiveCalls",
 				// "-language:dynamics",
 				// "-language:experimental.macros",
@@ -188,7 +184,6 @@ lazy val `scutil-xml`	=
 			scalacOptions	++= Seq(
 				// "-language:implicitConversions",
 				// "-language:existentials",
-				// "-language:higherKinds",
 				// "-language:reflectiveCalls",
 				// "-language:dynamics",
 				// "-language:experimental.macros",
@@ -208,7 +203,6 @@ lazy val `scutil-guid`	=
 			scalacOptions	++= Seq(
 				//"-language:implicitConversions",
 				// "-language:existentials",
-				// "-language:higherKinds",
 				// "-language:reflectiveCalls",
 				// "-language:dynamics",
 				// "-language:experimental.macros",
