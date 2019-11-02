@@ -3,11 +3,11 @@ package scutil.lang
 import scutil.lang.tc._
 
 object Store extends StoreInstances {
-	def identity[T](t:T):Store[T,T]	=
-			Store(t, t => t)
+	def identity[T](value:T):Store[T,T]	=
+			Store(value, t => t)
 
-	def trivial[T](t:T):Store[T,Unit]	=
-			Store((), _ => t)
+	def trivial[T](value:T):Store[T,Unit]	=
+			Store((), _ => value)
 }
 
 final case class Store[C,V](get:V, set:V=>C) {

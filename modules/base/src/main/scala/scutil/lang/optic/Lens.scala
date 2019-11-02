@@ -4,11 +4,11 @@ import scutil.lang.tc._
 
 object Lens {
 	def identity[T]:Lens[T,T]	=
-			// from(Store.identity)
-			Lens(t => t, _ => t => t)
+			// fromStoreAt(Store.identity)
+			Lens(t => t, t => _ => t)
 
 	def trivial[T]:Lens[T,Unit]	=
-			// from(Store.trivial)
+			// fromStoreAt(Store.trivial)
 			Lens(_ => (), _ => t => t)
 
 	def codiag[T]:Lens[Either[T,T],T]	=

@@ -66,11 +66,6 @@ trait ReaderImplicits {
 			}
 		}
 
-		@deprecated("use transferToPre10", "0.152.0")
-		def transferTo(out:Writer) {
-			transferToPre10(out)
-		}
-
 		/** copy everything */
 		// TODO kept only for compatibility with java 9, this exists in java 10 as transferTo
 		def transferToPre10(out:Writer) {

@@ -5,12 +5,12 @@ import scutil.lang.tc._
 
 object Optional extends OptionalInstances {
 	def partial[S,T](get:PartialFunction[S,T], set:T=>S):Optional[S,T] =
-			Optional(get.lift, t => s => set(t))
+			Optional(get.lift, t => _ => set(t))
 
 	def total[S,T](get:S=>T, set:T=>S):Optional[S,T]	=
 			Optional(
 				get	= get andThen Some.apply,
-				set	= t => s => set(t)
+				set	= t => _ => set(t)
 			)
 
 	def identity[T]:Optional[T,T]	=
@@ -19,13 +19,13 @@ object Optional extends OptionalInstances {
 	def trivial[T]:Optional[T,Unit]	=
 			Optional(
 				get	= t 		=> Some(()),
-				set	= x => t	=> t
+				set	= _ => t	=> t
 			)
 
 	def void[S,T]:Optional[S,T]	=
 			Optional(
 				get	= t 		=> None,
-				set	= t => s	=> s
+				set	= _ => s	=> s
 			)
 
 	def always[T]:Optional[Option[T],T]	=
@@ -34,7 +34,7 @@ object Optional extends OptionalInstances {
 	def filtered[T](pred:T=>Boolean):Optional[T,T]	=
 			Optional(
 				s => if (pred(s)) Some(s) else None,
-				x => t => x
+				x => _ => x
 			)
 
 	def codiag[T]:Optional[Either[T,T],T]	=
