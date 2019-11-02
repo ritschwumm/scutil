@@ -84,16 +84,6 @@ final class HashSalt(
 			(salt ++ _) 								|>
 			hash(rounds)
 
-	private def hash(rounds:Int)(bytes:ByteString):ByteString	= {
-		// throws NoSuchAlgorithmException
-		val digest	= MessageDigest getInstance hashAlgorithm
-		var trip	= bytes.toArray
-		var round	= 0
-		while (round < rounds) {
-			digest update trip
-			trip	= digest.digest()
-			round	+= 1
-		}
-		ByteString unsafeFromArray trip
-	}
+	private def hash(rounds:Int)(bytes:ByteString):ByteString	=
+			Hashing hash (hashAlgorithm, rounds, bytes)
 }

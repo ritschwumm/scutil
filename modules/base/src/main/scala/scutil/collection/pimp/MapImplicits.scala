@@ -30,12 +30,31 @@ trait MapImplicits {
 		def strictMapValues[U](func:T=>U):Map[S,U]	=
 				peer map { case (s, t) => (s, func(t)) }
 
+		/*
+		// elegant, but dog slow
 		def where[U](that:Map[S,U]):Map[S,Where[T,U]]	=
 				(peer.keySet ++ that.keySet)
 				.map { k =>
 					k -> (Where from (peer get k, that get k) getOrElse nothing)
 				}
 				.toMap
+		*/
+		def where[U](that:Map[S,U]):Map[S,Where[T,U]]	= {
+			var out	= Map.empty[S,Where[T,U]]
+			peer foreach { case (s, t) =>
+				that get s match {
+					case Some(u)	=> out += (s -> Both(t, u))
+					case None		=> out += (s -> Here(t))
+				}
+			}
+			that foreach { case (s, u) =>
+				peer get s match {
+					case Some(t1)	=>
+					case None		=> out += (s -> There(u))
+				}
+			}
+			out
+		}
 
 		/** set or remove the value */
 		def set(key:S, value:Option[T]):Map[S,T]	=

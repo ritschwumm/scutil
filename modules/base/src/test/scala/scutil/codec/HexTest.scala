@@ -1,6 +1,8 @@
-package scutil.lang
+package scutil.codec
 
 import org.specs2.mutable._
+
+import scutil.lang._
 
 @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
 class HexTest extends Specification {

@@ -1,4 +1,6 @@
-package scutil.lang
+package scutil.codec
+
+import scutil.lang._
 
 object Hex {
 	val byteStringPrism	= Prism(decodeByteString,	encodeByteString)

@@ -3,6 +3,7 @@ package scutil.guid
 import java.util.concurrent.atomic.AtomicInteger
 
 import scutil.lang._
+import scutil.codec._
 
 protected abstract class GuidBase {
 	private val randomCount	= 8

@@ -3,7 +3,7 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.156.0",
+	version			:= "0.157.0",
 
 	scalaVersion	:= "2.12.8",
 	scalacOptions	++= Seq(
@@ -21,7 +21,7 @@ inThisBuild(Seq(
 	conflictManager	:= ConflictManager.strict,
 	resolvers		+= "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
 	resolvers 		+= Resolver sonatypeRepo "releases",
-	addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.0"),
+	addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.1"),
 
 	wartremoverErrors	++= Seq(
 		Wart.AsInstanceOf,

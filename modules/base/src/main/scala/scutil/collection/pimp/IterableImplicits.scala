@@ -112,6 +112,16 @@ trait IterableImplicits {
 			None
 		}
 
+		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
+		def maxOption(implicit ev:Ordering[T]):Option[T]	=
+				if (peer.nonEmpty)	Some(peer.max)
+				else				None
+
+		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
+		def minOption(implicit ev:Ordering[T]):Option[T]	=
+				if (peer.nonEmpty)	Some(peer.min)
+				else				None
+
 		// NOTE these should be generalized to other AFs, not just Option and Tried
 		// NOTE supplying pure and flatMap of a Monad would work, too!
 

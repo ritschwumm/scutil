@@ -3,6 +3,7 @@ package scutil.color
 import scala.math._
 
 import scutil.lang._
+import scutil.codec._
 
 object RGB {
 	val white	= RGB(1,1,1)

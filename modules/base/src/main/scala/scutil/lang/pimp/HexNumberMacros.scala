@@ -2,7 +2,7 @@ package scutil.lang.pimp
 
 import scala.reflect.macros.blackbox.Context
 
-import scutil.lang.Hex
+import scutil.codec.Hex
 
 private final class HexNumberMacros(val c:Context) {
 	import c.universe._
