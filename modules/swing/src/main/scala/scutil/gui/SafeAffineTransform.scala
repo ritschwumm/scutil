@@ -7,12 +7,6 @@ import scutil.geom._
 
 object SafeAffineTransform {
 	//------------------------------------------------------------------------------
-	//## new factory
-
-	@deprecated("use unsafeFromAwtAffineTransform", "0.40.0")
-	def apply(delegate:AffineTransform):SafeAffineTransform	= unsafeFromAwtAffineTransform(delegate)
-
-	//------------------------------------------------------------------------------
 	//## factory
 
 	val identity:SafeAffineTransform	= unsafeFromAwtAffineTransform(new AffineTransform)

@@ -5,6 +5,8 @@ import scala.reflect.macros.blackbox.Context
 
 import java.io.File
 
+import scutil.lang.tc._
+
 object SourceLocation {
 	implicit def sourceLocation:SourceLocation	= macro sourceLocationImpl
 
@@ -20,6 +22,8 @@ object SourceLocation {
 				}
 		q"_root_.scutil.lang.SourceLocation($path, ${pos.source.file.name}, ${pos.line})"
 	}
+
+	implicit val SourceLocationShow:Show[SourceLocation]	= Show.toStringInstance
 }
 
 final case class SourceLocation(

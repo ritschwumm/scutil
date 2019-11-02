@@ -39,7 +39,6 @@ final case class Later[T](unsafeRun:(T=>Unit)=>Unit) {
 	def runVector():Vector[T]	=
 			runFold(Vector.empty[T])(_ :+ _)
 
-	// TODO merge with fold somehow?
 	def runFold[U](initial:U)(combine:(U,T)=>U):U	= {
 		var state	= initial
 		unsafeRun { item =>

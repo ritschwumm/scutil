@@ -16,7 +16,7 @@ object Base64 {
 
 	private val padding:Char	= '='
 
-	// TODO allow alternate alphabet ending in "-_"
+	// NOTE threre's an alternative encoding ending in "-_" for urls and filenames
 	private val alphabet:Array[Char]	= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray
 
 	private val invalidFlag	= -1.toByte

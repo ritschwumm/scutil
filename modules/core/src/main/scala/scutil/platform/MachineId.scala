@@ -22,7 +22,7 @@ object MachineId {
 		val ifaceMacs:ISeq[Byte]	=
 				for {
 					iface	<- ifaces
-					addr	<- (iface.getHardwareAddress:Seq[Byte]).optionNotNull.toVector
+					addr	<- iface.getHardwareAddress.optionNotNull.toVector
 					byte	<- addr
 				}
 				yield byte

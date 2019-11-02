@@ -23,10 +23,14 @@ trait StringImplicits {
 		// toBoolean throws an IllegalArgumentException, not a NumberFormatException
 		def parseBoolean:Either[NumberFormatException,Boolean]	=
 				peer match {
-					case "true"		=> Right(true)
-					case "false"	=> Right(false)
-					case null		=> Left(new NumberFormatException("null is not a boolean"))
-					case x			=> Left(new NumberFormatException("not a boolean: " + x))
+					case "true"							=> Right(true)
+					case "false"						=> Right(false)
+					case "TRUE"							=> Right(true)
+					case "FALSE"						=> Right(false)
+					case null							=> Left(new NumberFormatException("null is not a boolean"))
+					case x if x.toLowerCase == "true"	=> Right(true)
+					case x if x.toLowerCase == "false"	=> Right(false)
+					case x								=> Left(new NumberFormatException("not a boolean: " + x))
 				}
 		def parseByte:Either[NumberFormatException,Byte]		= parseNumber(_.toByte)
 		def parseShort:Either[NumberFormatException,Short]		= parseNumber(_.toShort)

@@ -101,9 +101,6 @@ final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 				convert(func(it))
 			}
 
-	@deprecated("use as like in Functor", "0.149.0")
-	def tag[U](it:U):Converter[E,S,U]	= as(it)
-
 	def as[U](it:U):Converter[E,S,U]	=
 			map(constant(it))
 

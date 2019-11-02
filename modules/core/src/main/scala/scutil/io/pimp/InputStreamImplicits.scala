@@ -24,6 +24,7 @@ trait InputStreamImplicits {
 			offset
 		}
 
+		// NOTE java 11 has readNBytes (in ByteArrayInputStream)
 		def readLimitedByteString(length:Int):Option[ByteString]	= {
 			val buffer	= new Array[Byte](length)
 			val found	= peer read buffer
@@ -40,6 +41,7 @@ trait InputStreamImplicits {
 		def readFullyByteString():ByteString	=
 				ByteString unsafeFromArray readFullyImpl()
 
+		// NOTE java 11 has readAllBytes
 		private def readFullyImpl():Array[Byte] = {
 			val baos	= new ByteArrayOutputStream
 			transferToPre9(baos)
@@ -47,6 +49,7 @@ trait InputStreamImplicits {
 			baos.toByteArray
 		}
 
+		// NOTE java 12 has skipNBytes
 		/** skip as much as desired if possible, return how much */
 		def skipExactly(count:Long):Long	= {
 			var done	= 0L
