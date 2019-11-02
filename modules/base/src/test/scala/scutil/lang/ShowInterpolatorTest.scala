@@ -58,17 +58,18 @@ class ShowInterpolatorTest extends Specification {
 		}
 
 		/*
-		// this should fail at compile time
-		"allow escapes" in {
-			show"\x" mustEqual s"\t"
+		// fails at compile time, as it should
+		"disallow unknown escapes" in {
+			show"""\x""" mustEqual s"\t"
 		}
 		*/
 
-		/*
-		// TODO allow escaped double quotes somehow
-		"allow escapes" in {
-			show"\"" mustEqual s"\""
+		"allow double quote escapes" in {
+			show"""\"""" mustEqual s"""\""""
 		}
-		*/
+
+		"allow double quote escapes" in {
+			show"""\"""" mustEqual "\""
+		}
 	}
 }

@@ -12,10 +12,6 @@ object Optionals {
 
 	//------------------------------------------------------------------------------
 
-	@deprecated("use seq", "0.162.0")
-	def iseq[T](i:Int):Optional[ISeq[T],T]	=
-			seq(i)
-
 	def seq[T](i:Int):Optional[Seq[T],T]	=
 			Optional(
 				get	= s 		=> s lift i,
@@ -35,22 +31,6 @@ object Optionals {
 			)
 
 	//------------------------------------------------------------------------------
-
-	@deprecated("use seqWhere", "0.162.0")
-	def iseqWhere[T](pred:Predicate[T]):Optional[ISeq[T],T]	=
-			seqWhere(pred)
-
-	@deprecated("use seqWhereEqual", "0.162.0")
-	def iseqWhereEqual[S,T](extract:S=>T, id:T):Optional[ISeq[S],S]	=
-			seqWhereEqual(extract, id)
-
-	@deprecated("use seqHead", "0.162.0")
-	def iseqHead[T]:Optional[ISeq[T],T]	=
-			seqHead
-
-	@deprecated("use seqLast", "0.162.0")
-	def iseqLast[T]:Optional[ISeq[T],T]	=
-			seqLast
 
 	def seqWhere[T](pred:Predicate[T]):Optional[Seq[T],T]	=
 			Optional(

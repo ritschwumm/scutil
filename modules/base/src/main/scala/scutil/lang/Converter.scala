@@ -171,10 +171,6 @@ final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 				it traverseValidated convert
 			}
 
-	@deprecated("use liftSeq", "0.162.0")
-	def liftISeq(implicit cc:Semigroup[E]):Converter[E,ISeq[S],ISeq[T]]	=
-			liftSeq
-
 	def liftSeq(implicit cc:Semigroup[E]):Converter[E,Seq[S],Seq[T]]	=
 			Converter { it =>
 				it traverseValidated convert

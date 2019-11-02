@@ -1,13 +1,6 @@
 package scutil
 
 package object lang {
-	@deprecated("Seq is now immutable by default", "0.162.0")
-	type ISeq[+T]	= scala.collection.immutable.Seq[T]
-	@deprecated("Seq is now immutable by default", "0.162.0")
-	val ISeq		= scala.collection.immutable.Seq
-
-	//------------------------------------------------------------------------------
-
 	type Identity[T]		= T
 	type Predicate[-T]		= T=>Boolean
 

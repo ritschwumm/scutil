@@ -242,10 +242,6 @@ sealed trait Validated[+E,+T] {
 				case Good(x)	=> Some(x)
 			}
 
-	@deprecated("use toSeq", "0.162.0")
-	def toISeq:ISeq[T]	=
-			toSeq
-
 	def toSeq:Seq[T]	=
 			toVector
 

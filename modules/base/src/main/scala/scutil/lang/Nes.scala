@@ -9,10 +9,6 @@ object Nes extends NesInstances {
 	def multi[T](head:T, tail:T*):Nes[T]	=
 			Nes(head, tail.toVector)
 
-	@deprecated("use fromSeq", "0.162.0")
-	def fromISeq[T](it:Seq[T]):Option[Nes[T]]	=
-			fromSeq(it)
-
 	@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 	def fromSeq[T](it:Seq[T]):Option[Nes[T]]	=
 			if (it.nonEmpty)	Some(Nes(it.head, it.tail))
@@ -200,10 +196,6 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 
 	def toVector:Vector[T]	=
 			head +: tail.toVector
-
-	@deprecated("use toSeq", "0.162.0")
-	def toISeq:ISeq[T]	=
-			toVector
 
 	def toSeq:Seq[T]	=
 			toVector

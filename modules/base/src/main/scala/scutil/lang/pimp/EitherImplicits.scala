@@ -243,9 +243,6 @@ trait EitherImplicits {
 
 		// exists: toOption
 
-		@deprecated("use toSeq", "0.162.0")
-		def toISeq:ISeq[R]	=  toSeq
-
 		def toSeq:Seq[R]	=
 				toVector
 

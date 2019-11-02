@@ -35,25 +35,9 @@ trait OptionImplicits {
 		def pa[U](func:Option[T=>U]):Option[U] =
 				for { f	<- func; s	<- peer } yield f(s)
 
-		/*
-		// the flatten method defined on Iterable is useless
-		def flatten[U](implicit witness:PFunction[T,U]):Option[U] =
-				peer flatMap witness
-		*/
-
 		/** the partition method defined on Iterable is useless */
 		def partition(pred:Predicate[T]):(Option[T],Option[T])	=
 				(peer filter pred, peer filterNot pred)
-
-		/**
-		// NOTE this is no longer the case in scala 2.13
-		// the zip method defined on Iterable is useless
-		def zip[U](that:Option[U]):Option[(T,U)]	=
-				(peer, that) match {
-					case ((Some(t),Some(u)))	=> Some((t,u))
-					case _						=> None
-				}
-		 */
 
 		def zipBy[U](func:T=>U):Option[(T,U)]	=
 				peer map { it => (it,func(it)) }
@@ -63,16 +47,6 @@ trait OptionImplicits {
 					case ((Some(t),Some(u)))	=> Some(func(t,u))
 					case _						=> None
 				}
-
-		/**
-		// NOTE this is no longer the case in scala 2.13
-		// the unzip method defined on Iterable is useless
-		def unzip[U,V](implicit ev:T=>(U,V)):(Option[U],Option[V])	=
-				peer map ev match {
-					case Some((u,v))	=> (Some(u),	Some(v))
-					case None			=> (None,		None)
-				}
-		*/
 
 		def partitionEither[U,V](implicit ev:T=>Either[U,V]):(Option[U],Option[V])	=
 				peer map ev match {
@@ -106,11 +80,9 @@ trait OptionImplicits {
 
 		//------------------------------------------------------------------------------
 
-		/** peer is traversable (in the haskell sense), Option is an idiom. */
 		def sequenceOption[U](implicit ev:PFunction[T,U]):Option[Option[U]]	=
 				traverseOption(ev)
 
-		/** peer is traversable (in the haskell sense), Option is an idiom. */
 		def traverseOption[U](func:PFunction[T,U]):Option[Option[U]]	=
 				peer map func match {
 					case None		=> Some(None)
@@ -118,27 +90,23 @@ trait OptionImplicits {
 					case x			=> x
 				}
 
-		@deprecated("use sequenceSeq", "0.162.0")
-		def sequenceISeq[U](implicit ev:T=>ISeq[U]):ISeq[Option[U]]	= sequenceSeq
-		@deprecated("use traverseSeq", "0.162.0")
-		def traverseISeq[U](func:T=>ISeq[U]):ISeq[Option[U]]		= traverseSeq(func)
+		// TODO generify to any Iterable
 
-		/** peer is traversable (in the haskell sense), Seq is an idiom. */
 		def sequenceSeq[U](implicit ev:T=>Seq[U]):Seq[Option[U]]	=
 				traverseSeq(ev)
 
-		/** peer is traversable (in the haskell sense), Seq is an idiom. */
 		def traverseSeq[U](func:T=>Seq[U]):Seq[Option[U]]	=
 				peer map func match {
 					case None		=> Seq(None)
 					case Some(xs)	=> xs map Some.apply
 				}
 
-		/** peer is traversable (in the haskell sense), Iterable is an idiom. */
+		/*
+		// TODO generify these - right now, they are not working
+
 		def sequenceIterable[CC[_]<:Iterable[U],U](implicit ev:T=>CC[U], factory:Factory[Option[U],CC[Option[U]]]):CC[Option[U]]	=
 				traverseIterable(ev)
 
-		/** peer is traversable (in the haskell sense), Iterable is an idiom. */
 		def traverseIterable[CC[_]<:Iterable[U],U](func:T=>CC[U])(implicit factory:Factory[Option[U],CC[Option[U]]]):CC[Option[U]]	= {
 			val builder	= factory.newBuilder
 			peer map func match {
@@ -147,12 +115,11 @@ trait OptionImplicits {
 			}
 			builder.result
 		}
+		*/
 
-		/** peer is traversable (in the haskell sense), Either is an idiom. */
 		def sequenceEither[F,W](implicit ev:T=>Either[F,W]):Either[F,Option[W]]	=
 				traverseEither(ev)
 
-		/** peer is traversable (in the haskell sense), Either is an idiom. */
 		def traverseEither[F,W](func:T=>Either[F,W]):Either[F,Option[W]]	=
 				peer map func match {
 					case None			=> Right(None)
@@ -160,11 +127,9 @@ trait OptionImplicits {
 					case Some(Right(x))	=> Right(Some(x))
 				}
 
-		/** peer is traversable (in the haskell sense), Validated is an idiom. */
 		def sequenceValidated[F,W](implicit ev:T=>Validated[F,W]):Validated[F,Option[W]]	=
 				traverseValidated(ev)
 
-		/** peer is traversable (in the haskell sense), Validated is an idiom. */
 		def traverseValidated[F,W](func:T=>Validated[F,W]):Validated[F,Option[W]]	=
 				peer map func match {
 					case None			=> Good(None)
@@ -226,10 +191,6 @@ trait OptionImplicits {
 					case None		=> Good(good)
 					case Some(x)	=> Bad(x)
 				}
-
-		@deprecated("use toSeq", "0.162.0")
-		def toISeq:ISeq[T]	=
-				toVector
 
 		def toSeq:Seq[T]	=
 				toVector

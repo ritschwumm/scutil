@@ -25,10 +25,6 @@ object ByteString extends ByteStringInstances {
 	def fromSeq(it:Seq[Byte]):ByteString	=
 			fromCollectionSeq(it)
 
-	@deprecated("use fromSeq", "0.162.0")
-	def fromISeq(it:ISeq[Byte]):ByteString	=
-			fromSeq(it)
-
 	/** works even with mutable collections */
 	def fromCollectionSeq(it:scala.collection.Seq[Byte]):ByteString	=
 			makeWithArray(it.size) { tmp =>
@@ -198,8 +194,6 @@ final class ByteString private (private val value:Array[Byte]) {
 	def toByteBuffer:ByteBuffer	=
 		 	ByteBuffer wrap toArray
 
-	@deprecated("use toSeq", "0.162.0")
-	def toISeq:ISeq[Byte]		= value.to(ISeq)
 	def toSeq:Seq[Byte]			= value.to(Seq)
 	def toVector:Vector[Byte]	= value.to(Vector)
 	def toList:List[Byte	]	= value.to(List)

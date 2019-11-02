@@ -1,6 +1,7 @@
 package scutil.collection.pimp
 
 import scala.collection.Factory
+import scala.collection.IterableOps
 
 import scutil.lang._
 import scutil.lang.tc._
@@ -35,9 +36,8 @@ trait IterableImplicits {
 			factory fromSpecific (
 				peer map { it => (it, func(it)) }
 			)
-		*/
 
-		/** pair elements of a collection with a function applied to an element */
+		// pair elements of a collection with a function applied to an element
 		def zipBy[U](func:T=>U)(implicit factory:Factory[(T,U),CC[(T,U)]]):CC[(T,U)]	= {
 			val builder	= factory.newBuilder
 			peer foreach { it =>
@@ -45,6 +45,7 @@ trait IterableImplicits {
 			}
 			builder.result
 		}
+		*/
 
 		/** combine elements of two collections using a function */
 		def zipWith[U,V](that:Iterable[U])(f:(T,U)=>V)(implicit factory:Factory[V,CC[V]]):CC[V]	= {
@@ -57,6 +58,7 @@ trait IterableImplicits {
 			builder.result
 		}
 
+		/*
 		def partitionEither[U,V](implicit ev:T=>Either[U,V], factory1:Factory[U,CC[U]], factory2:Factory[V,CC[V]]):(CC[U],CC[V])	= {
 			val	builder1	= factory1.newBuilder
 			val	builder2	= factory2.newBuilder
@@ -76,6 +78,7 @@ trait IterableImplicits {
 			}
 			(builder1.result, builder2.result)
 		}
+		*/
 
 		/** create a set from all elements with a given function to generate the items */
 		def setBy[U](func:T=>U):Set[U]	=
@@ -120,24 +123,32 @@ trait IterableImplicits {
 			None
 		}
 
+		@deprecated("this is builtin now", "0.163.0")
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def maxOption(implicit ev:Ordering[T]):Option[T]	=
 				if (peer.nonEmpty)	Some(peer.max)
 				else				None
 
+		@deprecated("this is builtin now", "0.163.0")
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def minOption(implicit ev:Ordering[T]):Option[T]	=
 				if (peer.nonEmpty)	Some(peer.min)
 				else				None
 
+		/** insert a separator between elements */
+		def intersperse[U>:T](separator: =>U)(implicit factory:Factory[U,CC[U]]):CC[U]	=
+				// TODO generify without factory - but we have to know drop, and that peer is a CC[U], too
+				(	if (peer.nonEmpty)	peer flatMap { Seq(separator, _) } drop 1
+					else				peer
+				)
+				.to(factory)
+
 		// NOTE these should be generalized to other AFs, not just Option and Tried
 		// NOTE supplying pure and flatMap of a Monad would work, too!
 
-		/** peer is traversable (in the haskell sense), Option is an idiom. */
 		def sequenceOption[U](implicit ev:PFunction[T,U], factory:Factory[U,CC[U]]):Option[CC[U]]	=
 				traverseOption(ev)
 
-		/** peer is traversable (in the haskell sense), Option is an idiom. */
 		def traverseOption[U](func:PFunction[T,U])(implicit factory:Factory[U,CC[U]]):Option[CC[U]]	= {
 			val builder	= factory.newBuilder
 			val iter	= peer.iterator
@@ -150,11 +161,9 @@ trait IterableImplicits {
 			Some(builder.result)
 		}
 
-		/** peer is traversable (in the haskell sense), Either is an idiom. */
 		def sequenceEither[F,W](implicit ev:T=>Either[F,W], factory:Factory[W,CC[W]]):Either[F,CC[W]]	=
 				traverseEither(ev)
 
-		/** peer is traversable (in the haskell sense), Either is an idiom. */
 		def traverseEither[F,W](func:T=>Either[F,W])(implicit factory:Factory[W,CC[W]]):Either[F,CC[W]]	= {
 			val builder	= factory.newBuilder
 			val iter	= peer.iterator
@@ -167,12 +176,14 @@ trait IterableImplicits {
 			Right(builder.result)
 		}
 
-		/** all Lefts if there is at least one, else all Rights */
+		/*
+		// all Lefts if there is at least one, else all Rights
 		def validateEither[F,W](implicit ev:T=>Either[F,W], factory1:Factory[F,CC[F]], factory2:Factory[W,CC[W]]):Either[CC[F],CC[W]]	= {
 			val (lefts, rights)	= partitionEither
 			if (lefts.isEmpty)	Right(rights)
 			else				Left(lefts)
 		}
+		*/
 
 		/** peer is traversable (in the haskell sense), Validated is an idiom. */
 		def sequenceValidated[F,W](implicit ev:T=>Validated[F,W], factory:Factory[W,CC[W]], cc:Semigroup[F]):Validated[F,CC[W]]	=
@@ -201,12 +212,14 @@ trait IterableImplicits {
 			}
 		}
 
-		/** all Lefts if there is at least one, else all Rights */
+		/*
+		// all Lefts if there is at least one, else all Rights
 		def validateValidated[F,W](implicit ev:T=>Validated[F,W], factory1:Factory[F,CC[F]], factory2:Factory[W,CC[W]]):Validated[CC[F],CC[W]]	= {
 			val (bads, goods)	= partitionValidated
 			if (bads.isEmpty)	Good(goods)
 			else				Bad(bads)
 		}
+		*/
 
 		def sequenceState[S,U](implicit ev:T=>State[S,U], factory:Factory[U,CC[U]]):State[S,CC[U]]	=
 				traverseState(ev)
@@ -224,16 +237,29 @@ trait IterableImplicits {
 				}
 
 		// TODO state support StateT
+	}
 
-		@deprecated("use toSeq", "0.162.0")
-		def toISeq:ISeq[T]	=
-				toSeq
+	implicit final class IterableOpsExt[CC[_],T](peer:IterableOps[T,CC,CC[T]]) {
+		def partitionEither[U,V](implicit ev:T=>Either[U,V]):(CC[U],CC[V])			= peer partitionMap ev
+		def partitionValidated[U,V](implicit ev:T=>Validated[U,V]):(CC[U],CC[V])	= peer partitionMap { it => ev(it).toEither }
 
-		// TODO doesn't seem to work on _*
-		def toSeq:Seq[T]	=
-				peer match {
-					case x:Seq[T]	=> x
-					case x			=> x.toVector
-				}
+		/** pair elements of a collection with a function applied to an element */
+		def zipBy[U](func:T=>U):CC[(T,U)]	= peer map { it => (it, func(it)) }
+	}
+
+	implicit final class IterableWithOpsExt[CC[_] <: Iterable[_],T](peer:IterableOps[T,CC,CC[T]]) {
+		/** all Lefts if there is at least one, else all Rights */
+		def validateEither[F,W](implicit ev:T=>Either[F,W]):Either[CC[F],CC[W]]	= {
+			val (lefts, rights)	= peer.partitionEither
+			if (lefts.isEmpty)	Right(rights)
+			else				Left(lefts)
+		}
+
+		/** all Bads if there is at least one, else all Goods */
+		def validateValidated[F,W](implicit ev:T=>Validated[F,W]):Validated[CC[F],CC[W]]	= {
+			val (bads, goods)	= peer.partitionValidated
+			if (bads.isEmpty)	Good(goods)
+			else				Bad(bads)
+		}
 	}
 }

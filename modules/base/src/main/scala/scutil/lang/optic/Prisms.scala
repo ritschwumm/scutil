@@ -25,13 +25,6 @@ object Prisms {
 				_ => Nil
 			)
 
-	@deprecated("use seqHead", "0.162.0")
-	def iseqHead[T]:Prism[ISeq[T],(T,ISeq[T])]	= seqHead
-	@deprecated("use seqLast", "0.162.0")
-	def iseqLast[T]:Prism[ISeq[T],(ISeq[T],T)]	= seqLast
-	@deprecated("use seqEmpty", "0.162.0")
-	def iseqEmpty[T]:Prism[ISeq[T],Unit]		= seqEmpty
-
 	// @see extractHead
 	def seqHead[T]:Prism[Seq[T],(T,Seq[T])]	=
 			Prism(
