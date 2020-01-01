@@ -11,9 +11,11 @@ import scala.collection.mutable
 import scutil.lang.tc._
 
 object ByteString {
-	val empty:ByteString	= new ByteString(Array.empty)
+	val empty:ByteString			= new ByteString(Array.empty)
 
 	def single(it:Byte):ByteString	= apply(it)
+
+	def of(its:Byte*):ByteString	= fromCollectionSeq(its)
 
 	//------------------------------------------------------------------------------
 
@@ -92,9 +94,11 @@ object ByteString {
 	private def containsIndex(index:Int, size:Int):Boolean	=
 			index >= 0 && index < size
 
+	private def containsGap(gap:Int, size:Int):Boolean	=
+			gap >= 0 && gap <= size
+
 	private def containsSlice(begin:Int, end:Int, size:Int):Boolean	=
 			begin >= 0 && begin <= end && end <= size
-
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances
@@ -108,11 +112,15 @@ final class ByteString private (private val value:Array[Byte]) {
 	require(value != null, "value must not be null")
 
 	def size:Int			= value.length
+	def last:Int			= size-1
 	def isEmpty:Boolean		= size == 0
 	def nonEmpty:Boolean	= size != 0
 
 	def containsIndex(index:Int):Boolean	=
 			ByteString containsIndex (index, size)
+
+	def containsGap(gap:Int):Boolean	=
+			ByteString containsGap (gap, size)
 
 	def containsSlice(begin:Int, end:Int):Boolean	=
 			ByteString containsSlice (begin, end, size)
@@ -121,7 +129,11 @@ final class ByteString private (private val value:Array[Byte]) {
 			if (containsIndex(rawIndex))	Some(rawIndex)
 			else							None
 
-	def safeSlice(rawBegin:Int, rawEnd:Int):Option[(Int,Int)]	=
+	def safeGap(rawGap:Int):Option[Int]	=
+			if (ByteString containsGap (rawGap, size))	Some(rawGap)
+			else										None
+
+	def safeSlicing(rawBegin:Int, rawEnd:Int):Option[(Int,Int)]	=
 			if (containsSlice(rawBegin, rawEnd))	Some((rawBegin, rawEnd))
 			else									None
 
@@ -133,12 +145,21 @@ final class ByteString private (private val value:Array[Byte]) {
 				 if (!containsSlice(begin, end))	None
 			else if (begin == end)					Some(ByteString.empty)
 			else if (begin == 0 && end == size)		Some(this)
-			else Some {
-				val length	= end - begin
-				(ByteString makeWithArray length) { tmp =>
-					System arraycopy (value, begin, tmp, 0, length)
-				}
-			}
+			else 									Some(unsafeSlice(begin, end))
+
+	def splitFirst:Option[(ByteString,Byte)]	=
+			if (size > 0)	Some((unsafeSlice(1, size), unsafeGet(0)))
+			else			None
+
+	def splitLast:Option[(ByteString,Byte)]	=
+			if (size > 0)	Some((unsafeSlice(0, last), unsafeGet(last)))
+			else			None
+
+	def splitAt(index:Int):Option[(ByteString,ByteString)]	=
+				 if (!containsGap(index))	None
+			else if (index == 0)			Some((ByteString.empty, this))
+			else if (index == size)			Some((this, ByteString.empty))
+			else 							Some((unsafeSlice(0, index), unsafeSlice(index, size)))
 
 	def containsAt(index:Int, that:ByteString):Boolean	=
 			containsSlice(index, index+that.size) && {
@@ -228,6 +249,13 @@ final class ByteString private (private val value:Array[Byte]) {
 	def unsafeGet(index:Int):Byte	= value(index)
 	def unsafeValue:Array[Byte]		= value
 	def unsafeByteBuffer:ByteBuffer	= ByteBuffer wrap value
+
+	private def unsafeSlice(begin:Int, end:Int):ByteString	= {
+		val length	= end - begin
+		(ByteString makeWithArray length) { tmp =>
+			System arraycopy (value, begin, tmp, 0, length)
+		}
+	}
 
 	//------------------------------------------------------------------------------
 

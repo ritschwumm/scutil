@@ -52,11 +52,11 @@ trait IterableImplicits {
 		def mapToMap[U,V](func:T=>(U,V)):Map[U,V]	=
 				(peer map func).toMap
 
-		/** like flatten, but avoiding the dubious Option=>Iterable implicit */
+		/** like flatten, but avoiding the dubious Option=>Iterable implicit. aka flattenOption in cats */
 		def collapse[U](implicit ev:PFunction[T,U], factory:Factory[U,CC[U]]):CC[U]	=
 				collapseMap(ev)
 
-		/** like flatMap, but avoiding the dubious Option=>Iterable implicit */
+		/** like flatMap, but avoiding the dubious Option=>Iterable implicit.  aka mapFilter in cats */
 		def collapseMap[U](func:PFunction[T,U])(implicit factory:Factory[U,CC[U]]):CC[U]	= {
 			val builder	= factory.newBuilder
 			peer foreach {
@@ -67,7 +67,6 @@ trait IterableImplicits {
 			builder.result
 		}
 
-		/** like flatten, but avoiding the dubious Option=>Iterable implicit */
 		def collapseFirst[U](implicit ev:PFunction[T,U]):Option[U]	=
 				collapseMapFirst(ev)
 

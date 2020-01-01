@@ -230,7 +230,7 @@ sealed trait Validated[+E,+T] {
 
 	//------------------------------------------------------------------------------
 
-	def goodEffect(effect:Effect[T]):this.type		= {
+	def goodEffect(effect:Effect[T]):this.type	= {
 		this foreach effect
 		this
 	}
