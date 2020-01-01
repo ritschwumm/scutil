@@ -78,12 +78,12 @@ final class HashSalt(
 	}
 
 	private def prepare(raw:String, salt:ByteString, rounds:Int):ByteString	=
-			raw 										|>
-			(Normalizer normalize (_, normalizerForm)) 	|>
-			(_ toByteString encoding) 					|>
-			(salt ++ _) 								|>
-			hash(rounds)
+		raw 										|>
+		(Normalizer normalize (_, normalizerForm)) 	|>
+		(_ toByteString encoding) 					|>
+		(salt ++ _) 								|>
+		hash(rounds)
 
 	private def hash(rounds:Int)(bytes:ByteString):ByteString	=
-			Hashing hash (hashAlgorithm, rounds, bytes)
+		Hashing hash (hashAlgorithm, rounds, bytes)
 }

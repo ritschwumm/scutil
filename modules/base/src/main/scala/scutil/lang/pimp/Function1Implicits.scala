@@ -11,34 +11,34 @@ trait Function1Implicits {
 
 		/** symbolic alias for andThen */
 		def >=>[U](that:Function1[T,U]):Function1[S,U]	=
-				peer andThen that
+			peer andThen that
 
 		/** symbolic alias for compose */
 		def <=<[R](that:Function1[R,S]):Function1[R,T]	=
-				peer compose that
+			peer compose that
 
 		def map[U](func:T=>U):S=>U	=
-				peer andThen func
+			peer andThen func
 
 		def flatMap[U](func:T=>S=>U):S=>U	=
-				s	=> func(peer(s))(s)
+			s	=> func(peer(s))(s)
 
 		def contraMap[R](func:R=>S):R=>T	=
-				peer compose func
+			peer compose func
 
 		def partial(predicate:Predicate[S]):PartialFunction[S,T]	=
-				new PartialFunction[S,T] {
-					def isDefinedAt(s:S):Boolean	= predicate(s)
-					def apply(s:S):T				= peer(s)
-				}
+			new PartialFunction[S,T] {
+				def isDefinedAt(s:S):Boolean	= predicate(s)
+				def apply(s:S):T				= peer(s)
+			}
 
 		def toPartialFunction:PartialFunction[S,T]	=
-				{ case x => peer(x) }
+			{ case x => peer(x) }
 
 		def toPFunction:PFunction[S,T]	=
-				it => Some(peer(it))
+			it => Some(peer(it))
 
 		def toThunk(s:S):Thunk[T]	=
-				() => peer(s)
+			() => peer(s)
 	}
 }

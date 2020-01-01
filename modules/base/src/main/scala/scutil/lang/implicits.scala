@@ -2,6 +2,6 @@ package scutil.lang
 
 object implicits extends implicits
 trait implicits
-		extends	extensions
-		with	instances
-		with	literals
+	extends	extensions
+	with	instances
+	with	literals

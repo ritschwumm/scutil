@@ -8,14 +8,14 @@ object Hex {
 	//------------------------------------------------------------------------------
 
 	def encodeByteString(bytes:ByteString):String	=
-			encodeImpl(bytes.unsafeValue)
+		encodeImpl(bytes.unsafeValue)
 
 	private def encodeImpl(bytes:Array[Byte]):String	=
-			bytes map nibbles mkString ""
+		bytes map nibbles mkString ""
 
 	def nibbles(it:Byte):String	=
-			(nibble charAt ((it >> 4) & 0xf)).toString	+
-			(nibble charAt ((it >> 0) & 0xf)).toString
+		(nibble charAt ((it >> 4) & 0xf)).toString	+
+		(nibble charAt ((it >> 0) & 0xf)).toString
 
 	private val nibble	= "0123456789abcdef"
 
@@ -24,7 +24,7 @@ object Hex {
 	private val invalid	= -1
 
 	def decodeByteString(s:String):Option[ByteString]	=
-			decodeImpl(s) map ByteString.unsafeFromArray
+		decodeImpl(s) map ByteString.unsafeFromArray
 
 	private def decodeImpl(s:String):Option[Array[Byte]]	= {
 		val count	= s.length / 2
@@ -50,8 +50,8 @@ object Hex {
 	}
 
 	private def digit(c:Char):Int	=
-				 if (c >= '0' && c <= '9')	c - '0'
-			else if (c >= 'a' && c <= 'f')	c - 'a' + 10
-			else if (c >= 'A' && c <= 'F')	c - 'A' + 10
-			else invalid
+			 if (c >= '0' && c <= '9')	c - '0'
+		else if (c >= 'a' && c <= 'f')	c - 'a' + 10
+		else if (c >= 'A' && c <= 'F')	c - 'A' + 10
+		else invalid
 }

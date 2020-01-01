@@ -4,4 +4,4 @@ import scutil.color.pimp._
 
 object literals extends literals
 trait literals
-		extends	StringContextImplicits
+	extends	StringContextImplicits

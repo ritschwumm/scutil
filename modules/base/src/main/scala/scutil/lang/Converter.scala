@@ -10,66 +10,66 @@ object Converter {
 		}
 
 	def identity[E,T]:Converter[E,T,T]	=
-			it => Validated good it
+		it => Validated good it
 
 	def constant[E,S,T](it:T):Converter[E,S,T]	= pure(it)
 
 	def pure[E,S,T](it:T):Converter[E,S,T]	=
-			_ => Validated good it
+		_ => Validated good it
 
 	def fail[E,S,T](it:E):Converter[E,S,T]	=
-			_ => Validated bad it
+		_ => Validated bad it
 
 	def total[E,S,T](func:S=>T):Converter[E,S,T]	=
-			it => Validated good func(it)
+		it => Validated good func(it)
 
 	def optional[E,S,T](func:PFunction[S,T], bad: =>E):Converter[E,S,T]	=
-			it => func(it) toGood bad
+		it => func(it) toGood bad
 
 	def partial[E,S,T](func:PartialFunction[S,T], bad: =>E):Converter[E,S,T]	=
-			optional(func.lift, bad)
+		optional(func.lift, bad)
 
 	def validate[E,S,T](func:PFunction[S,T], bad: S=>E):Converter[E,S,T]	=
-			it => func(it) toGood bad(it)
+		it => func(it) toGood bad(it)
 
 	def rejecting[E,T](func:PFunction[T,E]):Converter[E,T,T]	=
-			it => func(it) toBad it
+		it => func(it) toBad it
 
 	def fromEitherFunction[E,S,T](func:S=>Either[E,T]):Converter[E,S,T]	=
-			func(_).toValidated
+		func(_).toValidated
 
 	def required[E,S,T](base:Converter[E,S,Option[T]], bad: =>E):Converter[E,S,T]	=
-			input => base convert input flatMap { _ toGood bad }
+		input => base convert input flatMap { _ toGood bad }
 
 	//------------------------------------------------------------------------------
 
 	def sum[E,S,T](subs:Seq[PFunction[S,Validated[E,T]]], bad: =>E):Converter[E,S,T]	=
-			it => {
-				subs
-				.collapseMapFirst	{ _ apply it }
-				.getOrElse			(Validated bad bad)
-			}
+		it => {
+			subs
+			.collapseMapFirst	{ _ apply it }
+			.getOrElse			(Validated bad bad)
+		}
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
 	implicit def ConverterApplicative[E,S](implicit E:Semigroup[E]):Applicative[Converter[E,S,?]]	=
-			new Applicative[Converter[E,S,?]] {
-				override def pure[A](it:A):Converter[E,S,A]												= Converter pure it
-				override def ap[A,B](its:Converter[E,S,A])(func:Converter[E,S,A=>B]):Converter[E,S,B]	= its pa func
-			}
+		new Applicative[Converter[E,S,?]] {
+			override def pure[A](it:A):Converter[E,S,A]												= Converter pure it
+			override def ap[A,B](its:Converter[E,S,A])(func:Converter[E,S,A=>B]):Converter[E,S,B]	= its pa func
+		}
 
 	/*
 	implicit def ConverterMonad[E,S]:Monad[Converter[E,S,?]]	=
-			new Monad[Converter[E,S,?]] {
-				override def pure[A](it:A):Converter[E,S,A]													= Converter pure it
-				override def map[A,B](it:Converter[E,S,A])(func:A=>B):Converter[E,S,B]						= it map func
-				override def flatMap[A,B](it:Converter[E,S,A])(func:A=>Converter[E,S,B]):Converter[E,S,B]	= it flatMap func
-			}
+		new Monad[Converter[E,S,?]] {
+			override def pure[A](it:A):Converter[E,S,A]													= Converter pure it
+			override def map[A,B](it:Converter[E,S,A])(func:A=>B):Converter[E,S,B]						= it map func
+			override def flatMap[A,B](it:Converter[E,S,A])(func:A=>Converter[E,S,B]):Converter[E,S,B]	= it flatMap func
+		}
 	*/
 
 	implicit def ConverterSemigroup[E:Semigroup,S,T]:Semigroup[Converter[E,S,T]]	=
-			Semigroup instance (_ orElse _)
+		Semigroup instance (_ orElse _)
 }
 
 // Kleisli[Validated[E,_],S,T]
@@ -90,60 +90,60 @@ abstract class Converter[E,S,T] {
 	//------------------------------------------------------------------------------
 
 	def andThen[U](that:Converter[E,T,U]):Converter[E,S,U]	=
-			it => this convert it flatMap that.convert
+		it => this convert it flatMap that.convert
 
 	def compose[R](that:Converter[E,R,S]):Converter[E,R,T]	=
-			that andThen this
+		that andThen this
 
 	def >=>[U](that:Converter[E,T,U]):Converter[E,S,U]	=
-			this andThen that
+		this andThen that
 
 	def <=<[R](that:Converter[E,R,S]):Converter[E,R,T]	=
-			this compose that
+		this compose that
 
 	def map[U](func:T=>U):Converter[E,S,U]		=
-			it => convert(it) map func
+		it => convert(it) map func
 
 	def flatMap[U](func:T=>Converter[E,S,U]):Converter[E,S,U]	=
-			it => this convert it flatMap { jt => func(jt) convert it }
+		it => this convert it flatMap { jt => func(jt) convert it }
 
 	def contraMap[R](func:R=>S):Converter[E,R,T]	=
-			it => convert(func(it))
+		it => convert(func(it))
 
 	def as[U](it:U):Converter[E,S,U]	=
-			map(constant(it))
+		map(constant(it))
 
 	/** function effect first */
 	def pa[U](that:Converter[E,S,T=>U])(implicit cc:Semigroup[E]):Converter[E,S,U]	=
-			it => (this convert it) pa (that convert it)
+		it => (this convert it) pa (that convert it)
 
 	/** function effect first */
 	def ap[U,V](that:Converter[E,S,U])(implicit ev:T=>U=>V, cc:Semigroup[E]):Converter[E,S,V]	=
-			that pa (this map ev)
+		that pa (this map ev)
 
 	def zip[U](that:Converter[E,S,U])(implicit cc:Semigroup[E]):Converter[E,S,(T,U)] =
-			it	=> (this convert it) zip (that convert it)
+		it	=> (this convert it) zip (that convert it)
 
 	def zipWith[U,V](that:Converter[E,S,U])(func:(T,U)=>V)(implicit cc:Semigroup[E]):Converter[E,S,V] =
-			it	=> ((this convert it) zipWith (that convert it))(func)
+		it	=> ((this convert it) zipWith (that convert it))(func)
 
 	def coZip[SS](that:Converter[E,SS,T]):Converter[E,Either[S,SS],T]	=
-			{
-				case Left(x)	=> this convert x
-				case Right(x)	=> that convert x
-			}
+		{
+			case Left(x)	=> this convert x
+			case Right(x)	=> that convert x
+		}
 
 	def orElse(that:Converter[E,S,T])(implicit cc:Semigroup[E]):Converter[E,S,T]	=
-			it => (this convert it) orElse (that convert it)
+		it => (this convert it) orElse (that convert it)
 
 	def either[SS,TT](that:Converter[E,SS,TT]):Converter[E,Either[S,SS],Either[T,TT]]	=
-			{
-				case Left(x)	=> this convert x map (Left(_))
-				case Right(x)	=> that convert x map (Right(_))
-			}
+		{
+			case Left(x)	=> this convert x map (Left(_))
+			case Right(x)	=> that convert x map (Right(_))
+		}
 
 	def pair[SS,TT](that:Converter[E,SS,TT])(implicit E:Semigroup[E]):Converter[E,(S,SS),(T,TT)]	=
-			{ case (s,ss) => (this convert s) zip (that convert ss) }
+		{ case (s,ss) => (this convert s) zip (that convert ss) }
 
 	//------------------------------------------------------------------------------
 
@@ -167,5 +167,5 @@ abstract class Converter[E,S,T] {
 	//------------------------------------------------------------------------------
 
 	def toEitherFunction:S=>Either[E,T]	=
-			convert _ andThen (_.toEither)
+		convert _ andThen (_.toEither)
 }

@@ -22,11 +22,11 @@ object State {
 	//## typeclass instances
 
 	implicit def StateMonad[S]:Monad[State[S,?]]	=
-			new Monad[State[S,?]] {
-				override def pure[T](it:T):State[S,T]										= State pure it
-				override def map[T,U](its:State[S,T])(func:T=>U):State[S,U]					= its map func
-				override def flatMap[T,U](its:State[S,T])(func:T=>State[S,U]):State[S,U]	= its flatMap func
-			}
+		new Monad[State[S,?]] {
+			override def pure[T](it:T):State[S,T]										= State pure it
+			override def map[T,U](its:State[S,T])(func:T=>U):State[S,U]					= its map func
+			override def flatMap[T,U](its:State[S,T])(func:T=>State[S,U]):State[S,U]	= its flatMap func
+		}
 }
 
 final case class State[S,+T](run:S=>(S,T)) {
@@ -36,42 +36,42 @@ final case class State[S,+T](run:S=>(S,T)) {
 	//------------------------------------------------------------------------------
 
 	def map[U](func:T=>U):State[S,U]	=
-			State { s1 =>
-				val (s2, t)	= run(s1)
-				(s2, func(t))
-			}
+		State { s1 =>
+			val (s2, t)	= run(s1)
+			(s2, func(t))
+		}
 
 	def flatMap[U](func:T=>State[S,U]):State[S,U]	=
-			State { s1 =>
-				val (s2, t)	= run(s1)
-				func(t).run(s2)
-			}
+		State { s1 =>
+			val (s2, t)	= run(s1)
+			func(t).run(s2)
+		}
 
 	/** function effect first */
 	def ap[A,B](that:State[S,A])(implicit ev:T=>(A=>B)):State[S,B]	=
-			that pa (this map ev)
+		that pa (this map ev)
 
 	/** function effect first */
 	def pa[U](that:State[S,T=>U]):State[S,U]	=
-			State { s =>
-				val (s1, tu)	= that run s
-				val (s2, t)		= this run s1
-				(s2, tu(t))
-			}
+		State { s =>
+			val (s1, tu)	= that run s
+			val (s2, t)		= this run s1
+			(s2, tu(t))
+		}
 
 	def zip[U](that:State[S,U]):State[S,(T,U)]	=
-			(this zipWith that)(_ -> _)
+		(this zipWith that)(_ -> _)
 
 	// aka combine
 	def zipWith[U,X](that:State[S,U])(func:(T,U)=>X):State[S,X]	=
-			State { s =>
-				val (s1, t)	= this run s
-				val (s2, u)	= that run s1
-				(s2, func(t, u))
-			}
+		State { s =>
+			val (s1, t)	= this run s
+			val (s2, u)	= that run s1
+			(s2, func(t, u))
+		}
 
 	//------------------------------------------------------------------------------
 
 	def toStateT[F[_],TT>:T](implicit M:Applicative[F]):StateT[F,S,TT]	=
-			StateT fromState this
+		StateT fromState this
 }

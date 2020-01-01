@@ -15,13 +15,13 @@ final case class HSBA(hsb:HSB, alpha:Alpha) {
 	def a	= alpha.a
 
 	def diff(that:HSBA):Float	=
-			(	(this.hsb	diff3	that.hsb) +
-				(this.alpha	diff	that.alpha)
-			) / 4f
+		(	(this.hsb	diff3	that.hsb) +
+			(this.alpha	diff	that.alpha)
+		) / 4f
 
 	def toRGBA:RGBA	=
-			RGBA(hsb.toRGB, alpha)
+		RGBA(hsb.toRGB, alpha)
 
     def toIntARGB:Int	=
-    		toRGBA.toIntARGB
+		toRGBA.toIntARGB
 }

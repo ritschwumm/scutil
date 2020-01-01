@@ -9,7 +9,6 @@ object RGBImplicits extends RGBImplicits
 
 trait RGBImplicits {
 	implicit final class RGBExt(peer:RGB) {
-		def toColor:Color	=
-				colorConversion	RGB_Color(peer)
+		def toColor:Color	= colorConversion	RGB_Color(peer)
 	}
 }

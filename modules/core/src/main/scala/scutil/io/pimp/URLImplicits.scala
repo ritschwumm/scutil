@@ -12,29 +12,30 @@ trait URLImplicits {
 	implicit final class URLExt(peer:URL) {
 		/** execute a closure with an InputStream reading from this URL */
 		def withInputStream[T](proxy:Option[Proxy])(code:InputStream=>T):T	=
-				openConnectionWithOptionalProxy(proxy).getInputStream() use code
+			openConnectionWithOptionalProxy(proxy).getInputStream() use code
 
 		/** execute a closure with a Reader reading from this URL */
 		def withReader[T](proxy:Option[Proxy], charset:Charset)(code:InputStreamReader=>T):T	=
-				new InputStreamReader(openConnectionWithOptionalProxy(proxy).getInputStream(), charset) use code
+			new InputStreamReader(openConnectionWithOptionalProxy(proxy).getInputStream(), charset) use code
 
 		def newInputStream(proxy:Option[Proxy]):InputStream	=
-				openConnectionWithOptionalProxy(proxy).getInputStream()
+			openConnectionWithOptionalProxy(proxy).getInputStream()
 
 		def openConnectionWithOptionalProxy(proxy:Option[Proxy]):URLConnection	=
-				proxy match {
-					case Some(proxy)	=> peer openConnection proxy
-					case None			=> peer.openConnection()
-				}
+			proxy match {
+				case Some(proxy)	=> peer openConnection proxy
+				case None			=> peer.openConnection()
+			}
 
 		/**
 		converts a "file://..." URL to a File without being too critical
 		@see http://www2.java.net/blog/2007/04/25/how-convert-javaneturl-javaiofile
 		*/
 		def toFile:Option[File]	=
-				if (peer.getProtocol == "file")	Some(
-						try { new File(peer.toURI) }
-						catch { case _:Exception => new File(peer.getPath) })
-				else None
+			if (peer.getProtocol == "file")	Some(
+				try { new File(peer.toURI) }
+				catch { case _:Exception => new File(peer.getPath) }
+			)
+			else None
 	}
 }

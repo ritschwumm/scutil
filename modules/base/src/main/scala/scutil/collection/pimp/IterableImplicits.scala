@@ -43,18 +43,18 @@ trait IterableImplicits {
 
 		/** create a set from all elements with a given function to generate the items */
 		def setBy[U](func:T=>U):Set[U]	=
-				peer.map(func).toSet
+			peer.map(func).toSet
 
 		/** create a map from all elements with a given function to generate the keys */
 		def mapBy[S](key:T=>S):Map[S,T]	=
-				mapToMap(it => (key(it), it))
+			mapToMap(it => (key(it), it))
 
 		def mapToMap[U,V](func:T=>(U,V)):Map[U,V]	=
-				(peer map func).toMap
+			(peer map func).toMap
 
 		/** like flatten, but avoiding the dubious Option=>Iterable implicit. aka flattenOption in cats */
 		def collapse[U](implicit ev:PFunction[T,U], factory:Factory[U,CC[U]]):CC[U]	=
-				collapseMap(ev)
+			collapseMap(ev)
 
 		/** like flatMap, but avoiding the dubious Option=>Iterable implicit.  aka mapFilter in cats */
 		def collapseMap[U](func:PFunction[T,U])(implicit factory:Factory[U,CC[U]]):CC[U]	= {
@@ -68,7 +68,7 @@ trait IterableImplicits {
 		}
 
 		def collapseFirst[U](implicit ev:PFunction[T,U]):Option[U]	=
-				collapseMapFirst(ev)
+			collapseMapFirst(ev)
 
 		/**
 		return the first Some find creates from elements of this collection
@@ -85,17 +85,17 @@ trait IterableImplicits {
 
 		/** insert a separator between elements */
 		def intersperse[U>:T](separator: =>U)(implicit factory:Factory[U,CC[U]]):CC[U]	=
-				// TODO generify without factory - but we have to know drop, and that peer is a CC[U], too
-				(	if (peer.nonEmpty)	peer flatMap { Seq(separator, _) } drop 1
-					else				peer
-				)
-				.to(factory)
+			// TODO generify without factory - but we have to know drop, and that peer is a CC[U], too
+			(	if (peer.nonEmpty)	peer flatMap { Seq(separator, _) } drop 1
+				else				peer
+			)
+			.to(factory)
 
 		// NOTE these should be generalized to other AFs, not just Option and Tried
 		// NOTE supplying pure and flatMap of a Monad would work, too!
 
 		def sequenceOption[U](implicit ev:PFunction[T,U], factory:Factory[U,CC[U]]):Option[CC[U]]	=
-				traverseOption(ev)
+			traverseOption(ev)
 
 		def traverseOption[U](func:PFunction[T,U])(implicit factory:Factory[U,CC[U]]):Option[CC[U]]	= {
 			val builder	= factory.newBuilder
@@ -110,7 +110,7 @@ trait IterableImplicits {
 		}
 
 		def sequenceEither[F,W](implicit ev:T=>Either[F,W], factory:Factory[W,CC[W]]):Either[F,CC[W]]	=
-				traverseEither(ev)
+			traverseEither(ev)
 
 		def traverseEither[F,W](func:T=>Either[F,W])(implicit factory:Factory[W,CC[W]]):Either[F,CC[W]]	= {
 			val builder	= factory.newBuilder
@@ -126,7 +126,7 @@ trait IterableImplicits {
 
 		/** peer is traversable (in the haskell sense), Validated is an idiom. */
 		def sequenceValidated[F,W](implicit ev:T=>Validated[F,W], factory:Factory[W,CC[W]], cc:Semigroup[F]):Validated[F,CC[W]]	=
-				traverseValidated(ev)
+			traverseValidated(ev)
 
 		/** peer is traversable (in the haskell sense), Validated is an idiom. */
 		def traverseValidated[F,W](func:T=>Validated[F,W])(implicit factory:Factory[W,CC[W]], cc:Semigroup[F]):Validated[F,CC[W]]	= {
@@ -152,24 +152,24 @@ trait IterableImplicits {
 		}
 
 		def sequenceState[S,U](implicit ev:T=>State[S,U], factory:Factory[U,CC[U]]):State[S,CC[U]]	=
-				traverseState(ev)
+			traverseState(ev)
 
 		def traverseState[S,U](func:T=>State[S,U])(implicit factory:Factory[U,CC[U]]):State[S,CC[U]]	=
-				State { s =>
-					var temp	= s
-					val builder	= factory.newBuilder
-					peer foreach { it =>
-						val (next, part)	= func(it) run temp
-						temp	= next
-						builder += part
-					}
-					(temp, builder.result)
+			State { s =>
+				var temp	= s
+				val builder	= factory.newBuilder
+				peer foreach { it =>
+					val (next, part)	= func(it) run temp
+					temp	= next
+					builder += part
 				}
+				(temp, builder.result)
+			}
 
 		// TODO state support StateT
 
 		def joinMonoid(implicit M:Monoid[T]):T	=
-				(peer foldLeft M.empty)(M.concat)
+			(peer foldLeft M.empty)(M.concat)
 	}
 
 	implicit final class IterableOpsExt[CC[_],T](peer:IterableOps[T,CC,CC[T]]) {

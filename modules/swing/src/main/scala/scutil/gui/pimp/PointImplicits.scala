@@ -10,12 +10,12 @@ object PointImplicits extends PointImplicits
 trait PointImplicits {
 	implicit final class PointExt(peer:Point) {
 		def toDimension:Dimension	=
-				new Dimension(
-					peer.x,
-					peer.y
-				)
+			new Dimension(
+				peer.x,
+				peer.y
+			)
 
 		def toIntPoint:IntPoint	=
-				geomConversion Point_IntPoint peer
+			geomConversion Point_IntPoint peer
 	}
 }

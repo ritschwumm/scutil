@@ -7,10 +7,10 @@ import scutil.lang._
 
 object Platform {
 	def lineSeparator:String	=
-			SystemProperties.line.separator
+		SystemProperties.line.separator
 
 	def fileEncoding:Either[IllegalArgumentException,Charset]	=
-			Charsets byName SystemProperties.file.encoding
+		Charsets byName SystemProperties.file.encoding
 
 	//------------------------------------------------------------------------------
 
@@ -23,8 +23,8 @@ object Platform {
 	//------------------------------------------------------------------------------
 
 	def property(name:String):Option[String]	=
-			Option(System getProperty name)
+		Option(System getProperty name)
 
 	def env(name:String):Option[String]	=
-			Option(System getenv name)
+		Option(System getenv name)
 }

@@ -8,6 +8,6 @@ trait ClassLoaderResourceImplicits {
 	implicit final class ClassLoaderResourceExt(peer:ClassLoader) {
 		// NOTE paths here do not require a leading slash
 		def resourceProvider:ResourceProvider	=
-				new ResourceProvider(path => Option(peer getResource path))
+			new ResourceProvider(path => Option(peer getResource path))
 	}
 }

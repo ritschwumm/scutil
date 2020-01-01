@@ -20,30 +20,30 @@ private final class LensGenImpl(val c:Context) {
 
 	def compile[T:c.WeakTypeTag](propName:c.Tree):c.Tree	= {
 		val out:Either[String,Tree]	=
-				for {
-					name			<-
-							propName
-							.matchOption	{ case Literal(Constant(name:String))	=> name }
-							.toRight		(s"unexpected propName: ${propName.toString}")
-					fieldName		= TermName(name)
-					containerType	= c.weakTypeOf[T]
-					member			<-
-							(containerType member fieldName)
-							.optionBy		{ _ != NoSymbol }
-							.toRight		(s"value ${name} is not a member of ${containerType.toString}")
-					valueType		<-
-							(member typeSignatureIn containerType)
-							.matchOption	{ case NullaryMethodType(tpe) => tpe }
-							.toRight		(s"member ${name} of ${containerType.toString} is not a field")
-					containerName	= TermName("c$")
-					valueName		= TermName("v$")
-				}
-				yield q"""
-					_root_.scutil.lang.Lens[$containerType,$valueType](
-						get	= ($containerName:$containerType) => $containerName.$fieldName,
-						set	= ($valueName:$valueType) => ($containerName:$containerType) => $containerName.copy($fieldName=$valueName)
-					)
-				"""
+			for {
+				name			<-
+						propName
+						.matchOption	{ case Literal(Constant(name:String))	=> name }
+						.toRight		(s"unexpected propName: ${propName.toString}")
+				fieldName		= TermName(name)
+				containerType	= c.weakTypeOf[T]
+				member			<-
+						(containerType member fieldName)
+						.optionBy		{ _ != NoSymbol }
+						.toRight		(s"value ${name} is not a member of ${containerType.toString}")
+				valueType		<-
+						(member typeSignatureIn containerType)
+						.matchOption	{ case NullaryMethodType(tpe) => tpe }
+						.toRight		(s"member ${name} of ${containerType.toString} is not a field")
+				containerName	= TermName("c$")
+				valueName		= TermName("v$")
+			}
+			yield q"""
+				_root_.scutil.lang.Lens[$containerType,$valueType](
+					get	= ($containerName:$containerType) => $containerName.$fieldName,
+					set	= ($valueName:$valueType) => ($containerName:$containerType) => $containerName.copy($fieldName=$valueName)
+				)
+			"""
 
 		out cata (
 			c abort (c.enclosingPosition, _),

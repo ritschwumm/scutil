@@ -43,13 +43,13 @@ trait AnyImplicits {
 
 		/** match lifted to an Option */
 		def matchOption[U](pf:PartialFunction[T,U]):Option[U] =
-				PartialFunction.condOpt(peer)(pf)
+			PartialFunction.condOpt(peer)(pf)
 
 		def flatMatchOption[U](pf:PartialFunction[T,Option[U]]):Option[U] =
-				PartialFunction.condOpt(peer)(pf).flatten
+			PartialFunction.condOpt(peer)(pf).flatten
 
 		def matchBoolean[U](pf:PartialFunction[T,Unit]):Boolean =
-				pf isDefinedAt peer
+			pf isDefinedAt peer
 
 		/*
 		// NOTE works only for covariant type parameters
@@ -89,46 +89,46 @@ trait AnyImplicits {
 
 		/** Some if the predicate matches, else None */
 		def optionBy(predicate:T=>Boolean):Option[T]	=
-				if (predicate(peer)) Some(peer) else None
+			if (predicate(peer)) Some(peer) else None
 
 		/** None if the predicate matches, else Some */
 		def optionNotBy(predicate:T=>Boolean):Option[T]	=
-				if (predicate(peer)) None else Some(peer)
+			if (predicate(peer)) None else Some(peer)
 
 		/** Right if the predicate matches, else Left */
 		def eitherBy(predicate:T=>Boolean):Either[T,T]	=
-				if (predicate(peer)) Right(peer) else Left(peer)
+			if (predicate(peer)) Right(peer) else Left(peer)
 
 		/** Right if Some else original value in Left */
 		def rightBy[U](func:PFunction[T,U]):Either[T,U]	=
-				func(peer) toRight peer
+			func(peer) toRight peer
 
 		/** Left if Some else original value in Right */
 		def leftBy[U](func:PFunction[T,U]):Either[U,T]	=
-				func(peer) toLeft peer
+			func(peer) toLeft peer
 
 		/** Fail if Some else original value in Win */
 		def badBy[E](func:PFunction[T,E]):Validated[E,T]	=
-				func(peer) match {
-					case Some(x)	=> Bad(x)
-					case None		=> Good(peer)
-				}
+			func(peer) match {
+				case Some(x)	=> Bad(x)
+				case None		=> Good(peer)
+			}
 
 		/** pair with function applied */
 		def firstBy[U](func:T=>U):(T,U)	=
-				(peer, func(peer))
+			(peer, func(peer))
 
 		/** pair with function applied */
 		def secondBy[U](func:T=>U):(U,T)	=
-				(func(peer), peer)
+			(func(peer), peer)
 
 		/** pair with another value */
 		def firstWith[U](that:U):(T,U)	=
-				(peer, that)
+			(peer, that)
 
 		/** pair with function applied */
 		def secondWith[U](that:U):(U,T)	=
-				(that, peer)
+			(that, peer)
 
 		/** pair with itself */
 		def duplicate:(T,T)	= (peer, peer)
@@ -139,10 +139,10 @@ trait AnyImplicits {
 		def tailRec[U](func:T=>Either[T,U]):U	= {
 			@tailrec
 			def loop(it:T):U	=
-					func(it) match {
-						case Left(x)	=> loop(x)
-						case Right(x)	=> x
-					}
+				func(it) match {
+					case Left(x)	=> loop(x)
+					case Right(x)	=> x
+				}
 			loop(peer)
 		}
 
@@ -161,7 +161,7 @@ trait AnyImplicits {
 
 		/** apply until the value doesn't change any more */
 		def fixpointEquals(func:Endo[T]):T	=
-				fixpoint(func, _ == _)
+			fixpoint(func, _ == _)
 
 		/** apply until the value doesn't change any more */
 		def fixpoint(func:Endo[T], equal:(T,T)=>Boolean):T	=

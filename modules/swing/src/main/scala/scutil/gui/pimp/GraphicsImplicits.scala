@@ -9,8 +9,12 @@ trait GraphicsImplicits {
 		def withClone(effect:T=>Unit):Unit	= {
 			@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 			val	g	= peer.create().asInstanceOf[T]
-			try { effect(g) }
-			finally { g.dispose() }
+			try {
+				effect(g)
+			}
+			finally {
+				g.dispose()
+			}
 		}
 	}
 }

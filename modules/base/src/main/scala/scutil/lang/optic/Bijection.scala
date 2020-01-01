@@ -4,7 +4,7 @@ import scutil.lang.tc._
 
 object Bijection {
 	def identity[T]:Bijection[T,T]	=
-			Bijection(Predef.identity, Predef.identity)
+		Bijection(Predef.identity, Predef.identity)
 
 	val Gen	= BijectionGen
 }
@@ -25,58 +25,58 @@ final case class Bijection[S,T](get:S=>T, set:T=>S) {
 	//------------------------------------------------------------------------------
 
 	def embedState[U](state:State[T,U]):State[S,U]	=
-			State { s =>
-				val (t,u)	= state run get(s)
-				set(t) -> u
-			}
+		State { s =>
+			val (t,u)	= state run get(s)
+			set(t) -> u
+		}
 
 	def embedStateT[F[_],U](state:StateT[F,T,U])(implicit F:Functor[F]):StateT[F,S,U]	=
-			StateT { s =>
-				val ftu:F[(T,U)]	= state run get(s)
-				(F map ftu) { case (t,u) =>
-					set(t) -> u
-				}
+		StateT { s =>
+			val ftu:F[(T,U)]	= state run get(s)
+			(F map ftu) { case (t,u) =>
+				set(t) -> u
 			}
+		}
 
 	//------------------------------------------------------------------------------
 
 	def inverse:Bijection[T,S]	=
-			Bijection(set, get)
+		Bijection(set, get)
 
 	/** symbolic alias for andThen */
 	def >=>[U](that:Bijection[T,U]):Bijection[S,U]	=
-			this andThen that
+		this andThen that
 
 	/** symbolic alias for compose */
 	def <=<[R](that:Bijection[R,S]):Bijection[R,T]	=
-			this compose that
+		this compose that
 
 	def compose[R](that:Bijection[R,S]):Bijection[R,T]	=
-			that andThen this
+		that andThen this
 
 	def andThen[U](that:Bijection[T,U]):Bijection[S,U]	=
-			Bijection(
-				get	= s	=> that get (this get s),
-				set	= u	=> this set  (that set  u)
-			)
+		Bijection(
+			get	= s	=> that get (this get s),
+			set	= u	=> this set  (that set  u)
+		)
 
 	def toPrism:Prism[S,T]	=
-			Prism total (get, set)
+		Prism total (get, set)
 
 	def toPBijection:PBijection[S,T]	=
-			PBijection total (get, set)
+		PBijection total (get, set)
 
 	def toOptional:Optional[S,T]	=
-			Optional total (get, set)
+		Optional total (get, set)
 
 	def toLens:Lens[S,T]	=
-			Lens(
-				get	= get,
-				set	= t => s => set(t)
-			)
+		Lens(
+			get	= get,
+			set	= t => s => set(t)
+		)
 
 	def toPLens:PLens[S,T]	=
-			PLens { s	=>
-				Some(Store(get(s), set))
-			}
+		PLens { s	=>
+			Some(Store(get(s), set))
+		}
 }

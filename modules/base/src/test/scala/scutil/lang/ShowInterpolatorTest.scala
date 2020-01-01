@@ -7,10 +7,10 @@ import scutil.lang.implicits._
 class ShowInterpolatorTest extends Specification {
 	import scutil.lang.tc._
 	implicit def OptionShow[T:Show]:Show[Option[T]]	=
-			Show instance {
-				case Some(x)	=> "some: " + (Show doit x)
-				case None		=> "none"
-			}
+		Show instance {
+			case Some(x)	=> "some: " + (Show doit x)
+			case None		=> "none"
+		}
 
 	"show interpolator" should {
 		"do an empty string" in {

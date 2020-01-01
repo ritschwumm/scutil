@@ -7,9 +7,9 @@ import scutil.lang._
 @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
 class Base64Test extends Specification {
 	val	possible =
-			(ByteString makeWithArray 256) { tmp =>
-				for (i <- 0 until tmp.length) tmp(i) = i.toByte
-			}
+		(ByteString makeWithArray 256) { tmp =>
+			for (i <- 0 until tmp.length) tmp(i) = i.toByte
+		}
 
 	"Base64" should {
 		"handle roundtripping 0 bytes at all" in {

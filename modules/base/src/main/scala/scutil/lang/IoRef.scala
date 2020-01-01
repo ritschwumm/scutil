@@ -12,44 +12,44 @@ final class IoRef[T](initial:T) {
 	val ref	= new AtomicReference(initial)
 
 	val get:Io[T]	=
-			Io delay {
-				ref.get
-			}
+		Io delay {
+			ref.get
+		}
 
 	def set(it:T):Io[T]	=
-			Io delay {
-				ref getAndSet it
-			}
+		Io delay {
+			ref getAndSet it
+		}
 
 	def update(func:Endo[T]):Io[T]	=
-			modify { old =>
-				func(old) -> old
-			}
+		modify { old =>
+			func(old) -> old
+		}
 
 	def modify[U](func:T=>(T,U)):Io[U]	=
-			Io delay {
-				RefUtil modify (ref, func)
-			}
+		Io delay {
+			RefUtil modify (ref, func)
+		}
 
 	def modifyState[U](state:State[T,U]):Io[U] =
-			modify(state.run)
+		modify(state.run)
 
 	/*
 	// NOTE this does not work in scala-js because getAndUpdate is not implemented
 	def modify[U](func:T=>(T,U)):Io[U]	=
-			Io delay {
-				@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
-				var out:U	= null.asInstanceOf[U]
-				ref getAndUpdate { old =>
-					val (next, res)	= func apply old
-					out	= res
-					next
-				}
-				out
+		Io delay {
+			@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
+			var out:U	= null.asInstanceOf[U]
+			ref getAndUpdate { old =>
+				val (next, res)	= func apply old
+				out	= res
+				next
 			}
+			out
+		}
 	*/
 
 	// TODO bullshit
 	override def toString:String	=
-			"IoRef(...)"
+		"IoRef(...)"
 }

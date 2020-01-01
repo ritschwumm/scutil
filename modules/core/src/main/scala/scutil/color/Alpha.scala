@@ -12,36 +12,36 @@ object Alpha {
 /** value range is 0..1 */
 final case class Alpha(a:Float) {
 	def diff(that:Alpha):Float	=
-			abs(this.a - that.a)
+		abs(this.a - that.a)
 
 	def inverse:Alpha	= Alpha(1-a)
 
 	def blendAlpha(off:Alpha, on:Alpha):Alpha	=
-			Alpha(blendToFloat(a, off.a, on.a))
+		Alpha(blendToFloat(a, off.a, on.a))
 
 	def blendRGB(off:RGB, on:RGB):RGB	=
-			RGB(
-				r	= blendToFloat(a, off.r, on.r),
-				g	= blendToFloat(a, off.g, on.g),
-				b	= blendToFloat(a, off.b, on.b)
-			)
+		RGB(
+			r	= blendToFloat(a, off.r, on.r),
+			g	= blendToFloat(a, off.g, on.g),
+			b	= blendToFloat(a, off.b, on.b)
+		)
 
 	def blendHSB(off:HSB, on:HSB):HSB	=
-			HSB(
-				h	= blendToFloat(a, off.h, on.h),
-				s	= blendToFloat(a, off.s, on.s),
-				b	= blendToFloat(a, off.b, on.b)
-			)
+		HSB(
+			h	= blendToFloat(a, off.h, on.h),
+			s	= blendToFloat(a, off.s, on.s),
+			b	= blendToFloat(a, off.b, on.b)
+		)
 
 	def blendRGBA(off:RGBA, on:RGBA):RGBA	=
-			RGBA(
-				blendRGB(off.rgb, on.rgb),
-				blendAlpha(off.alpha, on.alpha)
-			)
+		RGBA(
+			blendRGB(off.rgb, on.rgb),
+			blendAlpha(off.alpha, on.alpha)
+		)
 
 	def blendHSBA(off:HSBA, on:HSBA):HSBA	=
-			HSBA(
-				blendHSB(off.hsb, on.hsb),
-				blendAlpha(off.alpha, on.alpha)
-			)
+		HSBA(
+			blendHSB(off.hsb, on.hsb),
+			blendAlpha(off.alpha, on.alpha)
+		)
 }

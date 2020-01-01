@@ -13,12 +13,12 @@ object ExceptionUtil {
 	def logAWTExceptions(onError:(Thread,Throwable)=>Unit):Unit = {
 		java6AwtHandler	= onError
 		System setProperty (
-				"sun.awt.exception.handler",
-				classOf[Java6AWTExceptionHandler].getName)
+			"sun.awt.exception.handler",
+			classOf[Java6AWTExceptionHandler].getName
+		)
 	}
 
-	private[scutil]
-	var java6AwtHandler:(Thread,Throwable)=>Unit	= null
+	private[scutil] var java6AwtHandler:(Thread,Throwable)=>Unit	= null
 }
 
 private final class LoggingUncaughtExceptionHandler(onError:(Thread,Throwable)=>Unit) extends Thread.UncaughtExceptionHandler {

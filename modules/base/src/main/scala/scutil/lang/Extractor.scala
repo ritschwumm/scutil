@@ -5,30 +5,30 @@ import scutil.lang.tc._
 // TODO 213 PartialFunction will have unapply there, do we still need this?
 object Extractor {
 	def total[S,T](func:S=>T):Extractor[S,T]	=
-			Extractor(s	=> Some(func(s)))
+		Extractor(s	=> Some(func(s)))
 
 	def partial[S,T](func:PartialFunction[S,T]):Extractor[S,T]	=
-			Extractor(func.lift)
+		Extractor(func.lift)
 
 	def filtered[T](pred:Predicate[T]):Extractor[T,T]	=
-			Extractor(it => if (pred(it)) Some(it) else None)
+		Extractor(it => if (pred(it)) Some(it) else None)
 
 	def identity[T]:Extractor[T,T]	=
-			Extractor(Some.apply)
+		Extractor(Some.apply)
 
 	def trivial[T]:Extractor[T,Any]	=
-			Extractor(constant(None))
+		Extractor(constant(None))
 
 	implicit def ExtractorFunctor[S]:Functor[Extractor[S,?]]	=
-			new Functor[Extractor[S,?]] {
-				def map[A,B](it:Extractor[S,A])(func:A=>B):Extractor[S,B]		= it map func
-			}
+		new Functor[Extractor[S,?]] {
+			def map[A,B](it:Extractor[S,A])(func:A=>B):Extractor[S,B]		= it map func
+		}
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
 	implicit def ExtractorSemigroup[S,T]:Semigroup[Extractor[S,T]]	=
-			Semigroup instance (_ orElse _)
+		Semigroup instance (_ orElse _)
 }
 
 /** representative extractor (as opposed to compiler magic) */
@@ -37,36 +37,36 @@ final case class Extractor[S,T](read:PFunction[S,T]) {
 
 	/** symbolic alias for andThen */
 	def >=>[U](that:Extractor[T,U]):Extractor[S,U]	=
-			this andThen that
+		this andThen that
 
 	/** symbolic alias for compose */
 	def <=<[R](that:Extractor[R,S]):Extractor[R,T]	=
-			this compose that
+		this compose that
 
 	def compose[R](that:Extractor[R,S]):Extractor[R,T]	=
-			that andThen this
+		that andThen this
 
 	def andThen[U](that:Extractor[T,U]):Extractor[S,U]	=
-			Extractor(s => this read s flatMap that.read)
+		Extractor(s => this read s flatMap that.read)
 
 	def orElse(that:Extractor[S,T]):Extractor[S,T]	=
-			Extractor(s	=> (this read s) orElse (that read s))
+		Extractor(s	=> (this read s) orElse (that read s))
 
 	def map[U](func:T=>U):Extractor[S,U]	=
-			Extractor(s => read(s) map func)
+		Extractor(s => read(s) map func)
 
 	def contraMap[R](func:R=>S):Extractor[R,T]	=
-			Extractor(func andThen read)
+		Extractor(func andThen read)
 
 	def filter(pred:T=>Boolean):Extractor[S,T]	=
-			Extractor(s	=> read(s) filter pred)
+		Extractor(s	=> read(s) filter pred)
 
 	def contraFilter(pred:S=>Boolean):Extractor[S,T]	=
-			Extractor(s	=> if (pred(s))	read(s)	else None)
+		Extractor(s	=> if (pred(s))	read(s)	else None)
 
 	def toPFunction:PFunction[S,T]	=
-			s => read(s)
+		s => read(s)
 
 	def toPartialFunction:PartialFunction[S,T]	=
-			Function unlift read
+		Function unlift read
 }

@@ -16,21 +16,21 @@ trait FileImplicits {
 	/** utility methods for java File objects */
 	implicit final class FileExt(peer:File) {
 		private implicit def mkFileFilter(predicate:File=>Boolean) =
-				new PredicateFileFilter(predicate)
+			new PredicateFileFilter(predicate)
 
 		//------------------------------------------------------------------------------
 		//## file and directory
 
 		/** time of last modification as an MilliInstant, returns MilliInstant.zero for non-existing files */
 		def lastModifiedMilliInstant():MilliInstant	=
-				MilliInstant(peer.lastModified)
+			MilliInstant(peer.lastModified)
 
 		def setLastModifiedMilliInstant(it:MilliInstant):Boolean	=
-				peer setLastModified it.millis
+			peer setLastModified it.millis
 
 		/** whether the peer is newer than another file. if the other file does not exist it counts as newer */
 		def newerThan(that:File):Boolean	=
-				peer.exists && (!that.exists || peer.lastModified > that.lastModified)
+			peer.exists && (!that.exists || peer.lastModified > that.lastModified)
 
 		/** add a component to this Files's path */
 		def /(name:String):File 		= new File(peer, name)
@@ -40,49 +40,49 @@ trait FileImplicits {
 
 		/** get the parent File the scala way */
 		def parentOption:Option[File]	=
-				Option(peer.getParentFile)
+			Option(peer.getParentFile)
 
 		/** get all parent Files starting with the immediate parent and ending with the directory root */
 		def parentChain:List[File]	=
-				List unfoldRightSimple (
-					peer,
-					(it:File) => Option(it.getParentFile)
-				)
+			List unfoldRightSimple (
+				peer,
+				(it:File) => Option(it.getParentFile)
+			)
 
 		/** like parentChain but includes the starting file itself */
 		def selfAndParentChain:List[File]	=
-				peer :: parentChain
+			peer :: parentChain
 
 		/** Some existing file, or None */
 		def optionExists:Option[File] =
-				if (peer.exists)	Some(peer)
-				else				None
+			if (peer.exists)	Some(peer)
+			else				None
 
 		/** another file in the same parent directory */
 		def sibling(name:String):File =
-				new File(peer.getParentFile, name)
+			new File(peer.getParentFile, name)
 
 		/** map only the name of this File */
 		def siblingBy(func:String=>String):File =
-				sibling(func(peer.getName))
+			sibling(func(peer.getName))
 
 		//------------------------------------------------------------------------------
 		//## directory only
 
 		/** list files in this directory */
 		def children:Option[Seq[File]] =
-				Option(peer.listFiles) map { _.toVector }
+			Option(peer.listFiles) map { _.toVector }
 
 		/** list files in this directory matching a predicate */
 		def childrenWhere(predicate:File=>Boolean):Option[Seq[File]] =
-				Option(peer listFiles predicate) map { _.toVector }
+			Option(peer listFiles predicate) map { _.toVector }
 
 		/** the path upwards from another File to this File */
 		def containsRecursive(that:File):Option[Seq[String]]	= {
 			def loop(test:File, path:Seq[String]):Option[Seq[String]]	=
-						 if (test == null)	None
-					else if (test == peer)	Some(path)
-					else					loop(test.getParentFile, test.getName +: path)
+					 if (test == null)	None
+				else if (test == peer)	Some(path)
+				else					loop(test.getParentFile, test.getName +: path)
 			loop(that, Vector.empty)
 		}
 
@@ -90,10 +90,10 @@ trait FileImplicits {
 		//## file only: streams
 
 		def newInputStream():InputStream	=
-				Files newInputStream peer.toPath
+			Files newInputStream peer.toPath
 
 		def newOutputStream():OutputStream	=
-				Files newOutputStream peer.toPath
+			Files newOutputStream peer.toPath
 
 		//------------------------------------------------------------------------------
 		//## file only: resource closure
@@ -102,19 +102,19 @@ trait FileImplicits {
 
 		/** execute a closure with an InputStream reading from this File */
 		def withInputStream[T](code:(InputStream=>T)):T	=
-				newInputStream() use code
+			newInputStream() use code
 
 		/** execute a closure with an OutputStream writing into this File */
 		def withOutputStream[T](code:(OutputStream=>T)):T	=
-				newOutputStream() use code
+			newOutputStream() use code
 
 		/** execute a closure with a Reader reading from this File */
 		def withReader[T](charset:Charset)(code:(InputStreamReader=>T)):T	=
-				new InputStreamReader(newInputStream(), charset) use code
+			new InputStreamReader(newInputStream(), charset) use code
 
 		/** execute a closure with a Writer writing into this File */
 		def withWriter[T](charset:Charset)(code:(OutputStreamWriter=>T)):T	=
-				new OutputStreamWriter(newOutputStream(), charset) use code
+			new OutputStreamWriter(newOutputStream(), charset) use code
 
 		//------------------------------------------------------------------------------
 		//## file only: complete read
@@ -131,14 +131,14 @@ trait FileImplicits {
 
 		// BETTER use a specific line separator
 		def readLines(charset:Charset):Seq[String]	=
-				withReader(charset) { _.readLines() }
+			withReader(charset) { _.readLines() }
 		def writeLines(charset:Charset, lines:Seq[String]):Unit	=
-				withWriter(charset) { writer =>
-					lines foreach { line =>
-						writer write line
-						writer write SystemProperties.line.separator
-					}
+			withWriter(charset) { writer =>
+				lines foreach { line =>
+					writer write line
+					writer write SystemProperties.line.separator
 				}
+			}
 
 		//------------------------------------------------------------------------------
 		//## manipulation

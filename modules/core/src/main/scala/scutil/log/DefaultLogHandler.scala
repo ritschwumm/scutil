@@ -27,7 +27,7 @@ trait DefaultLogHandler extends LogHandler {
 
 	// TODO scala-js this make everything appear in console.error
 	def printStream:PrintStream	=
-			System.err
+		System.err
 
 	//------------------------------------------------------------------------------
 
@@ -52,27 +52,27 @@ trait DefaultLogHandler extends LogHandler {
 	}
 
 	def formatInstant(it:MilliInstant):String	=
-			"[" + it.toISO8601 + "]"
+		"[" + it.toISO8601 + "]"
 
 	def formatLocation(it:SourceLocation):String	=
-			it.name + ":" + it.line.toString
+		it.name + ":" + it.line.toString
 
 	def formatLevel(it:LogLevel):String	=
-			it match {
-				case TRACE	=> "TRACE"
-				case DEBUG	=> "DEBUG"
-				case INFO	=> "INFO"
-				case WARN	=> "WARN"
-				case ERROR	=> "ERROR"
-				case FATAL	=> "FATAL"
-			}
+		it match {
+			case TRACE	=> "TRACE"
+			case DEBUG	=> "DEBUG"
+			case INFO	=> "INFO"
+			case WARN	=> "WARN"
+			case ERROR	=> "ERROR"
+			case FATAL	=> "FATAL"
+		}
 
 	def formatMessage(it:String):String	=
-			if (it != null)	it.toString
-			else			"<null>"
+		if (it != null)	it.toString
+		else			"<null>"
 
 	// TODO scala-js this is not very useful in the browser
 	def formatThrowable(it:Throwable):String	=
-			if (it != null)	it.stackTrace
-			else			"<null>"
+		if (it != null)	it.stackTrace
+		else			"<null>"
 }

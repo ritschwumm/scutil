@@ -21,50 +21,50 @@ object ByteArrayUtil {
 	//------------------------------------------------------------------------------
 
 	def getBigEndianShort(array:Array[Byte], byteOffset:Int):Short	=
-			(	((array(byteOffset+0) & 0xff) << 8)	|
-				((array(byteOffset+1) & 0xff) << 0)
-			).toShort
+		(	((array(byteOffset+0) & 0xff) << 8)	|
+			((array(byteOffset+1) & 0xff) << 0)
+		).toShort
 
 	def getLittleEndianShort(array:Array[Byte], byteOffset:Int):Short	=
-			(	((array(byteOffset+0) & 0xff) << 0)	|
-				((array(byteOffset+1) & 0xff) << 8)
-			).toShort
+		(	((array(byteOffset+0) & 0xff) << 0)	|
+			((array(byteOffset+1) & 0xff) << 8)
+		).toShort
 
 	def getBigEndianInt(array:Array[Byte], byteOffset:Int):Int	=
-			(	((array(byteOffset+0) & 0xff) << 24)	|
-				((array(byteOffset+1) & 0xff) << 16)	|
-				((array(byteOffset+2) & 0xff) <<  8)	|
-				((array(byteOffset+3) & 0xff) <<  0)
-			)
+		(	((array(byteOffset+0) & 0xff) << 24)	|
+			((array(byteOffset+1) & 0xff) << 16)	|
+			((array(byteOffset+2) & 0xff) <<  8)	|
+			((array(byteOffset+3) & 0xff) <<  0)
+		)
 
 	def getLittleEndianInt(array:Array[Byte], byteOffset:Int):Int	=
-			(	((array(byteOffset+0) & 0xff) <<  0)	|
-				((array(byteOffset+1) & 0xff) <<  8)	|
-				((array(byteOffset+2) & 0xff) << 16)	|
-				((array(byteOffset+3) & 0xff) << 24)
-			)
+		(	((array(byteOffset+0) & 0xff) <<  0)	|
+			((array(byteOffset+1) & 0xff) <<  8)	|
+			((array(byteOffset+2) & 0xff) << 16)	|
+			((array(byteOffset+3) & 0xff) << 24)
+		)
 
 	def getBigEndianLong(array:Array[Byte], byteOffset:Int):Long	=
-			(	((array(byteOffset+0) & 0xffL) << 56)	|
-				((array(byteOffset+1) & 0xffL) << 48)	|
-				((array(byteOffset+2) & 0xffL) << 40)	|
-				((array(byteOffset+3) & 0xffL) << 32)	|
-				((array(byteOffset+0) & 0xffL) << 24)	|
-				((array(byteOffset+1) & 0xffL) << 16)	|
-				((array(byteOffset+2) & 0xffL) <<  8)	|
-				((array(byteOffset+3) & 0xffL) <<  0)
-			)
+		(	((array(byteOffset+0) & 0xffL) << 56)	|
+			((array(byteOffset+1) & 0xffL) << 48)	|
+			((array(byteOffset+2) & 0xffL) << 40)	|
+			((array(byteOffset+3) & 0xffL) << 32)	|
+			((array(byteOffset+0) & 0xffL) << 24)	|
+			((array(byteOffset+1) & 0xffL) << 16)	|
+			((array(byteOffset+2) & 0xffL) <<  8)	|
+			((array(byteOffset+3) & 0xffL) <<  0)
+		)
 
 	def getLittleEndianLong(array:Array[Byte], byteOffset:Int):Long	=
-			(	((array(byteOffset+0) & 0xffL) <<  0)	|
-				((array(byteOffset+1) & 0xffL) <<  8)	|
-				((array(byteOffset+2) & 0xffL) << 16)	|
-				((array(byteOffset+3) & 0xffL) << 24)	|
-				((array(byteOffset+0) & 0xffL) << 32)	|
-				((array(byteOffset+1) & 0xffL) << 40)	|
-				((array(byteOffset+2) & 0xffL) << 48)	|
-				((array(byteOffset+3) & 0xffL) << 56)
-			)
+		(	((array(byteOffset+0) & 0xffL) <<  0)	|
+			((array(byteOffset+1) & 0xffL) <<  8)	|
+			((array(byteOffset+2) & 0xffL) << 16)	|
+			((array(byteOffset+3) & 0xffL) << 24)	|
+			((array(byteOffset+0) & 0xffL) << 32)	|
+			((array(byteOffset+1) & 0xffL) << 40)	|
+			((array(byteOffset+2) & 0xffL) << 48)	|
+			((array(byteOffset+3) & 0xffL) << 56)
+		)
 
 	//------------------------------------------------------------------------------
 

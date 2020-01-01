@@ -4,9 +4,9 @@ object Resource {
 	def apply[T](ev:Resource[T]):Resource[T]	= ev
 
 	def instance[T](disposeFunc:T=>Unit):Resource[T]	=
-			new Resource[T] {
-				def dispose(it:T):Unit	= disposeFunc(it)
-			}
+		new Resource[T] {
+			def dispose(it:T):Unit	= disposeFunc(it)
+		}
 }
 
 trait Resource[T] {

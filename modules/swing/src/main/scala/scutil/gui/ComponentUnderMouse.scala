@@ -38,36 +38,36 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 		val nowUnderMouse	= underMousePredicate() apply component
 		val componentRef	= new WeakReference(callback)
 		val newCallbacks	=
-				entries get component match {
-					case Some(entry)	=> entry.referencedCallbacks :+ componentRef
-					case None			=> Vector(componentRef)
-				}
+			entries get component match {
+				case Some(entry)	=> entry.referencedCallbacks :+ componentRef
+				case None			=> Vector(componentRef)
+			}
 		entries	+= (component -> Entry(nowUnderMouse, newCallbacks))
 		disposable {
 			entries	=
-					entries flatMap { case (component, entry) =>
-						val newCallbacks	=
-								entry.callbacks filterNot { it =>
-									val deref	= it.get
-									(deref eq null) ||
-									deref == callback
-								}
-						if (newCallbacks.nonEmpty)	List(component -> Entry(entry.state, newCallbacks))
-						else						List.empty
-					}
+				entries flatMap { case (component, entry) =>
+					val newCallbacks	=
+							entry.callbacks filterNot { it =>
+								val deref	= it.get
+								(deref eq null) ||
+								deref == callback
+							}
+					if (newCallbacks.nonEmpty)	List(component -> Entry(entry.state, newCallbacks))
+					else						List.empty
+				}
 		}
 	}
 
 	private def update():Unit	= {
 		val predicate	= underMousePredicate()
 		val updates	=
-				for {
-					pair	<- entries
-					(component, entry)	= pair
-					newState	= predicate apply component
-					if newState != entry.state
-				}
-				yield component -> Entry(newState, entry.referencedCallbacks)
+			for {
+				pair	<- entries
+				(component, entry)	= pair
+				newState	= predicate apply component
+				if newState != entry.state
+			}
+			yield component -> Entry(newState, entry.referencedCallbacks)
 		entries	++= updates
 		for {
 			update			<- updates
@@ -86,14 +86,14 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 	}
 
 	private def underMousePredicate():Predicate[Component]	=
-			mouseLocation cata (
-				Predicates.constFalse,
-				mouse	=> underMousePoint(mouse, _)
-			)
+		mouseLocation cata (
+			Predicates.constFalse,
+			mouse	=> underMousePoint(mouse, _)
+		)
 
 	/** this is expensive, avoid calls if possible */
 	private def mouseLocation:Option[Point]	=
-			Option(MouseInfo.getPointerInfo) map { _.getLocation }
+		Option(MouseInfo.getPointerInfo) map { _.getLocation }
 
 	private def underMousePoint(mouse:Point, component:Component):Boolean	= {
 		val local	= convertPointFromScreen(mouse, component)
@@ -132,21 +132,21 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 	}
 
 	private val testThread	=
-			new Thread {
-				override def run():Unit	= {
-					while (true) {
-						Thread sleep testCycle.millis
-						edt {
-							try {
-								update()
-							}
-							catch { case e:Exception	=>
-								onError("test thread failed", e)
-							}
+		new Thread {
+			override def run():Unit	= {
+				while (true) {
+					Thread sleep testCycle.millis
+					edt {
+						try {
+							update()
+						}
+						catch { case e:Exception	=>
+							onError("test thread failed", e)
 						}
 					}
 				}
 			}
+		}
 	testThread setName		"ComponentUnderMouse"
 	testThread setDaemon	true
 	testThread setPriority	Thread.MIN_PRIORITY

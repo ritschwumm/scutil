@@ -15,39 +15,39 @@ trait SeqImplicits {
 
 		/** whether index is a gap between elements of this Seq */
 		def containsGap(index:Int):Boolean	=
-				index >= 0 && index <= peer.size
+			index >= 0 && index <= peer.size
 
 		/** whether index is an item in this Seq */
 		def containsIndex(index:Int):Boolean	=
-				index >= 0 && index < peer.size
+			index >= 0 && index < peer.size
 
 		/** concatenate the Seq with itself n times */
 		def times(count:Int)(implicit factory:Factory[T,CC[T]]):CC[T]	=
-				(0 until count).flatMap { _ => peer }.to(factory)
+			(0 until count).flatMap { _ => peer }.to(factory)
 
 		def indexOfOption(item:T):Option[Int]	=
-				indexOption(peer indexOf item)
+			indexOption(peer indexOf item)
 
 		def lastIndexOfOption(item:T):Option[Int]	=
-				indexOption(peer lastIndexOf item)
+			indexOption(peer lastIndexOf item)
 
 		def indexWhereOption(pred:Predicate[T]):Option[Int]	=
-				indexOption(peer indexWhere pred)
+			indexOption(peer indexWhere pred)
 
 		def lastIndexWhereOption(pred:Predicate[T]):Option[Int]	=
-				indexOption(peer lastIndexWhere pred)
+			indexOption(peer lastIndexWhere pred)
 
 		/** get value at an index or return a default value */
 		def liftOrElse(index:Int, default:T):T	=
-				peer lift index getOrElse default
+			peer lift index getOrElse default
 
 		/** like collectFirst but searching from the end to the front */
 		def collectLast[U](pf:PartialFunction[T,U]):Option[U]	=
-				// behaves like peer.reverse collectFirst pf
-				collapseLast(pf.lift)
+			// behaves like peer.reverse collectFirst pf
+			collapseLast(pf.lift)
 
 		def collapseLast[U](implicit ev:PFunction[T,U]):Option[U]	=
-				collapseMapLast(ev)
+			collapseMapLast(ev)
 
 		// NOTE this is in IterableImplicits
 		// def collapseMapFirst[U](find:PFunction[T,U]):Option[U]
@@ -68,29 +68,29 @@ trait SeqImplicits {
 		 * but might trade some calculation for object allocations
 		 */
 		def groupMapPaired[K,V](func:T=>(K,V))(implicit factory:Factory[V,CC[V]]):Map[K,CC[V]]	=
-				// TODO generify without factory
-				peer
-				.map		(func)
-				.groupBy	{ _._1 }
-				.map { case (k, kvs) =>
-					(k, kvs map { _._2 } to factory)
-				}
+			// TODO generify without factory
+			peer
+			.map		(func)
+			.groupBy	{ _._1 }
+			.map { case (k, kvs) =>
+				(k, kvs map { _._2 } to factory)
+			}
 
 		/** get item at index and the Seq without that element if possible */
 		def extractAt(index:Int)(implicit factory:Factory[T,CC[T]]):Option[(T,CC[T])]	=
-				// TODO generify without factory - but lift is not in SeqOps
-				peer lift index map { it =>
-					(it, peer.patch (index, Seq.empty, 1).to(factory))
-				}
+			// TODO generify without factory - but lift is not in SeqOps
+			peer lift index map { it =>
+				(it, peer.patch (index, Seq.empty, 1).to(factory))
+			}
 
 		/** distinct with a custom equality check */
 		def distinctWith(same:(T,T)=>Boolean)(implicit factory:Factory[T,CC[T]]):CC[T] =
-				((peer foldLeft Seq.empty[T]) { (retained:Seq[T], candidate:T) =>
-					retained find { same(_,candidate) } match {
-						case Some(_)	=> retained
-						case None		=> candidate +: retained
-					}
-				}).reverse.to(factory)
+			((peer foldLeft Seq.empty[T]) { (retained:Seq[T], candidate:T) =>
+				retained find { same(_,candidate) } match {
+					case Some(_)	=> retained
+					case None		=> candidate +: retained
+				}
+			}).reverse.to(factory)
 
 		/** triple every item with its previous and next item */
 		def adjacents(implicit factory:Factory[(Option[T],T,Option[T]),CC[(Option[T],T,Option[T])]]):CC[(Option[T],T,Option[T])]	= {
@@ -116,28 +116,28 @@ trait SeqImplicits {
 		/** optionally insert something between two items */
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def insertBetween[U](mod:T=>U, func:(T,T)=>Option[U])(implicit factory:Factory[U,CC[U]]):CC[U]	=
-				if (peer.size < 2)	peer map mod to factory
-				else {
-					val	out	= factory.newBuilder
-					peer zip peer.tail foreach { case (now,later) =>
-						out	+= mod(now)
-						func(now,later) foreach out.+=
-					}
-					out	+= mod(peer.last)
-					out.result
+			if (peer.size < 2)	peer map mod to factory
+			else {
+				val	out	= factory.newBuilder
+				peer zip peer.tail foreach { case (now,later) =>
+					out	+= mod(now)
+					func(now,later) foreach out.+=
 				}
+				out	+= mod(peer.last)
+				out.result
+			}
 
 		/** separators go to the Left, the rest goes into Right Seqs  */
 		def splitWhere(separator:Predicate[T]):Seq[Either[T,Seq[T]]] =
-				// TODO generify to CC
-				if (peer.nonEmpty) {
-					val indices = peer.zipWithIndex collect { case (t,i) if (separator(t)) => i }
-					(-1 +: indices) zip (indices :+ peer.size) flatMap { case (a,b) =>
-						Vector(Right(peer slice (a+1,b))) ++
-						(peer lift b map Left.apply).toList
-					}
+			// TODO generify to CC
+			if (peer.nonEmpty) {
+				val indices = peer.zipWithIndex collect { case (t,i) if (separator(t)) => i }
+				(-1 +: indices) zip (indices :+ peer.size) flatMap { case (a,b) =>
+					Vector(Right(peer slice (a+1,b))) ++
+					(peer lift b map Left.apply).toList
 				}
-				else Vector.empty
+			}
+			else Vector.empty
 
 		/** equivalent elements go into own Seqs */
 		def equivalentSpans(equivalent:(T,T)=>Boolean):Seq[Seq[T]]	= {
@@ -154,141 +154,141 @@ trait SeqImplicits {
 
 		/** equivalentSpans on a single property */
 		def equivalentSpansBy[U](extract:T=>U):Seq[Seq[T]]	=
-				equivalentSpans { extract(_) == extract(_) }
+			equivalentSpans { extract(_) == extract(_) }
 
 		/** move an item from a given item index to an inter-item gap */
 		def moveAt(fromIndex:Int, toGap:Int)(implicit factory:Factory[T,CC[T]]):Option[CC[T]]	=
-				// TODO generify without factory - but calling patch a second time is not possible on SeqOps
-				if (containsIndex(fromIndex) && containsGap(toGap)) {
-					if (fromIndex < toGap-1) {
-						Some(
-							peer
-							.patch(toGap,		Seq(peer(fromIndex)),	0)
-							.patch(fromIndex,	Seq.empty,				1)
-							.to(factory)
-						)
-					}
-					else if (fromIndex > toGap) {
-						Some(
-							peer
-							.patch(fromIndex,	Seq.empty,				1)
-							.patch(toGap,		Seq(peer(fromIndex)),	0)
-							.to(factory)
-						)
-					}
-					else None
+			// TODO generify without factory - but calling patch a second time is not possible on SeqOps
+			if (containsIndex(fromIndex) && containsGap(toGap)) {
+				if (fromIndex < toGap-1) {
+					Some(
+						peer
+						.patch(toGap,		Seq(peer(fromIndex)),	0)
+						.patch(fromIndex,	Seq.empty,				1)
+						.to(factory)
+					)
+				}
+				else if (fromIndex > toGap) {
+					Some(
+						peer
+						.patch(fromIndex,	Seq.empty,				1)
+						.patch(toGap,		Seq(peer(fromIndex)),	0)
+						.to(factory)
+					)
 				}
 				else None
+			}
+			else None
 
 		/** move multiple items item from a given index to a inter-item gap of another index if possible */
 		def moveManyAt(fromIndex:Int, count:Int, toGap:Int)(implicit factory:Factory[T,CC[T]]):Option[CC[T]]	=
-				// TODO generify without factory - but calling patch a second time is not possible on SeqOps
-				if (
-					fromIndex	>= 0 && fromIndex+count	<= peer.size &&
-					toGap		>= 0 && toGap			<= peer.size
-				) {
-					Some(
-						(
-							if (fromIndex < toGap) {
-								// move right
-								(peer slice (0,						fromIndex))				++
-								(peer slice (fromIndex	+ count,	toGap))					++
-								(peer slice (fromIndex,				fromIndex	+ count))	++
-								(peer slice (toGap,					peer.size))
-							}
-							else if (fromIndex > toGap) {
-								// move left
-								(peer slice (0,						toGap))				++
-								(peer slice (fromIndex,				fromIndex + count))	++
-								(peer slice (toGap,					fromIndex))			++
-								(peer slice (fromIndex	+ count,	peer.size))
-							}
-							else peer
-						)
-						.to(factory)
-
+			// TODO generify without factory - but calling patch a second time is not possible on SeqOps
+			if (
+				fromIndex	>= 0 && fromIndex+count	<= peer.size &&
+				toGap		>= 0 && toGap			<= peer.size
+			) {
+				Some(
+					(
+						if (fromIndex < toGap) {
+							// move right
+							(peer slice (0,						fromIndex))				++
+							(peer slice (fromIndex	+ count,	toGap))					++
+							(peer slice (fromIndex,				fromIndex	+ count))	++
+							(peer slice (toGap,					peer.size))
+						}
+						else if (fromIndex > toGap) {
+							// move left
+							(peer slice (0,						toGap))				++
+							(peer slice (fromIndex,				fromIndex + count))	++
+							(peer slice (toGap,					fromIndex))			++
+							(peer slice (fromIndex	+ count,	peer.size))
+						}
+						else peer
 					)
-				}
-				else None
+					.to(factory)
+
+				)
+			}
+			else None
 
 		def storeAt(index:Int)(implicit factory:Factory[T,CC[T]]):Option[Store[CC[T],T]]	=
-				// TODO generify without factory - but lift is not in SeqOps
-				peer lift index map { item =>
-					Store[CC[T],T](
-						item,
-						peer updated (index, _) to factory
-					)
-				}
+			// TODO generify without factory - but lift is not in SeqOps
+			peer lift index map { item =>
+				Store[CC[T],T](
+					item,
+					peer updated (index, _) to factory
+				)
+			}
 
 		def toNesOption:Option[Nes[T]]	=
-				Nes fromSeq peer
+			Nes fromSeq peer
 
 		private def indexOption(index:Int):Option[Int]	=
-				if (index != -1)	Some(index)
-				else				None
+			if (index != -1)	Some(index)
+			else				None
 	}
 
 	implicit final class SeqOpsExt[CC[_],T](peer:SeqOps[T,CC,CC[T]]) {
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def tailOption:Option[CC[T]]	=
-				if (peer.nonEmpty)	Some(peer.tail)
-				else				None
+			if (peer.nonEmpty)	Some(peer.tail)
+			else				None
 
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def initOption:Option[CC[T]]	=
-				if (peer.nonEmpty)	Some(peer.init)
-				else				None
+			if (peer.nonEmpty)	Some(peer.init)
+			else				None
 
 		/** get first item and rest of the Seq if possible */
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def extractHead:Option[(T,CC[T])]	=
-				if (peer.nonEmpty)	Some((peer.head, peer.tail))
-				else				None
+			if (peer.nonEmpty)	Some((peer.head, peer.tail))
+			else				None
 
 		/** get last item and rest of the Seq if possible */
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def extractLast:Option[(T,CC[T])]	=
-				if (peer.nonEmpty)	Some((peer.last, peer.init))
-				else				None
+			if (peer.nonEmpty)	Some((peer.last, peer.init))
+			else				None
 
 		/** map the value for a single index */
 		def updatedBy(index:Int, func:Endo[T]):Option[CC[T]]	=
-				if (containsIndex1(index))	Some(peer updated (index, func(peer(index))))
-				else						None
+			if (containsIndex1(index))	Some(peer updated (index, func(peer(index))))
+			else						None
 
 		/** None when the index is outside our bounds */
 		def updatedAt(index:Int, item:T):Option[CC[T]]	=
-				if (containsIndex1(index))	Some(peer updated (index, item))
-				else						None
+			if (containsIndex1(index))	Some(peer updated (index, item))
+			else						None
 
 		/** insert an item at a given index if possible */
 		def insertAt(gap:Int, item:T):Option[CC[T]]	=
-				if (containsGap1(gap))	Some(peer patch (gap, Seq(item), 0))
-				else 					None
+			if (containsGap1(gap))	Some(peer patch (gap, Seq(item), 0))
+			else 					None
 
 		/** remove the item at a given index if possible */
 		def removeAt(index:Int):Option[CC[T]]	=
-				if (containsIndex1(index))	Some(peer patch (index, Seq.empty, 1))
-				else						None
+			if (containsIndex1(index))	Some(peer patch (index, Seq.empty, 1))
+			else						None
 
 		// TODO generify this exists in Seq implicits
 		private def containsIndex1(index:Int):Boolean	=
-				index >= 0 && index < peer.size
+			index >= 0 && index < peer.size
 
 		// TODO generify this exists in Seq implicits
 		private def containsGap1(index:Int):Boolean	=
-				index >= 0 && index <= peer.size
+			index >= 0 && index <= peer.size
 	}
 
 	implicit final class SeqWithOpsExt[CC[T] <: Seq[T],T](peer:SeqOps[T,CC,CC[T]]) {
 		def withReverse(func:Endo[CC[T]])(implicit factory:Factory[T,CC[T]]):CC[T]	=
-				// TODO generify without factory - but the reverse returns the wrong type
-				func(peer.reverse).reverse.to(factory)
+			// TODO generify without factory - but the reverse returns the wrong type
+			func(peer.reverse).reverse.to(factory)
 
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def zipTail(implicit factory:Factory[(T,T),CC[(T,T)]]):CC[(T,T)]	=
-				(	if (peer.nonEmpty)	peer zip peer.tail
-					else				factory.newBuilder.result
-				)
+			(	if (peer.nonEmpty)	peer zip peer.tail
+				else				factory.newBuilder.result
+			)
 	}
 }

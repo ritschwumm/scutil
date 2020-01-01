@@ -12,7 +12,7 @@ trait SetImplicits {
 
 		/** pairs items only in this with items only in that */
 		def hereAndThere(that:Set[T]):(Set[T],Set[T])	=
-				(peer -- that, that -- peer)
+			(peer -- that, that -- peer)
 
 		def where[U](that:Set[T]):Set[Where[T,T]]	= {
 			val (here, there)	= this hereAndThere that
@@ -24,24 +24,24 @@ trait SetImplicits {
 
 		/** get one element and all other elements */
 		def extractSingleOption:Option[(T,Set[T])]	=
-				peer.headOption map { head => (head, peer - head) }
+			peer.headOption map { head => (head, peer - head) }
 
 		/** set or remove the value */
 		def set(value:T, in:Boolean):Set[T]	=
-				if (in)	peer + value
-				else	peer - value
+			if (in)	peer + value
+			else	peer - value
 
 		/** create a map from all elements with a given function to generate the values */
 		def mapTo[U](value:T=>U):Map[T,U]	=
-				(peer map { it => (it, value(it)) }).toMap
+			(peer map { it => (it, value(it)) }).toMap
 
 		/** group values by keys, both from a function */
 		def groupMap[K,V](func:T=>(K,V)):Map[K,Set[V]]	=
-				peer
-				.map		(func)
-				.groupBy	{ _._1 }
-				.map { case (k, kvs) =>
-					(k, kvs map { _._2 })
-				}
+			peer
+			.map		(func)
+			.groupBy	{ _._1 }
+			.map { case (k, kvs) =>
+				(k, kvs map { _._2 })
+			}
 	}
 }

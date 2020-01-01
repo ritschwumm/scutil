@@ -39,108 +39,108 @@ trait instances extends instancesLow {
 	//## builting Semigroup/Monoid
 
 	implicit val StringMonoid:Monoid[String]	=
-			Monoid instance ("", _ + _)
+		Monoid instance ("", _ + _)
 
 	implicit def PairMonoid[T1,T2](implicit T1:Monoid[T1], T2:Monoid[T2]):Monoid[(T1,T2)]	=
-			Monoid instance (
-				(T1.empty, T2.empty),
-				(a, b) => (
-					T1 concat (a._1, b._1),
-					T2 concat (a._2, b._2)
-				)
+		Monoid instance (
+			(T1.empty, T2.empty),
+			(a, b) => (
+				T1 concat (a._1, b._1),
+				T2 concat (a._2, b._2)
 			)
+		)
 
 	implicit def OptionMonoid[T](implicit S:Semigroup[T]):Monoid[Option[T]]	=
-			Monoid instance (
-				None,
-				(a,b) => (a oneOrTwo b)(S.concat)
-			)
+		Monoid instance (
+			None,
+			(a,b) => (a oneOrTwo b)(S.concat)
+		)
 
 	/*
 	// TODO does this make sense without further constraints on T?
 	implicit def EitherSemigroup[S,T]:Semigroup[Either[S,T]]	=
-			Semigroup instance { (a,b) =>
-				a match {
-					case Left(_)	=> b
-					case Right(_)	=> a
-				}
+		Semigroup instance { (a,b) =>
+			a match {
+				case Left(_)	=> b
+				case Right(_)	=> a
 			}
+		}
 	*/
 
 	//------------------------------------------------------------------------------
 	//## builtin Functor/Applicative/Monad
 
 	implicit def FunctionFunctor[S]:Functor[Function[S,?]]	=
-			new Functor[Function[S,?]] {
-				def map[A,B](it:Function[S,A])(func:A=>B):Function[S,B]	= it andThen func
-			}
+		new Functor[Function[S,?]] {
+			def map[A,B](it:Function[S,A])(func:A=>B):Function[S,B]	= it andThen func
+		}
 
 	// TODO can we have a TraversedMonad here?
 
 	implicit def PairFunctor[S]:Functor[(S,?)]	=
-			new Functor[(S,?)] {
-				def map[A,B](it:(S,A))(func:A=>B):(S,B)	= (it._1, func(it._2))
-			}
+		new Functor[(S,?)] {
+			def map[A,B](it:(S,A))(func:A=>B):(S,B)	= (it._1, func(it._2))
+		}
 
 	implicit def OptionTraversedMonad:TraversedMonad[Option]	=
-			new TraversedMonad[Option] {
-				override def map[A,B](it:Option[A])(func:A=>B):Option[B]				= it map func
+		new TraversedMonad[Option] {
+			override def map[A,B](it:Option[A])(func:A=>B):Option[B]				= it map func
 
-				override def pure[A](it:A):Option[A]									= Some(it)
-				override def flatMap[A,B](it:Option[A])(func:A=>Option[B]):Option[B]	= it flatMap func
+			override def pure[A](it:A):Option[A]									= Some(it)
+			override def flatMap[A,B](it:Option[A])(func:A=>Option[B]):Option[B]	= it flatMap func
 
-				override def traverse[G[_],S,T](it:Option[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[Option[T]]	=
-						it match {
-							case None		=> AP pure None
-							case Some(s)	=> (AP map func(s))(Some.apply)
-						}
-			}
+			override def traverse[G[_],S,T](it:Option[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[Option[T]]	=
+				it match {
+					case None		=> AP pure None
+					case Some(s)	=> (AP map func(s))(Some.apply)
+				}
+		}
 
 	implicit def EitherTraversedMonad[S]:TraversedMonad[Either[S,?]]	=
-			new TraversedMonad[Either[S,?]] {
-				override def pure[A](it:A):Either[S,A]										= Right(it)
-				override def map[A,B](it:Either[S,A])(func:A=>B):Either[S,B]				= it map func
-				override def flatMap[A,B](it:Either[S,A])(func:A=>Either[S,B]):Either[S,B]	= it flatMap func
+		new TraversedMonad[Either[S,?]] {
+			override def pure[A](it:A):Either[S,A]										= Right(it)
+			override def map[A,B](it:Either[S,A])(func:A=>B):Either[S,B]				= it map func
+			override def flatMap[A,B](it:Either[S,A])(func:A=>Either[S,B]):Either[S,B]	= it flatMap func
 
-				override def traverse[G[_],A,B](it:Either[S,A])(func:A=>G[B])(implicit AP:Applicative[G]):G[Either[S,B]]	=
-						it match {
-							case Left(x)	=> AP pure Left(x)
-							case Right(x)	=> (AP map func(x))(Right.apply)
-						}
-			}
+			override def traverse[G[_],A,B](it:Either[S,A])(func:A=>G[B])(implicit AP:Applicative[G]):G[Either[S,B]]	=
+				it match {
+					case Left(x)	=> AP pure Left(x)
+					case Right(x)	=> (AP map func(x))(Right.apply)
+				}
+		}
 
 	//------------------------------------------------------------------------------
 	//## on function, questionable
 
 	implicit def EndoMonoid[T]:Monoid[Endo[T]]	=
-			Monoid instance (identity, _ andThen _)
+		Monoid instance (identity, _ andThen _)
 
 	implicit def PEndoSemigroup[T]:Semigroup[PEndo[T]]	=
-			Semigroup instance (_ andThenFixed _)
+		Semigroup instance (_ andThenFixed _)
 
 	// TODO do we get this for free with FFunctionFunctor?
 	// NOTE PFunction and FFunction are both just ReaderT/Kleisli
 	implicit def PFunctionFunctor[S]:Functor[PFunction[S,?]]	=
-			new Functor[PFunction[S,?]] {
-				def map[A,B](it:PFunction[S,A])(func:A=>B):PFunction[S,B]		= it(_) map func
-			}
+		new Functor[PFunction[S,?]] {
+			def map[A,B](it:PFunction[S,A])(func:A=>B):PFunction[S,B]		= it(_) map func
+		}
 
 	implicit def PFunctionSemigroup[S,T]:Semigroup[PFunction[S,T]]	=
-			Semigroup instance (_ orElse _)
+		Semigroup instance (_ orElse _)
 
 	implicit def FFunctionFunctor[F[_]:Functor,S]:Functor[FFunction[F,S,?]]	=
-			new Functor[FFunction[F,S,?]] {
-				def map[A,B](it:FFunction[F,S,A])(func:A=>B):FFunction[F,S,B]	=
-						a => (Functor[F] map it(a))(func)
-			}
+		new Functor[FFunction[F,S,?]] {
+			def map[A,B](it:FFunction[F,S,A])(func:A=>B):FFunction[F,S,B]	=
+					a => (Functor[F] map it(a))(func)
+		}
 }
 
 trait instancesLow {
 	implicit def IdentityTraversedMonad:TraversedMonad[Identity]	=
-			new TraversedMonad[Identity] {
-				override def map[A,B](it:Identity[A])(func:A=>B):Identity[B]				= func(it)
-				override def pure[A](it:A):Identity[A]										= it
-				override def flatMap[A,B](it:Identity[A])(func:A=>Identity[B]):Identity[B]	= func(it)
-				override def traverse[G[_],S,T](it:Identity[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[Identity[T]]	= func(it)
-			}
+		new TraversedMonad[Identity] {
+			override def map[A,B](it:Identity[A])(func:A=>B):Identity[B]				= func(it)
+			override def pure[A](it:A):Identity[A]										= it
+			override def flatMap[A,B](it:Identity[A])(func:A=>Identity[B]):Identity[B]	= func(it)
+			override def traverse[G[_],S,T](it:Identity[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[Identity[T]]	= func(it)
+		}
 }

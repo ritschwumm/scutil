@@ -4,5 +4,5 @@ import scutil.regex.pimp._
 
 object extensions extends extensions
 trait extensions
-		extends	MatcherImplicits
-		with	RegexImplicits
+	extends	MatcherImplicits
+	with	RegexImplicits

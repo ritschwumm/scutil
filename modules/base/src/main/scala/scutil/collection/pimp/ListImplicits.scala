@@ -9,17 +9,17 @@ object ListImplicits extends ListImplicits
 trait ListImplicits {
 	implicit final class ListCompanionExt(peer:List.type) {
 		def unfoldRight[S,T](seed:S, func:PFunction[S,(S,T)]):List[T]	=
-				func(seed) match {
-					case Some((next,out))	=> out :: unfoldRight(next, func)
-					case None				=> Nil
-				}
+			func(seed) match {
+				case Some((next,out))	=> out :: unfoldRight(next, func)
+				case None				=> Nil
+			}
 
 		// == unfoldRight(seed, func andThen { it => (it,it) })
 		def unfoldRightSimple[S,T<:S](seed:S, func:PFunction[S,T]):List[T]	=
-				func(seed) match {
-					case Some(next)	=> next :: unfoldRightSimple(next, func)
-					case None		=> Nil
-				}
+			func(seed) match {
+				case Some(next)	=> next :: unfoldRightSimple(next, func)
+				case None		=> Nil
+			}
 
 		def unfoldLeft[S,T](seed:S, func:PFunction[S,(S,T)]) = {
 			@tailrec
@@ -43,10 +43,10 @@ trait ListImplicits {
 
 	implicit final class ListExt[T](peer:List[T]) {
 		def cata[U](nil: =>U, cons:(T,List[T])=>U):U =
-				peer match {
-					case head :: tail	=> cons(head, tail)
-					case Nil			=> nil
-				}
+			peer match {
+				case head :: tail	=> cons(head, tail)
+				case Nil			=> nil
+			}
 
 		/**
 		calculate common prefix and differing tails for two lists

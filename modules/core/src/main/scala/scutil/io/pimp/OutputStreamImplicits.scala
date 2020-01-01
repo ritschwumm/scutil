@@ -11,15 +11,15 @@ trait OutputStreamImplicits {
 	/** utility methods for OutputStream objects */
 	implicit final class OutputStreamExt(peer:OutputStream) {
 		def writeByteString(it:ByteString):Unit	=
-				peer write it.unsafeValue
+			peer write it.unsafeValue
 
 		def writeByteString(it:ByteString, offset:Int, length:Int):Unit	=
-				peer write (it.unsafeValue, offset, length)
+			peer write (it.unsafeValue, offset, length)
 
 		def buffered:BufferedOutputStream	=
-				new BufferedOutputStream(peer)
+			new BufferedOutputStream(peer)
 
 		def toWriter(encoding:Charset):OutputStreamWriter	=
-				new OutputStreamWriter(peer, encoding)
+			new OutputStreamWriter(peer, encoding)
 	}
 }

@@ -17,14 +17,14 @@ object JTimeUtil {
 	//------------------------------------------------------------------------------
 
 	def gregorianDateToday(tz:TimeZone):GregorianDate	=
-			calendarToGregorianDate(new GregorianCalendar(tz))
+		calendarToGregorianDate(new GregorianCalendar(tz))
 
 	def calendarToGregorianDate(cal:Calendar):GregorianDate	=
-			GregorianDate(
-				(cal get Calendar.DAY_OF_MONTH) + 0,
-				(cal get Calendar.MONTH)		+ 1,
-				(cal get Calendar.YEAR)			+ 0
-			)
+		GregorianDate(
+			(cal get Calendar.DAY_OF_MONTH) + 0,
+			(cal get Calendar.MONTH)		+ 1,
+			(cal get Calendar.YEAR)			+ 0
+		)
 
 	def gregorianDateToCalendar(it:GregorianDate, tz:TimeZone):Option[GregorianCalendar]	= {
 		val	cal	= new GregorianCalendar(tz)
@@ -45,27 +45,27 @@ object JTimeUtil {
 	val milliInstantDateBijection	= Bijection[MilliInstant,Date](milliInstantToDate, dateToMilliInstant)
 
 	def dateToMilliInstant(it:Date):MilliInstant	=
-			MilliInstant(it.getTime)
+		MilliInstant(it.getTime)
 
 	def milliInstantToDate(it:MilliInstant):Date	=
-			new Date(it.millis)
+		new Date(it.millis)
 
 	//------------------------------------------------------------------------------
 
 	def milliInstantToInstant(it:MilliInstant):Instant	=
-			Instant ofEpochMilli it.millis
+		Instant ofEpochMilli it.millis
 
 	def instantToMilliInstant(it:Instant):MilliInstant	=
-			MilliInstant(it.toEpochMilli)
+		MilliInstant(it.toEpochMilli)
 
 	//------------------------------------------------------------------------------
 
 	def dateToISO8601(date:Date):String	=
-			iso88601() format date
+		iso88601() format date
 
 	def iso8601ToDate(it:String):Either[ParseException,Date]	=
-			try { Right(iso88601() parse it) }
-			catch { case e:ParseException => Left(e) }
+		try { Right(iso88601() parse it) }
+		catch { case e:ParseException => Left(e) }
 
 	// DateFormat is not thread safe
 	private def iso88601():DateFormat	= {

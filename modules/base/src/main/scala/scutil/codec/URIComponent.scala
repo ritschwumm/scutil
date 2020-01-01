@@ -12,7 +12,7 @@ object URIComponent {
 	val utf_8	= forCharset(Charsets.utf_8)
 
 	def forCharset(charset:Charset):URIComponent	=
-			new URIComponent(charset)
+		new URIComponent(charset)
 }
 
 final class URIComponent(charset:Charset) {
@@ -41,23 +41,23 @@ final class URIComponent(charset:Charset) {
 
 	@inline
 	private def encodeNibble(nibble:Int):Char =
-			if (nibble < 10)	(nibble + '0'		).toChar
-			else				(nibble + 'A' - 10	).toChar
+		if (nibble < 10)	(nibble + '0'		).toChar
+		else				(nibble + 'A' - 10	).toChar
 
 	@inline
 	private def safe(byte:Int):Boolean =
-			byte >= 'a' && byte <= 'z'	||
-			byte >= 'A' && byte <= 'Z'	||
-			byte >= '0' && byte <= '9'	||
-			byte == '-' ||
-			byte == '_' ||
-			byte == '.' ||
-			byte == '!' ||
-			byte == '~' ||
-			byte == '*' ||
-			byte == '(' ||
-			byte == ')' ||
-			byte == '\''
+		byte >= 'a' && byte <= 'z'	||
+		byte >= 'A' && byte <= 'Z'	||
+		byte >= '0' && byte <= '9'	||
+		byte == '-' ||
+		byte == '_' ||
+		byte == '.' ||
+		byte == '!' ||
+		byte == '~' ||
+		byte == '*' ||
+		byte == '(' ||
+		byte == ')' ||
+		byte == '\''
 
 	//------------------------------------------------------------------------------
 	//## decoding
@@ -91,8 +91,8 @@ final class URIComponent(charset:Charset) {
 	}
 
 	private def decodeNibble(nibble:Char):Int	=
-				 if (nibble >= '0' && nibble <= '9')	nibble - '0'
-			else if (nibble >= 'a' && nibble <= 'f')	nibble - 'a' + 10
-			else if (nibble >= 'A' && nibble <= 'F')	nibble - 'A' + 10
-			else										-1
+			 if (nibble >= '0' && nibble <= '9')	nibble - '0'
+		else if (nibble >= 'a' && nibble <= 'f')	nibble - 'a' + 10
+		else if (nibble >= 'A' && nibble <= 'F')	nibble - 'A' + 10
+		else										-1
 }

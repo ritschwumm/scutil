@@ -22,12 +22,12 @@ protected abstract class GuidBase {
 	protected def randomBytes(size:Int):ByteString
 
 	private def timestamp():ByteString	=
-			(ByteString makeWithByteBuffer 8) { buffer =>
-				buffer putLong System.currentTimeMillis()
-			}
+		(ByteString makeWithByteBuffer 8) { buffer =>
+			buffer putLong System.currentTimeMillis()
+		}
 
 	private def counterValue():ByteString	=
-			(ByteString makeWithByteBuffer 4) { buffer =>
-				buffer putInt counter.incrementAndGet()
-			}
+		(ByteString makeWithByteBuffer 4) { buffer =>
+			buffer putInt counter.incrementAndGet()
+		}
 }

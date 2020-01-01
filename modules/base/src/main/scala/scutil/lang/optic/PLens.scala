@@ -5,26 +5,26 @@ import scutil.lang.tc._
 
 object PLens {
 	def identity[T]:PLens[T,T]	=
-			PLens { t =>
-				Some(Store identity t)
-			}
+		PLens { t =>
+			Some(Store identity t)
+		}
 
 	def trivial[T]:PLens[T,Unit]	=
-			PLens { t =>
-				Some(Store trivial t)
-			}
+		PLens { t =>
+			Some(Store trivial t)
+		}
 
 	def always[T]:PLens[Option[T],T]	=
-			Prism.always[T].toPLens
+		Prism.always[T].toPLens
 
 	def codiag[T]:PLens[Either[T,T],T]	=
-			identity[T] sum identity[T]
+		identity[T] sum identity[T]
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
 	implicit def PLensSemigroup[S,T]:Semigroup[PLens[S,T]]	=
-			Semigroup instance (_ orElse _)
+		Semigroup instance (_ orElse _)
 }
 
 final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
@@ -58,44 +58,44 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 	//------------------------------------------------------------------------------
 
 	def orElse(that:PLens[S,T]):PLens[S,T]	=
-			PLens(this.on orElse that.on)
+		PLens(this.on orElse that.on)
 
 	/** symbolic alias for andThen */
 	def >=>[U](that:PLens[T,U]):PLens[S,U]	=
-			this andThen that
+		this andThen that
 
 	/** symbolic alias for compose */
 	def <=<[R](that:PLens[R,S]):PLens[R,T]	=
-			this compose that
+		this compose that
 
 	def compose[R](that:PLens[R,S]):PLens[R,T]	=
-			that andThen this
+		that andThen this
 
 	def andThen[U](that:PLens[T,U]):PLens[S,U]	=
-			PLens { s =>
-				for {
-					thisStore	<- this on s
-					thatStore	<- that on thisStore.get
-				}
-				yield {
-					Store[S,U](
-						thatStore.get,
-						thatStore.set andThen thisStore.set
-					)
-				}
+		PLens { s =>
+			for {
+				thisStore	<- this on s
+				thatStore	<- that on thisStore.get
 			}
+			yield {
+				Store[S,U](
+					thatStore.get,
+					thatStore.set andThen thisStore.set
+				)
+			}
+		}
 
 	//------------------------------------------------------------------------------
 
 	def over[R](store:Option[Store[R,S]]):Option[Store[R,T]]	=
-			for {
-				store	<- store
-				here	<- this on store.get
-			}
-			yield store andThen here
+		for {
+			store	<- store
+			here	<- this on store.get
+		}
+		yield store andThen here
 
 	def overTotal[R](store:Store[R,S]):Option[Store[R,T]]	=
-			this on store.get map { _ compose store }
+		this on store.get map { _ compose store }
 
 	//------------------------------------------------------------------------------
 
@@ -104,49 +104,49 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 
 	// |||
 	def sum[SS](that:PLens[SS,T]):PLens[Either[S,SS],T]	=
-			PLens {
-				_ match {
-					case Left(s)	=>
-						this on s map { store =>
-							Store[Either[S,SS],T](
-								store.get,
-								it => Left(store set it)
-							)
-						}
-					case Right(ss)	=>
-						that on ss map { store =>
-							Store[Either[S,SS],T](
-								store.get,
-								it => Right(store set it)
-							)
-						}
-				}
+		PLens {
+			_ match {
+				case Left(s)	=>
+					this on s map { store =>
+						Store[Either[S,SS],T](
+							store.get,
+							it => Left(store set it)
+						)
+					}
+				case Right(ss)	=>
+					that on ss map { store =>
+						Store[Either[S,SS],T](
+							store.get,
+							it => Right(store set it)
+						)
+					}
 			}
+		}
 
 	// ***
 	def product[SS,TT](that:PLens[SS,TT]):PLens[(S,SS),(T,TT)]	=
-			PLens { case (s,ss)	=>
-				for {
-					thisStore	<- this on s
-					thatStore	<- that on ss
-				}
-				yield {
-					Store[(S,SS),(T,TT)](
-						(thisStore.get, thatStore.get),
-						{ case (t,tt) => (thisStore set t, thatStore set tt) }
-					)
-				}
+		PLens { case (s,ss)	=>
+			for {
+				thisStore	<- this on s
+				thatStore	<- that on ss
 			}
+			yield {
+				Store[(S,SS),(T,TT)](
+					(thisStore.get, thatStore.get),
+					{ case (t,tt) => (thisStore set t, thatStore set tt) }
+				)
+			}
+		}
 
 	//------------------------------------------------------------------------------
 
 	// TODO optics does this make sense?
 	def toLens(default: =>Store[S,T]):Lens[S,T]	=
-			Lens fromStoreAt { on(_) getOrElse default }
+		Lens fromStoreAt { on(_) getOrElse default }
 
 	def toOptional:Optional[S,T]	=
-			Optional(
-				get,
-				t => s => set(t)(s) getOrElse s
-			)
+		Optional(
+			get,
+			t => s => set(t)(s) getOrElse s
+		)
 }

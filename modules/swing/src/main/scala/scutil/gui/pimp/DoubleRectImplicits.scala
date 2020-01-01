@@ -9,7 +9,6 @@ object DoubleRectImplicits extends DoubleRectImplicits
 
 trait DoubleRectImplicits {
 	implicit final class DoubleRectExt(peer:DoubleRect) {
-		def toAwtRectangle2D:Rectangle2D	=
-				geomConversion DoubleRect_Rectangle2D peer
+		def toAwtRectangle2D:Rectangle2D	= geomConversion DoubleRect_Rectangle2D peer
 	}
 }

@@ -10,22 +10,22 @@ object RGB {
 	val black	= RGB(0,0,0)
 
 	def parseHex(s:String):Option[RGB]	=
-			Hex decodeByteString s collect { case ByteString(r,g,b)	=>
-				RGB(
-					(r & 0xff) / 255f,
-					(g & 0xff) / 255f,
-					(b & 0xff) / 255f
-				)
-			}
+		Hex decodeByteString s collect { case ByteString(r,g,b)	=>
+			RGB(
+				(r & 0xff) / 255f,
+				(g & 0xff) / 255f,
+				(b & 0xff) / 255f
+			)
+		}
 
 	def unparseHex(rgb:RGB):String	= rgb.unparseHex
 
 	def fromIntRGB(argb:Int):RGB	=
-			RGB(
-				r	= ((argb >> 16) & 0xff) / 255f,
-				g	= ((argb >>  8) & 0xff) / 255f,
-				b	= ((argb >>  0) & 0xff) / 255f
-			)
+		RGB(
+			r	= ((argb >> 16) & 0xff) / 255f,
+			g	= ((argb >>  8) & 0xff) / 255f,
+			b	= ((argb >>  0) & 0xff) / 255f
+		)
 
 	def toIntARGB(rbg:RGB):Int	= rbg.toIntRGB
 }
@@ -33,15 +33,15 @@ object RGB {
 /** value range is 0..1 */
 final case class RGB(r:Float, g:Float, b:Float) {
 	def diff(that:RGB):Float	=
-			diff3(that) / 3f
+		diff3(that) / 3f
 
 	private[color] def diff3(that:RGB):Float	=
-			abs(this.r - that.r) +
-			abs(this.g - that.g) +
-			abs(this.b - that.b)
+		abs(this.r - that.r) +
+		abs(this.g - that.g) +
+		abs(this.b - that.b)
 
 	def withAlpha(alpha:Alpha):RGBA	=
-			RGBA(this, alpha)
+		RGBA(this, alpha)
 
 	def toHSB:HSB = {
 		val	cmax	= r max g max b
@@ -74,9 +74,9 @@ final case class RGB(r:Float, g:Float, b:Float) {
 			(((b * 255).toInt) <<  0)
 
 	def unparseHex:String	=
-			Hex encodeByteString ByteString(
-				(r * 255).toByte,
-				(g * 255).toByte,
-				(b * 255).toByte
-			)
+		Hex encodeByteString ByteString(
+			(r * 255).toByte,
+			(g * 255).toByte,
+			(b * 255).toByte
+		)
 }

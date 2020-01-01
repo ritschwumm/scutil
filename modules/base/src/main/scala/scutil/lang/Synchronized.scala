@@ -9,26 +9,26 @@ final class Synchronized[T](initial:T) {
 	var value	= initial
 
 	def get():T	=
-			synchronized {
-				value
-			}
+		synchronized {
+			value
+		}
 
 	/** returns the previous value */
 	def set(value:T):T	=
-			modify(State setOld value)
+		modify(State setOld value)
 
 	/** change state and return something */
 	def modify[U](state:State[T,U]):U	=
-			synchronized {
-				val (next, out)	= state run value
-				value	= next
-				out
-			}
+		synchronized {
+			val (next, out)	= state run value
+			value	= next
+			out
+		}
 
 	/** change state only */
 	def update(func:Endo[T]):Unit	=
-			modify(State mod func)
+		modify(State mod func)
 
 	override def toString:String	=
-			s"Synchronized(${get().toString})"
+		s"Synchronized(${get().toString})"
 }

@@ -4,11 +4,11 @@ import scutil.base.implicits._
 
 object Dump {
 	def hexLines(bytesPerLine:Int, bytes:Seq[Byte]):Iterator[String]	=
-			bytes grouped bytesPerLine map { hexLine(bytesPerLine, _) }
+		bytes grouped bytesPerLine map { hexLine(bytesPerLine, _) }
 
 	def hexLine(bytesPerLine:Int, bytes:Seq[Byte]):String	=
-			((HexFormat		string bytes) padTo (HexFormat		width bytesPerLine, ' '))	+ " |"	+
-			((AsciiFormat	string bytes) padTo (AsciiFormat	width bytesPerLine, ' '))	+ "|"
+		((HexFormat		string bytes) padTo (HexFormat		width bytesPerLine, ' '))	+ " |"	+
+		((AsciiFormat	string bytes) padTo (AsciiFormat	width bytesPerLine, ' '))	+ "|"
 
 	trait DumpFormat {
 		def string(line:Seq[Byte]):String

@@ -10,12 +10,12 @@ object Point2DImplicits extends Point2DImplicits
 trait Point2DImplicits {
 	implicit final class Point2DExt(peer:Point2D) {
 		def toDimension2D:Dimension2D	=
-				new Dimension2D_Double(
-					peer.getX,
-					peer.getY
-				)
+			new Dimension2D_Double(
+				peer.getX,
+				peer.getY
+			)
 
 		def toDoublePoint:DoublePoint	=
-				geomConversion Point2D_DoublePoint peer
+			geomConversion Point2D_DoublePoint peer
 	}
 }

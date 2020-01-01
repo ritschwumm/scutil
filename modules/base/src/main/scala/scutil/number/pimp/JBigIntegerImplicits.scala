@@ -7,7 +7,6 @@ object JBigIntegerImplicits extends JBigIntegerImplicits
 
 trait JBigIntegerImplicits {
 	implicit final class JBigIntegerExt(peer:JBigInteger) {
-		def toBigRational:BigRational	=
-				BigRational fromJBigInteger peer
+		def toBigRational:BigRational	= BigRational fromJBigInteger peer
 	}
 }

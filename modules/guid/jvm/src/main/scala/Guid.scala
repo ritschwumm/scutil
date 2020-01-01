@@ -12,5 +12,5 @@ object Guid extends GuidBase {
 	private val random	= new SecureRandom()
 
 	protected def randomBytes(size:Int):ByteString	=
-			random byteString size
+		random byteString size
 }

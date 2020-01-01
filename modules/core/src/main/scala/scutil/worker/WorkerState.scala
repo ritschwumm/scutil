@@ -2,10 +2,11 @@ package scutil.worker
 
 import scutil.time.MilliDuration
 
-sealed trait WorkerState
+object WorkerState {
+	case object	Waiting								extends WorkerState
+	case object	Working								extends WorkerState
+	final case class Sleeping(left:MilliDuration)	extends WorkerState
+	case object	Dead								extends WorkerState
+}
 
-case object	WorkerWaiting						extends WorkerState
-case object	WorkerWorking						extends WorkerState
-final
-case class	WorkerSleeping(left:MilliDuration)	extends WorkerState
-case object	WorkerDead							extends WorkerState
+sealed trait WorkerState

@@ -6,7 +6,6 @@ object LongImplicits extends LongImplicits
 
 trait LongImplicits {
 	implicit final class LongExt(peer:Long) {
-		def toBigRational:BigRational	=
-				BigRational fromLong peer
+		def toBigRational:BigRational	= BigRational fromLong peer
 	}
 }

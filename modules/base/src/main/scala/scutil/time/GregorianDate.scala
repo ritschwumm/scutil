@@ -23,10 +23,10 @@ final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[Gre
 	require(month	<= 12,	s"expected month <= 12, got ${month.toString}")
 
 	def move(offset:Int):GregorianDate	=
-			(toJulianDay move offset).toGregorianDate
+		(toJulianDay move offset).toGregorianDate
 
 	def until(that:GregorianDate):Int	=
-			this.toJulianDay until that.toJulianDay
+		this.toJulianDay until that.toJulianDay
 
 	def compare(that:GregorianDate):Int		= {
 		val	y	= this.year		compare that.year;	if (y != 0)	return y

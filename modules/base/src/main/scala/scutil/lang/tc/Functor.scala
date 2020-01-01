@@ -14,5 +14,5 @@ trait Functor[F[_]] {
 	//## derived
 
 	final def mapper[A,B](func:A=>B):F[A]=>F[B]	=
-			map(_)(func)
+		map(_)(func)
 }

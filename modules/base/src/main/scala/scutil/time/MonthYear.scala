@@ -7,13 +7,13 @@ object MonthYear {
 	// TODO time smart constructor
 
 	def fromValues(month:Month, year:Year):MonthYear	=
-			MonthYear(month.index+1, year.value)
+		MonthYear(month.index+1, year.value)
 
 	def fromIndex(index:Int):MonthYear	=
-			MonthYear(
-				month	= moduloInt(index, 12) + 1,
-				year	= index / 12
-			)
+		MonthYear(
+			month	= moduloInt(index, 12) + 1,
+			year	= index / 12
+		)
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances

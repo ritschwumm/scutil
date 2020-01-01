@@ -30,21 +30,21 @@ object Base64 {
 	}
 
 	private def validInput(s:String):Boolean	=
-			(s.length % 4 == 0)	&& {
-				var pad	= false
-				var i	= 0
-				while (i < s.length) {
-					val c	= s charAt i
-					if (c < 0)				return false
-					if (c > table.length)	return false
-					val x	= table(c)
-						 if (x == invalidFlag)			return false
-					else if (x == paddingFlag && !pad)	pad = true
-					else if (x != paddingFlag &&  pad)	return false
-					i = i + 1
-				}
-				true
+		(s.length % 4 == 0)	&& {
+			var pad	= false
+			var i	= 0
+			while (i < s.length) {
+				val c	= s charAt i
+				if (c < 0)				return false
+				if (c > table.length)	return false
+				val x	= table(c)
+					 if (x == invalidFlag)			return false
+				else if (x == paddingFlag && !pad)	pad = true
+				else if (x != paddingFlag &&  pad)	return false
+				i = i + 1
 			}
+			true
+		}
 
 	private val emptyOutput	= Array.empty[Byte]
 
@@ -52,7 +52,7 @@ object Base64 {
 
 	/** standard alphabet, no line feeds, adds padding */
 	def encodeByteString(data:ByteString):String =
-			encodeImpl(data.unsafeValue)
+		encodeImpl(data.unsafeValue)
 
 	private def encodeImpl(data:Array[Byte]):String = {
 		val	packetsSize		= data.length / 3
@@ -87,7 +87,7 @@ object Base64 {
 
 	/** standard alphabet, whitespace is ignored, padding is required */
 	def decodeByteString(text:String):Option[ByteString] =
-			decodeImpl(text) map ByteString.unsafeFromArray
+		decodeImpl(text) map ByteString.unsafeFromArray
 
 	private def decodeImpl(text:String):Option[Array[Byte]] = {
 		// TODO ignoring all whitespace input might be stupid
@@ -129,25 +129,25 @@ object Base64 {
 	//## padding helper
 
 	def addPadding(s:String):String	=
-			s + (
-				"=" * (3 - (s.length + 3) % 4)
-			)
+		s + (
+			"=" * (3 - (s.length + 3) % 4)
+		)
 
 	def removePadding(s:String):String	=
-			s replaceAll ("=+$", "")
+		s replaceAll ("=+$", "")
 
 	//------------------------------------------------------------------------------
 	//## line break helper
 
 	def breakLines76(s:String):String	=
-			breakLines(s, 76)
+		breakLines(s, 76)
 
 	def breakLines64(s:String):String	=
-			breakLines(s, 64)
+		breakLines(s, 64)
 
 	private def breakLines(s:String, length:Int):String	=
-			(s grouped length) mkString "\r\n"
+		(s grouped length) mkString "\r\n"
 
 	def unbreakLines(s:String):String	=
-			s replaceAll ("\r\n", "")
+		s replaceAll ("\r\n", "")
 }

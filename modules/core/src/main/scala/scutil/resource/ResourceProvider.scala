@@ -10,14 +10,14 @@ import scutil.lang.ByteString
 
 final class ResourceProvider(val findUrl:String=>Option[URL]) {
 	def readByteString(path:String):Option[ByteString]	=
-			withInputStream(path, _.readFullyByteString)
+		withInputStream(path, _.readFullyByteString)
 
 	def withInputStream[T](path:String, code:InputStream=>T):Option[T]	=
-			openStream(path) map { _ use code }
+		openStream(path) map { _ use code }
 
 	def openStream(path:String):Option[InputStream]	=
-			findUrl(path) flatMap { url =>
-				try { Some(url.openStream()) }
-				catch { case e:IOException => None }
-			}
+		findUrl(path) flatMap { url =>
+			try { Some(url.openStream()) }
+			catch { case e:IOException => None }
+		}
 }

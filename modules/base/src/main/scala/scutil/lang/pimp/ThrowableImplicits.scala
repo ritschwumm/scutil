@@ -7,7 +7,7 @@ object ThrowableImplicits extends ThrowableImplicits
 trait ThrowableImplicits {
 	implicit final class ThrowableExt(peer:Throwable) {
 		def causeOption:Option[Throwable]	=
-				Option(peer.getCause)
+			Option(peer.getCause)
 
 		def stackTrace:String	= {
 			val	sw	= new StringWriter

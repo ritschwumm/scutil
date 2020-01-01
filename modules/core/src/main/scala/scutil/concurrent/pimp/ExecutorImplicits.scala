@@ -17,10 +17,10 @@ trait ExecutorImplicits {
 		}
 
 		def toJavaExecutor:JExecutor	=
-				new JExecutor {
-					def execute(command:Runnable):Unit = {
-						peer(command.run _)
-					}
+			new JExecutor {
+				def execute(command:Runnable):Unit = {
+					peer(command.run _)
 				}
+			}
 	}
 }

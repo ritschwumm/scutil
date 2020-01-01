@@ -11,70 +11,70 @@ object Human {
 	private val one		= BigDecimal(1)
 
 	def multi(head:HumanUnit, tail:HumanUnit*):Human	=
-			Human(Nes(head, tail.toVector))
+		Human(Nes(head, tail.toVector))
 
 	//------------------------------------------------------------------------------
 	//## predefined tables
 
 	val binary:Human	=
-			Human multi (
-				HumanUnit("yotta",	"Y",	one*1024*1024*1024*1024*1024*1024*1024*1024),
-				HumanUnit("zeta",	"Z",	one*1024*1024*1024*1024*1024*1024*1024),
-				HumanUnit("exa",	"E",	one*1024*1024*1024*1024*1024*1024),
-				HumanUnit("peta",	"P",	one*1024*1024*1024*1024*1024),
-				HumanUnit("tera",	"T",	one*1024*1024*1024*1024),
-				HumanUnit("giga",	"G",	one*1024*1024*1024),
-				HumanUnit("mega",	"M",	one*1024*1024),
-				HumanUnit("kilo",	"k",	one*1024),
-				HumanUnit("",		"",		one),
-				HumanUnit("milli",	"m",	one/1024),
-				HumanUnit("micro",	"µ",	one/1024/1024),
-				HumanUnit("nano",	"n",	one/1024/1024/1024/1024),
-				HumanUnit("pico",	"p",	one/1024/1024/1024/1024/1024),
-				HumanUnit("femto",	"f",	one/1024/1024/1024/1024/1024/1024),
-				HumanUnit("atto",	"a",	one/1024/1024/1024/1024/1024/1024/1024),
-				HumanUnit("zepto",	"z",	one/1024/1024/1024/1024/1024/1024/1024/1024),
-				HumanUnit("yocto",	"y",	one/1024/1024/1024/1024/1024/1024/1024/1024/1024)
-			)
+		Human multi (
+			HumanUnit("yotta",	"Y",	one*1024*1024*1024*1024*1024*1024*1024*1024),
+			HumanUnit("zeta",	"Z",	one*1024*1024*1024*1024*1024*1024*1024),
+			HumanUnit("exa",	"E",	one*1024*1024*1024*1024*1024*1024),
+			HumanUnit("peta",	"P",	one*1024*1024*1024*1024*1024),
+			HumanUnit("tera",	"T",	one*1024*1024*1024*1024),
+			HumanUnit("giga",	"G",	one*1024*1024*1024),
+			HumanUnit("mega",	"M",	one*1024*1024),
+			HumanUnit("kilo",	"k",	one*1024),
+			HumanUnit("",		"",		one),
+			HumanUnit("milli",	"m",	one/1024),
+			HumanUnit("micro",	"µ",	one/1024/1024),
+			HumanUnit("nano",	"n",	one/1024/1024/1024/1024),
+			HumanUnit("pico",	"p",	one/1024/1024/1024/1024/1024),
+			HumanUnit("femto",	"f",	one/1024/1024/1024/1024/1024/1024),
+			HumanUnit("atto",	"a",	one/1024/1024/1024/1024/1024/1024/1024),
+			HumanUnit("zepto",	"z",	one/1024/1024/1024/1024/1024/1024/1024/1024),
+			HumanUnit("yocto",	"y",	one/1024/1024/1024/1024/1024/1024/1024/1024/1024)
+		)
 
 	val decimal:Human	=
-			Human multi (
-				HumanUnit("yotta",	"Y",	one*1000*1000*1000*1000*1000*1000*1000*1000),
-				HumanUnit("zeta",	"Z",	one*1000*1000*1000*1000*1000*1000*1000),
-				HumanUnit("exa",	"E",	one*1000*1000*1000*1000*1000*1000),
-				HumanUnit("peta",	"P",	one*1000*1000*1000*1000*1000),
-				HumanUnit("tera",	"T",	one*1000*1000*1000*1000),
-				HumanUnit("giga",	"G",	one*1000*1000*1000),
-				HumanUnit("mega",	"M",	one*1000*1000),
-				HumanUnit("kilo",	"k",	one*1000),
-				HumanUnit("",		"",		one),
-				HumanUnit("milli",	"m",	one/1000),
-				HumanUnit("micro",	"µ",	one/1000/1000),
-				HumanUnit("nano",	"n",	one/1000/1000/1000/1000),
-				HumanUnit("pico",	"p",	one/1000/1000/1000/1000/1000),
-				HumanUnit("femto",	"f",	one/1000/1000/1000/1000/1000/1000),
-				HumanUnit("atto",	"a",	one/1000/1000/1000/1000/1000/1000/1000),
-				HumanUnit("zepto",	"z",	one/1000/1000/1000/1000/1000/1000/1000/1000),
-				HumanUnit("yocto",	"y",	one/1000/1000/1000/1000/1000/1000/1000/1000/1000)
-			)
+		Human multi (
+			HumanUnit("yotta",	"Y",	one*1000*1000*1000*1000*1000*1000*1000*1000),
+			HumanUnit("zeta",	"Z",	one*1000*1000*1000*1000*1000*1000*1000),
+			HumanUnit("exa",	"E",	one*1000*1000*1000*1000*1000*1000),
+			HumanUnit("peta",	"P",	one*1000*1000*1000*1000*1000),
+			HumanUnit("tera",	"T",	one*1000*1000*1000*1000),
+			HumanUnit("giga",	"G",	one*1000*1000*1000),
+			HumanUnit("mega",	"M",	one*1000*1000),
+			HumanUnit("kilo",	"k",	one*1000),
+			HumanUnit("",		"",		one),
+			HumanUnit("milli",	"m",	one/1000),
+			HumanUnit("micro",	"µ",	one/1000/1000),
+			HumanUnit("nano",	"n",	one/1000/1000/1000/1000),
+			HumanUnit("pico",	"p",	one/1000/1000/1000/1000/1000),
+			HumanUnit("femto",	"f",	one/1000/1000/1000/1000/1000/1000),
+			HumanUnit("atto",	"a",	one/1000/1000/1000/1000/1000/1000/1000),
+			HumanUnit("zepto",	"z",	one/1000/1000/1000/1000/1000/1000/1000/1000),
+			HumanUnit("yocto",	"y",	one/1000/1000/1000/1000/1000/1000/1000/1000/1000)
+		)
 
 	val time:Human	=
-			Human multi (
-				HumanUnit("year",			"y",	one*60*60*24*365.24219052),	// tropical year
-				HumanUnit("day",			"d",	one*60*60*24),
-				HumanUnit("hour",			"h",	one*60*60),
-				HumanUnit("minute",			"m",	one*60),
-				HumanUnit("second",			"s",	one),
-				HumanUnit("millisecond",	"ms",	one/1000),
-				HumanUnit("nanosecond",		"ns",	one/1000/1000)
-			)
+		Human multi (
+			HumanUnit("year",			"y",	one*60*60*24*365.24219052),	// tropical year
+			HumanUnit("day",			"d",	one*60*60*24),
+			HumanUnit("hour",			"h",	one*60*60),
+			HumanUnit("minute",			"m",	one*60),
+			HumanUnit("second",			"s",	one),
+			HumanUnit("millisecond",	"ms",	one/1000),
+			HumanUnit("nanosecond",		"ns",	one/1000/1000)
+		)
 
 	val degrees:Human	=
-			Human multi (
-				HumanUnit("degree",	"°",	one),
-				HumanUnit("minute",	"'",	one/60),
-				HumanUnit("second",	"''",	one/60/60)
-			)
+		Human multi (
+			HumanUnit("degree",	"°",	one),
+			HumanUnit("minute",	"'",	one/60),
+			HumanUnit("second",	"''",	one/60/60)
+		)
 
 	//------------------------------------------------------------------------------
 	//## convenience functions
@@ -94,16 +94,16 @@ object Human {
 	//## more convenience functions
 
 	val roundedDms:BigDecimal=>String	=
-			degrees renderer HumanConfig(decimalPlaces=3)
+		degrees renderer HumanConfig(decimalPlaces=3)
 
 	private val millisToSeconds:Endo[BigDecimal]	=
-			_ * (time divisor 1)
+		_ * (time divisor 1)
 
 	val fullMilliDuration:BigDecimal=>String	=
-			millisToSeconds andThen (time renderer HumanConfig(smallUnits = 1, decimalPlaces = 0))
+		millisToSeconds andThen (time renderer HumanConfig(smallUnits = 1, decimalPlaces = 0))
 
 	val roundedMilliDuration:BigDecimal=>String	=
-			millisToSeconds andThen (time renderer HumanConfig(smallUnits = 1, maxUnits = 1, decimalPlaces = 2))
+		millisToSeconds andThen (time renderer HumanConfig(smallUnits = 1, maxUnits = 1, decimalPlaces = 2))
 }
 
 // BETTER ensure table is sorted by construction
@@ -111,12 +111,12 @@ final case class Human(table:Nes[HumanUnit]) {
 	private val smallCount	= table count { _.divisor < Human.one }
 
 	private def smallCut(smallUnits:Int):Nes[HumanUnit]	=
-			table.reverse drop (smallCount - smallUnits) cata (Nes single table.head, _.reverse)
+		table.reverse drop (smallCount - smallUnits) cata (Nes single table.head, _.reverse)
 
 	//------------------------------------------------------------------------------
 
 	def divisor(smallUnits:Int):BigDecimal	=
-			smallCut(smallUnits).last.divisor
+		smallCut(smallUnits).last.divisor
 
 	def renderer(config:HumanConfig):BigDecimal=>String	= {
 		val limit1	= smallCut(config.smallUnits)
@@ -132,13 +132,13 @@ final case class Human(table:Nes[HumanUnit]) {
 	}
 
 	private def renderRaw(table:Nes[HumanUnit], decimalPlaces:Int, value:BigDecimal):String	=
-			table.tailNes match {
-				case None	=>
-					s"%.${decimalPlaces.toString}f${table.head.short}" formatLocal (Locale.US, value / table.head.divisor)
-				case Some(tail)	=>
-					val (div, mod)	= value /% table.head.divisor
-					val prefix		= div.toBigInt.toString + table.head.short
-					if (mod == Human.zero)	prefix
-					else					prefix + " " + renderRaw(tail, decimalPlaces, mod)
-			}
+		table.tailNes match {
+			case None	=>
+				s"%.${decimalPlaces.toString}f${table.head.short}" formatLocal (Locale.US, value / table.head.divisor)
+			case Some(tail)	=>
+				val (div, mod)	= value /% table.head.divisor
+				val prefix		= div.toBigInt.toString + table.head.short
+				if (mod == Human.zero)	prefix
+				else					prefix + " " + renderRaw(tail, decimalPlaces, mod)
+		}
 }

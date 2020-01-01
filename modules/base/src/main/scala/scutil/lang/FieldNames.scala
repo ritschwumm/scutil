@@ -14,20 +14,20 @@ object FieldNames {
 		val selfType:Type	= weakTypeOf[T]
 
 		val primaryCtors	=
-				selfType.decls
-				.filter	{ _.isMethod }
-				.map	{ _.asMethod }
-				.filter	{ _.isPrimaryConstructor }
+			selfType.decls
+			.filter	{ _.isMethod }
+			.map	{ _.asMethod }
+			.filter	{ _.isPrimaryConstructor }
 
 		val names:Either[String,Tree]	=
-				for {
-					primaryCtor		<- singleOption(primaryCtors)			toRight s"primary constructor not found in ${selfType.toString}"
-					paramNames		<- singleOption(primaryCtor.paramLists)	toRight s"primary constructor has multiple parameter lists in ${selfType.toString}"
-					decodedNames	= paramNames map { _.name.decodedName.toString }
-				}
-				yield {
-					q"_root_.scutil.lang.FieldNames[$selfType](_root_.scala.collection.immutable.Vector(..$decodedNames))"
-				}
+			for {
+				primaryCtor		<- singleOption(primaryCtors)			toRight s"primary constructor not found in ${selfType.toString}"
+				paramNames		<- singleOption(primaryCtor.paramLists)	toRight s"primary constructor has multiple parameter lists in ${selfType.toString}"
+				decodedNames	= paramNames map { _.name.decodedName.toString }
+			}
+			yield {
+				q"_root_.scutil.lang.FieldNames[$selfType](_root_.scala.collection.immutable.Vector(..$decodedNames))"
+			}
 
 		names cata (
 			c abort (c.enclosingPosition, _),
@@ -36,8 +36,8 @@ object FieldNames {
 	}
 
 	private def singleOption[T](it:Iterable[T]):Option[T]	=
-			if (it.size <= 1)	it.headOption
-			else				None
+		if (it.size <= 1)	it.headOption
+		else				None
 }
 
 final case class FieldNames[T](names:Vector[String])

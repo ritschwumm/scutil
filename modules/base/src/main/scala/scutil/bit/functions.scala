@@ -22,47 +22,47 @@ object functions {
 	//------------------------------------------------------------------------------
 
 	def swapEndianShort(value:Short):Short	=
-			(
-				((value << 8) & 0xff00) |
-				((value >> 8) & 0x00ff)
-			).toShort
+		(
+			((value << 8) & 0xff00) |
+			((value >> 8) & 0x00ff)
+		).toShort
 
 	def swapEndianInt(value:Int):Int	=
-			((value << 24) & 0xff000000)	|
-			((value >> 24) & 0x000000ff)	|
-			((value <<  8) & 0x00ff0000)	|
-			((value >>  8) & 0x0000ff00)
+		((value << 24) & 0xff000000)	|
+		((value >> 24) & 0x000000ff)	|
+		((value <<  8) & 0x00ff0000)	|
+		((value >>  8) & 0x0000ff00)
 
 	def swapEndianLong(value:Long):Long	=
-			((value << 56) & 0xff00000000000000L)	|
-			((value >> 56) & 0x00000000000000ffL)	|
-			((value << 40) & 0x00ff000000000000L)	|
-			((value >> 40) & 0x000000000000ff00L)	|
-			((value << 24) & 0x0000ff0000000000L)	|
-			((value >> 24) & 0x0000000000ff0000L)	|
-			((value <<  8) & 0x000000ff00000000L)	|
-			((value >>  8) & 0x00000000ff000000L)
+		((value << 56) & 0xff00000000000000L)	|
+		((value >> 56) & 0x00000000000000ffL)	|
+		((value << 40) & 0x00ff000000000000L)	|
+		((value >> 40) & 0x000000000000ff00L)	|
+		((value << 24) & 0x0000ff0000000000L)	|
+		((value >> 24) & 0x0000000000ff0000L)	|
+		((value <<  8) & 0x000000ff00000000L)	|
+		((value >>  8) & 0x00000000ff000000L)
 
 	def swapEndianChar(value:Char):Char	=
-			(
-				((value << 8) & 0xff00) |
-				((value >> 8) & 0x00ff)
-			).toChar
+		(
+			((value << 8) & 0xff00) |
+			((value >> 8) & 0x00ff)
+		).toChar
 
 	//------------------------------------------------------------------------------
 
 	def maskTestByte(value:Byte, onMask:Byte, offMask:Byte):Boolean =
-			(value & (onMask | offMask)) == onMask
+		(value & (onMask | offMask)) == onMask
 
 	def maskTestShort(value:Short, onMask:Short, offMask:Short):Boolean =
-			(value & (onMask | offMask)) == onMask
+		(value & (onMask | offMask)) == onMask
 
 	def maskTestInt(value:Int, onMask:Int, offMask:Int):Boolean =
-			(value & (onMask | offMask)) == onMask
+		(value & (onMask | offMask)) == onMask
 
 	def maskTestLong(value:Long, onMask:Long, offMask:Long):Boolean =
-			(value & (onMask | offMask)) == onMask
+		(value & (onMask | offMask)) == onMask
 
 	def maskTestChar(value:Char, onMask:Char, offMask:Char):Boolean =
-			(value & (onMask | offMask)) == onMask
+		(value & (onMask | offMask)) == onMask
 }

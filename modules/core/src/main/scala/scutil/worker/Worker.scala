@@ -10,7 +10,7 @@ final class Worker(name:String, delay:MilliDuration, task:Thunk[Unit], error:Eff
 	private val shortly	= 50.millis
 
 	@volatile
-	private var state:WorkerState					= WorkerWaiting
+	private var state:WorkerState					= WorkerState.Waiting
 	private val queue:WorkerQueue[WorkerCommand]	= new WorkerQueue[WorkerCommand]
 
 	private object thread extends Thread {
@@ -26,22 +26,22 @@ final class Worker(name:String, delay:MilliDuration, task:Thunk[Unit], error:Eff
 	def start():Unit = {
 		// access thread to instantiate it
 		thread
-		queue push WorkerStart
+		queue push WorkerCommand.Start
 	}
 
 	/** stop working, can be restarted */
 	def stop():Unit = {
-		queue push WorkerStop
+		queue push WorkerCommand.Stop
 	}
 
 	/** stop working, release resources asap, then die */
 	def dispose():Unit = {
-		queue push WorkerDie
+		queue push WorkerCommand.Die
 	}
 
 	/** to be called after stop or dispose to make sure the task is not executed any more */
 	def awaitWorkless():Unit = {
-		while (state == WorkerWorking) {
+		while (state == WorkerState.Working) {
 			nap(shortly)
 		}
 	}
@@ -62,27 +62,27 @@ final class Worker(name:String, delay:MilliDuration, task:Thunk[Unit], error:Eff
 	private def loop():Unit = {
 		val command	= queue.shift()
 		state	= (state, command) match {
-			case (WorkerWaiting,		None)				=> WorkerWaiting
-			case (WorkerWaiting,		Some(WorkerStart))	=> WorkerWorking
-			case (WorkerWaiting,		Some(WorkerStop))	=> WorkerWaiting
-			case (WorkerWaiting,		Some(WorkerDie))	=> WorkerDead
-			case (WorkerWorking,		None)				=> WorkerSleeping(delay - shortly)
-			case (WorkerWorking,		Some(WorkerStart))	=> WorkerWorking
-			case (WorkerWorking,		Some(WorkerStop))	=> WorkerWaiting
-			case (WorkerWorking,		Some(WorkerDie))	=> WorkerDead
-			case (WorkerSleeping(x),	None)				=>
-					if (x > MilliDuration.zero)		WorkerSleeping(x - shortly)
-					else							WorkerWorking
-			case (WorkerSleeping(_),	Some(WorkerStart))	=> WorkerWorking
-			case (WorkerSleeping(_),	Some(WorkerStop))	=> WorkerWaiting
-			case (WorkerSleeping(_),	Some(WorkerDie))	=> WorkerDead
-			case (WorkerDead,			_)					=> WorkerDead
+			case (WorkerState.Waiting,		None)						=> WorkerState.Waiting
+			case (WorkerState.Waiting,		Some(WorkerCommand.Start))	=> WorkerState.Working
+			case (WorkerState.Waiting,		Some(WorkerCommand.Stop))	=> WorkerState.Waiting
+			case (WorkerState.Waiting,		Some(WorkerCommand.Die))	=> WorkerState.Dead
+			case (WorkerState.Working,		None)						=> WorkerState.Sleeping(delay - shortly)
+			case (WorkerState.Working,		Some(WorkerCommand.Start))	=> WorkerState.Working
+			case (WorkerState.Working,		Some(WorkerCommand.Stop))	=> WorkerState.Waiting
+			case (WorkerState.Working,		Some(WorkerCommand.Die))	=> WorkerState.Dead
+			case (WorkerState.Sleeping(x),	None)						=>
+					if (x > MilliDuration.zero)		WorkerState.Sleeping(x - shortly)
+					else							WorkerState.Working
+			case (WorkerState.Sleeping(_),	Some(WorkerCommand.Start))	=> WorkerState.Working
+			case (WorkerState.Sleeping(_),	Some(WorkerCommand.Stop))	=> WorkerState.Waiting
+			case (WorkerState.Sleeping(_),	Some(WorkerCommand.Die))	=> WorkerState.Dead
+			case (WorkerState.Dead,			_)					=> WorkerState.Dead
 		}
 		state match {
-			case WorkerWorking		=> work();			loop()
-			case WorkerSleeping(_)	=> nap(shortly);	loop()
-			case WorkerWaiting		=> nap(shortly);	loop()
-			case WorkerDead			=>
+			case WorkerState.Working		=> work();			loop()
+			case WorkerState.Sleeping(_)	=> nap(shortly);	loop()
+			case WorkerState.Waiting		=> nap(shortly);	loop()
+			case WorkerState.Dead			=>
 		}
 	}
 

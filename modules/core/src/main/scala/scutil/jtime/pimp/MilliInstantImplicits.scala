@@ -11,15 +11,15 @@ object MilliInstantImplicits extends MilliInstantImplicits
 trait MilliInstantImplicits {
 	implicit final class MilliInstantExt(peer:MilliInstant) {
 		def toGregorianDate(tz:TimeZone):GregorianDate	=
-				JTimeUtil milliInstantToGregorianDate (peer, tz)
+			JTimeUtil milliInstantToGregorianDate (peer, tz)
 
 		def toDate:Date	=
-				JTimeUtil milliInstantToDate peer
+			JTimeUtil milliInstantToDate peer
 
 		def toInstant:Instant	=
-				JTimeUtil milliInstantToInstant peer
+			JTimeUtil milliInstantToInstant peer
 
 		def toISO8601:String	=
-				JTimeUtil dateToISO8601 toDate
+			JTimeUtil dateToISO8601 toDate
 	}
 }

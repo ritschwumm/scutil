@@ -37,39 +37,39 @@ final class DoubleSpan private (val start:Double, val size:Double) {
 
 	def normal:Boolean	= size >= 0
 	def normalize:DoubleSpan	=
-			if (normal)	this
-			else		negate
+		if (normal)	this
+		else		negate
 
 	def union(that:DoubleSpan):DoubleSpan	=
-			DoubleSpan startEnd (
-				start	= this.start	min that.start,
-				end		= this.end		min that.end
-			)
+		DoubleSpan startEnd (
+			start	= this.start	min that.start,
+			end		= this.end		min that.end
+		)
 
 	def intersect(that:DoubleSpan):Option[DoubleSpan]	=
-				 if (this.end   <= that.start)							None
-			else if (this.start >= that.end)							None
-			else if (this.start	>= that.start && this.end <= that.end)	Some(this)
-			else if (this.start	<= that.start && this.end >= that.end)	Some(that)
-			else if (this.start	<= that.start && this.end <= that.end)	Some(DoubleSpan startEnd (that.start, this.end))
-			else														Some(DoubleSpan startEnd (this.start, that.end))
+			 if (this.end   <= that.start)							None
+		else if (this.start >= that.end)							None
+		else if (this.start	>= that.start && this.end <= that.end)	Some(this)
+		else if (this.start	<= that.start && this.end >= that.end)	Some(that)
+		else if (this.start	<= that.start && this.end <= that.end)	Some(DoubleSpan startEnd (that.start, this.end))
+		else														Some(DoubleSpan startEnd (this.start, that.end))
 
 	def rectWith(that:DoubleSpan):DoubleRect	=
-			DoubleRect horizontalWithVertical (this, that)
+		DoubleRect horizontalWithVertical (this, that)
 
 	def inset(start:Double, end:Double):DoubleSpan	=
-			DoubleSpan startEnd (this.start + start, this.end - end)
+		DoubleSpan startEnd (this.start + start, this.end - end)
 
 	def transformer(that:DoubleSpan):Endo[Double]	=
-			pos => (pos - this.start) * that.size / this.size + that.start
+		pos => (pos - this.start) * that.size / this.size + that.start
 
 	//------------------------------------------------------------------------------
 
 	override def equals(that:Any):Boolean	=
-			that match {
-				case that:DoubleSpan	=> this.start == that.start && this.size == that.size
-				case _					=> false
-			}
+		that match {
+			case that:DoubleSpan	=> this.start == that.start && this.size == that.size
+			case _					=> false
+		}
 
 	override def hashCode():Int		= this.start.hashCode ^ this.size.hashCode
 

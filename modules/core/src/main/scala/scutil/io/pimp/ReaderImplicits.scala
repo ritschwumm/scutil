@@ -93,7 +93,6 @@ trait ReaderImplicits {
 
 		//------------------------------------------------------------------------------
 
-		def buffered:BufferedReader	=
-				new BufferedReader(peer)
+		def buffered:BufferedReader	= new BufferedReader(peer)
 	}
 }

@@ -86,12 +86,12 @@ trait InputStreamImplicits {
 		//------------------------------------------------------------------------------
 
 		def buffered:BufferedInputStream	=
-				new BufferedInputStream(peer)
+			new BufferedInputStream(peer)
 
 		def concat(that:InputStream):InputStream	=
-				new SequenceInputStream(peer, that)
+			new SequenceInputStream(peer, that)
 
 		def toReader(encoding:Charset):InputStreamReader	=
-				new InputStreamReader(peer, encoding)
+			new InputStreamReader(peer, encoding)
 	}
 }

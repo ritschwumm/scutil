@@ -18,8 +18,7 @@ trait PairImplicits {
 		def combineWith[U](func:(T1,T2)=>U):U	= func(peer._1, peer._2)
 
 		/** map both elements */
-		def bimap[U1,U2](func1:T1=>U1, func2:T2=>U2):(U1,U2)	=
-				(func1(peer._1), func2(peer._2))
+		def bimap[U1,U2](func1:T1=>U1, func2:T2=>U2):(U1,U2)	= (func1(peer._1), func2(peer._2))
 	}
 }
 

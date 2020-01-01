@@ -13,34 +13,34 @@ object PropertiesUtil {
 	def empty:Properties	= new Properties
 
 	def loadURL(url:URL, proxy:Option[Proxy] = None):Map[String,String]	=
-			loadRawURL(url, proxy).toMap
+		loadRawURL(url, proxy).toMap
 
 	def loadFile(file:File):Map[String,String]	=
-			loadRawFile(file).toMap
+		loadRawFile(file).toMap
 
 	def saveFile(file:File, it:Map[String,String]):Unit	=
-			saveRawFile(file, it.toProperties)
+		saveRawFile(file, it.toProperties)
 
 	//------------------------------------------------------------------------------
 
 	def loadRawURL(url:URL, proxy:Option[Proxy] = None):Properties	=
-			(url withInputStream proxy) { st =>
-				new Properties doto {
-					_ load st
-				}
+		(url withInputStream proxy) { st =>
+			new Properties doto {
+				_ load st
 			}
+		}
 
 	def loadRawFile(file:File):Properties	=
-			file withInputStream { st =>
-				new Properties doto {
-					_ load st
-				}
+		file withInputStream { st =>
+			new Properties doto {
+				_ load st
 			}
+		}
 
 	def saveRawFile(file:File, it:Properties):Unit	=
-			file withOutputStream { st =>
-				it store (st, null)
-			}
+		file withOutputStream { st =>
+			it store (st, null)
+		}
 
 	//------------------------------------------------------------------------------
 

@@ -44,35 +44,35 @@ trait StringImplicits {
 		def parseBigInt:Either[NumberFormatException,BigInt]	= parseNumber(BigInt(_))
 
 		private def parseNumber[T](func:String=>T):Either[NumberFormatException,T]	=
-				Catch.byType[NumberFormatException] in func(peer)
+			Catch.byType[NumberFormatException] in func(peer)
 
 		//------------------------------------------------------------------------------
 
 		def toByteString(charset:Charset):ByteString	=
-				ByteString fromString (peer, charset)
+			ByteString fromString (peer, charset)
 
 		def toUtf8ByteString:ByteString	=
-				ByteString fromUtf8String peer
+			ByteString fromUtf8String peer
 
 		//------------------------------------------------------------------------------
 
 		def optionNonEmpty:Option[String]	=
-				if (peer.nonEmpty)	Some(peer)
-				else				None
+			if (peer.nonEmpty)	Some(peer)
+			else				None
 
 		//------------------------------------------------------------------------------
 
 		def cutPrefix(prefix:String):Option[String] =
-				if (peer startsWith prefix)	Some(peer substring prefix.length)
-				else						None
+			if (peer startsWith prefix)	Some(peer substring prefix.length)
+			else						None
 
 		def cutSuffix(suffix:String):Option[String] =
-				if (peer endsWith suffix)	Some(peer substring (0, peer.length - suffix.length))
-				else						None
+			if (peer endsWith suffix)	Some(peer substring (0, peer.length - suffix.length))
+			else						None
 
 		def pastePrefix(prefix:String):Option[String] =
-				if (peer startsWith prefix)	None
-				else						Some(prefix + peer)
+			if (peer startsWith prefix)	None
+			else						Some(prefix + peer)
 
 		def pasteSuffix(suffix:String):Option[String] =
 				if (peer endsWith suffix)	None
@@ -82,21 +82,21 @@ trait StringImplicits {
 
 		/** excludes the separator char itself */
 		def splitAroundChar(separator:Char):Seq[String] =
-				splitAroundString(separator.toString)
+			splitAroundString(separator.toString)
 
 		/** excludes the separator string itself */
 		def splitAroundString(separator:String):Seq[String] = {
 			val	out	= new mutable.ArrayBuffer[String]
 			@tailrec
 			def loop(pos:Int):Seq[String]	=
-					peer indexOf (separator, pos) match {
-						case -1 =>
-							out	+= peer substring pos
-							out.toVector
-						case index	=>
-							out	+= peer substring (pos, index)
-							loop(index + separator.length)
-					}
+				peer indexOf (separator, pos) match {
+					case -1 =>
+						out	+= peer substring pos
+						out.toVector
+					case index	=>
+						out	+= peer substring (pos, index)
+						loop(index + separator.length)
+				}
 			loop(0)
 		}
 
@@ -104,61 +104,61 @@ trait StringImplicits {
 
 		/** excludes the indexed char itself */
 		def splitAroundIndex(index:Int):Option[(String,String)]	=
-				if (index >= 0 && index < peer.length)	Some((peer substring (0,index), peer substring index+1))
-				else									None
+			if (index >= 0 && index < peer.length)	Some((peer substring (0,index), peer substring index+1))
+			else									None
 
 		/** excludes the separator char itself */
 		def splitAroundFirstChar(separator:Char):Option[(String,String)] =
-				splitAroundIndex(peer indexOf separator)
+			splitAroundIndex(peer indexOf separator)
 
 		/** excludes the separator char itself */
 		def splitAroundLastChar(separator:Char):Option[(String,String)] =
-				splitAroundIndex(peer lastIndexOf separator)
+			splitAroundIndex(peer lastIndexOf separator)
 
 		/** excludes the separator itself */
 		def splitAroundFirstString(separator:String):Option[(String,String)] =
-				splitAroundIndex(peer indexOf separator)
+			splitAroundIndex(peer indexOf separator)
 
 		/** excludes the separator itself */
 		def splitAroundLastString(separator:String):Option[(String,String)] =
-				splitAroundIndex(peer lastIndexOf separator)
+			splitAroundIndex(peer lastIndexOf separator)
 
 		//------------------------------------------------------------------------------
 
 		/** like splitAt, but None for indices outside the String's boundaries */
 		def splitAtIndex(index:Int):Option[(String,String)]	=
-				if (index >= 0 && index <= peer.length)	Some((peer substring (0,index), peer substring index))
-				else									None
+			if (index >= 0 && index <= peer.length)	Some((peer substring (0,index), peer substring index))
+			else									None
 
 		//------------------------------------------------------------------------------
 
 		/** like indexOf, but None if not found */
 		def indexOfString(part:String, fromIndex:Int=0):Option[Int]	=
-				peer indexOf (part, fromIndex) match {
-					case -1		=> None
-					case index	=> Some(index)
-				}
+			peer indexOf (part, fromIndex) match {
+				case -1		=> None
+				case index	=> Some(index)
+			}
 
 		/** like lastIndexOf, but None if not found */
 		def lastIndexOfStringOption(part:String, fromIndex:Int=peer.length-1):Option[Int]	=
-				peer lastIndexOf (part, fromIndex) match {
-					case -1		=> None
-					case index	=> Some(index)
-				}
+			peer lastIndexOf (part, fromIndex) match {
+				case -1		=> None
+				case index	=> Some(index)
+			}
 
 		/** like indexOf, but None if not found */
 		def indexOfCharOption(ch:Int, fromIndex:Int=0):Option[Int]	=
-				peer indexOf (ch, fromIndex) match {
-					case -1		=> None
-					case index	=> Some(index)
-				}
+			peer indexOf (ch, fromIndex) match {
+				case -1		=> None
+				case index	=> Some(index)
+			}
 
 		/** like lastIndexOf, but None if not found */
 		def lastIndexOfCharOption(ch:Int, fromIndex:Int=peer.length-1):Option[Int]	=
-				peer lastIndexOf (ch, fromIndex) match {
-					case -1		=> None
-					case index	=> Some(index)
-				}
+			peer lastIndexOf (ch, fromIndex) match {
+				case -1		=> None
+				case index	=> Some(index)
+			}
 
 		//------------------------------------------------------------------------------
 

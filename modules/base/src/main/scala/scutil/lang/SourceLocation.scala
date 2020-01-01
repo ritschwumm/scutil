@@ -17,9 +17,9 @@ object SourceLocation {
 		// pos.source.file.path
 		// pos pointOrElse -1
 		val path	=
-				Option(pos.source.file.file) map { file =>
-					(new File(".").toURI relativize file.toURI).getPath
-				}
+			Option(pos.source.file.file) map { file =>
+				(new File(".").toURI relativize file.toURI).getPath
+			}
 		q"_root_.scutil.lang.SourceLocation($path, ${pos.source.file.name}, ${pos.line})"
 	}
 

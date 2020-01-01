@@ -3,14 +3,14 @@ package scutil.log
 object LogLevel {
 	/** in order of increasing severity */
 	val	all:Seq[LogLevel]	=
-			Vector[LogLevel](
-				TRACE,
-				DEBUG,
-				INFO,
-				WARN,
-				ERROR,
-				FATAL
-			)
+		Vector[LogLevel](
+			TRACE,
+			DEBUG,
+			INFO,
+			WARN,
+			ERROR,
+			FATAL
+		)
 }
 
 sealed abstract class LogLevel extends Ordered[LogLevel] {

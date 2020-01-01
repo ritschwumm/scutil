@@ -10,15 +10,15 @@ object HSB {
 /** value range is 0..1 */
 final case class HSB(h:Float, s:Float, b:Float) {
 	def diff(that:HSB):Float	=
-			diff3(that) / 3f
+		diff3(that) / 3f
 
 	private[color] def diff3(that:HSB):Float	=
-			abs(this.h - that.h) +
-			abs(this.s - that.s) +
-			abs(this.b - that.b)
+		abs(this.h - that.h) +
+		abs(this.s - that.s) +
+		abs(this.b - that.b)
 
 	def withAlpha(alpha:Alpha):HSBA	=
-			HSBA(this, alpha)
+		HSBA(this, alpha)
 
 	def toRGB:RGB	= {
 		if (s == 0)	return RGB(b, b, b)

@@ -11,15 +11,15 @@ trait RectangleImplicits {
 	implicit final class RectangleExt(peer:Rectangle) {
 		/*
 		def inset(insets:Insets):Rectangle	=
-				new Rectangle(
-					peer.x + insets.left,
-					peer.y + insets.top,
-					peer.width	- insets.left	- insets.right,
-					peer.height	- insets.top	- insets.bottom
-				)
+			new Rectangle(
+				peer.x + insets.left,
+				peer.y + insets.top,
+				peer.width	- insets.left	- insets.right,
+				peer.height	- insets.top	- insets.bottom
+			)
 		*/
 
 		def toIntRect:IntRect	=
-				geomConversion Rectangle_IntRect peer
+			geomConversion Rectangle_IntRect peer
 	}
 }

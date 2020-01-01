@@ -11,10 +11,10 @@ object ColorImplicits extends ColorImplicits
 trait ColorImplicits {
 	implicit final class ColorExt(peer:Color) {
 		def withAlpha(alpha:Float):Color	=
-				new Color(redF, greenF, blueF, alpha)
+			new Color(redF, greenF, blueF, alpha)
 
 		def withoutAlpha:Color	=
-				new Color(redF, greenF, blueF)
+			new Color(redF, greenF, blueF)
 
 		def redF:Float		= peer.getRed	/ 255f
 		def greenF:Float	= peer.getGreen	/ 255f

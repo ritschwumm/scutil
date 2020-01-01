@@ -9,21 +9,21 @@ object Disposable {
 
 	/** forms a monoids with and */
 	val empty:Disposable	=
-			new Disposable {
-				def dispose():Unit	= {}
-			}
+		new Disposable {
+			def dispose():Unit	= {}
+		}
 
 	def all(subs:Seq[Disposable]):Disposable	=
-			disposable {
-				subs foreach {
-					_.dispose()
-				}
+		disposable {
+			subs foreach {
+				_.dispose()
 			}
+		}
 
 	def allVar(subs:Disposable*):Disposable	= all(subs.toVector)
 
 	def fromIo(io:Io[Unit]):Disposable	=
-			Disposable(io.unsafeRun _)
+		Disposable(io.unsafeRun _)
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances
@@ -38,17 +38,17 @@ trait Disposable {
 
 	/** forms a monoid with empty */
 	final def and(that:Disposable):Disposable	=
-				 if (this == Disposable.empty)	that
-			else if (that ==  Disposable.empty)	this
-			else {
-				disposable {
-					this.dispose()
-					that.dispose()
-				}
+			 if (this == Disposable.empty)	that
+		else if (that ==  Disposable.empty)	this
+		else {
+			disposable {
+				this.dispose()
+				that.dispose()
 			}
+		}
 
 	final def toIo:Io[Unit]	=
-			Io delay { dispose() }
+		Io delay { dispose() }
 }
 
 private final class TaskDisposable(task:Thunk[Unit]) extends Disposable {

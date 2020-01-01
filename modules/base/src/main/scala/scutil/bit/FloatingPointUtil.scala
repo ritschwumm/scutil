@@ -10,15 +10,15 @@ import scala.annotation.strictfp
 object FloatingPointUtil {
 	@strictfp
 	def denormalFloat(it:Float):Boolean	=
-				 if (it == 0)											false
-			else if (it > -JFloat.MIN_NORMAL && it < JFloat.MIN_NORMAL)	true
-			else														false
+			 if (it == 0)											false
+		else if (it > -JFloat.MIN_NORMAL && it < JFloat.MIN_NORMAL)	true
+		else														false
 
 	@strictfp
 	def denormalDouble(it:Double):Boolean	=
-				 if (it == 0)												false
-			else if (it > -JDouble.MIN_NORMAL && it < JDouble.MIN_NORMAL)	true
-			else															false
+			 if (it == 0)												false
+		else if (it > -JDouble.MIN_NORMAL && it < JDouble.MIN_NORMAL)	true
+		else															false
 
 	def bitsOfFloat(it:Float):(Boolean,Int,Short)	= {
 		// positive infinity	0x7f800000

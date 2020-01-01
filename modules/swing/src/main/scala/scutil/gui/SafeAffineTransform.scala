@@ -12,15 +12,15 @@ object SafeAffineTransform {
 	val identity:SafeAffineTransform	= unsafeFromAwtAffineTransform(new AffineTransform)
 
 	def translate(offset:DoublePoint):SafeAffineTransform	=
-			unsafeFromAwtAffineTransform(AffineTransform getTranslateInstance	(offset.x,	offset.y))
+		unsafeFromAwtAffineTransform(AffineTransform getTranslateInstance	(offset.x,	offset.y))
 	def scale(factor:DoublePoint):SafeAffineTransform		=
-			unsafeFromAwtAffineTransform(AffineTransform getScaleInstance		(factor.x,	factor.y))
+		unsafeFromAwtAffineTransform(AffineTransform getScaleInstance		(factor.x,	factor.y))
 	def shear(factor:DoublePoint):SafeAffineTransform		=
-			unsafeFromAwtAffineTransform(AffineTransform getShearInstance		(factor.x,	factor.y))
+		unsafeFromAwtAffineTransform(AffineTransform getShearInstance		(factor.x,	factor.y))
 	def rotate(theta:Double):SafeAffineTransform		=
-			unsafeFromAwtAffineTransform(AffineTransform getRotateInstance		theta)
+		unsafeFromAwtAffineTransform(AffineTransform getRotateInstance		theta)
 	def rotateAround(theta:Double, center:DoublePoint):SafeAffineTransform	=
-			unsafeFromAwtAffineTransform(AffineTransform getRotateInstance	(theta, center.x, center.y))
+		unsafeFromAwtAffineTransform(AffineTransform getRotateInstance	(theta, center.x, center.y))
 
 	def unsafeFromAwtAffineTransform(delegate:AffineTransform):SafeAffineTransform	= new SafeAffineTransform(delegate)
 
@@ -29,25 +29,25 @@ object SafeAffineTransform {
 
 	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 	def fromAwtAffineTransform(it:AffineTransform):SafeAffineTransform	=
-			unsafeFromAwtAffineTransform(it.clone.asInstanceOf[AffineTransform])
+		unsafeFromAwtAffineTransform(it.clone.asInstanceOf[AffineTransform])
 
 	def toAwtAffineTransform(it:SafeAffineTransform):AffineTransform	=
-			it.toAwtAffineTransform
+		it.toAwtAffineTransform
 }
 
 final case class SafeAffineTransform private (delegate:AffineTransform) {
 	/** alias for transform */
 	def apply(point:DoublePoint):DoublePoint	=
-			transform(point)
+		transform(point)
 
 	def transform(point:DoublePoint):DoublePoint	=
-			geomConversion Point2D_DoublePoint (delegate transform (geomConversion DoublePoint_Point2D point, null))
+		geomConversion Point2D_DoublePoint (delegate transform (geomConversion DoublePoint_Point2D point, null))
 
 	def transformAwtPoint2D(point:Point2D):Point2D	=
-			delegate transform (point, null)
+		delegate transform (point, null)
 
 	def transformAwtShape(shape:Shape):Shape	=
-			delegate createTransformedShape shape
+		delegate createTransformedShape shape
 
 	/** fast bounds calculation for a transformed rectangle, as long as the transform is orthogonal */
 	def transformBounds(rect:DoubleRect):DoubleRect	= {
@@ -72,30 +72,30 @@ final case class SafeAffineTransform private (delegate:AffineTransform) {
 	}
 
 	def inverse:Option[SafeAffineTransform]	=
-			try { Some(SafeAffineTransform.unsafeFromAwtAffineTransform(delegate.createInverse)) }
-			catch { case e:NoninvertibleTransformException => None }
+		try { Some(SafeAffineTransform.unsafeFromAwtAffineTransform(delegate.createInverse)) }
+		catch { case e:NoninvertibleTransformException => None }
 
 	/** rotate around a given center */
 	def rotateAround(theta:Double, center:DoublePoint):SafeAffineTransform	=
-			modify { _ rotate (theta, center.x, center.y) }
+		modify { _ rotate (theta, center.x, center.y) }
 
 	def translate(offset:DoublePoint):SafeAffineTransform =
-			modify { _ translate (offset.x, offset.y) }
+		modify { _ translate (offset.x, offset.y) }
 
 	def scale(factor:DoublePoint):SafeAffineTransform =
-			modify { _ scale (factor.x, factor.y) }
+		modify { _ scale (factor.x, factor.y) }
 
 	def shear(factor:DoublePoint):SafeAffineTransform =
-			modify { _ shear (factor.x, factor.y) }
+		modify { _ shear (factor.x, factor.y) }
 
 	def rotate(theta:Double):SafeAffineTransform =
-			modify { _ rotate theta }
+		modify { _ rotate theta }
 
 	def andThen(that:SafeAffineTransform):SafeAffineTransform	=
-			modify { _ concatenate that.delegate }
+		modify { _ concatenate that.delegate }
 
 	def compose(that:SafeAffineTransform):SafeAffineTransform	=
-			that andThen this
+		that andThen this
 
 	private val orthogonalMask	= AffineTransform.TYPE_MASK_ROTATION | AffineTransform.TYPE_GENERAL_TRANSFORM
 
@@ -113,5 +113,5 @@ final case class SafeAffineTransform private (delegate:AffineTransform) {
 
 	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 	private def cloneDelegate:AffineTransform	=
-			delegate.clone.asInstanceOf[AffineTransform]
+		delegate.clone.asInstanceOf[AffineTransform]
 }

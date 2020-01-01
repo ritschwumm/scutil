@@ -9,7 +9,6 @@ object IntRectImplicits extends IntRectImplicits
 
 trait IntRectImplicits {
 	implicit final class IntRectExt(peer:IntRect) {
-		def toAwtRectangle:Rectangle	=
-				geomConversion IntRect_Rectangle peer
+		def toAwtRectangle:Rectangle	= geomConversion IntRect_Rectangle peer
 	}
 }

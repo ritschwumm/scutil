@@ -11,9 +11,9 @@ object ImageIconImplicits extends ImageIconImplicits
 trait ImageIconImplicits {
 	implicit final class ImageIconExt(peer:ImageIcon) {
 		def withImage(func:Image=>Image):ImageIcon	=
-				new ImageIcon(func(peer.getImage))
+			new ImageIcon(func(peer.getImage))
 
 		def filter(filter:ImageFilter):ImageIcon	=
-				withImage { _ filter filter }
+			withImage { _ filter filter }
 	}
 }

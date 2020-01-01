@@ -10,9 +10,11 @@ object ImageImplicits extends ImageImplicits
 trait ImageImplicits {
 	implicit final class ImageExt(peer:Image) {
 		def filter(imageFilter:ImageFilter):Image	=
-				Toolkit.getDefaultToolkit createImage (
-						new FilteredImageSource(
-								peer.getSource,
-								imageFilter))
+			Toolkit.getDefaultToolkit createImage (
+				new FilteredImageSource(
+					peer.getSource,
+					imageFilter
+				)
+			)
 	}
 }

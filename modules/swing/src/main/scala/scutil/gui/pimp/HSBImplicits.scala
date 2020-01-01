@@ -9,7 +9,6 @@ object HSBImplicits extends HSBImplicits
 
 trait HSBImplicits {
 	implicit final class HSBExt(peer:HSB) {
-		def toColor:Color	=
-				colorConversion	HSB_Color(peer)
+		def toColor:Color	= colorConversion	HSB_Color(peer)
 	}
 }

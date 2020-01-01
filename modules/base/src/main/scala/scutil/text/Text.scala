@@ -3,7 +3,7 @@ package scutil.text
 object Text {
 	/** indent every line with a single tab */
 	def indent(prefix:String, str:String):String =
-			str replaceAll ("(?m)^", prefix)
+		str replaceAll ("(?m)^", prefix)
 
 	/** treats all combinations of CR and LF as line endings */
 	def expandTabs(width:Int, text:String):String = {
@@ -40,7 +40,7 @@ object Text {
 	differently from stripMargin it ignores lines where stripping cannot be applied.
 	*/
 	def stripMarginOnly(s:String):String	=
-			s.linesIterator collect { case Strip(it) => it } mkString "\n"
+		s.linesIterator collect { case Strip(it) => it } mkString "\n"
 
 	def table(rows:Seq[Seq[String]]):Seq[String]	= {
 		val widths	=

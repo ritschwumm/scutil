@@ -12,7 +12,6 @@ sealed trait DragData
 final case class WorkMove(workId:Int)						extends DragData
 final case class WorkInject(workId:Int, projectId:String)	extends DragData
 
-
 class PrismTest extends Specification {
 	"Prism" should {
 		"do write in partial" in {

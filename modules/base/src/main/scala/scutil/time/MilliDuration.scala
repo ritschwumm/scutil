@@ -22,7 +22,7 @@ object MilliDuration {
 	implicit val MilliDurationShow:Show[MilliDuration]	= Show.toStringInstance
 
 	implicit val MilliDuratioMonoid:Monoid[MilliDuration]	=
-			Monoid instance (zero, _ + _)
+		Monoid instance (zero, _ + _)
 }
 
 final case class MilliDuration(millis:Long) extends Ordered[MilliDuration] {

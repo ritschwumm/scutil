@@ -25,22 +25,22 @@ object functions {
 	//------------------------------------------------------------------------------
 
 	def clampByte(value:Byte, minValue:Byte, maxValue:Byte):Byte	=
-			if (value < minValue) minValue else if (value > maxValue) maxValue else value
+		if (value < minValue) minValue else if (value > maxValue) maxValue else value
 
 	def clampShort(value:Short, minValue:Short, maxValue:Short):Short	=
-			if (value < minValue) minValue else if (value > maxValue) maxValue else value
+		if (value < minValue) minValue else if (value > maxValue) maxValue else value
 
 	def clampInt(value:Int, minValue:Int, maxValue:Int):Int	=
-			if (value < minValue) minValue else if (value > maxValue) maxValue else value
+		if (value < minValue) minValue else if (value > maxValue) maxValue else value
 
 	def clampLong(value:Long, minValue:Long, maxValue:Long):Long	=
-			if (value < minValue) minValue else if (value > maxValue) maxValue else value
+		if (value < minValue) minValue else if (value > maxValue) maxValue else value
 
 	def clampFloat(value:Float, minValue:Float, maxValue:Float):Float	=
-			if (value < minValue) minValue else if (value > maxValue) maxValue else value
+		if (value < minValue) minValue else if (value > maxValue) maxValue else value
 
 	def clampDouble(value:Double, minValue:Double, maxValue:Double):Double	=
-			if (value < minValue) minValue else if (value > maxValue) maxValue else value
+		if (value < minValue) minValue else if (value > maxValue) maxValue else value
 
 	//------------------------------------------------------------------------------
 
@@ -64,37 +64,37 @@ object functions {
 
 	@tailrec
 	def gcdByte(a:Byte, b:Byte):Byte	=
-			if (b == 0)	(smath abs a).toByte
-			else		gcdByte(b, (a % b).toByte)
+		if (b == 0)	(smath abs a).toByte
+		else		gcdByte(b, (a % b).toByte)
 
 	@tailrec
 	def gcdShort(a:Short, b:Short):Short	=
-			if (b == 0)	(smath abs a).toShort
-			else		gcdShort(b, (a % b).toShort)
+		if (b == 0)	(smath abs a).toShort
+		else		gcdShort(b, (a % b).toShort)
 
 	@tailrec
 	def gcdInt(a:Int, b:Int):Int	=
-			if (b == 0)	(smath abs a)
-			else		gcdInt(b, a % b)
+		if (b == 0)	(smath abs a)
+		else		gcdInt(b, a % b)
 
 	@tailrec
 	def gcdLong(a:Long, b:Long):Long	=
-			if (b == 0)	(smath abs a)
-			else		gcdLong(b, a % b)
+		if (b == 0)	(smath abs a)
+		else		gcdLong(b, a % b)
 
 	//------------------------------------------------------------------------------
 
 	def lcmByte(a:Byte, b:Byte):Byte	=
-			((smath abs (a * b)) / gcdByte(a, b)).toByte
+		((smath abs (a * b)) / gcdByte(a, b)).toByte
 
 	def lcmShort(a:Short, b:Short):Short	=
-			((smath abs (a * b)) / gcdShort(a, b)).toShort
+		((smath abs (a * b)) / gcdShort(a, b)).toShort
 
 	def lcmInt(a:Int, b:Int):Int	=
-			(smath abs (a * b)) / gcdInt(a, b)
+		(smath abs (a * b)) / gcdInt(a, b)
 
 	def lcmLong(a:Long, b:Long):Long	=
-			(smath abs (a * b)) / gcdLong(a, b)
+		(smath abs (a * b)) / gcdLong(a, b)
 
 	//------------------------------------------------------------------------------
 
@@ -131,96 +131,96 @@ object functions {
 	//------------------------------------------------------------------------------
 
 	def floorDivByte(value:Byte, raster:Byte):Byte	=
-			floorDivByte(value, raster).toByte
+		floorDivByte(value, raster).toByte
 
 	def roundDivByte(value:Byte, raster:Byte):Byte   =
-			roundDivByte(value, raster).toByte
+		roundDivByte(value, raster).toByte
 
 	def ceilDivByte(value:Byte, raster:Byte):Byte	=
-			ceilDivInt(value, raster).toByte
+		ceilDivInt(value, raster).toByte
 
 	def floorDivShort(value:Short, raster:Short):Short	=
-			floorDivShort(value, raster).toShort
+		floorDivShort(value, raster).toShort
 
 	def roundDivShort(value:Short, raster:Short):Short   =
-			roundDivShort(value, raster).toShort
+		roundDivShort(value, raster).toShort
 
 	def ceilDivShort(value:Short, raster:Short):Short	=
-			ceilDivInt(value, raster).toShort
+		ceilDivInt(value, raster).toShort
 
 	def floorDivInt(value:Int, raster:Int):Int	=
-			if (raster > 0) {
-				if (value >= 0) (value)					/ raster
-				else			(value - raster + 1)	/ raster
-			}
-			else if (raster < 0) {
-				if (value >= 0)	(value - raster - 1)	/ raster
-				else			(value)					/ raster
-			}
-			else throw new ArithmeticException("division by zero")
+		if (raster > 0) {
+			if (value >= 0) (value)					/ raster
+			else			(value - raster + 1)	/ raster
+		}
+		else if (raster < 0) {
+			if (value >= 0)	(value - raster - 1)	/ raster
+			else			(value)					/ raster
+		}
+		else throw new ArithmeticException("division by zero")
 
 	def roundDivInt(value:Int, raster:Int):Int   =
-			if (raster > 0) {
-				if (value >= 0) (value + (raster/2)) / raster
-				else            (value - (raster/2)) / raster
-			}
-			else if (raster < 0) {
-				if (value >= 0) (value - (raster/2)) / raster
-				else            (value + (raster/2)) / raster
-			}
-			else throw new ArithmeticException("division by zero")
+		if (raster > 0) {
+			if (value >= 0) (value + (raster/2)) / raster
+			else            (value - (raster/2)) / raster
+		}
+		else if (raster < 0) {
+			if (value >= 0) (value - (raster/2)) / raster
+			else            (value + (raster/2)) / raster
+		}
+		else throw new ArithmeticException("division by zero")
 
 	def ceilDivInt(value:Int, raster:Int):Int	=
-			if (raster > 0) {
-				if (value >= 0) (value + raster - 1)	/ raster
-				else			(value)					/ raster
-			}
-			else if (raster < 0) {
-				if (value >= 0) (value)					/ raster
-				else			(value+ raster + 1)		/ raster
-			}
-			else throw new ArithmeticException("division by zero")
+		if (raster > 0) {
+			if (value >= 0) (value + raster - 1)	/ raster
+			else			(value)					/ raster
+		}
+		else if (raster < 0) {
+			if (value >= 0) (value)					/ raster
+			else			(value+ raster + 1)		/ raster
+		}
+		else throw new ArithmeticException("division by zero")
 
 	def floorDivLong(value:Long, raster:Long):Long	=
-			if (raster > 0) {
-				if (value >= 0) (value)					/ raster
-				else			(value - raster + 1)	/ raster
-			}
-			else if (raster < 0) {
-				if (value >= 0)	(value - raster - 1)	/ raster
-				else			(value)					/ raster
-			}
-			else throw new ArithmeticException("division by zero")
+		if (raster > 0) {
+			if (value >= 0) (value)					/ raster
+			else			(value - raster + 1)	/ raster
+		}
+		else if (raster < 0) {
+			if (value >= 0)	(value - raster - 1)	/ raster
+			else			(value)					/ raster
+		}
+		else throw new ArithmeticException("division by zero")
 
 	def roundDivLong(value:Long, raster:Long):Long   =
-			if (raster > 0) {
-				if (value >= 0) (value + (raster/2)) / raster
-				else            (value - (raster/2)) / raster
-			}
-			else if (raster < 0) {
-				if (value >= 0) (value - (raster/2)) / raster
-				else            (value + (raster/2)) / raster
-			}
-			else sys error "division by zero"
+		if (raster > 0) {
+			if (value >= 0) (value + (raster/2)) / raster
+			else            (value - (raster/2)) / raster
+		}
+		else if (raster < 0) {
+			if (value >= 0) (value - (raster/2)) / raster
+			else            (value + (raster/2)) / raster
+		}
+		else throw new ArithmeticException("division by zero")
 
 	def ceilDivLong(value:Long, raster:Long):Long	=
-			if (raster > 0) {
-				if (value >= 0) (value + raster - 1)	/ raster
-				else			(value)					/ raster
-			}
-			else if (raster < 0) {
-				if (value >= 0) (value)					/ raster
-				else			(value+ raster + 1)		/ raster
-			}
-			else throw new ArithmeticException("division by zero")
+		if (raster > 0) {
+			if (value >= 0) (value + raster - 1)	/ raster
+			else			(value)					/ raster
+		}
+		else if (raster < 0) {
+			if (value >= 0) (value)					/ raster
+			else			(value+ raster + 1)		/ raster
+		}
+		else throw new ArithmeticException("division by zero")
 
 	//------------------------------------------------------------------------------
 
 	/** ratio 0..1 select a..b */
 	def blendToFloat(ratio:Float, a:Float, b:Float):Float	=
-			a * (1 - ratio) + b * (0 + ratio)
+		a * (1 - ratio) + b * (0 + ratio)
 
 	/** ratio 0..1 select a..b */
 	def blendToDouble(ratio:Double, a:Double, b:Double):Double	=
-			a * (1 - ratio) + b * (0 + ratio)
+		a * (1 - ratio) + b * (0 + ratio)
 }
