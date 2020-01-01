@@ -3,7 +3,7 @@ package scutil.time
 import scutil.lang.tc._
 import scutil.math.functions._
 
-object Year extends YearInstances {
+object Year {
 	private val longYears:Set[Int]	=
 			Set(
 				4, 9, 15, 20, 26, 32, 37, 43, 48, 54, 60, 65, 71, 76, 82, 88, 93, 99,
@@ -11,6 +11,11 @@ object Year extends YearInstances {
 				201, 207, 212, 218, 224, 229, 235, 240, 246, 252, 257, 263, 268, 274, 280, 285, 291, 296,
 				303, 308, 314, 320, 325, 331, 336, 342, 348, 353, 359, 364, 370, 376, 381, 387, 392, 398
 			)
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit val YearShow:Show[Year]	= Show.toStringInstance
 }
 
 final case class Year(value:Int) extends Ordered[Year] {
@@ -47,8 +52,4 @@ final case class Year(value:Int) extends Ordered[Year] {
 			(value % 400 == 0)
 
 	override def toString:String	= value.toString
-}
-
-trait YearInstances {
-	implicit val YearShow:Show[Year]	= Show.toStringInstance
 }

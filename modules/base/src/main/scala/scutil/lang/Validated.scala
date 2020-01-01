@@ -4,7 +4,7 @@ import scala.collection.Factory
 
 import scutil.lang.tc._
 
-object Validated extends ValidatedInstances {
+object Validated {
 	def good[E,T](value:T):Validated[E,T]	= Good(value)
 	def bad[E,T](problems:E):Validated[E,T]	= Bad(problems)
 
@@ -21,6 +21,18 @@ object Validated extends ValidatedInstances {
 					case Good(x)	=> x
 				}
 	}
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit def ValidatedApplicative[S:Semigroup]:Applicative[Validated[S,?]]	=
+			new Applicative[Validated[S,?]] {
+				override def pure[A](it:A):Validated[S,A]										= Validated good it
+				override def ap[A,B](it:Validated[S,A])(func:Validated[S,A=>B]):Validated[S,B]	= it pa func
+			}
+
+	implicit def ValidatedSemigroup[S:Semigroup,T]:Semigroup[Validated[S,T]]	=
+			Semigroup instance (_ orElse _)
 }
 
 sealed trait Validated[+E,+T] {
@@ -265,14 +277,3 @@ sealed trait Validated[+E,+T] {
 
 final case class Bad[E](problems:E)	extends Validated[E,Nothing]
 final case class Good[T](value:T)	extends Validated[Nothing,T]
-
-trait ValidatedInstances {
-	implicit def ValidatedApplicative[S:Semigroup]:Applicative[Validated[S,?]]	=
-			new Applicative[Validated[S,?]] {
-				override def pure[A](it:A):Validated[S,A]										= Validated good it
-				override def ap[A,B](it:Validated[S,A])(func:Validated[S,A=>B]):Validated[S,B]	= it pa func
-			}
-
-	implicit def ValidatedSemigroup[S:Semigroup,T]:Semigroup[Validated[S,T]]	=
-			Semigroup instance (_ orElse _)
-}

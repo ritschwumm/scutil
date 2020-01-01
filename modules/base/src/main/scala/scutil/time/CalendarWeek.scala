@@ -2,11 +2,16 @@ package scutil.time
 
 import scutil.lang.tc._
 
-object CalendarWeek extends CalendarWeekInstances {
+object CalendarWeek {
 	val days	= 7
 
 	def fromIndex(index:Int):CalendarWeek	=
 			JulianDay(index * days).calendarWeek
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit val CalendarWeekShow:Show[CalendarWeek]	= Show.toStringInstance
 }
 
 /** ISO 8601 week, number is 1..53 */
@@ -53,8 +58,4 @@ final case class CalendarWeek(number:Int, year:Int) extends Ordered[CalendarWeek
 	override def toString:String	= s"KW${number.toString}/${year.toString}"
 
 	def toISO8601:String	= year.toString + "W" + (if (number <= 10) "0" else "") + number.toString
-}
-
-trait CalendarWeekInstances {
-	implicit val CalendarWeekShow:Show[CalendarWeek]	= Show.toStringInstance
 }

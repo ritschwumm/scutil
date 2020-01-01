@@ -2,7 +2,7 @@ package scutil.lang
 
 import scutil.lang.tc._
 
-object Nes extends NesInstances {
+object Nes {
 	def single[T](head:T):Nes[T]	=
 			Nes(head, Vector.empty)
 
@@ -21,6 +21,23 @@ object Nes extends NesInstances {
 		def unapplySeq[T](nes:Nes[T]):Option[Seq[T]]	=
 				Some(nes.toVector)
 	}
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit def NesTraversedMonad:TraversedMonad[Nes]	=
+			new TraversedMonad[Nes] {
+				override def map[A,B](it:Nes[A])(func:A=>B):Nes[B]			= it map func
+				override def pure[A](it:A):Nes[A]							= Nes single it
+				override def flatMap[A,B](it:Nes[A])(func:A=>Nes[B]):Nes[B]	= it flatMap func
+				override def traverse[G[_],S,T](it:Nes[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[Nes[T]]	=
+						((it.tail map func) foldLeft ((AP map  func(it.head))(Nes.single[T]))) { (xs, x) =>
+							(AP combine (xs, x))(_ :+ _)
+						}
+			}
+
+	implicit def NesSemigroup[T]:Semigroup[Nes[T]]	=
+			Semigroup instance (_ ++ _)
 }
 
 final case class Nes[+T](head:T, tail:Seq[T]) {
@@ -205,26 +222,4 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 
 	def mkString(prefix:String, separator:String, suffix:String):String	=
 			toVector mkString (prefix, separator, suffix)
-}
-
-/** helper to allow easy construction and pattern matching */
-object VarNes {
-	def apply[T](head:T, tail:T*):Nes[T]		= Nes(head, tail.toVector)
-	def unapplySeq[T](it:Nes[T]):Option[Seq[T]]	= Some(it.toVector)
-}
-
-trait NesInstances {
-	implicit def NesTraversedMonad:TraversedMonad[Nes]	=
-			new TraversedMonad[Nes] {
-				override def map[A,B](it:Nes[A])(func:A=>B):Nes[B]			= it map func
-				override def pure[A](it:A):Nes[A]							= Nes single it
-				override def flatMap[A,B](it:Nes[A])(func:A=>Nes[B]):Nes[B]	= it flatMap func
-				override def traverse[G[_],S,T](it:Nes[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[Nes[T]]	=
-						((it.tail map func) foldLeft ((AP map  func(it.head))(Nes.single[T]))) { (xs, x) =>
-							(AP combine (xs, x))(_ :+ _)
-						}
-			}
-
-	implicit def NesSemigroup[T]:Semigroup[Nes[T]]	=
-			Semigroup instance (_ ++ _)
 }

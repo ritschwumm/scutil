@@ -2,7 +2,7 @@ package scutil.lang
 
 import scutil.lang.tc._
 
-object State extends StateInstances {
+object State {
 	def pure[S,T](it:T):State[S,T]		= State { s => (s,			it)	}
 	def get[S]:State[S,S]				= State { s => (s,			s)	}
 	def set[S](it:S):State[S,Unit]		= State { s => (it,			())	}
@@ -17,6 +17,16 @@ object State extends StateInstances {
 	final class StatePure[S] {
 		def apply[T](it:T):State[S,T]	= State pure it
 	}
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit def StateMonad[S]:Monad[State[S,?]]	=
+			new Monad[State[S,?]] {
+				override def pure[T](it:T):State[S,T]										= State pure it
+				override def map[T,U](its:State[S,T])(func:T=>U):State[S,U]					= its map func
+				override def flatMap[T,U](its:State[S,T])(func:T=>State[S,U]):State[S,U]	= its flatMap func
+			}
 }
 
 final case class State[S,+T](run:S=>(S,T)) {
@@ -64,13 +74,4 @@ final case class State[S,+T](run:S=>(S,T)) {
 
 	def toStateT[F[_],TT>:T](implicit M:Applicative[F]):StateT[F,S,TT]	=
 			StateT fromState this
-}
-
-trait StateInstances {
-	implicit def StateMonad[S]:Monad[State[S,?]]	=
-			new Monad[State[S,?]] {
-				override def pure[T](it:T):State[S,T]										= State pure it
-				override def map[T,U](its:State[S,T])(func:T=>U):State[S,U]					= its map func
-				override def flatMap[T,U](its:State[S,T])(func:T=>State[S,U]):State[S,U]	= its flatMap func
-			}
 }

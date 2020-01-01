@@ -3,7 +3,7 @@ package scutil.lang
 import scutil.base.implicits._
 import scutil.lang.tc._
 
-object WriterT extends WriterTInstances {
+object WriterT {
 	def pure[F[_],L:Monoid,T](it:T)(implicit M:Applicative[F]):WriterT[F,L,T]	=
 			liftF(M pure it)
 
@@ -24,6 +24,20 @@ object WriterT extends WriterTInstances {
 					log -> (())
 				)
 			)
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit def WriterTDelay[F[_]:Delay:Functor,L:Monoid]:Delay[WriterT[F,L,?]]	=
+			new Delay[WriterT[F,L,?]] {
+				def delay[T](it: =>T):WriterT[F,L,T]	= WriterT delay it
+			}
+
+	implicit def WriterTMonad[F[_]:Monad,L:Monoid]:Monad[WriterT[F,L,?]]	=
+			new Monad[WriterT[F,L,?]] {
+				def pure[T](it:T):WriterT[F,L,T]											= WriterT pure it
+				def flatMap[S,T](its:WriterT[F,L,S])(func:S=>WriterT[F,L,T]):WriterT[F,L,T]	= its flatMap func
+			}
 }
 
 final case class WriterT[F[_],L,T](run:F[(L,T)]) {
@@ -46,18 +60,5 @@ final case class WriterT[F[_],L,T](run:F[(L,T)]) {
 					val	fin	= SG concat (e1, e2)
 					fin -> t
 				}
-			}
-}
-
-trait WriterTInstances {
-	implicit def WriterTDelay[F[_]:Delay:Functor,L:Monoid]:Delay[WriterT[F,L,?]]	=
-			new Delay[WriterT[F,L,?]] {
-				def delay[T](it: =>T):WriterT[F,L,T]	= WriterT delay it
-			}
-
-	implicit def WriterTMonad[F[_]:Monad,L:Monoid]:Monad[WriterT[F,L,?]]	=
-			new Monad[WriterT[F,L,?]] {
-				def pure[T](it:T):WriterT[F,L,T]											= WriterT pure it
-				def flatMap[S,T](its:WriterT[F,L,S])(func:S=>WriterT[F,L,T]):WriterT[F,L,T]	= its flatMap func
 			}
 }

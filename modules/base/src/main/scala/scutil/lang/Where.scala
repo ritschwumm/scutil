@@ -2,7 +2,7 @@ package scutil.lang
 
 import scutil.lang.tc._
 
-object Where extends WhereInstances {
+object Where {
 	def here[A,B](a:A):Where[A,B]		= Here(a)
 	def there[A,B](b:B):Where[A,B]		= There(b)
 	def both[A,B](a:A, b:B):Where[A,B]	= Both(a,b)
@@ -25,6 +25,14 @@ object Where extends WhereInstances {
 				case (Some(a),	None)		=> Some(Here(a))
 				case (None,		Some(b))	=> Some(There(b))
 				case (None,		None)		=> None
+			}
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit def WhereFunctor[A]:Functor[Where[A,?]]	=
+			new Functor[Where[A,?]] {
+				override def map[B,BB](it:Where[A,B])(func:B=>BB):Where[A,BB]	= it mapThere func
 			}
 }
 
@@ -86,11 +94,3 @@ sealed trait Where[+A,+B] {
 final case class Here[A,B](here:A)			extends Where[A,B]
 final case class There[A,B](there:B)		extends Where[A,B]
 final case class Both[A,B](here:A, there:B)	extends Where[A,B]
-
-trait WhereInstances {
-	implicit def WhereFunctor[A]:Functor[Where[A,?]]	=
-			new Functor[Where[A,?]] {
-				override def map[B,BB](it:Where[A,B])(func:B=>BB):Where[A,BB]	= it mapThere func
-			}
-}
-

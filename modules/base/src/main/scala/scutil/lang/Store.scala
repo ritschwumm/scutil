@@ -2,12 +2,20 @@ package scutil.lang
 
 import scutil.lang.tc._
 
-object Store extends StoreInstances {
+object Store {
 	def identity[T](value:T):Store[T,T]	=
 			Store(value, t => t)
 
 	def trivial[T](value:T):Store[T,Unit]	=
 			Store((), _ => value)
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit def StoreFunctor[S]:Functor[Store[?,S]]	=
+			new Functor[Store[?,S]] {
+				def map[A,B](it:Store[A,S])(func:A=>B):Store[B,S]	= it map func
+			}
 }
 
 final case class Store[C,V](get:V, set:V=>C) {
@@ -68,11 +76,4 @@ final case class Store[C,V](get:V, set:V=>C) {
 				that get get,
 				that.set andThen set
 			)
-}
-
-trait StoreInstances {
-	implicit def StoreFunctor[S]:Functor[Store[?,S]]	=
-			new Functor[Store[?,S]] {
-				def map[A,B](it:Store[A,S])(func:A=>B):Store[B,S]	= it map func
-			}
 }

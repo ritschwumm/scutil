@@ -4,7 +4,7 @@ import scala.annotation.tailrec
 
 import scutil.lang.tc._
 
-object Io extends IoInstances {
+object Io extends IoInstancesLow {
 	def pure[T](it:T):Io[T]			= Io.Pure(it)
 	def delay[T](it: =>T):Io[T]		= Io.Suspend(() => it)
 	def thunk[T](it:Thunk[T]):Io[T]	= Io.Suspend(it)
@@ -34,6 +34,27 @@ object Io extends IoInstances {
 	final case class Suspend[T](thunk:()=>T) 					extends Io[T]
 	final case class Map[S,T](base:Io[S], func:S=>T) 			extends Io[T]
 	final case class FlatMap[S,T](base:Io[S], func:S=>Io[T]) 	extends Io[T]
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit def IoMonoid[T](implicit F:Monoid[T]):Monoid[Io[T]]	=
+			new Monoid[Io[T]] {
+				def empty:Io[T]						= Io pure F.empty
+				def concat(a:Io[T], b:Io[T]):Io[T]	= (a zipWith b)(F.concat)
+			}
+
+	implicit val IoMonad:Monad[Io]	=
+			new Monad[Io] {
+				override def pure[A](it:A):Io[A]							= Io pure it
+				override def map[A,B](it:Io[A])(func:A=>B):Io[B]			= it map func
+				override def flatMap[A,B](it:Io[A])(func:A=>Io[B]):Io[B]	= it flatMap func
+			}
+
+	implicit val IoDelay:Delay[Io]	=
+			new Delay[Io] {
+				override def delay[T](it: =>T):Io[T]	= Io delay it
+			}
 }
 
 sealed trait Io[T] {
@@ -102,26 +123,6 @@ sealed trait Io[T] {
 	final def toLater:Later[T]	=
 			Later { cont =>
 				cont(unsafeRun())
-			}
-}
-
-trait IoInstances {
-	implicit def IoMonoid[T](implicit F:Monoid[T]):Monoid[Io[T]]	=
-			new Monoid[Io[T]] {
-				def empty:Io[T]						= Io pure F.empty
-				def concat(a:Io[T], b:Io[T]):Io[T]	= (a zipWith b)(F.concat)
-			}
-
-	implicit val IoMonad:Monad[Io]	=
-			new Monad[Io] {
-				override def pure[A](it:A):Io[A]							= Io pure it
-				override def map[A,B](it:Io[A])(func:A=>B):Io[B]			= it map func
-				override def flatMap[A,B](it:Io[A])(func:A=>Io[B]):Io[B]	= it flatMap func
-			}
-
-	implicit val IoDelay:Delay[Io]	=
-			new Delay[Io] {
-				override def delay[T](it: =>T):Io[T]	= Io delay it
 			}
 }
 

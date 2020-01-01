@@ -10,7 +10,7 @@ import scala.collection.mutable
 
 import scutil.lang.tc._
 
-object ByteString extends ByteStringInstances {
+object ByteString {
 	val empty:ByteString	= new ByteString(Array.empty)
 
 	def single(it:Byte):ByteString	= apply(it)
@@ -94,6 +94,13 @@ object ByteString extends ByteStringInstances {
 
 	private def containsSlice(begin:Int, end:Int, size:Int):Boolean	=
 			begin >= 0 && begin <= end && end <= size
+
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit val ByteStringMonoid:Monoid[ByteString]	=
+			Monoid instance (ByteString.empty, _ ++ _)
 }
 
 /** wraps an Array[Byte] to be immutable and provide sensible equals and hashCode implementations */
@@ -233,9 +240,4 @@ final class ByteString private (private val value:Array[Byte]) {
 	override def hashCode():Int		= JArrays hashCode value
 
 	override def toString:String	= "[" + value.size.toString + " bytes]"
-}
-
-trait ByteStringInstances {
-	implicit val ByteStringMonoid:Monoid[ByteString]	=
-			Monoid instance (ByteString.empty, _ ++ _)
 }

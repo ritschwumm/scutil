@@ -2,7 +2,7 @@ package scutil.lang
 
 import scutil.lang.tc._
 
-object OptionT extends OptionTInstances {
+object OptionT {
 	def pure[F[_]:Applicative,T](it:T):OptionT[F,T]					= some(it)
 	def pureF[F[_],T](it:F[T])(implicit M:Functor[F]):OptionT[F,T]	= someF(it)
 
@@ -47,6 +47,21 @@ object OptionT extends OptionTInstances {
 
 	def delayFromOption[F[_],T](it: =>Option[T])(implicit D:Delay[F]):OptionT[F,T]	=
 			OptionT(D delay it)
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit def OptionTDelay[F[_]:Delay]:Delay[OptionT[F,?]]	=
+			new Delay[OptionT[F,?]] {
+				override def delay[T](it: =>T):OptionT[F,T]	= OptionT delayPure it
+			}
+
+	implicit def OptionTMonad[F[_]](implicit MF:Monad[F]):Monad[OptionT[F,?]]	=
+			new Monad[OptionT[F,?]] {
+				override def pure[T](it:T):OptionT[F,T]											= OptionT pure it
+				override def map[S,T](its:OptionT[F,S])(func:S=>T):OptionT[F,T]					= its map func
+				override def flatMap[S,T](its:OptionT[F,S])(func:S=>OptionT[F,T]):OptionT[F,T]	= its flatMap func
+			}
 }
 
 final case class OptionT[F[_],T](value:F[Option[T]]) {
@@ -145,18 +160,4 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 
 	def toLeftPure[R](rightValue: =>R)(implicit M:Functor[F]):EitherT[F,T,R]	=
 			EitherT((M map value)(_ toLeft rightValue))
-}
-
-trait OptionTInstances {
-	implicit def OptionTDelay[F[_]:Delay]:Delay[OptionT[F,?]]	=
-			new Delay[OptionT[F,?]] {
-				override def delay[T](it: =>T):OptionT[F,T]	= OptionT delayPure it
-			}
-
-	implicit def OptionTMonad[F[_]](implicit MF:Monad[F]):Monad[OptionT[F,?]]	=
-			new Monad[OptionT[F,?]] {
-				override def pure[T](it:T):OptionT[F,T]											= OptionT pure it
-				override def map[S,T](its:OptionT[F,S])(func:S=>T):OptionT[F,T]					= its map func
-				override def flatMap[S,T](its:OptionT[F,S])(func:S=>OptionT[F,T]):OptionT[F,T]	= its flatMap func
-			}
 }

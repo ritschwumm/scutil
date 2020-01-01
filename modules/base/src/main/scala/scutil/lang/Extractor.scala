@@ -3,7 +3,7 @@ package scutil.lang
 import scutil.lang.tc._
 
 // TODO 213 PartialFunction will have unapply there, do we still need this?
-object Extractor extends ExtractorInstances {
+object Extractor {
 	def total[S,T](func:S=>T):Extractor[S,T]	=
 			Extractor(s	=> Some(func(s)))
 
@@ -18,6 +18,17 @@ object Extractor extends ExtractorInstances {
 
 	def trivial[T]:Extractor[T,Any]	=
 			Extractor(constant(None))
+
+	implicit def ExtractorFunctor[S]:Functor[Extractor[S,?]]	=
+			new Functor[Extractor[S,?]] {
+				def map[A,B](it:Extractor[S,A])(func:A=>B):Extractor[S,B]		= it map func
+			}
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit def ExtractorSemigroup[S,T]:Semigroup[Extractor[S,T]]	=
+			Semigroup instance (_ orElse _)
 }
 
 /** representative extractor (as opposed to compiler magic) */
@@ -58,14 +69,4 @@ final case class Extractor[S,T](read:PFunction[S,T]) {
 
 	def toPartialFunction:PartialFunction[S,T]	=
 			Function unlift read
-}
-
-trait ExtractorInstances {
-	implicit def ExtractorFunctor[S]:Functor[Extractor[S,?]]	=
-			new Functor[Extractor[S,?]] {
-				def map[A,B](it:Extractor[S,A])(func:A=>B):Extractor[S,B]		= it map func
-			}
-
-	implicit def ExtractorSemigroup[S,T]:Semigroup[Extractor[S,T]]	=
-			Semigroup instance (_ orElse _)
 }

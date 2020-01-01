@@ -2,7 +2,7 @@ package scutil.lang
 
 import scutil.lang.tc._
 
-object Later extends LaterInstances {
+object Later {
 	def empty[T]:Later[T]	=
 			Later { cont => }
 
@@ -27,6 +27,21 @@ object Later extends LaterInstances {
 	def many[T](value:Iterable[T]):Later[T]	=
 			Later { cont =>
 				value foreach cont
+			}
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit val LaterMonad:Monad[Later]	=
+			new Monad[Later] {
+				override def pure[R](it:R):Later[R]										= Later pure it
+				override def map[R,RR](it:Later[R])(func:R=>RR):Later[RR]				= it map func
+				override def flatMap[R,RR](it:Later[R])(func:R=>Later[RR]):Later[RR]	= it flatMap func
+			}
+
+	implicit val LaterDelay:Delay[Later]	=
+			new Delay[Later] {
+				override def delay[R](it: =>R):Later[R]	= Later delay it
 			}
 }
 
@@ -167,19 +182,5 @@ final case class Later[T](unsafeRun:(T=>Unit)=>Unit) {
 				if (batch.nonEmpty) {
 					cont(batch)
 				}
-			}
-}
-
-trait LaterInstances {
-	implicit val LaterMonad:Monad[Later]	=
-			new Monad[Later] {
-				override def pure[R](it:R):Later[R]										= Later pure it
-				override def map[R,RR](it:Later[R])(func:R=>RR):Later[RR]				= it map func
-				override def flatMap[R,RR](it:Later[R])(func:R=>Later[RR]):Later[RR]	= it flatMap func
-			}
-
-	implicit val LaterDelay:Delay[Later]	=
-			new Delay[Later] {
-				override def delay[R](it: =>R):Later[R]	= Later delay it
 			}
 }

@@ -2,7 +2,7 @@ package scutil.lang
 
 import scutil.lang.tc._
 
-object Optional extends OptionalInstances {
+object Optional {
 	def partial[S,T](get:PartialFunction[S,T], set:T=>S):Optional[S,T] =
 			Optional(get.lift, t => _ => set(t))
 
@@ -44,6 +44,13 @@ object Optional extends OptionalInstances {
 				s => lens get s,
 				t => s => if (lens.get(s).isDefined) lens.set(Some(t))(s) else s
 			)
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	// TODO optics is this lawful?
+	implicit def OptionalSemigroup[S,T]:Semigroup[Optional[S,T]]	=
+			Semigroup instance (_ orElse _)
 }
 
 final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
@@ -242,10 +249,3 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 				set	= ttt => sss	=> (this set ttt._1 apply sss._1, that set ttt._2 apply sss._2)
 			)
 }
-
-trait OptionalInstances {
-	// TODO optics is this lawful?
-	implicit def OptionalSemigroup[S,T]:Semigroup[Optional[S,T]]	=
-			Semigroup instance (_ orElse _)
-}
-

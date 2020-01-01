@@ -3,7 +3,7 @@ package scutil.lang
 import scutil.base.implicits._
 import scutil.lang.tc._
 
-object Converter extends ConverterInstances {
+object Converter {
 	def identity[E,T]:Converter[E,T,T]	=
 			Converter { it =>
 				Validated good it
@@ -60,6 +60,27 @@ object Converter extends ConverterInstances {
 				.collapseMapFirst	{ _ apply it }
 				.getOrElse			(Validated bad bad)
 			}
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit def ConverterApplicative[E,S](implicit E:Semigroup[E]):Applicative[Converter[E,S,?]]	=
+			new Applicative[Converter[E,S,?]] {
+				override def pure[A](it:A):Converter[E,S,A]												= Converter pure it
+				override def ap[A,B](its:Converter[E,S,A])(func:Converter[E,S,A=>B]):Converter[E,S,B]	= its pa func
+			}
+
+	/*
+	implicit def ConverterMonad[E,S]:Monad[Converter[E,S,?]]	=
+			new Monad[Converter[E,S,?]] {
+				override def pure[A](it:A):Converter[E,S,A]													= Converter pure it
+				override def map[A,B](it:Converter[E,S,A])(func:A=>B):Converter[E,S,B]						= it map func
+				override def flatMap[A,B](it:Converter[E,S,A])(func:A=>Converter[E,S,B]):Converter[E,S,B]	= it flatMap func
+			}
+	*/
+
+	implicit def ConverterSemigroup[E:Semigroup,S,T]:Semigroup[Converter[E,S,T]]	=
+			Semigroup instance (_ orElse _)
 }
 
 // Kleisli[Validated[E,_],S,T]
@@ -201,24 +222,4 @@ final case class Converter[E,S,T](convert:S=>Validated[E,T]) {
 
 	def toEitherFunc:S=>Either[E,T]	=
 			convert andThen (_.toEither)
-}
-
-trait ConverterInstances {
-	implicit def ConverterApplicative[E,S](implicit E:Semigroup[E]):Applicative[Converter[E,S,?]]	=
-			new Applicative[Converter[E,S,?]] {
-				override def pure[A](it:A):Converter[E,S,A]												= Converter pure it
-				override def ap[A,B](its:Converter[E,S,A])(func:Converter[E,S,A=>B]):Converter[E,S,B]	= its pa func
-			}
-
-	/*
-	implicit def ConverterMonad[E,S]:Monad[Converter[E,S,?]]	=
-			new Monad[Converter[E,S,?]] {
-				override def pure[A](it:A):Converter[E,S,A]													= Converter pure it
-				override def map[A,B](it:Converter[E,S,A])(func:A=>B):Converter[E,S,B]						= it map func
-				override def flatMap[A,B](it:Converter[E,S,A])(func:A=>Converter[E,S,B]):Converter[E,S,B]	= it flatMap func
-			}
-	*/
-
-	implicit def ConverterSemigroup[E:Semigroup,S,T]:Semigroup[Converter[E,S,T]]	=
-			Semigroup instance (_ orElse _)
 }

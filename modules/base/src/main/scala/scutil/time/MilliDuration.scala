@@ -5,7 +5,7 @@ import scala.math.Ordered
 import scutil.lang._
 import scutil.lang.tc._
 
-object MilliDuration extends MilliDurationInstances {
+object MilliDuration {
 	def week:MilliDuration		= day		*! 7
 	def day:MilliDuration		= hour		*! 24
 	def hour:MilliDuration		= minute	*! 60
@@ -15,6 +15,14 @@ object MilliDuration extends MilliDurationInstances {
 	def zero:MilliDuration		= MilliDuration(0)
 
 	val newType	= Bijection[MilliDuration,Long](_.millis, MilliDuration.apply)
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit val MilliDurationShow:Show[MilliDuration]	= Show.toStringInstance
+
+	implicit val MilliDuratioMonoid:Monoid[MilliDuration]	=
+			Monoid instance (zero, _ + _)
 }
 
 final case class MilliDuration(millis:Long) extends Ordered[MilliDuration] {
@@ -38,8 +46,4 @@ final case class MilliDuration(millis:Long) extends Ordered[MilliDuration] {
 	def nanos:Long	= millis*1000*1000
 
 	override def toString:String	= millis.toString
-}
-
-trait MilliDurationInstances {
-	implicit val MilliDurationShow:Show[MilliDuration]	= Show.toStringInstance
 }

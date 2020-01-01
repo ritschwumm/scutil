@@ -3,7 +3,7 @@ package scutil.time
 import scutil.lang.tc._
 import scutil.math.functions._
 
-object Weekday extends WeekdayInstances {
+object Weekday {
 	val all:Vector[Weekday]	=
 			Vector[Weekday](
 				Monday,
@@ -43,6 +43,11 @@ object Weekday extends WeekdayInstances {
 	case object Friday		extends Weekday
 	case object Saturday	extends Weekday
 	case object Sunday		extends Weekday
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit val WeekdayShow:Show[Weekday]	= Show.toStringInstance
 }
 
 sealed abstract class Weekday {
@@ -69,9 +74,4 @@ sealed abstract class Weekday {
 				case Weekday.Sunday		=> "Sunday"
 			}
 
-}
-
-
-trait WeekdayInstances {
-	implicit val WeekdayShow:Show[Weekday]	= Show.toStringInstance
 }

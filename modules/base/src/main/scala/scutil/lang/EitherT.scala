@@ -3,7 +3,7 @@ package scutil.lang
 import scutil.base.implicits._
 import scutil.lang.tc._
 
-object EitherT extends EitherTInstances {
+object EitherT {
 	def pure[F[_]:Applicative,L,R](it:R):EitherT[F,L,R]		= right(it)
 	def pureF[F[_]:Functor,L,R](it:F[R]):EitherT[F,L,R]		= rightF(it)
 
@@ -67,6 +67,21 @@ object EitherT extends EitherTInstances {
 	implicit class MergeableEitherT[F[_],T](peer:EitherT[F,T,T]) {
 		def merge(implicit F:Functor[F]):F[T]	= (F map peer.value)(_.merge)
 	}
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit def EitherTDelay[F[_]:Delay,L]:Delay[EitherT[F,L,?]]	=
+			new Delay[EitherT[F,L,?]] {
+				override def delay[R](it: =>R):EitherT[F,L,R]	= EitherT delayPure it
+			}
+
+	implicit def EitherTMonad[F[_]:Monad,L]:Monad[EitherT[F,L,?]]	=
+			new Monad[EitherT[F,L,?]] {
+				override def pure[R](it:R):EitherT[F,L,R]												= EitherT pure it
+				override def map[R,RR](it:EitherT[F,L,R])(func:R=>RR):EitherT[F,L,RR]					= it map func
+				override def flatMap[R,RR](it:EitherT[F,L,R])(func:R=>EitherT[F,L,RR]):EitherT[F,L,RR]	= it flatMap func
+			}
 }
 
 final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
@@ -153,18 +168,4 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 
 	def getOrElse(default: =>R)(implicit M:Functor[F]):F[R]	=
 			M.map(value)(_ getOrElse default)
-}
-
-trait EitherTInstances {
-	implicit def EitherTDelay[F[_]:Delay,L]:Delay[EitherT[F,L,?]]	=
-			new Delay[EitherT[F,L,?]] {
-				override def delay[R](it: =>R):EitherT[F,L,R]	= EitherT delayPure it
-			}
-
-	implicit def EitherTMonad[F[_]:Monad,L]:Monad[EitherT[F,L,?]]	=
-			new Monad[EitherT[F,L,?]] {
-				override def pure[R](it:R):EitherT[F,L,R]												= EitherT pure it
-				override def map[R,RR](it:EitherT[F,L,R])(func:R=>RR):EitherT[F,L,RR]					= it map func
-				override def flatMap[R,RR](it:EitherT[F,L,R])(func:R=>EitherT[F,L,RR]):EitherT[F,L,RR]	= it flatMap func
-			}
 }

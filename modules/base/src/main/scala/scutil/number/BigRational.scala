@@ -12,7 +12,7 @@ import java.math.{
 import scutil.lang.tc.Show
 import scutil.lang.implicits._
 
-object BigRational extends BigRationalInstances {
+object BigRational {
 	/** additive neutral element */
 	val zero	= new BigRational(JBigInteger.ZERO, JBigInteger.ONE)
 	/** multiplicative neutral element */
@@ -64,6 +64,11 @@ object BigRational extends BigRationalInstances {
 					catch { case e:NumberFormatException	=> None }
 				case _	=> None
 			}
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit val BigRationalShow:Show[BigRational]	= Show.toStringInstance
 }
 
 /** an immutable, auto-simplifying BigInteger fraction */
@@ -191,8 +196,4 @@ final class BigRational private (_numerator:JBigInteger, _denominator:JBigIntege
 	private def rounded:JBigDecimal	= toBigDecimal(MathContext.DECIMAL128)
 
 	override def toString:String	= numerator.toString + "/" + denominator.toString
-}
-
-trait BigRationalInstances {
-	implicit val BigRationalShow:Show[BigRational]	= Show.toStringInstance
 }

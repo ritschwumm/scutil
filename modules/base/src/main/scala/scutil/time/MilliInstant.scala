@@ -5,11 +5,16 @@ import scala.math.Ordered
 import scutil.lang._
 import scutil.lang.tc._
 
-object MilliInstant extends MilliInstantInstances {
+object MilliInstant {
 	def zero:MilliInstant	= MilliInstant(0)
 	def now():MilliInstant	= MilliInstant(System.currentTimeMillis)
 
 	val newType	= Bijection[MilliInstant,Long](_.millis, MilliInstant.apply)
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit val MilliInstantShow:Show[MilliInstant]	= Show.toStringInstance
 }
 
 final case class MilliInstant(millis:Long) extends Ordered[MilliInstant] {
@@ -23,8 +28,4 @@ final case class MilliInstant(millis:Long) extends Ordered[MilliInstant] {
 	def max(that:MilliInstant):MilliInstant	= if (this > that) this else that
 
 	override def toString:String	= millis.toString
-}
-
-trait MilliInstantInstances {
-	implicit val MilliInstantShow:Show[MilliInstant]	= Show.toStringInstance
 }

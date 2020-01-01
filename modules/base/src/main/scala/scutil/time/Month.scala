@@ -3,7 +3,7 @@ package scutil.time
 import scutil.lang.tc._
 import scutil.math.functions._
 
-object Month extends MonthInstances {
+object Month {
 	val all:Vector[Month]	=
 			Vector[Month](
 				January,
@@ -58,6 +58,11 @@ object Month extends MonthInstances {
 	case object October		extends Month
 	case object November	extends Month
 	case object December	extends Month
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit val MonthShow:Show[Month]	= Show.toStringInstance
 }
 
 sealed abstract class Month {
@@ -114,9 +119,4 @@ sealed abstract class Month {
 				case Month.November		=> "November"
 				case Month.December		=> "December"
 			}
-}
-
-
-trait MonthInstances {
-	implicit val MonthShow:Show[Month]	= Show.toStringInstance
 }

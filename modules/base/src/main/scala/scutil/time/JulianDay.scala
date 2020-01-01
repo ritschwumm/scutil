@@ -3,8 +3,13 @@ package scutil.time
 import scutil.lang.tc._
 import scutil.math.functions._
 
-object JulianDay extends JulianDayInstances {
+object JulianDay {
 	val epoch	= GregorianDate.epoch.toJulianDay
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit val JulianDayShow:Show[JulianDay]	= Show.toStringInstance
 }
 
 final case class JulianDay(value:Int) extends Ordered[JulianDay] {
@@ -52,8 +57,4 @@ final case class JulianDay(value:Int) extends Ordered[JulianDay] {
 			Weekday fromIndex value
 
 	override def toString:String	= s"JD${value.toString}"
-}
-
-trait JulianDayInstances {
-	implicit val JulianDayShow:Show[JulianDay]	= Show.toStringInstance
 }

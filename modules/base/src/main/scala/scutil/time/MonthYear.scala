@@ -3,7 +3,7 @@ package scutil.time
 import scutil.lang.tc._
 import scutil.math.functions._
 
-object MonthYear extends MonthYearInstances {
+object MonthYear {
 	// TODO time smart constructor
 
 	def fromValues(month:Month, year:Year):MonthYear	=
@@ -14,6 +14,11 @@ object MonthYear extends MonthYearInstances {
 				month	= moduloInt(index, 12) + 1,
 				year	= index / 12
 			)
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit val MonthYearShow:Show[MonthYear]	= Show.toStringInstance
 }
 
 /** month in 1..12 */
@@ -47,8 +52,4 @@ final case class MonthYear(month:Int, year:Int) extends Ordered[MonthYear] {
 	lazy val toIndex:Int	= monthIndex + year * 12
 
 	override def toString:String	= s"${year.toString}-${month.toString}"
-}
-
-trait MonthYearInstances {
-	implicit val MonthYearShow:Show[MonthYear]	= Show.toStringInstance
 }

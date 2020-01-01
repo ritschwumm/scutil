@@ -168,6 +168,9 @@ trait IterableImplicits {
 				}
 
 		// TODO state support StateT
+
+		def joinMonoid(implicit M:Monoid[T]):T	=
+				(peer foldLeft M.empty)(M.concat)
 	}
 
 	implicit final class IterableOpsExt[CC[_],T](peer:IterableOps[T,CC,CC[T]]) {

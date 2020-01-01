@@ -2,7 +2,7 @@ package scutil.lang
 
 import scutil.lang.tc._
 
-object Prism extends PrismInstances {
+object Prism {
 	def partial[S,T](get:PartialFunction[S,T], set:T=>S):Prism[S,T] =
 			Prism(get.lift, set)
 
@@ -25,6 +25,13 @@ object Prism extends PrismInstances {
 			)
 
 	val Gen	 = PrismGen
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	// TODO optics is this lawful?
+	implicit def PrismSemigroup[S,T]:Semigroup[Prism[S,T]]	=
+			Semigroup instance (_ orElse _)
 }
 
 /** parser and unparser for some data into a side format, aka Prism' */
@@ -213,10 +220,4 @@ final case class Prism[S,T](get:PFunction[S,T], set:T=>S) {
 	// TODO optics this is questionable
 	def toBijectionWith(default: =>T):Bijection[S,T]	=
 			toBijection(constant(default))
-}
-
-trait PrismInstances {
-	// TODO optics is this lawful?
-	implicit def PrismSemigroup[S,T]:Semigroup[Prism[S,T]]	=
-			Semigroup instance (_ orElse _)
 }

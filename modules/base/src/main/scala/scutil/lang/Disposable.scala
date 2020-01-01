@@ -2,7 +2,7 @@ package scutil.lang
 
 import scutil.lang.tc._
 
-object Disposable extends DisposableInstances {
+object Disposable {
 	def apply(todo:Thunk[Unit]):Disposable	= new TaskDisposable(todo)
 
 	def delay(todo: =>Unit):Disposable		= new TaskDisposable(() => todo)
@@ -24,6 +24,12 @@ object Disposable extends DisposableInstances {
 
 	def fromIo(io:Io[Unit]):Disposable	=
 			Disposable(io.unsafeRun _)
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit val DisposableMonoid:Monoid[Disposable]			= Monoid instance (Disposable.empty, _ and _)
+	implicit def DisposableResource[T<:Disposable]:Resource[T]	= Resource instance (_.dispose())
 }
 
 /** something with a destructor */
@@ -47,9 +53,4 @@ trait Disposable {
 
 private final class TaskDisposable(task:Thunk[Unit]) extends Disposable {
 	def dispose():Unit	= { task() }
-}
-
-trait DisposableInstances {
-	implicit val DisposableMonoid:Monoid[Disposable]			= Monoid instance (Disposable.empty, _ and _)
-	implicit def DisposableResource[T<:Disposable]:Resource[T]	= Resource instance (_.dispose())
 }

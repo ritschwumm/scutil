@@ -22,6 +22,8 @@ trait AnyImplicits {
 
 		//------------------------------------------------------------------------------
 
+		// TODO these are in scala.util.chaining now: into is named pipe, and doto is named tap
+
 		/** symbolic alias for into */
 		def |>[U](f:T=>U):U	= into(f)
 

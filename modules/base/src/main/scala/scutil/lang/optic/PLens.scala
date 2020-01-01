@@ -3,7 +3,7 @@ package scutil.lang
 import scutil.lang.implicits._
 import scutil.lang.tc._
 
-object PLens extends PLensInstances {
+object PLens {
 	def identity[T]:PLens[T,T]	=
 			PLens { t =>
 				Some(Store identity t)
@@ -19,6 +19,12 @@ object PLens extends PLensInstances {
 
 	def codiag[T]:PLens[Either[T,T],T]	=
 			identity[T] sum identity[T]
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit def PLensSemigroup[S,T]:Semigroup[PLens[S,T]]	=
+			Semigroup instance (_ orElse _)
 }
 
 final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
@@ -143,9 +149,4 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 				get,
 				t => s => set(t)(s) getOrElse s
 			)
-}
-
-trait PLensInstances {
-	implicit def PLensSemigroup[S,T]:Semigroup[PLens[S,T]]	=
-			Semigroup instance (_ orElse _)
 }

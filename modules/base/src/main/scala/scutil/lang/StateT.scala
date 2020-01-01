@@ -2,7 +2,7 @@ package scutil.lang
 
 import scutil.lang.tc._
 
-object StateT extends StateTInstances { outer =>
+object StateT { outer =>
 	def pure[F[_],S,T](it:T)(implicit F:Applicative[F]):StateT[F,S,T]	=
 			StateT { s => F pure (s -> it) }
 
@@ -84,6 +84,21 @@ object StateT extends StateTInstances { outer =>
 
 	def statelessF[F[_],S,T](func:S=>F[T])(implicit F:Functor[F]):StateT[F,S,T]	=
 			StateT { s => (F map func(s)) { s -> _ } }
+
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	implicit def StateTDelay[F[_]:Delay,S]:Delay[StateT[F,S,?]]	=
+			new Delay[StateT[F,S,?]] {
+				override def delay[T](it: =>T):StateT[F,S,T]	= StateT delayPure it
+			}
+
+	implicit def StateTMonad[F[_]:Monad,S]:Monad[StateT[F,S,?]]	=
+			new Monad[StateT[F,S,?]] {
+				override def pure[T](it:T):StateT[F,S,T]											= StateT pure it
+				override def map[T,U](its:StateT[F,S,T])(func:T=>U):StateT[F,S,U]					= its map func
+				override def flatMap[T,U](its:StateT[F,S,T])(func:T=>StateT[F,S,U]):StateT[F,S,U]	= its flatMap func
+			}
 }
 
 final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
@@ -170,18 +185,4 @@ final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
 
 	def innerFlatten[U](implicit ev:F[T]=>StateT[F,S,U], F:Monad[F]):StateT[F,S,U]	=
 			innerFlatMap(ev)
-}
-
-trait StateTInstances {
-	implicit def StateTDelay[F[_]:Delay,S]:Delay[StateT[F,S,?]]	=
-			new Delay[StateT[F,S,?]] {
-				override def delay[T](it: =>T):StateT[F,S,T]	= StateT delayPure it
-			}
-
-	implicit def StateTMonad[F[_]:Monad,S]:Monad[StateT[F,S,?]]	=
-			new Monad[StateT[F,S,?]] {
-				override def pure[T](it:T):StateT[F,S,T]											= StateT pure it
-				override def map[T,U](its:StateT[F,S,T])(func:T=>U):StateT[F,S,U]					= its map func
-				override def flatMap[T,U](its:StateT[F,S,T])(func:T=>StateT[F,S,U]):StateT[F,S,U]	= its flatMap func
-			}
 }
