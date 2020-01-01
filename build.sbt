@@ -3,7 +3,7 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.165.0",
+	version			:= "0.166.0",
 
 	scalaVersion	:= "2.13.1",
 	scalacOptions	++= Seq(
@@ -13,7 +13,7 @@ inThisBuild(Seq(
 		"-opt:l:method",
 		"-opt:l:inline",
 		"-opt-inline-from:scutil.**",
-		"-Xfatal-warnings",
+		"-Werror",
 		"-Xlint",
 	),
 
@@ -215,7 +215,7 @@ lazy val `scutil-guid`	=
 		.jsSettings(
 			noTestSettings,
 			libraryDependencies	++= Seq(
-				"org.scala-js"	%%%	"scalajs-dom"	% "0.9.7"	% "compile"
+				"org.scala-js"	%%%	"scalajs-dom"	% "0.9.8"	% "compile"
 			)
 		)
 lazy val `scutil-guid-jvm`	= `scutil-guid`.jvm
