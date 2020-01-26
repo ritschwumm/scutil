@@ -17,8 +17,8 @@ private final class PrismGen(val c:Context) {
 			_root_.scutil.lang.Prism[$superType,$subType](
 				get	= it =>
 					it match {
-						case x:$subType	=> Some(x)
-						case _			=> None
+						case x:$subType	=> _root_.scala.Some(x)
+						case _			=> _root_.scala.None
 					},
 				set	= it => it
 			)

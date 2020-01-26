@@ -105,8 +105,8 @@ private final class BijectionGen(val c:Context) {
 							q"""
 								_root_.scutil.lang.Bijection(
 									$companionSymbol.unapply _ andThen {
-										case Some(x)	=> x
-										case None		=> _root_.scala.sys error "case class unapply is expected to be total"
+										case _root_.scala.Some(x)	=> x
+										case _root_.scala.None		=> _root_.scala.sys error "case class unapply is expected to be total"
 									},
 									$companionSymbol.apply _
 								)
@@ -115,8 +115,8 @@ private final class BijectionGen(val c:Context) {
 							q"""
 								_root_.scutil.lang.Bijection(
 									$companionSymbol.unapply _ andThen {
-										case Some(x)	=> x
-										case None		=> _root_.scala.sys error "case class unapply is expected to be total"
+										case _root_.scala.Some(x)	=> x
+										case _root_.scala.None		=> _root_.scala.sys error "case class unapply is expected to be total"
 									},
 									($companionSymbol.apply _).tupled
 								)

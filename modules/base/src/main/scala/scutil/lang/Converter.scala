@@ -9,6 +9,12 @@ object Converter {
 			def convert(s:S):Validated[E,T]	= func(s)
 		}
 
+	/** this is useful when building a recursive schema from implicit converters */
+	def defer[E,S,T](peer: =>Converter[E,S,T]):Converter[E,S,T]	=
+		new Converter[E,S,T] {
+			def convert(s:S):Validated[E,T]	= peer convert s
+		}
+
 	def identity[E,T]:Converter[E,T,T]	=
 		it => Validated good it
 
