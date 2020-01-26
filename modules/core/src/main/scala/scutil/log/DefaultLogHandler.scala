@@ -34,15 +34,15 @@ trait DefaultLogHandler extends LogHandler {
 	// TODO scala-js in the browser it might make more sense to call console.log with individual elements
 	def formatEvent(event:LogEvent):String	= {
 		val atoms		= event.values flatMap (_.atoms)
-		val messages	= atoms collect { case LogString(x) 	=> x }
-		val throwables	= atoms collect { case LogThrowable(x)	=> x }
+		val messages	= atoms collect { case LogAtom.LogString(x) 	=> x }
+		val throwables	= atoms collect { case LogAtom.LogThrowable(x)	=> x }
 
 		val headerItems	=
-				Vector(
-					formatLevel(event.level),
-					formatInstant(event.timestamp),
-					formatLocation(event.location)
-				)
+			Vector(
+				formatLevel(event.level),
+				formatInstant(event.timestamp),
+				formatLocation(event.location)
+			)
 		val messageItems	= messages		map formatMessage
 		val throwableItems	= throwables	map formatThrowable
 

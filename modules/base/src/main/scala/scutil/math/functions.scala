@@ -217,10 +217,10 @@ object functions {
 	//------------------------------------------------------------------------------
 
 	/** ratio 0..1 select a..b */
-	def blendToFloat(ratio:Float, a:Float, b:Float):Float	=
+	def blendFloat(ratio:Float, a:Float, b:Float):Float	=
 		a * (1 - ratio) + b * (0 + ratio)
 
 	/** ratio 0..1 select a..b */
-	def blendToDouble(ratio:Double, a:Double, b:Double):Double	=
+	def blendDouble(ratio:Double, a:Double, b:Double):Double	=
 		a * (1 - ratio) + b * (0 + ratio)
 }

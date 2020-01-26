@@ -9,6 +9,7 @@ import java.nio.charset.Charset
 import scala.collection.mutable
 
 import scutil.lang.tc._
+import scutil.bit._
 
 object ByteString {
 	val empty:ByteString			= new ByteString(Array.empty)
@@ -57,6 +58,26 @@ object ByteString {
 				System arraycopy (it, srcPos, tmp, 0, copyLength)
 			}
 		}
+
+	//------------------------------------------------------------------------------
+
+	def fromBigEndianShort(it:Short):ByteString	=
+		makeWithArray(2) { array => ByteArrayUtil putBigEndianShort	(array, 0, it) }
+
+	def fromBigEndianInt(it:Int):ByteString	=
+		makeWithArray(4) { array => ByteArrayUtil putBigEndianInt	(array, 0, it) }
+
+	def fromBigEndianLong(it:Long):ByteString	=
+		makeWithArray(8) { array => ByteArrayUtil putBigEndianLong	(array, 0, it) }
+
+	def fromLittleEndianShort(it:Short):ByteString	=
+		makeWithArray(2) { array => ByteArrayUtil putLittleEndianShort	(array, 0, it) }
+
+	def fromLittleEndianInt(it:Int):ByteString	=
+		makeWithArray(4) { array => ByteArrayUtil putLittleEndianInt	(array, 0, it) }
+
+	def fromLittleEndianLong(it:Long):ByteString	=
+		makeWithArray(8) { array => ByteArrayUtil putLittleEndianLong	(array, 0, it) }
 
 	//------------------------------------------------------------------------------
 
@@ -208,6 +229,15 @@ final class ByteString private (private val value:Array[Byte]) {
 		diff == 0
 	}
 
+	def reverse:ByteString	=
+		ByteString unsafeFromArray (ByteArrayUtil reverse value)
+
+	def filter(pred:Byte=>Boolean):ByteString	=
+		ByteString unsafeFromArray (unsafeValue filter pred)
+
+	def filterNot(pred:Byte=>Boolean):ByteString	=
+		filter(!pred(_))
+
 	//------------------------------------------------------------------------------
 
 	def asString(charset:Charset):String	= new String(value, charset)
@@ -243,6 +273,65 @@ final class ByteString private (private val value:Array[Byte]) {
 		func(tmp)
 		ByteString unsafeFromArray tmp
 	}
+
+	//------------------------------------------------------------------------------
+
+	def toByte:Option[Byte]	=
+		if (size == 1)	Some(value(0))
+		else			None
+
+	def toBigEndianShort:Option[Short]	=
+		if (size == 2)	Some(ByteArrayUtil getBigEndianShort (value, 0))
+		else			None
+
+	def toBigEndianInt(offset:Int):Option[Int]		=
+		if (size == 4)	Some(ByteArrayUtil getBigEndianInt (value, 0))
+		else									None
+
+	def toBigEndianLong(offset:Int):Option[Long]		=
+		if (size == 8)	Some(ByteArrayUtil getBigEndianLong (value, 0))
+		else									None
+
+	def toLittleEndianShort(offset:Int):Option[Short]	=
+		if (size == 2)	Some(ByteArrayUtil getLittleEndianShort (value, 0))
+		else									None
+
+	def toLittleEndianInt(offset:Int):Option[Int]		=
+		if (size == 4)	Some(ByteArrayUtil getLittleEndianInt (value, 0))
+		else									None
+
+	def toLittleEndianLong(offset:Int):Option[Long]		=
+		if (size == 8)	Some(ByteArrayUtil getLittleEndianLong (value, 0))
+		else									None
+
+	//------------------------------------------------------------------------------
+
+	// only exists for symmetry
+	def getByte(offset:Int):Option[Byte]	= get(offset)
+
+	def getBigEndianShort(offset:Int):Option[Short]	=
+		if (containsSlice(offset, offset+2))	Some(ByteArrayUtil getBigEndianShort (value, offset))
+		else									None
+
+	def getBigEndianInt(offset:Int):Option[Int]		=
+		if (containsSlice(offset, offset+4))	Some(ByteArrayUtil getBigEndianInt (value, offset))
+		else									None
+
+	def getBigEndianLong(offset:Int):Option[Long]		=
+		if (containsSlice(offset, offset+8))	Some(ByteArrayUtil getBigEndianLong (value, offset))
+		else									None
+
+	def getLittleEndianShort(offset:Int):Option[Short]	=
+		if (containsSlice(offset, offset+2))	Some(ByteArrayUtil getLittleEndianShort (value, offset))
+		else									None
+
+	def getLittleEndianInt(offset:Int):Option[Int]		=
+		if (containsSlice(offset, offset+4))	Some(ByteArrayUtil getLittleEndianInt (value, offset))
+		else									None
+
+	def getLittleEndianLong(offset:Int):Option[Long]		=
+		if (containsSlice(offset, offset+8))	Some(ByteArrayUtil getLittleEndianLong (value, offset))
+		else									None
 
 	//------------------------------------------------------------------------------
 
