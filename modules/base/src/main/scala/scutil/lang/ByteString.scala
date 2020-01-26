@@ -284,25 +284,25 @@ final class ByteString private (private val value:Array[Byte]) {
 		if (size == 2)	Some(ByteArrayUtil getBigEndianShort (value, 0))
 		else			None
 
-	def toBigEndianInt(offset:Int):Option[Int]		=
+	def toBigEndianInt:Option[Int]		=
 		if (size == 4)	Some(ByteArrayUtil getBigEndianInt (value, 0))
-		else									None
+		else			None
 
-	def toBigEndianLong(offset:Int):Option[Long]		=
+	def toBigEndianLong:Option[Long]		=
 		if (size == 8)	Some(ByteArrayUtil getBigEndianLong (value, 0))
-		else									None
+		else			None
 
-	def toLittleEndianShort(offset:Int):Option[Short]	=
+	def toLittleEndianShort:Option[Short]	=
 		if (size == 2)	Some(ByteArrayUtil getLittleEndianShort (value, 0))
-		else									None
+		else			None
 
-	def toLittleEndianInt(offset:Int):Option[Int]		=
+	def toLittleEndianInt:Option[Int]		=
 		if (size == 4)	Some(ByteArrayUtil getLittleEndianInt (value, 0))
-		else									None
+		else			None
 
-	def toLittleEndianLong(offset:Int):Option[Long]		=
+	def toLittleEndianLong:Option[Long]		=
 		if (size == 8)	Some(ByteArrayUtil getLittleEndianLong (value, 0))
-		else									None
+		else			None
 
 	//------------------------------------------------------------------------------
 
