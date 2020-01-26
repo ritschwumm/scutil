@@ -15,6 +15,14 @@ object Converter {
 			def convert(s:S):Validated[E,T]	= peer convert s
 		}
 
+	/** this is useful when building a recursive schema from implicit converters */
+	// TODO should this replace the original defer?
+	def defer2[E,S,T](peer: =>Converter[E,S,T]):Converter[E,S,T]	=
+		new Converter[E,S,T] {
+			lazy val cached	= peer
+			def convert(s:S):Validated[E,T]	= cached convert s
+		}
+
 	def identity[E,T]:Converter[E,T,T]	=
 		it => Validated good it
 

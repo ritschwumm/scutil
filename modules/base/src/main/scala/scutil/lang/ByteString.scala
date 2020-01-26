@@ -62,22 +62,22 @@ object ByteString {
 	//------------------------------------------------------------------------------
 
 	def fromBigEndianShort(it:Short):ByteString	=
-		makeWithArray(2) { array => ByteArrayUtil putBigEndianShort	(array, 0, it) }
+		unsafeFromArray(ByteArrayUtil fromBigEndianShort it)
 
 	def fromBigEndianInt(it:Int):ByteString	=
-		makeWithArray(4) { array => ByteArrayUtil putBigEndianInt	(array, 0, it) }
+		unsafeFromArray(ByteArrayUtil fromBigEndianInt it)
 
 	def fromBigEndianLong(it:Long):ByteString	=
-		makeWithArray(8) { array => ByteArrayUtil putBigEndianLong	(array, 0, it) }
+		unsafeFromArray(ByteArrayUtil fromBigEndianLong it)
 
 	def fromLittleEndianShort(it:Short):ByteString	=
-		makeWithArray(2) { array => ByteArrayUtil putLittleEndianShort	(array, 0, it) }
+		unsafeFromArray(ByteArrayUtil fromLittleEndianShort it)
 
 	def fromLittleEndianInt(it:Int):ByteString	=
-		makeWithArray(4) { array => ByteArrayUtil putLittleEndianInt	(array, 0, it) }
+		unsafeFromArray(ByteArrayUtil fromLittleEndianInt it)
 
 	def fromLittleEndianLong(it:Long):ByteString	=
-		makeWithArray(8) { array => ByteArrayUtil putLittleEndianLong	(array, 0, it) }
+		unsafeFromArray(ByteArrayUtil fromLittleEndianLong it)
 
 	//------------------------------------------------------------------------------
 
@@ -281,27 +281,27 @@ final class ByteString private (private val value:Array[Byte]) {
 		else			None
 
 	def toBigEndianShort:Option[Short]	=
-		if (size == 2)	Some(ByteArrayUtil getBigEndianShort (value, 0))
+		if (size == 2)	Some(ByteArrayUtil toBigEndianShort value)
 		else			None
 
 	def toBigEndianInt:Option[Int]		=
-		if (size == 4)	Some(ByteArrayUtil getBigEndianInt (value, 0))
+		if (size == 4)	Some(ByteArrayUtil toBigEndianInt value)
 		else			None
 
 	def toBigEndianLong:Option[Long]		=
-		if (size == 8)	Some(ByteArrayUtil getBigEndianLong (value, 0))
+		if (size == 8)	Some(ByteArrayUtil toBigEndianLong value)
 		else			None
 
 	def toLittleEndianShort:Option[Short]	=
-		if (size == 2)	Some(ByteArrayUtil getLittleEndianShort (value, 0))
+		if (size == 2)	Some(ByteArrayUtil toLittleEndianShort value)
 		else			None
 
 	def toLittleEndianInt:Option[Int]		=
-		if (size == 4)	Some(ByteArrayUtil getLittleEndianInt (value, 0))
+		if (size == 4)	Some(ByteArrayUtil toLittleEndianInt value)
 		else			None
 
 	def toLittleEndianLong:Option[Long]		=
-		if (size == 8)	Some(ByteArrayUtil getLittleEndianLong (value, 0))
+		if (size == 8)	Some(ByteArrayUtil toLittleEndianLong value)
 		else			None
 
 	//------------------------------------------------------------------------------

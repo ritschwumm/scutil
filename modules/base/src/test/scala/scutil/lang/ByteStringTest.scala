@@ -32,5 +32,11 @@ class ByteStringTest extends Specification {
 		"not split after end" in {
 			ByteString.of(1,2,3,4,5,6) splitAt 6+1 mustEqual None
 		}
+
+		"roundtrip big endian long" in {
+			val b	= 4607182418800017408L
+			val bb	= ByteString.fromBigEndianLong(b).toBigEndianLong.getOrElse(sys error "oops")
+			bb mustEqual b
+		}
 	}
 }

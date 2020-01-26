@@ -20,6 +20,64 @@ object ByteArrayUtil {
 
 	//------------------------------------------------------------------------------
 
+	def fromBigEndianShort(value:Short):Array[Byte]	= {
+		val out	= new Array[Byte](bytesPerShort)
+		putBigEndianShort(out, 0, value)
+		out
+	}
+
+	def fromLittleEndianShort(value:Short):Array[Byte]	= {
+		val out	= new Array[Byte](bytesPerShort)
+		putLittleEndianShort(out, 0, value)
+		out
+	}
+
+	def fromBigEndianInt(value:Int):Array[Byte]	= {
+		val out	= new Array[Byte](bytesPerInt)
+		putBigEndianInt(out, 0, value)
+		out
+	}
+
+	def fromLittleEndianInt(value:Int):Array[Byte]	= {
+		val out	= new Array[Byte](bytesPerInt)
+		putLittleEndianInt(out, 0, value)
+		out
+	}
+
+	def fromBigEndianLong(value:Long):Array[Byte]	= {
+		val out	= new Array[Byte](bytesPerLong)
+		putBigEndianLong(out, 0, value)
+		out
+	}
+
+	def fromLittleEndianLong(value:Long):Array[Byte]	= {
+		val out	= new Array[Byte](bytesPerLong)
+		putLittleEndianLong(out, 0, value)
+		out
+	}
+
+	//------------------------------------------------------------------------------
+
+	def toBigEndianShort(array:Array[Byte]):Short	=
+		getBigEndianShort(array, 0)
+
+	def toLittleEndianShort(array:Array[Byte]):Short	=
+		getLittleEndianShort(array, 0)
+
+	def toBigEndianInt(array:Array[Byte]):Int	=
+		getBigEndianInt(array, 0)
+
+	def toLittleEndianInt(array:Array[Byte]):Int	=
+		getLittleEndianInt(array, 0)
+
+	def toBigEndianLong(array:Array[Byte]):Long	=
+		getBigEndianLong(array, 0)
+
+	def toLittleEndianLong(array:Array[Byte]):Long	=
+		getLittleEndianLong(array, 0)
+
+	//------------------------------------------------------------------------------
+
 	def getBigEndianShort(array:Array[Byte], byteOffset:Int):Short	=
 		(	((array(byteOffset+0) & 0xff) << 8)	|
 			((array(byteOffset+1) & 0xff) << 0)
@@ -49,10 +107,10 @@ object ByteArrayUtil {
 			((array(byteOffset+1) & 0xffL) << 48)	|
 			((array(byteOffset+2) & 0xffL) << 40)	|
 			((array(byteOffset+3) & 0xffL) << 32)	|
-			((array(byteOffset+0) & 0xffL) << 24)	|
-			((array(byteOffset+1) & 0xffL) << 16)	|
-			((array(byteOffset+2) & 0xffL) <<  8)	|
-			((array(byteOffset+3) & 0xffL) <<  0)
+			((array(byteOffset+4) & 0xffL) << 24)	|
+			((array(byteOffset+5) & 0xffL) << 16)	|
+			((array(byteOffset+6) & 0xffL) <<  8)	|
+			((array(byteOffset+7) & 0xffL) <<  0)
 		)
 
 	def getLittleEndianLong(array:Array[Byte], byteOffset:Int):Long	=
@@ -60,10 +118,10 @@ object ByteArrayUtil {
 			((array(byteOffset+1) & 0xffL) <<  8)	|
 			((array(byteOffset+2) & 0xffL) << 16)	|
 			((array(byteOffset+3) & 0xffL) << 24)	|
-			((array(byteOffset+0) & 0xffL) << 32)	|
-			((array(byteOffset+1) & 0xffL) << 40)	|
-			((array(byteOffset+2) & 0xffL) << 48)	|
-			((array(byteOffset+3) & 0xffL) << 56)
+			((array(byteOffset+4) & 0xffL) << 32)	|
+			((array(byteOffset+5) & 0xffL) << 40)	|
+			((array(byteOffset+6) & 0xffL) << 48)	|
+			((array(byteOffset+7) & 0xffL) << 56)
 		)
 
 	//------------------------------------------------------------------------------
@@ -151,43 +209,5 @@ object ByteArrayUtil {
 		array(byteOffset+2)	= f
 		array(byteOffset+1)	= g
 		array(byteOffset+0)	= h
-	}
-
-	//------------------------------------------------------------------------------
-
-	def bigEndianShort(value:Short):Array[Byte]	= {
-		val out	= new Array[Byte](bytesPerShort)
-		putBigEndianShort(out, 0, value)
-		out
-	}
-
-	def littleEndianShort(value:Short):Array[Byte]	= {
-		val out	= new Array[Byte](bytesPerShort)
-		putLittleEndianShort(out, 0, value)
-		out
-	}
-
-	def bigEndianInt(value:Int):Array[Byte]	= {
-		val out	= new Array[Byte](bytesPerInt)
-		putBigEndianInt(out, 0, value)
-		out
-	}
-
-	def littleEndianInt(value:Int):Array[Byte]	= {
-		val out	= new Array[Byte](bytesPerInt)
-		putLittleEndianInt(out, 0, value)
-		out
-	}
-
-	def bigEndianLong(value:Long):Array[Byte]	= {
-		val out	= new Array[Byte](bytesPerLong)
-		putBigEndianLong(out, 0, value)
-		out
-	}
-
-	def littleEndianLong(value:Long):Array[Byte]	= {
-		val out	= new Array[Byte](bytesPerLong)
-		putLittleEndianLong(out, 0, value)
-		out
 	}
 }

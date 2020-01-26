@@ -1,5 +1,7 @@
 package scutil.lang
 
+import scala.collection.IterableFactory
+
 import scutil.lang.tc._
 
 object Nes {
@@ -216,6 +218,9 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 
 	def toSeq:Seq[T]	=
 		toVector
+
+	def to[CC[_],U>:T](factory:IterableFactory[CC]):CC[U]	=
+		factory from toVector
 
 	def mkString(separator:String):String	=
 		toVector mkString separator
