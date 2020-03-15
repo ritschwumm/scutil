@@ -11,30 +11,20 @@ object StringImplicits extends StringImplicits
 
 trait StringImplicits {
 	implicit final class LangStringExt(peer:String) {
-		/*
-		// NOTE 213 these already exist in the standard lib
-		def toBooleanOption:Option[Boolean]	= parseBoolean.toOption
-		def toByteOption:Option[Byte]		= parseByte.toOption
-		def toShortOption:Option[Short]		= parseShort.toOption
-		def toIntOption:Option[Int]			= parseInt.toOption
-		def toLongOption:Option[Long]		= parseLong.toOption
-		def toFloatOption:Option[Float]		= parseFloat.toOption
-		def toDoubleOption:Option[Double]	= parseDouble.toOption
-		*/
 		def toBigIntOption:Option[BigInt]	= parseBigInt.toOption
 
 		// toBoolean throws an IllegalArgumentException, not a NumberFormatException
 		def parseBoolean:Either[NumberFormatException,Boolean]	=
-				peer match {
-					case "true"							=> Right(true)
-					case "false"						=> Right(false)
-					case "TRUE"							=> Right(true)
-					case "FALSE"						=> Right(false)
-					case null							=> Left(new NumberFormatException("null is not a boolean"))
-					case x if x.toLowerCase == "true"	=> Right(true)
-					case x if x.toLowerCase == "false"	=> Right(false)
-					case x								=> Left(new NumberFormatException("not a boolean: " + x))
-				}
+			peer match {
+				case "true"							=> Right(true)
+				case "false"						=> Right(false)
+				case "TRUE"							=> Right(true)
+				case "FALSE"						=> Right(false)
+				case null							=> Left(new NumberFormatException("null is not a boolean"))
+				case x if x.toLowerCase == "true"	=> Right(true)
+				case x if x.toLowerCase == "false"	=> Right(false)
+				case x								=> Left(new NumberFormatException("not a boolean: " + x))
+			}
 		def parseByte:Either[NumberFormatException,Byte]		= parseNumber(_.toByte)
 		def parseShort:Either[NumberFormatException,Short]		= parseNumber(_.toShort)
 		def parseInt:Either[NumberFormatException,Int]			= parseNumber(_.toInt)
@@ -75,8 +65,8 @@ trait StringImplicits {
 			else						Some(prefix + peer)
 
 		def pasteSuffix(suffix:String):Option[String] =
-				if (peer endsWith suffix)	None
-				else						Some(peer + suffix)
+			if (peer endsWith suffix)	None
+			else						Some(peer + suffix)
 
 		//------------------------------------------------------------------------------
 
@@ -147,14 +137,14 @@ trait StringImplicits {
 			}
 
 		/** like indexOf, but None if not found */
-		def indexOfCharOption(ch:Int, fromIndex:Int=0):Option[Int]	=
+		def indexOfChar(ch:Int, fromIndex:Int=0):Option[Int]	=
 			peer indexOf (ch, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)
 			}
 
 		/** like lastIndexOf, but None if not found */
-		def lastIndexOfCharOption(ch:Int, fromIndex:Int=peer.length-1):Option[Int]	=
+		def lastIndexOfChar(ch:Int, fromIndex:Int=peer.length-1):Option[Int]	=
 			peer lastIndexOf (ch, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)

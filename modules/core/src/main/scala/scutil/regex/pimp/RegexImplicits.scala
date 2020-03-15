@@ -46,5 +46,8 @@ trait RegexImplicits {
 
 		def toPrism:Prism[String,String]	=
 			Prism filtered test
+
+		def removeAllFrom(s:String):String	=
+			peer replaceAllIn (s, "")
 	}
 }
