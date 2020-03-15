@@ -191,6 +191,12 @@ trait EitherImplicits {
 
 		//------------------------------------------------------------------------------
 
+		def throwMessage(implicit ev:L=>String):R	=
+			peer match {
+				case Left(x)	=> throw new RuntimeException(x)
+				case Right(x)	=> x
+			}
+
 		def throwThrowable(implicit ev:L=>Throwable):R	=
 			peer match {
 				case Left(x)	=> throw x
