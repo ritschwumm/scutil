@@ -67,13 +67,13 @@ final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[Gre
 		// 0 for march, 11 for february
 		val m	= month + 12 * a - 3
 		val x	=
-				day								+
-				floorDivLong(153 * m + 2, 5)	+
-				365 * y 						+
-				floorDivLong(y, 4)				-
-				floorDivLong(y, 100)			+
-				floorDivLong(y, 400)			-
-				32045
+			day								+
+			floorDivLong(153 * m + 2, 5)	+
+			365 * y 						+
+			floorDivLong(y, 4)				-
+			floorDivLong(y, 100)			+
+			floorDivLong(y, 400)			-
+			32045
 		JulianDay(x.toInt)
 	}
 
