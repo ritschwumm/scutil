@@ -1,7 +1,7 @@
 package scutil.lang.tc
 
 trait ApplicativeTupleNSyntaxGenerated {
-	[2..#final implicit class ApplicativeTuple1Syntax[F[_],[#S1#]](items:([#F[S1]#])) {
+	[2..#implicit final class ApplicativeTuple1Syntax[F[_],[#S1#]](items:([#F[S1]#])) {
 		def zipN(implicit F:Applicative[F]):F[([#S1#])]	=
 			mapN { ([#s1#]) => ([#s1#]) }
 		def mapN[T](func:([#S1#])=>T)(implicit F:Applicative[F]):F[T]	= {

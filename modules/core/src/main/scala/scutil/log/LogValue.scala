@@ -19,7 +19,7 @@ object LogValue {
 	def string(it:String):LogValue			= LogString(it)
 	def throwable(it:Throwable):LogValue	= LogThrowable(it)
 	def multiple(it:Seq[LogValue]):LogValue	= LogMultiple(it)
-	def variable(it:LogValue*):LogValue		= LogMultiple(it.toVector)
+	def variable(it:LogValue*):LogValue		= LogMultiple(it)
 
 	//------------------------------------------------------------------------------
 

@@ -64,7 +64,7 @@ object EitherT {
 
 	//------------------------------------------------------------------------------
 
-	implicit class MergeableEitherT[F[_],T](peer:EitherT[F,T,T]) {
+	implicit final class MergeableEitherT[F[_],T](peer:EitherT[F,T,T]) {
 		def merge(implicit F:Functor[F]):F[T]	= (F map peer.value)(_.merge)
 	}
 

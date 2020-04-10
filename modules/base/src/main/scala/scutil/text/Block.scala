@@ -1,7 +1,5 @@
 package scutil.text
 
-import scala.annotation.tailrec
-
 import scutil.base.implicits._
 
 object Block {
@@ -23,7 +21,10 @@ object Block {
 				}
 			}
 
-		val argIndents	= feedForward(argIndentOpts, initialArgIndent)
+		// tail is legal here, scanLeft always returns at least one element
+		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
+		val argIndents	=
+			argIndentOpts.scanLeft(initialArgIndent){ (old, cur) => cur getOrElse old }.tail
 
 		// last is legal here, we always have a clean part
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
@@ -85,29 +86,16 @@ object Block {
 		else indented
 	}
 
-	//------------------------------------------------------------------------------
-
-	private val blankChar:Char=>Boolean			= it => it == ' ' || it == '\t'
-	private def allBlank(s:String):Boolean		= s forall blankChar
-	private def indentOf(line:String):String	= line takeWhile blankChar
-	private def unixLf(s:String):String			= s replace ("\r\n", "\n")
-
 	private def commonPrefix(a:String, b:String):String	= {
 		var	i	= 0
 		while (i < a.length && i < b.length && a.charAt(i) == b.charAt(i))	i	+= 1
 		a.substring(0, i)
 	}
 
-	private def feedForward[T](input:Seq[Option[T]], initial:T):Seq[T]	= {
-		@tailrec
-		def loop(todo:Seq[Option[T]], state:T, done:Seq[T]):Seq[T]	=
-			todo match {
-				case head +: tail	=>
-					val next	= head getOrElse state
-					loop(tail, next, done :+ next)
-				case _	=>
-					done
-			}
-		loop(input, initial, Vector.empty)
-	}
+	//------------------------------------------------------------------------------
+
+	private val blankChar:Char=>Boolean			= it => it == ' ' || it == '\t'
+	private def allBlank(s:String):Boolean		= s forall blankChar
+	private def indentOf(line:String):String	= line takeWhile blankChar
+	private def unixLf(s:String):String			= s replace ("\r\n", "\n")
 }

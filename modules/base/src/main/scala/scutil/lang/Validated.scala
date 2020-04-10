@@ -14,7 +14,7 @@ object Validated {
 		if (ok)	good(value)
 		else	bad(problems)
 
-	implicit class MergeableValidated[T](peer:Validated[T,T]) {
+	implicit final class MergeableValidated[T](peer:Validated[T,T]) {
 		def merge:T	=
 			peer match {
 				case Bad(x)		=> x

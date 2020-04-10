@@ -83,6 +83,18 @@ trait IterableImplicits {
 			None
 		}
 
+		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
+		def scanLeftNes[U](z: U)(op: (U, T) => U):Nes[U]	= {
+			val seq = peer.scanLeft(z)(op).to(Seq)
+			Nes(seq.head, seq.tail)
+		}
+
+		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
+		def scanRightNes[U](z: U)(op: (T, U) => U): Nes[U]	= {
+			val seq = peer.scanRight(z)(op).to(Seq)
+			Nes(seq.head, seq.tail)
+		}
+
 		/** insert a separator between elements */
 		def intersperse[U>:T](separator: =>U)(implicit factory:Factory[U,CC[U]]):CC[U]	=
 			// TODO generify without factory - but we have to know drop, and that peer is a CC[U], too

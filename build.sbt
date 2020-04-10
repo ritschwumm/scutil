@@ -3,7 +3,7 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.175.0",
+	version			:= "0.176.0",
 
 	scalaVersion	:= "2.13.1",
 	scalacOptions	++= Seq(
@@ -189,7 +189,7 @@ lazy val `scutil-xml`	=
 			// "-language:experimental.macros",
 		),
 		libraryDependencies	++= Seq(
-			"org.scala-lang.modules"	%% "scala-xml"	% "1.2.0"	% "compile"
+			"org.scala-lang.modules"	%% "scala-xml"	% "1.3.0"	% "compile"
 		)
 	)
 	.dependsOn(

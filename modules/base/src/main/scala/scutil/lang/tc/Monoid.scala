@@ -8,6 +8,17 @@ object Monoid {
 			def empty:T				= empty1
 			def concat(a:T, b:T):T	= func(a, b)
 		}
+
+	//------------------------------------------------------------------------------
+
+	def empty[T](implicit SG:Monoid[T]):T	= SG.empty
+
+	def concatOf[T:Monoid](xs:T*):T	=
+		concatAll(xs)
+
+	// TODO add a Foldable typeclass
+	def concatAll[T](xs:Iterable[T])(implicit SG:Monoid[T]):T	=
+		 (xs foldLeft SG.empty)(SG.concat)
 }
 
 trait Monoid[F] extends Semigroup[F] {

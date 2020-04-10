@@ -16,8 +16,8 @@ class LoggingTest extends Specification with TestLogging {
 
 //------------------------------------------------------------------------------
 
-trait TestLogging extends LoggingSyntax {
-	val logHandler	= new TestLogHandler
+trait TestLogging extends Logging {
+	override val logHandler	= new TestLogHandler
 }
 
 class TestLogHandler extends DefaultLogHandler {
