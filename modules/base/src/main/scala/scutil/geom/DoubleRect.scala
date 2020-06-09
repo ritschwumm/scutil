@@ -31,13 +31,6 @@ object DoubleRect {
 
 	def horizontalWithVertical(horizontal:DoubleSpan, vertical:DoubleSpan):DoubleRect	=
 		new DoubleRect(horizontal, vertical)
-
-	//------------------------------------------------------------------------------
-
-	private def apply(horizontal:DoubleSpan, vertical:DoubleSpan):DoubleRect	= new DoubleRect(horizontal, vertical)
-
-	// NOTE hack: mark apply method as used
-	val _ = apply _
 }
 
 final class DoubleRect private (val horizontal:DoubleSpan, val vertical:DoubleSpan) {
@@ -84,7 +77,7 @@ final class DoubleRect private (val horizontal:DoubleSpan, val vertical:DoubleSp
 		}
 
 	def inset(left:Double, top:Double, right:Double,  bottom:Double):DoubleRect	=
-		DoubleRect(
+		new DoubleRect(
 			horizontal	inset (left,	right),
 			vertical	inset (top,		bottom)
 		)

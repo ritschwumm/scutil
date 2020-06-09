@@ -3,9 +3,9 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.177.0",
+	version			:= "0.178.0",
 
-	scalaVersion	:= "2.13.1",
+	scalaVersion	:= "2.13.2",
 	scalacOptions	++= Seq(
 		"-deprecation",
 		"-unchecked",

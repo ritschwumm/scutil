@@ -9,7 +9,7 @@ trait StringTokenizerImplicits {
 		def toIterator:Iterator[String]	=
 			new Iterator[String] {
 				def hasNext	= peer.hasMoreTokens
-				def next	= peer.nextToken
+				def next()	= peer.nextToken()
 			}
 	}
 }

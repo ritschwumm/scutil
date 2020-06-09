@@ -64,6 +64,12 @@ object ByteString {
 	def fromBigEndianShort(it:Short):ByteString	=
 		unsafeFromArray(ByteArrayUtil fromBigEndianShort it)
 
+	/*
+	// NOTE this would work, too:
+	(ByteString makeWithByteBuffer 4) { buffer =>
+		buffer putInt it
+	}
+	*/
 	def fromBigEndianInt(it:Int):ByteString	=
 		unsafeFromArray(ByteArrayUtil fromBigEndianInt it)
 

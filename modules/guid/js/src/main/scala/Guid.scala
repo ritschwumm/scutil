@@ -16,10 +16,17 @@ object Guid extends GuidBase {
 
 	protected def randomBytes(size:Int):ByteString	=
 		undefOrCrypto.fold(
-			ByteString unsafeFromArray (Array.fill[Byte](size)((Math.random() * 256).toByte)),
-		){ crypto =>
-			val buffer	= new Int8Array(size)
-			crypto getRandomValues buffer
-			ByteString unsafeFromArray buffer.toArray
-		}
+			insecureRandomBytes(size)
+		)(
+			secureRandomBytes(size)
+		)
+
+	private def secureRandomBytes(size:Int)(crypt:Crypto):ByteString	= {
+		val buffer	= new Int8Array(size)
+		crypto getRandomValues buffer
+		ByteString unsafeFromArray buffer.toArray
+	}
+
+	private def insecureRandomBytes(size:Int):ByteString	=
+		ByteString unsafeFromArray (Array.fill[Byte](size)((Math.random() * 256).toByte))
 }

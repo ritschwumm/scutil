@@ -47,7 +47,8 @@ final case class IntPoint(x:Int, y:Int) {
 
 	def angle:Double	= smath atan2 (y, x)
 
-	def length:Double	= smath sqrt lengthQ
+	// TODO this is dangerous, converting Long to Double is lossy
+	def length:Double	= smath sqrt lengthQ.toDouble
 	def lengthQ:Long	= x*x + y*y
 
 	//------------------------------------------------------------------------------

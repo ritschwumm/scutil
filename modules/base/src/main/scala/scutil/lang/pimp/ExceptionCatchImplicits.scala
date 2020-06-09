@@ -1,7 +1,5 @@
 package scutil.lang.pimp
 
-import scutil.lang._
-
 import scala.util.control.Exception.Catch
 
 object ExceptionCatchImplicits extends ExceptionCatchImplicits

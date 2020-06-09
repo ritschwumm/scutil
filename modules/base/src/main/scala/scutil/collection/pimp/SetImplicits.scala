@@ -36,7 +36,7 @@ trait SetImplicits {
 			(peer map { it => (it, value(it)) }).toMap
 
 		/** group values by keys, both from a function */
-		def groupMap[K,V](func:T=>(K,V)):Map[K,Set[V]]	=
+		def groupMapPaired[K,V](func:T=>(K,V)):Map[K,Set[V]]	=
 			peer
 			.map		(func)
 			.groupBy	{ _._1 }

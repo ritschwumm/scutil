@@ -11,10 +11,7 @@ object DoubleSpan {
 
 	//------------------------------------------------------------------------------
 
-	private def apply(start:Double, size:Double):DoubleSpan	= new DoubleSpan(start, size)
-
-	// NOTE hack: mark apply method as used
-	val _ = apply _
+	protected def apply(start:Double, size:Double):DoubleSpan	= new DoubleSpan(start, size)
 }
 
 final class DoubleSpan private (val start:Double, val size:Double) {
