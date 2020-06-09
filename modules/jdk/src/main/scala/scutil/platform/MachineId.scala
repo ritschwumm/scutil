@@ -6,7 +6,7 @@ import java.net.NetworkInterface
 
 import scutil.lang._
 import scutil.base.implicits._
-import scutil.core.implicits._
+import scutil.jdk.implicits._
 
 object MachineId {
 	lazy val integer:Int	=

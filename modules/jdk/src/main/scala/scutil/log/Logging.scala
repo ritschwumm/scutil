@@ -2,7 +2,6 @@ package scutil.log
 
 import scutil.lang._
 import scutil.time.MilliInstant
-import scutil.jtime.implicits._
 
 /** provides a LogHandler and syntax to turn LogLevels into logging methods */
 trait Logging {

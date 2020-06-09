@@ -28,6 +28,7 @@ class DefaultLogFormatter extends LogFormatter {
 		(throwableItems mkString "")
 	}
 
+	// TODO this is the only reason to keep scutil.log in scutil-jdk
 	def formatInstant(it:MilliInstant):String	=
 		"[" + it.toISO8601 + "]"
 

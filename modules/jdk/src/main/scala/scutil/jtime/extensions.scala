@@ -9,4 +9,3 @@ trait extensions
 	with	DateFormatImplicits
 	with	InstantImplicits
 	with	MilliInstantImplicits
-	with	MilliDurationImplicits

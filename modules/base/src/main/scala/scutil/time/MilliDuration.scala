@@ -4,6 +4,7 @@ import scala.math.Ordered
 
 import scutil.lang._
 import scutil.lang.tc._
+import scutil.text.Human
 
 object MilliDuration {
 	def week:MilliDuration		= day		*! 7
@@ -44,6 +45,8 @@ final case class MilliDuration(millis:Long) extends Ordered[MilliDuration] {
 
 	def micros:Long	= millis*1000
 	def nanos:Long	= millis*1000*1000
+
+	def toHumanString:String	= Human fullMilliDuration millis
 
 	override def toString:String	= millis.toString
 }

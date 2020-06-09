@@ -6,7 +6,7 @@ import java.awt.datatransfer._
 import javax.swing._
 
 import scutil.lang._
-import scutil.core.implicits._
+import scutil.jdk.implicits._
 import scutil.platform._
 import scutil.geom._
 import scutil.gui.implicits._

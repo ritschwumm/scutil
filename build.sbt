@@ -3,7 +3,7 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.176.0",
+	version			:= "0.177.0",
 
 	scalaVersion	:= "2.13.1",
 	scalacOptions	++= Seq(
@@ -83,8 +83,8 @@ lazy val `scutil`	=
 	.aggregate(
 		`scutil-base-jvm`,
 		`scutil-base-js`,
-		`scutil-core`,
-		`scutil-swing`,
+		`scutil-jdk`,
+		`scutil-gui`,
 		`scutil-xml`,
 		`scutil-guid-jvm`,
 		`scutil-guid-js`
@@ -112,7 +112,7 @@ lazy val `scutil-base`	=
 		),
 		libraryDependencies	++= Seq(
 			"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-			"org.specs2"		%%	"specs2-core"	% "4.9.2"				% "test"
+			"org.specs2"		%%	"specs2-core"	% "4.9.3"				% "test"
 		),
 		Compile / boilerplateSource	:= baseDirectory.value.getParentFile / "src" / "main" / "boilerplate"
 	)
@@ -123,8 +123,8 @@ lazy val `scutil-base`	=
 lazy val `scutil-base-jvm`	= `scutil-base`.jvm
 lazy val `scutil-base-js`	= `scutil-base`.js
 
-lazy val `scutil-core`	=
-	(project	in	file("modules/core"))
+lazy val `scutil-jdk`	=
+	(project	in	file("modules/jdk"))
 	.settings(
 		fixConsoleSettings,
 		scalacOptions	++= Seq(
@@ -137,7 +137,7 @@ lazy val `scutil-core`	=
 		),
 		libraryDependencies	++= Seq(
 			"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-			"org.specs2"		%%	"specs2-core"	% "4.9.2"				% "test"
+			"org.specs2"		%%	"specs2-core"	% "4.9.3"				% "test"
 		),
 
 		//------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ lazy val `scutil-core`	=
 			import scutil.lang._
 			import scutil.lang.Charsets.{ us_ascii, iso_8859_1, utf_8 }
 			import scutil.base.implicits._
-			import scutil.core.implicits._
+			import scutil.jdk.implicits._
 			import scutil.codec.Base64
 			import scutil.codec.URIComponent
 			import scutil.text.Human
@@ -161,8 +161,8 @@ lazy val `scutil-core`	=
 	)
 	.dependsOn	(`scutil-base-jvm`)
 
-lazy val `scutil-swing`	=
-	(project	in	file("modules/swing"))
+lazy val `scutil-gui`	=
+	(project	in	file("modules/gui"))
 	.settings(
 		fixConsoleSettings,
 		scalacOptions	++= Seq(
@@ -174,7 +174,7 @@ lazy val `scutil-swing`	=
 		)
 	)
 	.dependsOn(
-		`scutil-core`
+		`scutil-jdk`
 	)
 
 lazy val `scutil-xml`	=
@@ -193,7 +193,7 @@ lazy val `scutil-xml`	=
 		)
 	)
 	.dependsOn(
-		`scutil-core`
+		`scutil-jdk`
 	)
 
 lazy val `scutil-guid`	=

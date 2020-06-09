@@ -4,7 +4,7 @@ import java.io._
 
 import scutil.lang._
 import scutil.base.implicits._
-import scutil.core.implicits._
+import scutil.jdk.implicits._
 import scutil.concurrent.Executors
 
 object External {

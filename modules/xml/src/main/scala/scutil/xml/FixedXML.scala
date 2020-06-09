@@ -13,7 +13,7 @@ import scala.xml.factory.XMLLoader
 import javax.xml.parsers.SAXParser
 
 import scutil.base.implicits._
-import scutil.core.implicits._
+import scutil.jdk.implicits._
 import scutil.lang.Charsets
 
 /*
