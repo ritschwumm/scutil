@@ -37,20 +37,11 @@ object OptionT {
 		def some[T](it:T)(implicit M:Monad[F]):OptionT[F,T]					= OptionT some it
 		def none[T](implicit M:Monad[F]):OptionT[F,T]						= OptionT.none
 		def delay[T](it: =>T)(implicit D:Delay[F]):OptionT[F,T]				= OptionT delay it
-		@deprecated("use delay", "0.181.0")
-		def delayPure[T](it: =>T)(implicit D:Delay[F]):OptionT[F,T]			= delay(it)
 	}
 
 	//------------------------------------------------------------------------------
 
 	def delay[F[_],T](it: =>T)(implicit D:Delay[F]):OptionT[F,T]	= OptionT(D delay Some(it))
-
-	@deprecated("use delay", "0.181.0")
-	def delayPure[F[_]:Delay,T](it: =>T):OptionT[F,T]	= delay(it)
-
-	/*
-	def delaySome[F[_]:Delay,T](it: =>T):OptionT[F,T]	= delayFromOption(Some(it))
-	*/
 
 	def delayFromOption[F[_],T](it: =>Option[T])(implicit D:Delay[F]):OptionT[F,T]	=
 		OptionT(D delay it)

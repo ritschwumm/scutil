@@ -30,7 +30,7 @@ class DefaultLogFormatter extends LogFormatter {
 
 	// TODO this is the only reason to keep scutil.log in scutil-jdk
 	def formatInstant(it:MilliInstant):String	=
-		"[" + it.toISO8601 + "]"
+		"[" + it.toIso8601 + "]"
 
 	def formatLocation(it:SourceLocation):String	=
 		it.name + ":" + it.line.toString

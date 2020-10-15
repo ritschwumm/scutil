@@ -9,9 +9,6 @@ object Io extends IoInstancesLow {
 	def delay[T](it: =>T):Io[T]		= Io.Suspend(() => it)
 	def thunk[T](it:Thunk[T]):Io[T]	= Io.Suspend(it)
 
-	@deprecated("use unit", "0.181.0")
-	def pureUnit:Io[Unit]	= Io.Pure(())
-
 	def unit:Io[Unit]	= Io.Pure(())
 
 	//------------------------------------------------------------------------------
@@ -130,6 +127,7 @@ sealed trait Io[T] {
 }
 
 trait IoInstancesLow {
+	/** this exists for cases where we only have a Semigroup for T and not a full Monoid */
 	implicit def IoSemigroup[T](implicit F:Semigroup[T]):Semigroup[Io[T]]	=
 		new Semigroup[Io[T]] {
 			def concat(a:Io[T], b:Io[T]):Io[T]	= (a zipWith b)(F.concat)

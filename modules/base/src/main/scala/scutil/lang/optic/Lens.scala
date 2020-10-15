@@ -38,6 +38,7 @@ final case class Lens[S,T](get:S=>T, set:T=>S=>S) {
 
 	//------------------------------------------------------------------------------
 
+	// NOTE this is exactly equivalent to modF and can probably be implemented in terms of it
 	def embedState[U](state:State[T,U]):State[S,U]	=
 		State { s =>
 			val (t,u)	= state run get(s)

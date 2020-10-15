@@ -50,10 +50,6 @@ object StateT { outer =>
 	def delay[F[_],S,T](it: =>T)(implicit D:Delay[F]):StateT[F,S,T]	=
 		StateT { s => D delay (s -> it) }
 
-	@deprecated("use delay", "0.181.0")
-	def delayPure[F[_],S,T](it: =>T)(implicit D:Delay[F]):StateT[F,S,T]	=
-		delay(it)
-
 	//------------------------------------------------------------------------------
 
 	def get[F[_],S](implicit F:Applicative[F]):StateT[F,S,S]	=

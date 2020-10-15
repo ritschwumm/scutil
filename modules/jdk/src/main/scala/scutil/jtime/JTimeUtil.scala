@@ -3,6 +3,7 @@ package scutil.jtime
 import java.util._
 import java.text._
 import java.time.Instant
+import java.time.format._
 
 import scutil.lang._
 import scutil.time._
@@ -44,25 +45,39 @@ object JTimeUtil {
 
 	val milliInstantDateBijection	= Bijection[MilliInstant,Date](milliInstantToDate, dateToMilliInstant)
 
-	def dateToMilliInstant(it:Date):MilliInstant	=
-		MilliInstant(it.getTime)
-
-	def milliInstantToDate(it:MilliInstant):Date	=
-		new Date(it.millis)
+	def dateToMilliInstant(it:Date):MilliInstant	= MilliInstant(it.getTime)
+	def milliInstantToDate(it:MilliInstant):Date	= new Date(it.millis)
 
 	//------------------------------------------------------------------------------
 
-	def milliInstantToInstant(it:MilliInstant):Instant	=
-		Instant ofEpochMilli it.millis
+	val milliInstantInstantBijection	= Bijection[MilliInstant,Instant](milliInstantToInstant, instantToMilliInstant)
 
-	def instantToMilliInstant(it:Instant):MilliInstant	=
-		MilliInstant(it.toEpochMilli)
+	def milliInstantToInstant(it:MilliInstant):Instant	= Instant ofEpochMilli it.millis
+	def instantToMilliInstant(it:Instant):MilliInstant	= MilliInstant(it.toEpochMilli)
 
 	//------------------------------------------------------------------------------
 
+	def instantToIso8601(instant:Instant):String	=
+		instant.toString
+
+	def iso8601ToInstant(str:String):Either[DateTimeParseException,Instant]	=
+		try {
+			//Right(Instant.from(DateTimeFormatter.ISO_INSTANT parse str))
+			Right(Instant.parse(str))
+		}
+		catch { case e:DateTimeParseException =>
+			Left(e)
+		}
+
+	@deprecated("use dateToIso8601", "0.182.0")
 	def dateToISO8601(date:Date):String	=
+		dateToIso8601(date)
+
+	@deprecated("use instantToIso8601", "0.182.0")
+	def dateToIso8601(date:Date):String	=
 		iso88601() format date
 
+	@deprecated("use iso8601ToInstant", "0.182.0")
 	def iso8601ToDate(it:String):Either[ParseException,Date]	=
 		try { Right(iso88601() parse it) }
 		catch { case e:ParseException => Left(e) }
@@ -74,5 +89,4 @@ object JTimeUtil {
 		df setLenient	false
 		df
 	}
-
 }

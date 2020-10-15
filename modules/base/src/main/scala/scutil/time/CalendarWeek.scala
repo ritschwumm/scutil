@@ -57,5 +57,8 @@ final case class CalendarWeek(number:Int, year:Int) extends Ordered[CalendarWeek
 
 	override def toString:String	= s"KW${number.toString}/${year.toString}"
 
-	def toISO8601:String	= year.toString + "W" + (if (number <= 10) "0" else "") + number.toString
+	@deprecated("use toIso8601", "0.182.0")
+	def toISO8601:String	= toIso8601
+
+	def toIso8601:String	= year.toString + "W" + (if (number <= 10) "0" else "") + number.toString
 }

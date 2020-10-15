@@ -17,8 +17,6 @@ trait ApplicativeSyntax {
 
 	implicit final class ApplicativeValueSyntaxExt[F[_],T](peer:F[T])(implicit F:Applicative[F]) {
 		def pa[U](func:F[T=>U]):F[U]					= F.ap(peer)(func)
-		@deprecated("use map2", "0.181.0")
-		def combine[U,V](that:F[U])(func:(T,U)=>V):F[V]	= F.map2(peer, that)(func)
 		def map2[U,V](that:F[U])(func:(T,U)=>V):F[V]	= F.map2(peer, that)(func)
 
 		def tuple[U](that:F[U]):F[(T,U)]	= F.tuple(peer, that)

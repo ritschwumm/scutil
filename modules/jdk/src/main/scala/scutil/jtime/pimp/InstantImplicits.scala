@@ -17,7 +17,9 @@ trait DateImplicits {
 			df format peer
 		}
 
-		def toISO8601:String			= JTimeUtil dateToISO8601 peer
+		@deprecated("use toIso8601", "0.182.0")
+		def toISO8601:String			= toIso8601
+		def toIso8601:String			= JTimeUtil instantToIso8601 peer.toInstant
 		def toMilliInstant:MilliInstant	= JTimeUtil dateToMilliInstant peer
 	}
 }

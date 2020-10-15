@@ -9,7 +9,9 @@ object InstantImplicits extends InstantImplicits
 
 trait InstantImplicits {
 	implicit final class InstantExt(peer:Instant) {
-		def toISO8601:String			= peer.toString
+		@deprecated("use toIso8601", "0.182.0")
+		def toISO8601:String			= toIso8601
+		def toIso8601:String			= peer.toString
 		def toMilliInstant:MilliInstant	= JTimeUtil instantToMilliInstant peer
 	}
 }

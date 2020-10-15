@@ -20,14 +20,7 @@ trait Applicative[F[_]] extends Functor[F] {
 	//------------------------------------------------------------------------------
 	//## derived
 
-	@deprecated("use unit", "0.181.0")
-	final def pureUnit:F[Unit]	= pure(())
-
 	def unit:F[Unit]	= pure(())
-
-	@deprecated("use map2", "0.181.0")
-	def combine[A,B,C](as:F[A], bs:F[B])(func:(A,B)=>C):F[C]	=
-		ap(bs)(map(as)(func.curried))
 
 	def map2[A,B,C](as:F[A], bs:F[B])(func:(A,B)=>C):F[C]	=
 		ap(bs)(map(as)(func.curried))
