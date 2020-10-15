@@ -44,6 +44,7 @@ hashing hides the cleartext,
 salting makes dictionary attacks more expensive,
 multiple rounds help against brute force attacks.
 */
+@throws(classOf[NoSuchAlgorithmException])
 final class HashSalt(
 	encoding:Charset,
 	normalizerForm:Normalizer.Form,
@@ -55,6 +56,7 @@ final class HashSalt(
 	private val	random	= SecureRandom getInstance randomAlgorithm
 
 	/** salt and cook a raw password so it can safely be stored somewhere */
+	@throws(classOf[NoSuchAlgorithmException])
 	def cook(raw:String):String	= {
 		val	salt		= synchronized { random byteString saltSize }
 		val prepared	= prepare(raw, salt, roundCount)
@@ -64,6 +66,7 @@ final class HashSalt(
 	}
 
 	/** check if a raw password, when cooked, matches the same password cooked before */
+	@throws(classOf[NoSuchAlgorithmException])
 	def taste(raw:String, cooked:String):Boolean = {
 		(for {
 			Seq(r,s,p)	<- cooked splitAroundChar '$' optionBy { _.size == 3 }
@@ -77,6 +80,7 @@ final class HashSalt(
 		.getOrElse(false)
 	}
 
+	@throws(classOf[NoSuchAlgorithmException])
 	private def prepare(raw:String, salt:ByteString, rounds:Int):ByteString	=
 		raw 										|>
 		(Normalizer.normalize(_, normalizerForm)) 	|>
@@ -84,6 +88,7 @@ final class HashSalt(
 		(salt ++ _) 								|>
 		hash(rounds)
 
+	@throws(classOf[NoSuchAlgorithmException])
 	private def hash(rounds:Int)(bytes:ByteString):ByteString	=
-		Hashing.hash(hashAlgorithm, rounds, bytes)
+		Hashing.hash(hashAlgorithm, roundCount, bytes)
 }

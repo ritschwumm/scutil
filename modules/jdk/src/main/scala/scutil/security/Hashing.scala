@@ -5,14 +5,14 @@ import java.security._
 import scutil.lang._
 
 object Hashing {
-	// NOTE throws NoSuchAlgorithmException
-	def hash(algorithmName:String, rounds:Int, bytes:ByteString):ByteString	= {
-		require(rounds >= 0, s"rounds must be non-negative, but was ${rounds.toString}")
+	@throws(classOf[NoSuchAlgorithmException])
+	def hash(digestAlgorithm:String, roundCount:Int, bytes:ByteString):ByteString	= {
+		require(roundCount >= 0, s"rounds must be non-negative, but was ${roundCount.toString}")
 
-		val digest	= MessageDigest getInstance algorithmName
+		val digest	= MessageDigest getInstance digestAlgorithm
 		var trip	= bytes.unsafeValue
 		var round	= 0
-		while (round < rounds) {
+		while (round < roundCount) {
 			digest update trip
 			trip	= digest.digest()
 			round	+= 1

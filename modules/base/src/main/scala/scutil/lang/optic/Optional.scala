@@ -39,6 +39,40 @@ object Optional {
 	def codiag[T]:Optional[Either[T,T],T]	=
 		identity[T] sum identity[T]
 
+	def some[T]:Optional[Option[T],T]	=
+		Optional(
+			get	= (state:Option[T]) => state,
+			set	= (next:T) => {
+				case Some(_)	=> Some(next)
+				case None		=> None
+			}
+		)
+
+	def left[L,R]:Optional[Either[L,R],L]	=
+		Optional(
+			get	= {
+				case Left(x)	=> Some(x)
+				case Right(_)	=> None
+			},
+			set	= (next:L) => {
+				case Left(_)	=> Left(next)
+				case Right(x)	=> Right(x)
+			}
+		)
+
+	def right[L,R]:Optional[Either[L,R],R]	=
+		Optional(
+			get	= {
+				case Left(_)	=> None
+				case Right(x)	=> Some(x)
+			},
+			set	= (next:R) => {
+				case Left(x)	=> Left(x)
+				case Right(_)	=> Right(next)
+			}
+		)
+
+	@deprecated("use Lens >=> Optional.some instead", "0.184.0")
 	def fromLensToOption[S,T](lens:Lens[S,Option[T]]):Optional[S,T]	=
 		Optional(
 			s => lens get s,

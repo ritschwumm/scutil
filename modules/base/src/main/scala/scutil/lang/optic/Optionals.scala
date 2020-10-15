@@ -4,6 +4,7 @@ import scutil.lang.implicits._
 import scutil.collection.implicits._
 
 object Optionals {
+	@deprecated("broken, this sets even when the original was empty. use Lens >=> Optional.some instead", "0.184.0")
 	def opt[S,T](total:Lens[S,Option[T]]):Optional[S,T]	=
 		Optional(
 			get	= total.get,

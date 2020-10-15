@@ -24,6 +24,16 @@ object Prism {
 			Predef.identity
 		)
 
+	def some[T]:Prism[Option[T],T]			= Prism(x=>x, Some.apply)
+
+	def left[A,B]:Prism[Either[A,B],A]		= Prism(_.swap.toOption,	Left.apply)
+	def right[A,B]:Prism[Either[A,B],B]		= Prism(_.toOption,			Right.apply)
+
+	def bad[A,B]:Prism[Validated[A,B],A]	= Prism(_.badToOption,		Bad.apply)
+	def good[A,B]:Prism[Validated[A,B],B]	= Prism(_.toOption,			Good.apply)
+
+	//------------------------------------------------------------------------------
+
 	val Gen	 = PrismGen
 
 	//------------------------------------------------------------------------------

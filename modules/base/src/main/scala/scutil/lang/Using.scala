@@ -89,4 +89,7 @@ trait Using[T] { self =>
 		new Using[U] {
 			def use[X](handler:U=>X):X	= self use (func(_) use handler)
 		}
+
+	final def foreach(func:T=>Unit):Using[Unit]	=
+		map(func)
 }

@@ -24,11 +24,6 @@ package object lang {
 
 	def thunk[T](value: =>T):Thunk[T]			= () => value
 
-	@deprecated("use Io.delay", "0.183.0")
-	def io[T](block: =>T):Io[T]					= Io delay block
-	@deprecated("use Disposable.delay", "0.183.0")
-	def disposable(block: =>Unit):Disposable	= Disposable delay block
-
 	/** tell the compiler the control flow never reaches this point */
 	def nothing:Nothing	= sys error "silence! i kill you!"
 
