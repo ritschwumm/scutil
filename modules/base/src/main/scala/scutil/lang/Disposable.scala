@@ -14,7 +14,7 @@ object Disposable {
 		}
 
 	def all(subs:Seq[Disposable]):Disposable	=
-		disposable {
+		delay {
 			subs foreach {
 				_.dispose()
 			}
@@ -39,9 +39,9 @@ trait Disposable {
 	/** forms a monoid with empty */
 	final def and(that:Disposable):Disposable	=
 			 if (this == Disposable.empty)	that
-		else if (that ==  Disposable.empty)	this
+		else if (that == Disposable.empty)	this
 		else {
-			disposable {
+			Disposable delay {
 				this.dispose()
 				that.dispose()
 			}

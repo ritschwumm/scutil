@@ -1,25 +1,25 @@
 package scutil.bit
 
 import java.lang.{
+	Math	=> JMath,
 	Float	=> JFloat,
 	Double	=> JDouble
 }
 
-import scala.annotation.strictfp
+//import scala.annotation.strictfp
 
 object FloatingPointUtil {
-	@strictfp
-	def denormalFloat(it:Float):Boolean	=
-			 if (it == 0)											false
-		else if (it > -JFloat.MIN_NORMAL && it < JFloat.MIN_NORMAL)	true
-		else														false
+	@deprecated("use FloatUtil.denormal", "0.183.0")
+	def denormalFloat(it:Float):Boolean		= JMath.getExponent(it) == JFloat.MIN_EXPONENT	- 1
+	@deprecated("use DoubleUtil.denormal", "0.183.0")
+	def denormalDouble(it:Double):Boolean	= JMath.getExponent(it) == JDouble.MIN_EXPONENT	- 1
 
-	@strictfp
-	def denormalDouble(it:Double):Boolean	=
-			 if (it == 0)												false
-		else if (it > -JDouble.MIN_NORMAL && it < JDouble.MIN_NORMAL)	true
-		else															false
+	@deprecated("use FloatUtil.ftz", "0.183.0")
+	def ftzFloat(it:Float):Float	= if (denormalFloat(it))	0f else it
+	@deprecated("use DoubleUtil.ftz", "0.183.0")
+	def ftzDouble(it:Double):Double	= if (denormalDouble(it))	0d else it
 
+	@deprecated("use FloatUtil.bits", "0.183.0")
 	def bitsOfFloat(it:Float):(Boolean,Int,Short)	= {
 		// positive infinity	0x7f800000
 		// negative infinity	0xff800000
@@ -38,6 +38,7 @@ object FloatingPointUtil {
 		(sign, mantissa, exponent)
 	}
 
+	@deprecated("use DoubleUtil.bits", "0.183.0")
 	def bitsOfDouble(it:Double):(Boolean,Long,Short)	= {
 		// positive infinity	0x7ff0000000000000L
 		// negative infinity	0xfff0000000000000L

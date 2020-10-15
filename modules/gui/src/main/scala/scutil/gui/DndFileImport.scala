@@ -17,7 +17,7 @@ object DndFileImport {
 	def install(target:JComponent, consumer:PFunction[IntPoint,Effect[Validated[Nes[Exception],Nes[File]]]]):Disposable	= {
 		target setTransferHandler new FileTransferHandler(consumer)
 
-		disposable {
+		Disposable delay {
 			target setTransferHandler null
 		}
 	}

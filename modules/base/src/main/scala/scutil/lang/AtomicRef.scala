@@ -7,7 +7,7 @@ import scutil.lang.tc._
 object AtomicRef {
 	// NOTE initial could be lazy here
 	def apply[F[_]:Delay,G[_]:Delay,T](initial:T):F[AtomicRef[G,T]]	=
-			Delay[F] delay new AtomicRef(initial)
+		Delay[F] delay new AtomicRef(initial)
 }
 
 final class AtomicRef[F[_]:Delay,T](initial:T) {

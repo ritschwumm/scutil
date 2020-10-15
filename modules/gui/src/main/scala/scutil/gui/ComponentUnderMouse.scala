@@ -43,7 +43,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 				case None			=> Vector(componentRef)
 			}
 		entries	+= (component -> Entry(nowUnderMouse, newCallbacks))
-		disposable {
+		Disposable delay {
 			entries	=
 				entries flatMap { case (component, entry) =>
 					val newCallbacks	=

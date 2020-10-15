@@ -19,9 +19,6 @@ trait MilliInstantImplicits {
 		def toInstant:Instant	=
 			JTimeUtil milliInstantToInstant peer
 
-		@deprecated("use toIso8601", "0.182.0")
-		def toISO8601:String	= toIso8601
-
 		def toIso8601:String	=
 			JTimeUtil instantToIso8601 toInstant
 	}

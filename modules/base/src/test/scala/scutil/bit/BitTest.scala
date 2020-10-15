@@ -1,5 +1,12 @@
 package scutil.bit
 
+import java.lang.{
+	//Math	=> JMath,
+	Float	=> JFloat,
+	Double	=> JDouble
+}
+
+
 import org.specs2.mutable._
 
 class BitTest extends Specification {
@@ -50,4 +57,64 @@ class BitTest extends Specification {
 			(functions swapEndianLong 0x9876543210987654L)	mustEqual 0x5476981032547698L
 		}
 	}
+
+	"FloatUtil" should {
+		"detect normal float" in {
+			FloatUtil.denormal(JFloat.MIN_NORMAL) mustEqual false
+		}
+
+		"detect denormal float" in {
+			FloatUtil.denormal(JFloat.MIN_NORMAL / 2) mustEqual true
+		}
+
+		"detect +0 float as not denormal" in {
+			FloatUtil.denormal(0f) mustEqual false
+		}
+
+		"detect -0 float as not denormal" in {
+			FloatUtil.denormal(-0f) mustEqual false
+		}
+
+		"detect Infinity float as not denormal" in {
+			FloatUtil.denormal(1f / 0f) mustEqual false
+		}
+
+		"detect NaN float as not denormal" in {
+			FloatUtil.denormal(0f / 0f) mustEqual false
+		}
+
+		"flush denormal float to zero" in {
+			FloatUtil.ftz(JFloat.MIN_NORMAL / 2) mustEqual 0f
+		}
+	}
+
+	"DoubleUtil" should {
+		"detect normal double" in {
+			DoubleUtil.denormal(JDouble.MIN_NORMAL) mustEqual false
+		}
+
+		"detect denormal double" in {
+			DoubleUtil.denormal(JDouble.MIN_NORMAL / 2) mustEqual true
+		}
+
+		"detect +0 double as not denormal" in {
+			DoubleUtil.denormal(0d) mustEqual false
+		}
+
+		"detect -0 double as not denormal" in {
+			DoubleUtil.denormal(-0d) mustEqual false
+		}
+
+		"detect Infinity double as not denormal" in {
+			DoubleUtil.denormal(1d / 0d) mustEqual false
+		}
+
+		"detect NaN double as not denormal" in {
+			DoubleUtil.denormal(0d / 0d) mustEqual false
+		}
+
+		"flush denormal double to zero" in {
+			DoubleUtil.ftz(JDouble.MIN_NORMAL / 2) mustEqual 0d
+		}
+	 }
 }

@@ -34,7 +34,7 @@ object DndFileExport {
 				dragGestureListener
 			)
 
-		disposable {
+		Disposable delay {
 			dragGestureRecognizer setComponent null
 		}
 	}

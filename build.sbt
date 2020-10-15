@@ -3,7 +3,7 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.182.0",
+	version			:= "0.183.0",
 
 	scalaVersion	:= "2.13.3",
 	scalacOptions	++= Seq(
@@ -52,7 +52,7 @@ lazy val fixConsoleSettings	=
 	Seq(
 		Compile / console / scalacOptions ~= (opts => opts filterNot Set(
 			"-Xlint",
-			"-Xfatal-warnings"
+			"-Werror"
 		))
 	)
 

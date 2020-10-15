@@ -69,21 +69,8 @@ object JTimeUtil {
 			Left(e)
 		}
 
-	@deprecated("use dateToIso8601", "0.182.0")
-	def dateToISO8601(date:Date):String	=
-		dateToIso8601(date)
-
-	@deprecated("use instantToIso8601", "0.182.0")
-	def dateToIso8601(date:Date):String	=
-		iso88601() format date
-
-	@deprecated("use iso8601ToInstant", "0.182.0")
-	def iso8601ToDate(it:String):Either[ParseException,Date]	=
-		try { Right(iso88601() parse it) }
-		catch { case e:ParseException => Left(e) }
-
 	// DateFormat is not thread safe
-	private def iso88601():DateFormat	= {
+	def iso88601():DateFormat	= {
 		val	df	= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 		df setTimeZone	(TimeZone getTimeZone "UTC")
 		df setLenient	false
