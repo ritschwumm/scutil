@@ -17,7 +17,7 @@ object Human {
 	//## predefined tables
 
 	val binary:Human	=
-		Human multi (
+		Human.multi(
 			HumanUnit("yotta",	"Y",	one*1024*1024*1024*1024*1024*1024*1024*1024),
 			HumanUnit("zeta",	"Z",	one*1024*1024*1024*1024*1024*1024*1024),
 			HumanUnit("exa",	"E",	one*1024*1024*1024*1024*1024*1024),
@@ -38,7 +38,7 @@ object Human {
 		)
 
 	val decimal:Human	=
-		Human multi (
+		Human.multi(
 			HumanUnit("yotta",	"Y",	one*1000*1000*1000*1000*1000*1000*1000*1000),
 			HumanUnit("zeta",	"Z",	one*1000*1000*1000*1000*1000*1000*1000),
 			HumanUnit("exa",	"E",	one*1000*1000*1000*1000*1000*1000),
@@ -59,7 +59,7 @@ object Human {
 		)
 
 	val time:Human	=
-		Human multi (
+		Human.multi(
 			HumanUnit("year",			"y",	one*60*60*24*365.24219052),	// tropical year
 			HumanUnit("day",			"d",	one*60*60*24),
 			HumanUnit("hour",			"h",	one*60*60),
@@ -70,7 +70,7 @@ object Human {
 		)
 
 	val degrees:Human	=
-		Human multi (
+		Human.multi(
 			HumanUnit("degree",	"°",	one),
 			HumanUnit("minute",	"'",	one/60),
 			HumanUnit("second",	"''",	one/60/60)
@@ -111,7 +111,7 @@ final case class Human(table:Nes[HumanUnit]) {
 	private val smallCount	= table count { _.divisor < Human.one }
 
 	private def smallCut(smallUnits:Int):Nes[HumanUnit]	=
-		table.reverse drop (smallCount - smallUnits) cata (Nes single table.head, _.reverse)
+		table.reverse.drop(smallCount - smallUnits).cata(Nes single table.head, _.reverse)
 
 	//------------------------------------------------------------------------------
 
@@ -134,7 +134,7 @@ final case class Human(table:Nes[HumanUnit]) {
 	private def renderRaw(table:Nes[HumanUnit], decimalPlaces:Int, value:BigDecimal):String	=
 		table.tailNes match {
 			case None	=>
-				s"%.${decimalPlaces.toString}f${table.head.short}" formatLocal (Locale.US, value / table.head.divisor)
+				s"%.${decimalPlaces.toString}f${table.head.short}".formatLocal(Locale.US, value / table.head.divisor)
 			case Some(tail)	=>
 				val (div, mod)	= value /% table.head.divisor
 				val prefix		= div.toBigInt.toString + table.head.short

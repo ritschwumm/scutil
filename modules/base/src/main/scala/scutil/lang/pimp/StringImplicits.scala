@@ -39,7 +39,7 @@ trait StringImplicits {
 		//------------------------------------------------------------------------------
 
 		def toByteString(charset:Charset):ByteString	=
-			ByteString fromString (peer, charset)
+			ByteString.fromString(peer, charset)
 
 		def toUtf8ByteString:ByteString	=
 			ByteString fromUtf8String peer
@@ -57,7 +57,7 @@ trait StringImplicits {
 			else						None
 
 		def cutSuffix(suffix:String):Option[String] =
-			if (peer endsWith suffix)	Some(peer substring (0, peer.length - suffix.length))
+			if (peer endsWith suffix)	Some(peer.substring(0, peer.length - suffix.length))
 			else						None
 
 		def pastePrefix(prefix:String):Option[String] =
@@ -79,12 +79,12 @@ trait StringImplicits {
 			val	out	= new mutable.ArrayBuffer[String]
 			@tailrec
 			def loop(pos:Int):Seq[String]	=
-				peer indexOf (separator, pos) match {
+				peer.indexOf(separator, pos) match {
 					case -1 =>
 						out	+= peer substring pos
 						out.toVector
 					case index	=>
-						out	+= peer substring (pos, index)
+						out	+= peer.substring(pos, index)
 						loop(index + separator.length)
 				}
 			loop(0)
@@ -94,7 +94,7 @@ trait StringImplicits {
 
 		/** excludes the indexed char itself */
 		def splitAroundIndex(index:Int):Option[(String,String)]	=
-			if (index >= 0 && index < peer.length)	Some((peer substring (0,index), peer substring index+1))
+			if (index >= 0 && index < peer.length)	Some((peer.substring(0,index), peer.substring(index+1)))
 			else									None
 
 		/** excludes the separator char itself */
@@ -117,35 +117,35 @@ trait StringImplicits {
 
 		/** like splitAt, but None for indices outside the String's boundaries */
 		def splitAtIndex(index:Int):Option[(String,String)]	=
-			if (index >= 0 && index <= peer.length)	Some((peer substring (0,index), peer substring index))
+			if (index >= 0 && index <= peer.length)	Some((peer.substring(0,index), peer.substring(index)))
 			else									None
 
 		//------------------------------------------------------------------------------
 
 		/** like indexOf, but None if not found */
 		def indexOfString(part:String, fromIndex:Int=0):Option[Int]	=
-			peer indexOf (part, fromIndex) match {
+			peer.indexOf(part, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)
 			}
 
 		/** like lastIndexOf, but None if not found */
 		def lastIndexOfStringOption(part:String, fromIndex:Int=peer.length-1):Option[Int]	=
-			peer lastIndexOf (part, fromIndex) match {
+			peer.lastIndexOf(part, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)
 			}
 
 		/** like indexOf, but None if not found */
 		def indexOfChar(ch:Int, fromIndex:Int=0):Option[Int]	=
-			peer indexOf (ch, fromIndex) match {
+			peer.indexOf(ch, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)
 			}
 
 		/** like lastIndexOf, but None if not found */
 		def lastIndexOfChar(ch:Int, fromIndex:Int=peer.length-1):Option[Int]	=
-			peer lastIndexOf (ch, fromIndex) match {
+			peer.lastIndexOf(ch, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)
 			}

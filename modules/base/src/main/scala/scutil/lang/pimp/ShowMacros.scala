@@ -17,11 +17,11 @@ private final class ShowMacros(val c:Context) {
 								}
 								catch { case e:Exception =>
 									// TODO have a better position here
-									c abort (c.enclosingPosition, e.getMessage)
+									c.abort(c.enclosingPosition, e.getMessage)
 								}
 						q"""$escaped"""
 					case x	=>
-						c abort (c.enclosingPosition,  s"expected a string literal, found ${x.toString}")
+						c.abort(c.enclosingPosition,  s"expected a string literal, found ${x.toString}")
 				}
 
 		val inserts:Seq[c.Tree]		= args	map { expr => q"""_root_.scutil.lang.tc.Show.doit($expr)""" }

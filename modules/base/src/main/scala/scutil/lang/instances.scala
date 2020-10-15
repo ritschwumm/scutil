@@ -39,19 +39,19 @@ trait instances extends instancesLow {
 	//## builting Semigroup/Monoid
 
 	implicit val StringMonoid:Monoid[String]	=
-		Monoid instance ("", _ + _)
+		Monoid.instance("", _ + _)
 
 	implicit def PairMonoid[T1,T2](implicit T1:Monoid[T1], T2:Monoid[T2]):Monoid[(T1,T2)]	=
-		Monoid instance (
+		Monoid.instance(
 			(T1.empty, T2.empty),
 			(a, b) => (
-				T1 concat (a._1, b._1),
-				T2 concat (a._2, b._2)
+				T1.concat(a._1, b._1),
+				T2.concat(a._2, b._2)
 			)
 		)
 
 	implicit def OptionMonoid[T](implicit S:Semigroup[T]):Monoid[Option[T]]	=
-		Monoid instance (
+		Monoid.instance(
 			None,
 			(a,b) => (a oneOrTwo b)(S.concat)
 		)
@@ -113,7 +113,7 @@ trait instances extends instancesLow {
 	//## on function, questionable
 
 	implicit def EndoMonoid[T]:Monoid[Endo[T]]	=
-		Monoid instance (identity, _ andThen _)
+		Monoid.instance(identity, _ andThen _)
 
 	implicit def PEndoSemigroup[T]:Semigroup[PEndo[T]]	=
 		Semigroup instance (_ andThenFixed _)

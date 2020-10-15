@@ -38,7 +38,7 @@ final class DoubleSpan private (val start:Double, val size:Double) {
 		else		negate
 
 	def union(that:DoubleSpan):DoubleSpan	=
-		DoubleSpan startEnd (
+		DoubleSpan.startEnd(
 			start	= this.start	min that.start,
 			end		= this.end		min that.end
 		)
@@ -48,14 +48,14 @@ final class DoubleSpan private (val start:Double, val size:Double) {
 		else if (this.start >= that.end)							None
 		else if (this.start	>= that.start && this.end <= that.end)	Some(this)
 		else if (this.start	<= that.start && this.end >= that.end)	Some(that)
-		else if (this.start	<= that.start && this.end <= that.end)	Some(DoubleSpan startEnd (that.start, this.end))
-		else														Some(DoubleSpan startEnd (this.start, that.end))
+		else if (this.start	<= that.start && this.end <= that.end)	Some(DoubleSpan.startEnd(that.start, this.end))
+		else														Some(DoubleSpan.startEnd(this.start, that.end))
 
 	def rectWith(that:DoubleSpan):DoubleRect	=
-		DoubleRect horizontalWithVertical (this, that)
+		DoubleRect.horizontalWithVertical(this, that)
 
 	def inset(start:Double, end:Double):DoubleSpan	=
-		DoubleSpan startEnd (this.start + start, this.end - end)
+		DoubleSpan.startEnd(this.start + start, this.end - end)
 
 	def transformer(that:DoubleSpan):Endo[Double]	=
 		pos => (pos - this.start) * that.size / this.size + that.start

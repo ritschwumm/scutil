@@ -21,18 +21,21 @@ object functions {
 
 	//------------------------------------------------------------------------------
 
+	// Short.reverseBytes
 	def swapEndianShort(value:Short):Short	=
 		(
 			((value << 8) & 0xff00) |
 			((value >> 8) & 0x00ff)
 		).toShort
 
+	// Integer.reverseBytes
 	def swapEndianInt(value:Int):Int	=
 		((value << 24) & 0xff000000)	|
 		((value >> 24) & 0x000000ff)	|
 		((value <<  8) & 0x00ff0000)	|
 		((value >>  8) & 0x0000ff00)
 
+	// Long.reverseBytes
 	def swapEndianLong(value:Long):Long	=
 		((value << 56) & 0xff00000000000000L)	|
 		((value >> 56) & 0x00000000000000ffL)	|
@@ -43,6 +46,7 @@ object functions {
 		((value <<  8) & 0x000000ff00000000L)	|
 		((value >>  8) & 0x00000000ff000000L)
 
+	// Character.reverseBytes
 	def swapEndianChar(value:Char):Char	=
 		(
 			((value << 8) & 0xff00) |

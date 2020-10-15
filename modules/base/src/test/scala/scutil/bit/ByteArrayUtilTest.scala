@@ -35,8 +35,8 @@ class ByteArrayUtilTest extends Specification {
 			val b		= 4607182418800017408L
 
 			val array	= Array.ofDim[Byte](8)
-			ByteArrayUtil putBigEndianLong	(array, 0, b)
-			val bb	= ByteArrayUtil getBigEndianLong (array, 0)
+			ByteArrayUtil.putBigEndianLong(array, 0, b)
+			val bb	= ByteArrayUtil.getBigEndianLong(array, 0)
 
 			bb mustEqual b
 		}
@@ -45,8 +45,8 @@ class ByteArrayUtilTest extends Specification {
 			val b		= 4607182418800017408L
 
 			val array	= Array.ofDim[Byte](8)
-			ByteArrayUtil putLittleEndianLong	(array, 0, b)
-			val bb	= ByteArrayUtil getLittleEndianLong (array, 0)
+			ByteArrayUtil.putLittleEndianLong(array, 0, b)
+			val bb	= ByteArrayUtil.getLittleEndianLong(array, 0)
 
 			bb mustEqual b
 		}
@@ -55,8 +55,8 @@ class ByteArrayUtilTest extends Specification {
 			val b		= 4607182418800017408L.toInt
 
 			val array	= Array.ofDim[Byte](4)
-			ByteArrayUtil putBigEndianInt	(array, 0, b)
-			val bb	= ByteArrayUtil getBigEndianInt (array, 0)
+			ByteArrayUtil.putBigEndianInt(array, 0, b)
+			val bb	= ByteArrayUtil.getBigEndianInt(array, 0)
 
 			bb mustEqual b
 		}
@@ -65,8 +65,8 @@ class ByteArrayUtilTest extends Specification {
 			val b		= 4607182418800017408L.toInt
 
 			val array	= Array.ofDim[Byte](4)
-			ByteArrayUtil putLittleEndianInt	(array, 0, b)
-			val bb	= ByteArrayUtil getLittleEndianInt (array, 0)
+			ByteArrayUtil.putLittleEndianInt(array, 0, b)
+			val bb	= ByteArrayUtil.getLittleEndianInt(array, 0)
 
 			bb mustEqual b
 		}

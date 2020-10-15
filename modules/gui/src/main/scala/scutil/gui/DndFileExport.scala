@@ -19,7 +19,7 @@ object DndFileExport {
 					provider(ev.getDragOrigin.toIntPoint)
 					.map 		{ new FileTransferable(_) }
 					.foreach	{ it =>
-						ev startDrag (DragSource.DefaultCopyDrop, it)
+						ev.startDrag(DragSource.DefaultCopyDrop, it)
 					}
 				}
 			}
@@ -28,7 +28,7 @@ object DndFileExport {
 
 		// NOTE allowing ACTION_COPY_OR_MOVE (at least on linux) leads to a MOVE with nautilus
 		val dragGestureRecognizer	=
-			dragSource createDefaultDragGestureRecognizer (
+			dragSource.createDefaultDragGestureRecognizer(
 				target,
 				DnDConstants.ACTION_COPY,
 				dragGestureListener

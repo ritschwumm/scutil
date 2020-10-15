@@ -5,3 +5,5 @@ import scutil.net.pimp._
 object extensions extends extensions
 trait extensions
 	extends	InetAddressImplicits
+	with	ServerSocketImplicits
+	with	SocketImplicits

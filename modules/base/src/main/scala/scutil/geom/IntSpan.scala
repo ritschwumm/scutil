@@ -32,7 +32,7 @@ final class IntSpan private (val start:Int, val size:Int) {
 		else		negate
 
 	def union(that:IntSpan):IntSpan	=
-		IntSpan startEnd (
+		IntSpan.startEnd(
 			start	= this.start	min that.start,
 			end		= this.end		min that.end
 		)
@@ -42,13 +42,13 @@ final class IntSpan private (val start:Int, val size:Int) {
 		else if (this.start >= that.end)							None
 		else if (this.start	>= that.start && this.end <= that.end)	Some(this)
 		else if (this.start	<= that.start && this.end >= that.end)	Some(that)
-		else if (this.start	<= that.start && this.end <= that.end)	Some(IntSpan startEnd (that.start, this.end))
-		else														Some(IntSpan startEnd (this.start, that.end))
+		else if (this.start	<= that.start && this.end <= that.end)	Some(IntSpan.startEnd(that.start, this.end))
+		else														Some(IntSpan.startEnd(this.start, that.end))
 
 	def rectWith(that:IntSpan):IntRect	=
-		IntRect horizontalWithVertical (this, that)
+		IntRect.horizontalWithVertical(this, that)
 
-	def toDoubleSpan:DoubleSpan	= DoubleSpan startSize (start, size)
+	def toDoubleSpan:DoubleSpan	= DoubleSpan.startSize(start, size)
 
 	//------------------------------------------------------------------------------
 

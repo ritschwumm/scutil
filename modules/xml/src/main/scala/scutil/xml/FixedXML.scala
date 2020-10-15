@@ -62,7 +62,7 @@ object FixedXML extends XMLLoader[Elem] {
 	private def write(node:Node, xmlDecl:Boolean, docType:Option[DocType], minimizeTags:MinimizeMode.Value)(writer:Writer):Unit = {
 		xmlDecl option s"<?xml version='1.0' encoding='${encoding.name}'?>\n" foreach writer.write
 		docType map { _.toString + "\n" } foreach writer.write
-		writer write (Utility serialize (node, minimizeTags = minimizeTags)).toString
+		writer write Utility.serialize(node, minimizeTags = minimizeTags).toString
 	}
 
 	override def parser:SAXParser	= {
@@ -73,7 +73,7 @@ object FixedXML extends XMLLoader[Elem] {
 		f	setValidating		false
 
 		// do not load external stuff
-		f	setFeature			("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
+		f	.setFeature			("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
 
 		// disallow doctype
 		// f	setFeature		("http://apache.org/xml/features/disallow-doctype-decl", true)

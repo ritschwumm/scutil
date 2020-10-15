@@ -40,12 +40,12 @@ final case class IntPoint(x:Int, y:Int) {
 
 	//------------------------------------------------------------------------------
 
-	def rectTo(that:IntPoint):IntRect	= IntRect topLeftToBottomRight	(this, that)
-	def rectSize(that:IntPoint):IntRect	= IntRect topLeftWithSize		(this, that)
+	def rectTo(that:IntPoint):IntRect	= IntRect	.topLeftToBottomRight	(this, that)
+	def rectSize(that:IntPoint):IntRect	= IntRect	.topLeftWithSize		(this, that)
 
 	//------------------------------------------------------------------------------
 
-	def angle:Double	= smath atan2 (y, x)
+	def angle:Double	= smath.atan2(y, x)
 
 	// TODO this is dangerous, converting Long to Double is lossy
 	def length:Double	= smath sqrt lengthQ.toDouble

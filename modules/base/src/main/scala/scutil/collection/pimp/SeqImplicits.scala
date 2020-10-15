@@ -124,7 +124,7 @@ trait SeqImplicits {
 					func(now,later) foreach out.+=
 				}
 				out	+= mod(peer.last)
-				out.result
+				out.result()
 			}
 
 		/** separators go to the Left, the rest goes into Right Seqs  */
@@ -133,7 +133,7 @@ trait SeqImplicits {
 			if (peer.nonEmpty) {
 				val indices = peer.zipWithIndex collect { case (t,i) if (separator(t)) => i }
 				(-1 +: indices) zip (indices :+ peer.size) flatMap { case (a,b) =>
-					Vector(Right(peer slice (a+1,b))) ++
+					Vector(Right(peer.slice(a+1, b))) ++
 					(peer lift b map Left.apply).toList
 				}
 			}
@@ -191,17 +191,17 @@ trait SeqImplicits {
 					(
 						if (fromIndex < toGap) {
 							// move right
-							(peer slice (0,						fromIndex))				++
-							(peer slice (fromIndex	+ count,	toGap))					++
-							(peer slice (fromIndex,				fromIndex	+ count))	++
-							(peer slice (toGap,					peer.size))
+							(peer.slice(0,						fromIndex))				++
+							(peer.slice(fromIndex	+ count,	toGap))					++
+							(peer.slice(fromIndex,				fromIndex	+ count))	++
+							(peer.slice(toGap,					peer.size))
 						}
 						else if (fromIndex > toGap) {
 							// move left
-							(peer slice (0,						toGap))				++
-							(peer slice (fromIndex,				fromIndex + count))	++
-							(peer slice (toGap,					fromIndex))			++
-							(peer slice (fromIndex	+ count,	peer.size))
+							(peer.slice(0,						toGap))				++
+							(peer.slice(fromIndex,				fromIndex + count))	++
+							(peer.slice(toGap,					fromIndex))			++
+							(peer.slice(fromIndex	+ count,	peer.size))
 						}
 						else peer
 					)
@@ -216,7 +216,7 @@ trait SeqImplicits {
 			peer lift index map { item =>
 				Store[CC[T],T](
 					item,
-					peer updated (index, _) to factory
+					peer.updated (index, _).to(factory)
 				)
 			}
 
@@ -253,22 +253,22 @@ trait SeqImplicits {
 
 		/** map the value for a single index */
 		def updatedBy(index:Int, func:Endo[T]):Option[CC[T]]	=
-			if (containsIndex1(index))	Some(peer updated (index, func(peer(index))))
+			if (containsIndex1(index))	Some(peer.updated(index, func(peer(index))))
 			else						None
 
 		/** None when the index is outside our bounds */
 		def updatedAt(index:Int, item:T):Option[CC[T]]	=
-			if (containsIndex1(index))	Some(peer updated (index, item))
+			if (containsIndex1(index))	Some(peer.updated(index, item))
 			else						None
 
 		/** insert an item at a given index if possible */
 		def insertAt(gap:Int, item:T):Option[CC[T]]	=
-			if (containsGap1(gap))	Some(peer patch (gap, Seq(item), 0))
+			if (containsGap1(gap))	Some(peer.patch(gap, Seq(item), 0))
 			else 					None
 
 		/** remove the item at a given index if possible */
 		def removeAt(index:Int):Option[CC[T]]	=
-			if (containsIndex1(index))	Some(peer patch (index, Seq.empty, 1))
+			if (containsIndex1(index))	Some(peer.patch(index, Seq.empty, 1))
 			else						None
 
 		// TODO generify this exists in Seq implicits
@@ -288,7 +288,7 @@ trait SeqImplicits {
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def zipTail(implicit factory:Factory[(T,T),CC[(T,T)]]):CC[(T,T)]	=
 			(	if (peer.nonEmpty)	peer zip peer.tail
-				else				factory.newBuilder.result
+				else				factory.newBuilder.result()
 			)
 	}
 }

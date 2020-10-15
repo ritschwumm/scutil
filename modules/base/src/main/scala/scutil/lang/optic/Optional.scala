@@ -13,7 +13,7 @@ object Optional {
 		)
 
 	def identity[T]:Optional[T,T]	=
-		Optional total (Predef.identity, Predef.identity)
+		Optional.total(Predef.identity, Predef.identity)
 
 	def trivial[T]:Optional[T,Unit]	=
 		Optional(

@@ -28,7 +28,7 @@ object Disposable {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit val DisposableMonoid:Monoid[Disposable]			= Monoid instance (Disposable.empty, _ and _)
+	implicit val DisposableMonoid:Monoid[Disposable]			= Monoid.instance(Disposable.empty, _ and _)
 	implicit def DisposableResource[T<:Disposable]:Resource[T]	= Resource instance (_.dispose())
 }
 

@@ -13,7 +13,7 @@ object geomConversion {
 	def Dimension_IntPoint(it:Dimension):IntPoint	= IntPoint(it.width, it.height)
 
 	def IntRect_Rectangle(it:IntRect):Rectangle		= new Rectangle(it.left, it.top, it.width, it.height)
-	def Rectangle_IntRect(it:Rectangle):IntRect		= IntRect leftTopWidthHeight (it.x, it.y, it.width, it.height)
+	def Rectangle_IntRect(it:Rectangle):IntRect		= IntRect.leftTopWidthHeight(it.x, it.y, it.width, it.height)
 
 	//------------------------------------------------------------------------------
 
@@ -24,5 +24,5 @@ object geomConversion {
 	def Dimension2D_DoublePoint(it:Dimension2D):DoublePoint	= DoublePoint(it.getWidth, it.getHeight)
 
 	def DoubleRect_Rectangle2D(it:DoubleRect):Rectangle2D	= new Rectangle2D.Double(it.left, it.top, it.width, it.height)
-	def Rectangle2D_DoubleRect(it:Rectangle2D):DoubleRect	= DoubleRect leftTopWidthHeight (it.getX, it.getY, it.getWidth, it.getHeight)
+	def Rectangle2D_DoubleRect(it:Rectangle2D):DoubleRect	= DoubleRect.leftTopWidthHeight(it.getX, it.getY, it.getWidth, it.getHeight)
 }

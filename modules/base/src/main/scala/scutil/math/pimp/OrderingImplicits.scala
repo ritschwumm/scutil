@@ -34,7 +34,7 @@ trait OrderingImplicits {
 					def loop(index:Int):Int	=
 							(a lift index, b lift index) match {
 								case (Some(aa), Some(bb))	=>
-									val tmp	= base compare (aa, bb)
+									val tmp	= base.compare(aa, bb)
 									if (tmp != 0)	tmp
 									else			loop(index+1)
 								case (Some(aa), None)	=>
@@ -60,7 +60,7 @@ trait OrderingImplicits {
 		def vary[U<:T]:Ordering[U]	=
 			new Ordering[U] {
 				def compare(x:U, y:U):Int	= {
-					peer compare (x, y)
+					peer.compare(x, y)
 				}
 			}
 
@@ -74,8 +74,9 @@ trait OrderingImplicits {
 		def orElse[U<:T](that:Ordering[U]):Ordering[U]	=
 			new Ordering[U] {
 				def compare(x:U, y:U):Int	= {
-					val	high	= peer compare (x,y)
-					if (high != 0) high else that compare (x,y)
+					val	high	= peer.compare(x,y)
+					if (high != 0)	high
+					else			that.compare(x,y)
 				}
 			}
 	}

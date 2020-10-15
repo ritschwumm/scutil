@@ -13,7 +13,7 @@ private final class HexColorMacros(val c:Context) {
 			case Some(RGB(r, g, b))	=>
 				q"_root_.scutil.color.RGB($r, $g, $b)"
 			case None	=>
-				c abort (c.enclosingPosition, s"invalid rgb literal ${str}")
+				c.abort(c.enclosingPosition, s"invalid rgb literal ${str}")
 		}
 	}
 
@@ -23,7 +23,7 @@ private final class HexColorMacros(val c:Context) {
 			case Some(RGBA(RGB(r, g, b),Alpha(a)))	=>
 				q"_root_.scutil.color.RGBA(scutil.color.RGB($r, $g, $b), scutil.color.Alpha($a))"
 			case None	=>
-				c abort (c.enclosingPosition, s"invalid rgba literal ${str}")
+				c.abort(c.enclosingPosition, s"invalid rgba literal ${str}")
 		}
 	}
 }

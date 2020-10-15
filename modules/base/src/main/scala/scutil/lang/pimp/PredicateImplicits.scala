@@ -7,13 +7,13 @@ object PredicateImplicits extends PredicateImplicits
 trait PredicateImplicits {
 	implicit final class PredicateExt[T](peer:Predicate[T]) {
 		def unary_! :Predicate[T]						= Predicates not	peer
-		def && [U<:T](that:Predicate[U]):Predicate[U]	= Predicates and	(peer, that)
-		def || [U<:T](that:Predicate[U]):Predicate[U]	= Predicates or		(peer, that)
+		def && [U<:T](that:Predicate[U]):Predicate[U]	= Predicates.and	(peer, that)
+		def || [U<:T](that:Predicate[U]):Predicate[U]	= Predicates.or		(peer, that)
 
 		// non-symbolic aliases
 		def not:Predicate[T]							= Predicates not	peer
-		def and[U<:T](that:Predicate[U]):Predicate[U]	= Predicates and	(peer, that)
-		def or[U<:T](that:Predicate[U]):Predicate[U]	= Predicates or		(peer, that)
+		def and[U<:T](that:Predicate[U]):Predicate[U]	= Predicates.and	(peer, that)
+		def or[U<:T](that:Predicate[U]):Predicate[U]	= Predicates.or		(peer, that)
 
 		//------------------------------------------------------------------------------
 

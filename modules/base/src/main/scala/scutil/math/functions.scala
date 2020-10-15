@@ -16,7 +16,7 @@ object functions {
 	def log2(value:Double):Double	= (smath log value) * Log2Reciprocal
 	def exp2(value:Double):Double	= smath exp (value * Log2)
 
-	def exp10(value:Double):Double	= smath pow (10, value)
+	def exp10(value:Double):Double	= smath.pow(10, value)
 	// def log10(value:Double):Double	= smath log10 value
 
 	def logB(base:Double, value:Double):Double	= (smath log value) / (smath log base)
@@ -44,21 +44,21 @@ object functions {
 
 	//------------------------------------------------------------------------------
 
-	def max3Byte(a:Byte, b:Byte, c:Byte):Byte			= (smath max (a, smath max (b,c))).toByte
-	def max3Short(a:Short, b:Short, c:Short):Short		= (smath max (a, smath max (b,c))).toShort
-	def max3Int(a:Int, b:Int, c:Int):Int				= smath max (a, smath max (b,c))
-	def max3Long(a:Long, b:Long, c:Long):Long			= smath max (a, smath max (b,c))
-	def max3Float(a:Float, b:Float, c:Float):Float		= smath max (a, smath max (b,c))
-	def max3Double(a:Double, b:Double, c:Double):Double	= smath max (a, smath max (b,c))
+	def max3Byte(a:Byte, b:Byte, c:Byte):Byte			= smath.max(a, smath.max(b,c)).toByte
+	def max3Short(a:Short, b:Short, c:Short):Short		= smath.max(a, smath.max(b,c)).toShort
+	def max3Int(a:Int, b:Int, c:Int):Int				= smath.max(a, smath.max(b,c))
+	def max3Long(a:Long, b:Long, c:Long):Long			= smath.max(a, smath.max(b,c))
+	def max3Float(a:Float, b:Float, c:Float):Float		= smath.max(a, smath.max(b,c))
+	def max3Double(a:Double, b:Double, c:Double):Double	= smath.max(a, smath.max(b,c))
 
 	//------------------------------------------------------------------------------
 
-	def min3Byte(a:Byte, b:Byte, c:Byte):Byte			= (smath min (a, smath min (b,c))).toByte
-	def min3Short(a:Short, b:Short, c:Short):Short		= (smath min (a, smath min (b,c))).toShort
-	def min3Int(a:Int, b:Int, c:Int):Int				= smath min (a, smath min (b,c))
-	def min3Long(a:Long, b:Long, c:Long):Long			= smath min (a, smath min (b,c))
-	def min3Float(a:Float, b:Float, c:Float):Float		= smath min (a, smath min (b,c))
-	def min3Double(a:Double, b:Double, c:Double):Double	= smath min (a, smath min (b,c))
+	def min3Byte(a:Byte, b:Byte, c:Byte):Byte			= smath.min(a, smath.min (b,c)).toByte
+	def min3Short(a:Short, b:Short, c:Short):Short		= smath.min(a, smath.min (b,c)).toShort
+	def min3Int(a:Int, b:Int, c:Int):Int				= smath.min(a, smath.min(b,c))
+	def min3Long(a:Long, b:Long, c:Long):Long			= smath.min(a, smath.min(b,c))
+	def min3Float(a:Float, b:Float, c:Float):Float		= smath.min(a, smath.min(b,c))
+	def min3Double(a:Double, b:Double, c:Double):Double	= smath.min(a, smath.min(b,c))
 
 	//------------------------------------------------------------------------------
 

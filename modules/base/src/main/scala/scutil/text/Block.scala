@@ -31,7 +31,7 @@ object Block {
 		val indented:String	=
 			(cleanParts lazyZip args lazyZip argIndents)
 			.map { (part, arg, argIndent) =>
-				val indentedArg	= unixLf(arg) replace ("\n", "\n" + argIndent)
+				val indentedArg	= unixLf(arg).replace("\n", "\n" + argIndent)
 				part + indentedArg
 			}
 			.appended(cleanParts.last)
@@ -50,19 +50,19 @@ object Block {
 			val front	=
 				first
 				.flatOption (unixPart indexOfChar		'\n')
-				.filter		{ idx => allBlank(unixPart substring (0, idx)) }
+				.filter		{ idx => allBlank(unixPart.substring(0, idx)) }
 				.map		(_ + 1)
 				.getOrElse	(0)
 
 			val behind	=
 				last
 				.flatOption	(unixPart lastIndexOfChar	'\n')
-				.filter		{ idx => allBlank(unixPart substring (idx+1, unixPart.length)) }
+				.filter		{ idx => allBlank(unixPart.substring(idx+1, unixPart.length)) }
 				.getOrElse	(unixPart.length)
 
 				 if (front == 0 && behind == unixPart.length)	unixPart
 			else if (front > behind)							""
-			else												unixPart substring (front, behind)
+			else												unixPart.substring(front, behind)
 		}
 
 	private def unindent(indented:String):String	= {
@@ -97,5 +97,5 @@ object Block {
 	private val blankChar:Char=>Boolean			= it => it == ' ' || it == '\t'
 	private def allBlank(s:String):Boolean		= s forall blankChar
 	private def indentOf(line:String):String	= line takeWhile blankChar
-	private def unixLf(s:String):String			= s replace ("\r\n", "\n")
+	private def unixLf(s:String):String			= s.replace("\r\n", "\n")
 }

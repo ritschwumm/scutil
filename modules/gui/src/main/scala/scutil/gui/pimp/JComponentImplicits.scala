@@ -40,13 +40,13 @@ trait JComponentImplicits {
 					doClose()
 				}
 			}
-			frame.getRootPane registerKeyboardAction (
+			frame.getRootPane.registerKeyboardAction(
 				new ActionListener {
 					def actionPerformed(ev:ActionEvent):Unit	= {
 						doClose()
 					}
 				},
-				KeyStroke getKeyStroke (KeyEvent.VK_ESCAPE, 0),
+				KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
 				JComponent.WHEN_IN_FOCUSED_WINDOW
 			)
 

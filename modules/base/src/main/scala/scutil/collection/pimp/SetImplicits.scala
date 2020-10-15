@@ -17,9 +17,9 @@ trait SetImplicits {
 		def where[U](that:Set[T]):Set[Where[T,T]]	= {
 			val (here, there)	= this hereAndThere that
 			val both			= peer & that
-			(both	map { it => Where both	(it,it) })	++
-			(here	map { it => Where here	it		})	++
-			(there	map { it => Where there	it		})
+			(both	map { it => Where.both	(it,it) })	++
+			(here	map { it => Where.here	(it)	})	++
+			(there	map { it => Where.there	(it)	})
 		}
 
 		/** get one element and all other elements */

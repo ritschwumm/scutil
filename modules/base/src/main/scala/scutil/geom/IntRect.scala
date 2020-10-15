@@ -5,26 +5,26 @@ object IntRect {
 
 	def leftTopRightBottom(left:Int, top:Int, right:Int, bottom:Int):IntRect	=
 		new IntRect(
-			horizontal	= IntSpan startEnd (left, right),
-			vertical	= IntSpan startEnd (top, bottom)
+			horizontal	= IntSpan.startEnd(left, right),
+			vertical	= IntSpan.startEnd(top, bottom)
 		)
 
 	def leftTopWidthHeight(left:Int, top:Int, width:Int, height:Int):IntRect	=
 		new IntRect(
-			horizontal	= IntSpan startSize (left, width),
-			vertical	= IntSpan startSize (top, height)
+			horizontal	= IntSpan.startSize(left, width),
+			vertical	= IntSpan.startSize(top, height)
 		)
 
 	def topLeftToBottomRight(topLeft:IntPoint, bottomRight:IntPoint):IntRect	=
 		new IntRect(
-			horizontal	= IntSpan startEnd (topLeft.x, bottomRight.x),
-			vertical	= IntSpan startEnd (topLeft.y, bottomRight.y)
+			horizontal	= IntSpan.startEnd(topLeft.x, bottomRight.x),
+			vertical	= IntSpan.startEnd(topLeft.y, bottomRight.y)
 		)
 
 	def topLeftWithSize(topLeft:IntPoint, size:IntPoint):IntRect	=
 		new IntRect(
-			horizontal	= IntSpan startSize (topLeft.x, size.x),
-			vertical	= IntSpan startSize (topLeft.y, size.y)
+			horizontal	= IntSpan.startSize(topLeft.x, size.x),
+			vertical	= IntSpan.startSize(topLeft.y, size.y)
 		)
 
 	def horizontalWithVertical(horizontal:IntSpan, vertical:IntSpan):IntRect	=
@@ -72,7 +72,7 @@ final class IntRect private (val horizontal:IntSpan, val vertical:IntSpan) {
 			case _									=> None
 		}
 
-	def toDoubleRect:DoubleRect	= DoubleRect horizontalWithVertical (horizontal.toDoubleSpan, vertical.toDoubleSpan)
+	def toDoubleRect:DoubleRect	= DoubleRect.horizontalWithVertical(horizontal.toDoubleSpan, vertical.toDoubleSpan)
 
 	//------------------------------------------------------------------------------
 

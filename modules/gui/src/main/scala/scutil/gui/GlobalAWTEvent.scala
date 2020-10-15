@@ -12,7 +12,7 @@ object GlobalAWTEvent {
 				def eventDispatched(ev:AWTEvent):Unit	= handler(ev)
 			}
 		val toolkit	= Toolkit.getDefaultToolkit
-		toolkit addAWTEventListener (listener, mask)
+		toolkit.addAWTEventListener(listener, mask)
 		disposable {
 			toolkit removeAWTEventListener listener
 		}

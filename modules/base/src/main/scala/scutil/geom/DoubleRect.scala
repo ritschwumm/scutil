@@ -7,26 +7,26 @@ object DoubleRect {
 
 	def leftTopRightBottom(left:Double, top:Double, right:Double, bottom:Double):DoubleRect	=
 		new DoubleRect(
-			horizontal	= DoubleSpan startEnd (left, right),
-			vertical	= DoubleSpan startEnd (top, bottom)
+			horizontal	= DoubleSpan.startEnd(left, right),
+			vertical	= DoubleSpan.startEnd(top, bottom)
 		)
 
 	def leftTopWidthHeight(left:Double, top:Double, width:Double, height:Double):DoubleRect	=
 		new DoubleRect(
-			horizontal	= DoubleSpan startSize (left, width),
-			vertical	= DoubleSpan startSize (top, height)
+			horizontal	= DoubleSpan.startSize(left, width),
+			vertical	= DoubleSpan.startSize(top, height)
 		)
 
 	def topLeftToBottomRight(topLeft:DoublePoint, bottomRight:DoublePoint):DoubleRect	=
 		new DoubleRect(
-			horizontal	= DoubleSpan startEnd (topLeft.x, bottomRight.x),
-			vertical	= DoubleSpan startEnd (topLeft.y, bottomRight.y)
+			horizontal	= DoubleSpan.startEnd(topLeft.x, bottomRight.x),
+			vertical	= DoubleSpan.startEnd(topLeft.y, bottomRight.y)
 		)
 
 	def topLeftWithSize(topLeft:DoublePoint, size:DoublePoint):DoubleRect	=
 		new DoubleRect(
-			horizontal	= DoubleSpan startSize (topLeft.x, size.x),
-			vertical	= DoubleSpan startSize (topLeft.y, size.y)
+			horizontal	= DoubleSpan.startSize(topLeft.x, size.x),
+			vertical	= DoubleSpan.startSize(topLeft.y, size.y)
 		)
 
 	def horizontalWithVertical(horizontal:DoubleSpan, vertical:DoubleSpan):DoubleRect	=
@@ -78,8 +78,8 @@ final class DoubleRect private (val horizontal:DoubleSpan, val vertical:DoubleSp
 
 	def inset(left:Double, top:Double, right:Double,  bottom:Double):DoubleRect	=
 		new DoubleRect(
-			horizontal	inset (left,	right),
-			vertical	inset (top,		bottom)
+			horizontal	.inset (left,	right),
+			vertical	.inset (top,	bottom)
 		)
 
 	def transformer(that:DoubleRect):Endo[DoublePoint]	=

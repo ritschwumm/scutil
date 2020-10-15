@@ -39,7 +39,7 @@ object PropertiesUtil {
 
 	def saveRawFile(file:File, it:Properties):Unit	=
 		file withOutputStream { st =>
-			it store (st, null)
+			it.store(st, null)
 		}
 
 	//------------------------------------------------------------------------------

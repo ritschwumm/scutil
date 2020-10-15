@@ -28,7 +28,7 @@ private final class NumberMacros(val c:Context) {
 		val Apply(_, List(Apply(_, List(Literal(Constant(str:String))))))	= c.prefix.tree
 		BigRational parse str match {
 			case Some(value)	=> q"$value"
-			case None			=> c abort (c.enclosingPosition, s"invalid BigRational literal ${str}")
+			case None			=> c.abort(c.enclosingPosition, s"invalid BigRational literal ${str}")
 		}
 	}
 }

@@ -10,10 +10,10 @@ import scutil.jdk.implicits._
 
 object MachineId {
 	lazy val integer:Int	=
-		(hashBytes foldLeft 0)	{ (out, byte) => (JInteger	rotateLeft (out, 8)) ^ (byte & 0xff) }
+		(hashBytes foldLeft 0)	{ (out, byte) => JInteger.rotateLeft(out, 8) ^ (byte & 0xff) }
 
 	lazy val long:Long	=
-		(hashBytes foldLeft 0L)	{ (out, byte) => (JLong		rotateLeft (out, 8)) ^ (byte & 0xff) }
+		(hashBytes foldLeft 0L)	{ (out, byte) => JLong.rotateLeft(out, 8) ^ (byte & 0xff) }
 
 	/** provides a per-machine hash similar to how mongodb works */
 	val hashBytes:Seq[Byte]	= {

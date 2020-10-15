@@ -16,7 +16,7 @@ private final class HexNumberMacros(val c:Context) {
 		val Apply(_, List(Apply(_, List(Literal(Constant(str:String))))))	= c.prefix.tree
 		parse(str, byteCount, func) match {
 			case Some(value)	=> q"$value"
-			case None			=> c abort (c.enclosingPosition, s"invalid hex literal ${str}")
+			case None			=> c.abort(c.enclosingPosition, s"invalid hex literal ${str}")
 		}
 	}
 

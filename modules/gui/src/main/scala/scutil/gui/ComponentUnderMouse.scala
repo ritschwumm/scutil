@@ -86,7 +86,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 	}
 
 	private def underMousePredicate():Predicate[Component]	=
-		mouseLocation cata (
+		mouseLocation.cata(
 			Predicates.constFalse,
 			mouse	=> underMousePoint(mouse, _)
 		)

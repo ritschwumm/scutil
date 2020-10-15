@@ -33,7 +33,7 @@ final case class Year(value:Int) extends Ordered[Year] {
 	lazy val firstDay:GregorianDate	= GregorianDate(1,	1,	value)
 	lazy val lastDay:GregorianDate	= GregorianDate(31,	12,	value)
 
-	def monthYearAt(month:Month):MonthYear		= MonthYear fromValues (month, this)
+	def monthYearAt(month:Month):MonthYear		= MonthYear.fromValues(month, this)
 	def calendarWeekAt(number:Int):CalendarWeek	= CalendarWeek(number, value)
 
 	lazy val firstCalendarWeek:CalendarWeek	= calendarWeekAt(1)

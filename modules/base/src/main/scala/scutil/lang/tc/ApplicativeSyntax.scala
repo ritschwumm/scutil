@@ -16,14 +16,14 @@ trait ApplicativeSyntax {
 	}
 
 	implicit final class ApplicativeValueSyntaxExt[F[_],T](peer:F[T])(implicit F:Applicative[F]) {
-		def pa[U](func:F[T=>U]):F[U]					= (F ap peer)(func)
-		def combine[U,V](that:F[U])(func:(T,U)=>V):F[V]	= (F combine (peer, that))(func)
+		def pa[U](func:F[T=>U]):F[U]					= F.ap(peer)(func)
+		def combine[U,V](that:F[U])(func:(T,U)=>V):F[V]	= F.combine(peer, that)(func)
 	}
 
 	/*
 	implicit final class ApplicativeArrowSyntaxExt[F[_],S,T](peer:F[S=>T])(implicit F:Applicative[F]) {
 		// NOTE this collides with the same method defined in e.g. EitherExt
-		def ap(it:F[S]):F[T]	= (F ap it)(peer)
+		def ap(it:F[S]):F[T]	= F.ap(it)(peer)
 		def aping:F[S]=>F[T]	= pa _
 	}
 	*/

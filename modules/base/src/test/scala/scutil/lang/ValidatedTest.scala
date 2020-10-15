@@ -5,8 +5,8 @@ import org.specs2.mutable._
 class ValidatedTest extends Specification {
 	"Validated" should {
 		type E = Nes[String]
-		def E(s:String):E				= Nes single s
-		def EE(s:String, ss:String*):E	= Nes multi (s,ss:_*)
+		def E(s:String):E				= Nes.single(s)
+		def EE(s:String, ss:String*):E	= Nes.multi(s,ss:_*)
 
 		"do successful ap" in {
 			val func:Validated[E,Int=>Int]	= Validated good (_ * 2)

@@ -26,11 +26,11 @@ trait EitherImplicits {
 
 		// Either.cond with flipped arguments
 		def switch[L,R](condition:Boolean, falseLeft: =>L, trueRight: =>R):Either[L,R]	=
-			Either cond (condition, trueRight, falseLeft)
+			Either.cond(condition, trueRight, falseLeft)
 	}
 
 	implicit final class EitherExt[L,R](peer:Either[L,R]) {
-		def cata[U](left:L=>U, right:R=>U):U	= peer fold (left, right)
+		def cata[U](left:L=>U, right:R=>U):U	= peer.fold(left, right)
 
 		//------------------------------------------------------------------------------
 
@@ -92,7 +92,7 @@ trait EitherImplicits {
 		def flattenMany[U,CC[_]](implicit ev:R=>CC[U], factory:Factory[U,CC[U]]):CC[U]	=
 			// toOption.flattenMany
 			peer map ev match {
-				case Left(_)	=> factory.newBuilder.result
+				case Left(_)	=> factory.newBuilder.result()
 				case Right(cc)	=> cc
 			}
 

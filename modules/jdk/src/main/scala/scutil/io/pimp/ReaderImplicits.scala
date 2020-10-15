@@ -15,7 +15,7 @@ trait ReaderImplicits {
 			val length	= buffer.length
 			var offset	= 0
 			while (offset < length) {
-				val	read	= peer read (buffer, offset, length-offset)
+				val	read	= peer.read(buffer, offset, length-offset)
 				if (read == -1)	return offset
 				offset	+= read
 			}
@@ -37,7 +37,7 @@ trait ReaderImplicits {
 			var	running	= true
 			while (running) {
 				val len	= peer read buffer
-				if (len != -1)	out appendAll (buffer, 0, len)
+				if (len != -1)	out.appendAll(buffer, 0, len)
 				else			running	= false
 			}
 			out.toString
@@ -71,7 +71,7 @@ trait ReaderImplicits {
 			var running	= true
 			while (running) {
 				val	len	= peer read buffer
-				if (len != -1)	out write (buffer, 0, len)
+				if (len != -1)	out.write(buffer, 0, len)
 				else			running	= false
 			}
 		}

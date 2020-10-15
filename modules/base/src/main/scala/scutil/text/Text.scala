@@ -3,7 +3,7 @@ package scutil.text
 object Text {
 	/** indent every line with a single tab */
 	def indent(prefix:String, str:String):String =
-		str replaceAll ("(?m)^", prefix)
+		str.replaceAll("(?m)^", prefix)
 
 	/** treats all combinations of CR and LF as line endings */
 	def expandTabs(width:Int, text:String):String = {
@@ -45,7 +45,7 @@ object Text {
 	def table(rows:Seq[Seq[String]]):Seq[String]	= {
 		val widths	=
 				(rows foldLeft Vector.empty[Int]) { (widths, row) =>
-					widths zipAll (row map (_.length), 0, 0) map { case (a,b) => a max b }
+					widths.zipAll(row map (_.length), 0, 0) map { case (a,b) => a max b }
 				}
 
 		val lines	= rows map { cells =>
@@ -57,9 +57,9 @@ object Text {
 			.mkString ("│", "│", "│")
 		}
 
-		val topRuler	= widths map { width => "─" * width } mkString ("┌", "┬", "┐")
-		val midRuler	= widths map { width => "─" * width } mkString ("├", "┼", "┤")
-		val bottomRuler	= widths map { width => "─" * width } mkString ("└", "┴", "┘")
+		val topRuler	= widths .map { width => "─" * width } .mkString ("┌", "┬", "┐")
+		val midRuler	= widths .map { width => "─" * width } .mkString ("├", "┼", "┤")
+		val bottomRuler	= widths .map { width => "─" * width } .mkString ("└", "┴", "┘")
 
 		val spersed	=
 			if (lines.isEmpty)	Vector.empty[String]

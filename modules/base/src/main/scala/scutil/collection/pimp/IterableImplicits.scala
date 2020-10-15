@@ -36,9 +36,9 @@ trait IterableImplicits {
 			val	xi	= peer.iterator
 			val yi	= that.iterator
 			while (xi.hasNext && yi.hasNext) {
-				builder	+= f(xi.next, yi.next)
+				builder	+= f(xi.next(), yi.next())
 			}
-			builder.result
+			builder.result()
 		}
 
 		/** create a set from all elements with a given function to generate the items */
@@ -64,7 +64,7 @@ trait IterableImplicits {
 					builder	+= _
 				}
 			}
-			builder.result
+			builder.result()
 		}
 
 		def collapseFirst[U](implicit ev:PFunction[T,U]):Option[U]	=
@@ -118,7 +118,7 @@ trait IterableImplicits {
 					case Some(x)	=> builder	+= x
 				}
 			}
-			Some(builder.result)
+			Some(builder.result())
 		}
 
 		def sequenceEither[F,W](implicit ev:T=>Either[F,W], factory:Factory[W,CC[W]]):Either[F,CC[W]]	=
@@ -133,7 +133,7 @@ trait IterableImplicits {
 					case Right(x)	=> builder	+= x
 				}
 			}
-			Right(builder.result)
+			Right(builder.result())
 		}
 
 		/** peer is traversable (in the haskell sense), Validated is an idiom. */
@@ -153,13 +153,13 @@ trait IterableImplicits {
 					case Bad(x)		=>
 						problems	= problems match {
 							case None		=> Some(x)
-							case Some(p)	=> Some(cc concat (p, x))
+							case Some(p)	=> Some(cc.concat(p, x))
 						}
 				}
 			}
 			problems match {
 				case Some(p)	=> Bad(p)
-				case None		=> Good(builder.result)
+				case None		=> Good(builder.result())
 			}
 		}
 
@@ -175,7 +175,7 @@ trait IterableImplicits {
 					temp	= next
 					builder += part
 				}
-				(temp, builder.result)
+				(temp, builder.result())
 			}
 
 		// TODO state support StateT

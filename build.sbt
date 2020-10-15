@@ -3,18 +3,18 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.179.0",
+	version			:= "0.180.0",
 
-	scalaVersion	:= "2.13.2",
+	scalaVersion	:= "2.13.3",
 	scalacOptions	++= Seq(
+		"-feature",
 		"-deprecation",
 		"-unchecked",
-		"-feature",
+		"-Werror",
+		"-Xlint",
 		"-opt:l:method",
 		"-opt:l:inline",
 		"-opt-inline-from:scutil.**",
-		"-Werror",
-		"-Xlint",
 	),
 
 	conflictManager	:= ConflictManager.strict withOrganization "^(?!(org\\.scala-lang|org\\.scala-js)(\\..*)?)$",
@@ -112,7 +112,7 @@ lazy val `scutil-base`	=
 		),
 		libraryDependencies	++= Seq(
 			"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-			"org.specs2"		%%	"specs2-core"	% "4.9.4"				% "test"
+			"org.specs2"		%%	"specs2-core"	% "4.10.0"				% "test"
 		),
 		Compile / boilerplateSource	:= baseDirectory.value.getParentFile / "src" / "main" / "boilerplate"
 	)
@@ -137,7 +137,7 @@ lazy val `scutil-jdk`	=
 		),
 		libraryDependencies	++= Seq(
 			"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-			"org.specs2"		%%	"specs2-core"	% "4.9.4"				% "test"
+			"org.specs2"		%%	"specs2-core"	% "4.10.0"				% "test"
 		),
 
 		//------------------------------------------------------------------------------

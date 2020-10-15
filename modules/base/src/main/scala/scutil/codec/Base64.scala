@@ -91,7 +91,7 @@ object Base64 {
 
 	private def decodeImpl(text:String):Option[Array[Byte]] = {
 		// TODO ignoring all whitespace input might be stupid
-		val cleanText	= text replaceAll (whitespaceRE, "")
+		val cleanText	= text.replaceAll(whitespaceRE, "")
 		if (cleanText.length == 0)	return Some(emptyOutput)
 		if (!validInput(cleanText))	return None
 
@@ -134,7 +134,7 @@ object Base64 {
 		)
 
 	def removePadding(s:String):String	=
-		s replaceAll ("=+$", "")
+		s.replaceAll("=+$", "")
 
 	//------------------------------------------------------------------------------
 	//## line break helper
@@ -149,5 +149,5 @@ object Base64 {
 		(s grouped length) mkString "\r\n"
 
 	def unbreakLines(s:String):String	=
-		s replaceAll ("\r\n", "")
+		s.replaceAll("\r\n", "")
 }

@@ -35,9 +35,9 @@ object JTimeUtil {
 	}
 
 	def gregorianDateIntoCalendar(it:GregorianDate, cal:Calendar):Unit = {
-		cal set (Calendar.DAY_OF_MONTH,	it.day		- 0)
-		cal set (Calendar.MONTH,		it.month	- 1)
-		cal set (Calendar.YEAR,			it.year		- 0)
+		cal.set(Calendar.DAY_OF_MONTH,	it.day		- 0)
+		cal.set(Calendar.MONTH,			it.month	- 1)
+		cal.set(Calendar.YEAR,			it.year		- 0)
 	}
 
 	//------------------------------------------------------------------------------

@@ -6,6 +6,7 @@ object extensions extends extensions
 trait extensions
 	extends	AnyImplicits
 	with	AnyRefImplicits
+	with	AtomicReferenceImplicits
 	with	BooleanImplicits
 	with	ByteArrayImplicits
 	with	CharsetImplicits

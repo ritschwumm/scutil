@@ -22,7 +22,7 @@ object ByteString {
 
 	def fromArray(it:Array[Byte]):ByteString	=
 		makeWithArray(it.length) { tmp =>
-			System arraycopy (it, 0, tmp, 0, it.length)
+			System.arraycopy(it, 0, tmp, 0, it.length)
 		}
 
 	def fromSeq(it:Seq[Byte]):ByteString	=
@@ -52,12 +52,8 @@ object ByteString {
 		new ByteString(it.toArray)
 
 	def sliceFromArray(it:Array[Byte], srcPos:Int, copyLength:Int):Option[ByteString]	=
-		if (!containsSlice(srcPos, srcPos+copyLength, it.length))	None
-		else Some {
-			makeWithArray(copyLength) { tmp =>
-				System arraycopy (it, srcPos, tmp, 0, copyLength)
-			}
-		}
+		if (containsSlice(srcPos, srcPos+copyLength, it.length))	Some(unsafeSliceFromArray(it, srcPos, copyLength))
+		else														None
 
 	//------------------------------------------------------------------------------
 
@@ -108,6 +104,11 @@ object ByteString {
 	val unsafeArrayBijection:Bijection[Array[Byte],ByteString]	=
 		Bijection(ByteString.unsafeFromArray, _.unsafeValue)
 
+	def unsafeSliceFromArray(it:Array[Byte], srcPos:Int, copyLength:Int):ByteString	=
+		makeWithArray(copyLength) { tmp =>
+			System.arraycopy(it, srcPos, tmp, 0, copyLength)
+		}
+
 	//------------------------------------------------------------------------------
 
 	def apply(its:Byte*):ByteString	=
@@ -131,7 +132,7 @@ object ByteString {
 	//## typeclass instances
 
 	implicit val ByteStringMonoid:Monoid[ByteString]	=
-		Monoid instance (ByteString.empty, _ ++ _)
+		Monoid.instance(ByteString.empty, _ ++ _)
 }
 
 /** wraps an Array[Byte] to be immutable and provide sensible equals and hashCode implementations */
@@ -144,20 +145,20 @@ final class ByteString private (private val value:Array[Byte]) {
 	def nonEmpty:Boolean	= size != 0
 
 	def containsIndex(index:Int):Boolean	=
-		ByteString containsIndex (index, size)
+		ByteString.containsIndex(index, size)
 
 	def containsGap(gap:Int):Boolean	=
-		ByteString containsGap (gap, size)
+		ByteString.containsGap(gap, size)
 
 	def containsSlice(begin:Int, end:Int):Boolean	=
-		ByteString containsSlice (begin, end, size)
+		ByteString.containsSlice(begin, end, size)
 
 	def safeIndex(rawIndex:Int):Option[Int]	=
 		if (containsIndex(rawIndex))	Some(rawIndex)
 		else							None
 
 	def safeGap(rawGap:Int):Option[Int]	=
-		if (ByteString containsGap (rawGap, size))	Some(rawGap)
+		if (ByteString.containsGap(rawGap, size))	Some(rawGap)
 		else										None
 
 	def safeSlicing(rawBegin:Int, rawEnd:Int):Option[(Int,Int)]	=
@@ -208,19 +209,19 @@ final class ByteString private (private val value:Array[Byte]) {
 
 	def concat(that:ByteString):ByteString	=
 		(ByteString makeWithArray (this.size + that.size)) { tmp =>
-			System arraycopy (this.value, 0, tmp, 0, this.size)
-			System arraycopy (that.value, 0, tmp, this.size, that.size)
+			System.arraycopy(this.value, 0, tmp, 0, this.size)
+			System.arraycopy(that.value, 0, tmp, this.size, that.size)
 		}
 
 	def prepend(value:Byte):ByteString	=
 		(ByteString makeWithArray (size+1)) { tmp =>
 			tmp(0)	= value
-			System arraycopy (this.value, 0, tmp, 1, size)
+			System.arraycopy(this.value, 0, tmp, 1, size)
 		}
 
 	def append(value:Byte):ByteString	=
 		(ByteString makeWithArray (size+1)) { tmp =>
-			System arraycopy (this.value, 0, tmp, 0, size)
+			System.arraycopy(this.value, 0, tmp, 0, size)
 			tmp(size)	= value
 		}
 
@@ -251,7 +252,7 @@ final class ByteString private (private val value:Array[Byte]) {
 
 	def toArray:Array[Byte]	= {
 		val tmp	= new Array[Byte](size)
-		System arraycopy (value, 0, tmp, 0, size)
+		System.arraycopy(value, 0, tmp, 0, size)
 		tmp
 	}
 
@@ -268,9 +269,9 @@ final class ByteString private (private val value:Array[Byte]) {
 
 	def sliceIntoArray(srcPos:Int, dest:Array[Byte], destPos:Int, copyLength:Int):Boolean	= {
 		val ok	=
-				(ByteString containsSlice (srcPos,	srcPos	+ copyLength, size)) &&
-				(ByteString containsSlice (destPos,	destPos	+ copyLength, dest.length))
-		if (ok)	System arraycopy (this.value, srcPos, dest, destPos, copyLength)
+				(ByteString.containsSlice(srcPos,	srcPos	+ copyLength, size)) &&
+				(ByteString.containsSlice(destPos,	destPos	+ copyLength, dest.length))
+		if (ok)	System.arraycopy(this.value, srcPos, dest, destPos, copyLength)
 		ok
 	}
 
@@ -316,27 +317,27 @@ final class ByteString private (private val value:Array[Byte]) {
 	def getByte(offset:Int):Option[Byte]	= get(offset)
 
 	def getBigEndianShort(offset:Int):Option[Short]	=
-		if (containsSlice(offset, offset+2))	Some(ByteArrayUtil getBigEndianShort (value, offset))
+		if (containsSlice(offset, offset+2))	Some(ByteArrayUtil.getBigEndianShort(value, offset))
 		else									None
 
 	def getBigEndianInt(offset:Int):Option[Int]		=
-		if (containsSlice(offset, offset+4))	Some(ByteArrayUtil getBigEndianInt (value, offset))
+		if (containsSlice(offset, offset+4))	Some(ByteArrayUtil.getBigEndianInt(value, offset))
 		else									None
 
 	def getBigEndianLong(offset:Int):Option[Long]		=
-		if (containsSlice(offset, offset+8))	Some(ByteArrayUtil getBigEndianLong (value, offset))
+		if (containsSlice(offset, offset+8))	Some(ByteArrayUtil.getBigEndianLong(value, offset))
 		else									None
 
 	def getLittleEndianShort(offset:Int):Option[Short]	=
-		if (containsSlice(offset, offset+2))	Some(ByteArrayUtil getLittleEndianShort (value, offset))
+		if (containsSlice(offset, offset+2))	Some(ByteArrayUtil.getLittleEndianShort(value, offset))
 		else									None
 
 	def getLittleEndianInt(offset:Int):Option[Int]		=
-		if (containsSlice(offset, offset+4))	Some(ByteArrayUtil getLittleEndianInt (value, offset))
+		if (containsSlice(offset, offset+4))	Some(ByteArrayUtil.getLittleEndianInt(value, offset))
 		else									None
 
 	def getLittleEndianLong(offset:Int):Option[Long]		=
-		if (containsSlice(offset, offset+8))	Some(ByteArrayUtil getLittleEndianLong (value, offset))
+		if (containsSlice(offset, offset+8))	Some(ByteArrayUtil.getLittleEndianLong(value, offset))
 		else									None
 
 	//------------------------------------------------------------------------------
@@ -348,7 +349,7 @@ final class ByteString private (private val value:Array[Byte]) {
 	private def unsafeSlice(begin:Int, end:Int):ByteString	= {
 		val length	= end - begin
 		(ByteString makeWithArray length) { tmp =>
-			System arraycopy (value, begin, tmp, 0, length)
+			System.arraycopy(value, begin, tmp, 0, length)
 		}
 	}
 
@@ -356,7 +357,7 @@ final class ByteString private (private val value:Array[Byte]) {
 
 	override def equals(that:Any):Boolean	=
 		that match {
-			case that:ByteString	=> JArrays equals (this.value, that.value)
+			case that:ByteString	=> JArrays.equals(this.value, that.value)
 			case _					=> false
 		}
 

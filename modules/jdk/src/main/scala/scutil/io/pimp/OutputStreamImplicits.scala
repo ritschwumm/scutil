@@ -14,7 +14,7 @@ trait OutputStreamImplicits {
 			peer write it.unsafeValue
 
 		def writeByteString(it:ByteString, offset:Int, length:Int):Unit	=
-			peer write (it.unsafeValue, offset, length)
+			peer.write(it.unsafeValue, offset, length)
 
 		def buffered:BufferedOutputStream	=
 			new BufferedOutputStream(peer)

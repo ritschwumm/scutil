@@ -29,8 +29,8 @@ object FieldNames {
 				q"_root_.scutil.lang.FieldNames[$selfType](_root_.scala.collection.immutable.Vector(..$decodedNames))"
 			}
 
-		names cata (
-			c abort (c.enclosingPosition, _),
+		names.cata(
+			c.abort(c.enclosingPosition, _),
 			c untypecheck _
 		)
 	}

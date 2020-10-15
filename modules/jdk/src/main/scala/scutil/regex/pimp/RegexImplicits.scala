@@ -48,6 +48,6 @@ trait RegexImplicits {
 			Prism filtered test
 
 		def removeAllFrom(s:String):String	=
-			peer replaceAllIn (s, "")
+			peer.replaceAllIn(s, "")
 	}
 }

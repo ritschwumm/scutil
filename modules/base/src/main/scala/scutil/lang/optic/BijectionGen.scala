@@ -124,8 +124,8 @@ private final class BijectionGen(val c:Context) {
 				}
 			}
 
-		out cata (
-			c abort (c.enclosingPosition, _),
+		out.cata(
+			c.abort(c.enclosingPosition, _),
 			c untypecheck _
 		)
 	}

@@ -102,7 +102,7 @@ sealed abstract class Month {
 			case Month.December		=> 11
 		}
 
-	def monthYearAt(year:Year):MonthYear	= MonthYear fromValues (this, year)
+	def monthYearAt(year:Year):MonthYear	= MonthYear.fromValues(this, year)
 
 	override def toString:String	=
 		this match {

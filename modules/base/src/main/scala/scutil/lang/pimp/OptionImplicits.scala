@@ -60,7 +60,7 @@ trait OptionImplicits {
 		def flatMapMany[U,CC[_]](func:T=>CC[U])(implicit factory:Factory[U,CC[U]]):CC[U]	=
 			peer map func match {
 				case Some(cc)	=> cc
-				case None		=> factory.newBuilder.result
+				case None		=> factory.newBuilder.result()
 			}
 
 		/** handy replacement for opt.toSeq.flatten abusing Factory as a Zero typeclass */

@@ -12,7 +12,7 @@ object ExceptionUtil {
 	/** replacement for logThreadExceptions(EDT) which does work in java 7, but not java 6 */
 	def logAWTExceptions(onError:(Thread,Throwable)=>Unit):Unit = {
 		java6AwtHandler	= onError
-		System setProperty (
+		System.setProperty(
 			"sun.awt.exception.handler",
 			classOf[Java6AWTExceptionHandler].getName
 		)
@@ -32,7 +32,7 @@ private final class Java6AWTExceptionHandler {
 	def handle(throwable:Throwable):Unit = {
 		try {
 			if (ExceptionUtil.java6AwtHandler != null) {
-				ExceptionUtil.java6AwtHandler apply (Thread.currentThread, throwable)
+				ExceptionUtil.java6AwtHandler.apply(Thread.currentThread, throwable)
 			}
 		}
 		catch {	case e:Throwable	=>

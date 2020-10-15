@@ -50,7 +50,7 @@ trait BooleanImplicits {
 			else		Left(falseLeft)
 
 		def validated[E,T](falseProblems: =>E, trueGood: =>T):Validated[E,T]	=
-			Validated switch (peer, falseProblems, trueGood)
+			Validated.switch(peer, falseProblems, trueGood)
 
 		//------------------------------------------------------------------------------
 
@@ -119,10 +119,10 @@ trait BooleanImplicits {
 			OptionT fromOption preventOption
 
 		def guardEitherT[F[_]:Applicative,U](leftValue: =>U):EitherT[F,U,Unit]	=
-			EitherT switch (peer, leftValue, ())
+			EitherT.switch(peer, leftValue, ())
 
 		def preventEitherT[F[_]:Applicative,U](leftValue: =>U):EitherT[F,U,Unit]	=
-			EitherT switch (!peer, leftValue, ())
+			EitherT.switch(!peer, leftValue, ())
 
 		//------------------------------------------------------------------------------
 

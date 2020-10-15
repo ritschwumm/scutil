@@ -35,7 +35,7 @@ object Lenses {
 			get	= map =>
 				map get key getOrElse default,
 			set	= value => map =>
-				if (value != default)	map updated (key, value)
+				if (value != default)	map.updated(key, value)
 				else					map - key
 		)
 }

@@ -115,31 +115,31 @@ class SeqImplicitsTest extends Specification {
 
 	"moveAt" should {
 		"fail without enough elements" in {
-			Seq() moveAt (0,0) mustEqual None
+			Seq().moveAt(0,0) mustEqual None
 		}
 
 		"move from start to end" in {
-			Seq(1,2,3) moveAt (0,3) mustEqual Some(Seq(2,3,1))
+			Seq(1,2,3).moveAt(0,3) mustEqual Some(Seq(2,3,1))
 		}
 
 		"move from end to start" in {
-			Seq(1,2,3) moveAt (2,0) mustEqual Some(Seq(3,1,2))
+			Seq(1,2,3).moveAt(2,0) mustEqual Some(Seq(3,1,2))
 		}
 
 		"not move to gap left" in {
-			Seq(1,2,3,4) moveAt (1,1) mustEqual None
+			Seq(1,2,3,4).moveAt(1,1) mustEqual None
 		}
 
 		"not move to gap right" in {
-			Seq(1,2,3,4) moveAt (1,2) mustEqual None
+			Seq(1,2,3,4).moveAt(1,2) mustEqual None
 		}
 
 		"move to gap further left" in {
-			Seq(1,2,3,4) moveAt (1,0) mustEqual Some(Seq(2,1,3,4))
+			Seq(1,2,3,4).moveAt(1,0) mustEqual Some(Seq(2,1,3,4))
 		}
 
 		"move to gap further right" in {
-			Seq(1,2,3,4) moveAt (1,3) mustEqual Some(Seq(1,3,2,4))
+			Seq(1,2,3,4).moveAt(1,3) mustEqual Some(Seq(1,3,2,4))
 		}
 	}
 

@@ -43,12 +43,12 @@ final case class DoublePoint(x:Double, y:Double) {
 
 	//------------------------------------------------------------------------------
 
-	def rectTo(that:DoublePoint):DoubleRect		= DoubleRect topLeftToBottomRight	(this, that)
-	def rectSize(that:DoublePoint):DoubleRect	= DoubleRect topLeftWithSize 		(this, that)
+	def rectTo(that:DoublePoint):DoubleRect		= DoubleRect.topLeftToBottomRight	(this, that)
+	def rectSize(that:DoublePoint):DoubleRect	= DoubleRect.topLeftWithSize 		(this, that)
 
 	//------------------------------------------------------------------------------
 
-	def angle:Double	= smath atan2 (y, x)
+	def angle:Double	= smath.atan2(y, x)
 
 	def length:Double	= smath sqrt lengthQ
 	def lengthQ:Double	= x*x + y*y

@@ -6,7 +6,7 @@ import scala.util.matching.Regex
 
 object PatternRegex {
 	def compile(regex:String, flags:Int, groupNames:String*):PatternRegex	=
-		new PatternRegex(Pattern compile (regex, flags), groupNames:_*)
+		new PatternRegex(Pattern.compile(regex, flags), groupNames:_*)
 }
 
 /** a Regex constructed from a regular Pattern instead of a String */

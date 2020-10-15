@@ -28,7 +28,7 @@ final class IoRef[T](initial:T) {
 
 	def modify[U](func:T=>(T,U)):Io[U]	=
 		Io delay {
-			RefUtil modify (ref, func)
+			RefUtil.modify(ref, func)
 		}
 
 	def modifyState[U](state:State[T,U]):Io[U] =

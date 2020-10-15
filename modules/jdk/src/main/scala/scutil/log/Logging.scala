@@ -19,7 +19,7 @@ trait Logging {
 		}
 
 		def log(elements:Seq[LogValue])(implicit sl:SourceLocation):Unit = {
-			logHandler handle LogEvent(level, elements, MilliInstant.now, sl)
+			logHandler handle LogEvent(level, elements, MilliInstant.now(), sl)
 		}
 	}
 

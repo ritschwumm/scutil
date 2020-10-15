@@ -34,7 +34,7 @@ object DndFileImport {
 			importEffect(support).isDefined
 
 		override def importData(support:TransferSupport):Boolean =
-			importEffect(support) cata (
+			importEffect(support).cata(
 				// wrong format or bad place
 				false,
 				effect => {

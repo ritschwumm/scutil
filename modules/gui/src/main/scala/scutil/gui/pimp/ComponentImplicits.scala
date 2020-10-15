@@ -32,7 +32,7 @@ trait ComponentImplicits {
 
 		/** get all parent Containers starting with the immediate parent and ending with the component root */
 		def parentChain:List[Container]	=
-			List unfoldRightSimple (
+			List.unfoldRightSimple(
 				peer,
 				(it:Component) => Option(it.getParent)
 			)
@@ -64,7 +64,7 @@ trait ComponentImplicits {
 
 		def containsScreenLocation(screenLocation:Point):Boolean = {
 			val localPosition	= new Point(screenLocation)
-			SwingUtilities convertPointFromScreen (localPosition, peer)
+			SwingUtilities.convertPointFromScreen(localPosition, peer)
 
 			val localBounds		= SwingUtilities getLocalBounds peer
 			localBounds contains localPosition

@@ -12,15 +12,15 @@ object SafeAffineTransform {
 	val identity:SafeAffineTransform	= unsafeFromAwtAffineTransform(new AffineTransform)
 
 	def translate(offset:DoublePoint):SafeAffineTransform	=
-		unsafeFromAwtAffineTransform(AffineTransform getTranslateInstance	(offset.x,	offset.y))
+		unsafeFromAwtAffineTransform(AffineTransform.getTranslateInstance(offset.x,	offset.y))
 	def scale(factor:DoublePoint):SafeAffineTransform		=
-		unsafeFromAwtAffineTransform(AffineTransform getScaleInstance		(factor.x,	factor.y))
+		unsafeFromAwtAffineTransform(AffineTransform.getScaleInstance(factor.x,	factor.y))
 	def shear(factor:DoublePoint):SafeAffineTransform		=
-		unsafeFromAwtAffineTransform(AffineTransform getShearInstance		(factor.x,	factor.y))
+		unsafeFromAwtAffineTransform(AffineTransform.getShearInstance(factor.x,	factor.y))
 	def rotate(theta:Double):SafeAffineTransform		=
 		unsafeFromAwtAffineTransform(AffineTransform getRotateInstance		theta)
 	def rotateAround(theta:Double, center:DoublePoint):SafeAffineTransform	=
-		unsafeFromAwtAffineTransform(AffineTransform getRotateInstance	(theta, center.x, center.y))
+		unsafeFromAwtAffineTransform(AffineTransform.getRotateInstance(theta, center.x, center.y))
 
 	def unsafeFromAwtAffineTransform(delegate:AffineTransform):SafeAffineTransform	= new SafeAffineTransform(delegate)
 
@@ -41,10 +41,10 @@ final case class SafeAffineTransform private (delegate:AffineTransform) {
 		transform(point)
 
 	def transform(point:DoublePoint):DoublePoint	=
-		geomConversion Point2D_DoublePoint (delegate transform (geomConversion DoublePoint_Point2D point, null))
+		geomConversion Point2D_DoublePoint delegate.transform(geomConversion DoublePoint_Point2D point, null)
 
 	def transformAwtPoint2D(point:Point2D):Point2D	=
-		delegate transform (point, null)
+		delegate.transform(point, null)
 
 	def transformAwtShape(shape:Shape):Shape	=
 		delegate createTransformedShape shape
@@ -61,8 +61,8 @@ final case class SafeAffineTransform private (delegate:AffineTransform) {
 						rect.right,
 						rect.bottom
 					)
-			delegate transform (coords, 0, coords, 0, 2)
-			DoubleRect leftTopRightBottom (
+			delegate.transform(coords, 0, coords, 0, 2)
+			DoubleRect.leftTopRightBottom(
 				coords(0),
 				coords(1),
 				coords(2),
@@ -77,16 +77,16 @@ final case class SafeAffineTransform private (delegate:AffineTransform) {
 
 	/** rotate around a given center */
 	def rotateAround(theta:Double, center:DoublePoint):SafeAffineTransform	=
-		modify { _ rotate (theta, center.x, center.y) }
+		modify { _.rotate(theta, center.x, center.y) }
 
 	def translate(offset:DoublePoint):SafeAffineTransform =
-		modify { _ translate (offset.x, offset.y) }
+		modify { _.translate(offset.x, offset.y) }
 
 	def scale(factor:DoublePoint):SafeAffineTransform =
-		modify { _ scale (factor.x, factor.y) }
+		modify { _.scale(factor.x, factor.y) }
 
 	def shear(factor:DoublePoint):SafeAffineTransform =
-		modify { _ shear (factor.x, factor.y) }
+		modify { _.shear(factor.x, factor.y) }
 
 	def rotate(theta:Double):SafeAffineTransform =
 		modify { _ rotate theta }

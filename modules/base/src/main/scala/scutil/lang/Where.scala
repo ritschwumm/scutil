@@ -58,10 +58,10 @@ sealed trait Where[+A,+B] {
 		}
 
 	def certainlyHere[AA](a:AA):Where[AA,B]	=
-		Where maybeThere (a, thereOption)
+		Where.maybeThere(a, thereOption)
 
 	def certainlyThere[BB](b:BB):Where[A,BB]	=
-		Where maybeHere (hereOption, b)
+		Where.maybeHere(hereOption, b)
 
 	def mapHere[X](func:A=>X):Where[X,B]	=
 		this match {

@@ -187,7 +187,7 @@ final class BigRational private (_numerator:JBigInteger, _denominator:JBigIntege
 	//## conversion
 
 	def toBigDecimal(mathContext:MathContext):JBigDecimal =
-		new JBigDecimal(numerator) divide (new JBigDecimal(denominator), mathContext)
+		new JBigDecimal(numerator) .divide (new JBigDecimal(denominator), mathContext)
 
 	override def doubleValue:Double	= rounded.doubleValue
 	override def floatValue:Float	= rounded.floatValue

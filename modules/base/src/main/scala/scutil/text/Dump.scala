@@ -7,8 +7,8 @@ object Dump {
 		bytes grouped bytesPerLine map { hexLine(bytesPerLine, _) }
 
 	def hexLine(bytesPerLine:Int, bytes:Seq[Byte]):String	=
-		((HexFormat		string bytes) padTo (HexFormat		width bytesPerLine, ' '))	+ " |"	+
-		((AsciiFormat	string bytes) padTo (AsciiFormat	width bytesPerLine, ' '))	+ "|"
+		(HexFormat	.string(bytes).padTo(HexFormat		width bytesPerLine, ' '))	+ " |"	+
+		(AsciiFormat.string(bytes).padTo(AsciiFormat	width bytesPerLine, ' '))	+ "|"
 
 	trait DumpFormat {
 		def string(line:Seq[Byte]):String
@@ -17,7 +17,7 @@ object Dump {
 
 	object HexFormat extends DumpFormat {
 		def string(line:Seq[Byte])	= line map { "%02x" format _ } mkString " "
-		def width(size:Int):Int		= size != 0 cata (0, size*3-1)
+		def width(size:Int):Int		= (size != 0).cata(0, size*3-1)
 	}
 
 	object AsciiFormat extends DumpFormat {

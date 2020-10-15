@@ -111,7 +111,7 @@ sealed trait Validated[+E,+T] {
 		(this, that) match {
 			case (Bad(a),	Good(_))	=> Bad(a)
 			case (Good(_),	Bad(b))		=> Bad(b)
-			case (Bad(a),	Bad(b))		=> Bad(cc concat (a, b))
+			case (Bad(a),	Bad(b))		=> Bad(cc.concat(a, b))
 			case (Good(a),	Good(b))	=> Good(func(a, b))
 		}
 
@@ -119,7 +119,7 @@ sealed trait Validated[+E,+T] {
 	def flattenMany[U,CC[_]](implicit ev:T=>CC[U], factory:Factory[U,CC[U]]):CC[U]	=
 		// toOption.flattenMany
 		this map ev match {
-			case Bad(_)		=> factory.newBuilder.result
+			case Bad(_)		=> factory.newBuilder.result()
 			case Good(cc)	=> cc
 		}
 
@@ -167,7 +167,7 @@ sealed trait Validated[+E,+T] {
 
 	def orElse[EE>:E,TT>:T](that:Validated[EE,TT])(implicit cc:Semigroup[EE]):Validated[EE,TT]	=
 		(this, that) match {
-			case (Bad(a),	Bad(b))		=> Bad(cc concat (a, b))
+			case (Bad(a),	Bad(b))		=> Bad(cc.concat(a, b))
 			case (Good(a),	_)			=> Good(a)
 			case (_,		Good(b))	=> Good(b)
 		}

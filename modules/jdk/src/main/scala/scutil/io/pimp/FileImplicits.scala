@@ -44,7 +44,7 @@ trait FileImplicits {
 
 		/** get all parent Files starting with the immediate parent and ending with the directory root */
 		def parentChain:List[File]	=
-			List unfoldRightSimple (
+			List.unfoldRightSimple(
 				peer,
 				(it:File) => Option(it.getParentFile)
 			)
@@ -152,7 +152,7 @@ trait FileImplicits {
 				 new FileOutputStream(to).getChannel use { target =>
 					 var position	= 0L
 					 while (position < source.size) {
-						 position	+= (target transferFrom (source, 0, source.size-position))
+						 position	+= target.transferFrom(source, 0, source.size-position)
 					 }
 					 if (force) {
 						 target force true
@@ -183,13 +183,13 @@ trait FileImplicits {
 		/** create a temp file within this directory */
 		def createTempFile(prefix:String, suffix:String = null):File	= {
 			require(prefix.length >= 3, "prefix must be at least 3 characters long")
-			File createTempFile (prefix, suffix, peer)
+			File.createTempFile(prefix, suffix, peer)
 		}
 
 		/** create a temp directory within this directory */
 		def createTempDirectory(prefix:String, suffix:String = null):File	= {
 			require(prefix.length >= 3, "prefix must be at least 3 characters long")
-			val	file	= File createTempFile (prefix, suffix, peer)
+			val	file	= File.createTempFile(prefix, suffix, peer)
 			require(file.delete(),	"cannot delete temp file: " + file.toString)
 			require(file.mkdir(),	"cannot create temp directory: " + file.toString)
 			file

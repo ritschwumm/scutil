@@ -24,7 +24,7 @@ object EitherT {
 		EitherT(M pure it)
 
 	def switch[F[_]:Applicative,L,R](condition:Boolean, falseLeft: =>L, trueRight: =>R):EitherT[F,L,R]	=
-		fromEither(Either cond (condition, trueRight, falseLeft))
+		fromEither(Either.cond(condition, trueRight, falseLeft))
 
 	//------------------------------------------------------------------------------
 
@@ -99,7 +99,7 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 	def flatMap[RR](func:R=>EitherT[F,L,RR])(implicit M:Monad[F]):EitherT[F,L,RR]	=
 		EitherT(
 			(M flatMap value) {
-				_ map func cata (
+				_.map(func).cata (
 					Either.left[L,RR] _ andThen M.pure,
 					_.value
 				)
@@ -117,7 +117,7 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 	def leftFlatMap[LL](func:L=>EitherT[F,LL,R])(implicit M:Monad[F]):EitherT[F,LL,R]	=
 		EitherT(
 			(M flatMap value) {
-				_ leftMap func cata (
+				_.leftMap(func).cata (
 					_.value,
 					Either.right[LL,R] _ andThen M.pure
 				)
@@ -130,7 +130,7 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 	//------------------------------------------------------------------------------
 
 	def bimap[LL,RR](leftFunc:L=>LL, rightFunc:R=>RR)(implicit M:Functor[F]):EitherT[F,LL,RR]	=
-		mapEither(_ bimap (leftFunc, rightFunc))
+		mapEither(_.bimap(leftFunc, rightFunc))
 
 	def mapEither[LL,RR](func:Either[L,R]=>Either[LL,RR])(implicit M:Functor[F]):EitherT[F,LL,RR]	=
 		EitherT((M map value)(func))
