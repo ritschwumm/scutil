@@ -9,7 +9,7 @@ object IoRef {
 }
 
 final class IoRef[T](initial:T) {
-	val ref	= new AtomicReference(initial)
+	private val ref	= new AtomicReference(initial)
 
 	val get:Io[T]	=
 		Io delay {

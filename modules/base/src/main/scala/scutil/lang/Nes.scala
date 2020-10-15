@@ -37,7 +37,7 @@ object Nes {
 			override def flatMap[A,B](it:Nes[A])(func:A=>Nes[B]):Nes[B]	= it flatMap func
 			override def traverse[G[_],S,T](it:Nes[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[Nes[T]]	=
 				((it.tail map func) foldLeft ((AP map  func(it.head))(Nes.single[T]))) { (xs, x) =>
-					AP.combine(xs, x)(_ :+ _)
+					AP.map2(xs, x)(_ :+ _)
 				}
 		}
 

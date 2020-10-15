@@ -12,5 +12,5 @@ object Delay {
 trait Delay[F[_]] {
 	def delay[T](it: =>T):F[T]
 
-	final def delayThunk[T](it:Thunk[T]):F[T]	= delay(it())
+	def delayThunk[T](it:Thunk[T]):F[T]	= delay(it())
 }

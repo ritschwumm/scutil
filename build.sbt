@@ -3,7 +3,7 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.180.0",
+	version			:= "0.181.0",
 
 	scalaVersion	:= "2.13.3",
 	scalacOptions	++= Seq(
@@ -112,7 +112,7 @@ lazy val `scutil-base`	=
 		),
 		libraryDependencies	++= Seq(
 			"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-			"org.specs2"		%%	"specs2-core"	% "4.10.0"				% "test"
+			"org.specs2"		%%	"specs2-core"	% "4.10.1"				% "test"
 		),
 		Compile / boilerplateSource	:= baseDirectory.value.getParentFile / "src" / "main" / "boilerplate"
 	)
@@ -137,7 +137,7 @@ lazy val `scutil-jdk`	=
 		),
 		libraryDependencies	++= Seq(
 			"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-			"org.specs2"		%%	"specs2-core"	% "4.10.0"				% "test"
+			"org.specs2"		%%	"specs2-core"	% "4.10.1"				% "test"
 		),
 
 		//------------------------------------------------------------------------------

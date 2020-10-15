@@ -6,10 +6,10 @@ import scutil.base.implicits._
 
 class ApplicativeTest extends Specification {
 	"applicative" should {
-		"combine in the zip order when zippy" in {
-			Applicative[Option].combine(Some(1), Some(2))(_ -> _) mustEqual (Some(1) zip Some(2))
+		"map2 in the zip order when zippy" in {
+			Applicative[Option].map2(Some(1), Some(2))(_ -> _) mustEqual (Some(1) zip Some(2))
 		}
-		"combine in the same order as flatMap" in {
+		"map2 in the same order as flatMap" in {
 			val as	= Vector(1,2)
 			val bs	= Vector(3,4)
 
@@ -22,10 +22,10 @@ class ApplicativeTest extends Specification {
 					}
 			x mustEqual Vector(3,4,6,8)
 
-			val y	= (as combine bs)(_*_)
+			val y	= (as map2 bs)(_*_)
 			x mustEqual y
 		}
-		"have app do the same thing for native and instance" in {
+		"have ap do the same thing for native and instance" in {
 			val f1:Int=>Int	= _-1
 			val f2:Int=>Int	= _+1
 

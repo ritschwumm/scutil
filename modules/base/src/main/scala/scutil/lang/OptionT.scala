@@ -16,10 +16,10 @@ object OptionT {
 	//------------------------------------------------------------------------------
 
 	def fromOption[F[_],T](it:Option[T])(implicit M:Applicative[F]):OptionT[F,T]	=
-			OptionT(M pure it)
+		OptionT(M pure it)
 
 	def switch[F[_]:Applicative,T](condition:Boolean, trueSome: =>T):OptionT[F,T]	=
-			fromOption(if (condition) Some(trueSome) else None)
+		fromOption(if (condition) Some(trueSome) else None)
 
 	//------------------------------------------------------------------------------
 
@@ -36,14 +36,21 @@ object OptionT {
 		def option[T](it:Option[T])(implicit M:Applicative[F]):OptionT[F,T]	= fromOption(it)
 		def some[T](it:T)(implicit M:Monad[F]):OptionT[F,T]					= OptionT some it
 		def none[T](implicit M:Monad[F]):OptionT[F,T]						= OptionT.none
-		def delayPure[T](it: =>T)(implicit D:Delay[F]):OptionT[F,T]			= OptionT delayPure it
+		def delay[T](it: =>T)(implicit D:Delay[F]):OptionT[F,T]				= OptionT delay it
+		@deprecated("use delay", "0.181.0")
+		def delayPure[T](it: =>T)(implicit D:Delay[F]):OptionT[F,T]			= delay(it)
 	}
 
 	//------------------------------------------------------------------------------
 
-	def delayPure[F[_]:Delay,T](it: =>T):OptionT[F,T]	= delaySome(it)
+	def delay[F[_],T](it: =>T)(implicit D:Delay[F]):OptionT[F,T]	= OptionT(D delay Some(it))
 
+	@deprecated("use delay", "0.181.0")
+	def delayPure[F[_]:Delay,T](it: =>T):OptionT[F,T]	= delay(it)
+
+	/*
 	def delaySome[F[_]:Delay,T](it: =>T):OptionT[F,T]	= delayFromOption(Some(it))
+	*/
 
 	def delayFromOption[F[_],T](it: =>Option[T])(implicit D:Delay[F]):OptionT[F,T]	=
 		OptionT(D delay it)
@@ -53,7 +60,7 @@ object OptionT {
 
 	implicit def OptionTDelay[F[_]:Delay]:Delay[OptionT[F,?]]	=
 		new Delay[OptionT[F,?]] {
-			override def delay[T](it: =>T):OptionT[F,T]	= OptionT delayPure it
+			override def delay[T](it: =>T):OptionT[F,T]	= OptionT delay it
 		}
 
 	implicit def OptionTMonad[F[_]](implicit MF:Monad[F]):Monad[OptionT[F,?]]	=

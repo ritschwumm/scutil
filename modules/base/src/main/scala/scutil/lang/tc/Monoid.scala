@@ -26,4 +26,14 @@ trait Monoid[F] extends Semigroup[F] {
 	//## own
 
 	def empty:F
+
+	def times(item:F, count:Int):F	= {
+		var accu	= empty
+		var i		= 0
+		while (i < count) {
+			accu	= concat(accu, item)
+			i		+= 1
+		}
+		accu
+	}
 }

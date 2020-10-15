@@ -50,11 +50,19 @@ object EitherT {
 
 	//------------------------------------------------------------------------------
 
+	def delay[F[_],L,R](it: =>R)(implicit D:Delay[F]):EitherT[F,L,R]	=
+		EitherT(D delay Right(it))
+
+	@deprecated("use delay", "0.181.0")
+	def delayPure[F[_]:Delay,L,R](it: =>R):EitherT[F,L,R]	= delay(it)
+
+	/*
 	def delayPure[F[_]:Delay,L,R](it: =>R):EitherT[F,L,R]	= delayRight(it)
 	def delayError[F[_]:Delay,L,R](it: =>L):EitherT[F,L,R]	= delayLeft(it)
 
 	def delayRight[F[_]:Delay,L,R](it: =>R):EitherT[F,L,R]	= delayFromEither(Either right it)
 	def delayLeft[F[_]:Delay,L,R](it: =>L):EitherT[F,L,R]	= delayFromEither(Either left it)
+	*/
 
 	def delayFromEither[F[_],L,R](it: =>Either[L,R])(implicit D:Delay[F]):EitherT[F,L,R]	=
 		EitherT(D delay it)
@@ -73,7 +81,7 @@ object EitherT {
 
 	implicit def EitherTDelay[F[_]:Delay,L]:Delay[EitherT[F,L,?]]	=
 		new Delay[EitherT[F,L,?]] {
-			override def delay[R](it: =>R):EitherT[F,L,R]	= EitherT delayPure it
+			override def delay[R](it: =>R):EitherT[F,L,R]	= EitherT delay it
 		}
 
 	implicit def EitherTMonad[F[_]:Monad,L]:Monad[EitherT[F,L,?]]	=

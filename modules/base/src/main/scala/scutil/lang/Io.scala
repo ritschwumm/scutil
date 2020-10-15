@@ -9,7 +9,10 @@ object Io extends IoInstancesLow {
 	def delay[T](it: =>T):Io[T]		= Io.Suspend(() => it)
 	def thunk[T](it:Thunk[T]):Io[T]	= Io.Suspend(it)
 
+	@deprecated("use unit", "0.181.0")
 	def pureUnit:Io[Unit]	= Io.Pure(())
+
+	def unit:Io[Unit]	= Io.Pure(())
 
 	//------------------------------------------------------------------------------
 

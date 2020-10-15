@@ -36,6 +36,7 @@ object StateT { outer =>
 		def state[S,T](it:State[S,T])(implicit M:Applicative[F]):StateT[F,S,T]	= fromState(it)
 		def func[S,T](it:S=>(S,T))(implicit M:Applicative[F]):StateT[F,S,T]		= fromStateFunc(it)
 
+		def get[S](implicit F:Applicative[F]) 								= outer.get[F,S]
 		def set[S](it:S)(implicit F:Applicative[F]):StateT[F,S,Unit]		= outer set it
 		def setOld[S](it:S)(implicit F:Applicative[F]):StateT[F,S,S]		= outer setOld it
 		def mod[S](func:S=>S)(implicit F:Applicative[F]):StateT[F,S,Unit]	= outer mod func
@@ -46,8 +47,12 @@ object StateT { outer =>
 
 	//------------------------------------------------------------------------------
 
-	def delayPure[F[_],S,T](it: =>T)(implicit D:Delay[F]):StateT[F,S,T]	=
+	def delay[F[_],S,T](it: =>T)(implicit D:Delay[F]):StateT[F,S,T]	=
 		StateT { s => D delay (s -> it) }
+
+	@deprecated("use delay", "0.181.0")
+	def delayPure[F[_],S,T](it: =>T)(implicit D:Delay[F]):StateT[F,S,T]	=
+		delay(it)
 
 	//------------------------------------------------------------------------------
 
@@ -90,7 +95,7 @@ object StateT { outer =>
 
 	implicit def StateTDelay[F[_]:Delay,S]:Delay[StateT[F,S,?]]	=
 		new Delay[StateT[F,S,?]] {
-			override def delay[T](it: =>T):StateT[F,S,T]	= StateT delayPure it
+			override def delay[T](it: =>T):StateT[F,S,T]	= StateT delay it
 		}
 
 	implicit def StateTMonad[F[_]:Monad,S]:Monad[StateT[F,S,?]]	=

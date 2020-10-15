@@ -12,7 +12,7 @@ trait instances extends instancesLow {
 			override def flatMap[A,B](it:Vector[A])(func:A=>Vector[B]):Vector[B]	= it flatMap func
 			override def traverse[G[_],S,T](it:Vector[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[Vector[T]]	=
 				(it map func foldLeft (AP pure Vector.empty[T])) {
-					(xs, x) => AP.combine(xs, x)(_ :+ _)
+					(xs, x) => AP.map2(xs, x)(_ :+ _)
 				}
 		}
 
@@ -26,7 +26,7 @@ trait instances extends instancesLow {
 			override def flatMap[A,B](it:List[A])(func:A=>List[B]):List[B]	= it flatMap func
 			override def traverse[G[_],S,T](it:List[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[List[T]]	=
 				(it map func foldLeft (AP pure List.empty[T])) {
-					(xs, x) => AP.combine(xs, x)(_ :+ _)
+					(xs, x) => AP.map2(xs, x)(_ :+ _)
 				}
 		}
 
@@ -52,7 +52,7 @@ trait instancesLow {
 			override def flatMap[A,B](it:Seq[A])(func:A=>Seq[B]):Seq[B]	= it flatMap func
 			override def traverse[G[_],S,T](it:Seq[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[Seq[T]]	=
 				(it map func foldLeft (AP pure ((Vector.empty[T]):Seq[T]))) {
-					(xs, x) => AP.combine(xs, x)(_ :+ _)
+					(xs, x) => AP.map2(xs, x)(_ :+ _)
 				}
 		}
 

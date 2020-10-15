@@ -4,7 +4,7 @@ object MonoidSyntax extends MonoidSyntax
 
 trait MonoidSyntax {
 	implicit final class MonoidSyntaxExt[T](peer:T)(implicit SG:Monoid[T]) {
-		def concat(that:T):T	= SG.concat(peer, that)
+		def times(count:Int):T	= SG.times(peer, count)
 	}
 
 	// TODO add a Foldable typeclass
