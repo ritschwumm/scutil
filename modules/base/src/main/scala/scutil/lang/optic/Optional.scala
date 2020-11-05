@@ -39,45 +39,17 @@ object Optional {
 	def codiag[T]:Optional[Either[T,T],T]	=
 		identity[T] sum identity[T]
 
+	@deprecated("use Prism.some.toOptional", "0.185.0")
 	def some[T]:Optional[Option[T],T]	=
-		Optional(
-			get	= (state:Option[T]) => state,
-			set	= (next:T) => {
-				case Some(_)	=> Some(next)
-				case None		=> None
-			}
-		)
+		Prism.some.toOptional
 
+	@deprecated("use Prism.left.toOptional", "0.185.0")
 	def left[L,R]:Optional[Either[L,R],L]	=
-		Optional(
-			get	= {
-				case Left(x)	=> Some(x)
-				case Right(_)	=> None
-			},
-			set	= (next:L) => {
-				case Left(_)	=> Left(next)
-				case Right(x)	=> Right(x)
-			}
-		)
+		Prism.left.toOptional
 
+	@deprecated("use Prism.right.toOptional", "0.185.0")
 	def right[L,R]:Optional[Either[L,R],R]	=
-		Optional(
-			get	= {
-				case Left(_)	=> None
-				case Right(x)	=> Some(x)
-			},
-			set	= (next:R) => {
-				case Left(x)	=> Left(x)
-				case Right(_)	=> Right(next)
-			}
-		)
-
-	@deprecated("use Lens >=> Optional.some instead", "0.184.0")
-	def fromLensToOption[S,T](lens:Lens[S,Option[T]]):Optional[S,T]	=
-		Optional(
-			s => lens get s,
-			t => s => if (lens.get(s).isDefined) lens.set(Some(t))(s) else s
-		)
+		Prism.right.toOptional
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances

@@ -20,6 +20,17 @@ object PLens {
 	def codiag[T]:PLens[Either[T,T],T]	=
 		identity[T] sum identity[T]
 
+	// TODO optics add left and right here - if this makes sense at all
+	def some[S,T](total:Lens[S,Option[T]]):PLens[S,T]	=
+		PLens { s =>
+			total get s map { t =>
+				Store[S,T](
+					t,
+					t => total set Some(t) apply s
+				)
+			}
+		}
+
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
@@ -144,6 +155,7 @@ final case class PLens[S,T](on:S=>Option[Store[S,T]]) {
 	def toLens(default: =>Store[S,T]):Lens[S,T]	=
 		Lens fromStoreAt { on(_) getOrElse default }
 
+	// TODO optics is this correct?
 	def toOptional:Optional[S,T]	=
 		Optional(
 			get,

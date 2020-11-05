@@ -7,7 +7,7 @@ import scutil.lang._
 object Hashing {
 	@throws(classOf[NoSuchAlgorithmException])
 	def hash(digestAlgorithm:String, roundCount:Int, bytes:ByteString):ByteString	= {
-		require(roundCount >= 0, s"rounds must be non-negative, but was ${roundCount.toString}")
+		require(roundCount > 0, s"rounds must be positive, but was ${roundCount.toString}")
 
 		val digest	= MessageDigest getInstance digestAlgorithm
 		var trip	= bytes.unsafeValue

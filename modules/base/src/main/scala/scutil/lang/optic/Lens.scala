@@ -20,6 +20,18 @@ object Lens {
 			set	= t => s	=> func(s) set t
 		)
 
+	def first[S,T]:Lens[(S,T),S]	=
+		Lens(
+			get	= p			=> p._1,
+			set	= t => p	=> (t, p._2)
+		)
+
+	def second[S,T]:Lens[(S,T),T]	=
+		Lens(
+			get	= p			=> p._2,
+			set	=  t => p	=> (p._1, t)
+		)
+
 	val Gen	= LensGen
 }
 

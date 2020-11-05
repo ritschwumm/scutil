@@ -3,17 +3,11 @@ package scutil.lang
 import scutil.collection.implicits._
 
 object Lenses {
-	def pairFirst[S,T]:Lens[(S,T),S]	=
-		Lens(
-			get	= p			=> p._1,
-			set	= t => p	=> (t, p._2)
-		)
+	@deprecated("use Lens.first", "0.185.0")
+	def pairFirst[S,T]:Lens[(S,T),S]	= Lens.first
 
-	def pairSecond[S,T]:Lens[(S,T),T]	=
-		Lens(
-			get	= p			=> p._2,
-			set	=  t => p	=> (p._1, t)
-		)
+	@deprecated("use Lens.second", "0.185.0")
+	def pairSecond[S,T]:Lens[(S,T),T]	= Lens.second
 
 	def set[T](t:T):Lens[Set[T],Boolean]	=
 		Lens(

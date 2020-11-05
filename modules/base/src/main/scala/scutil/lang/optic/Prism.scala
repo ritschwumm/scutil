@@ -60,6 +60,16 @@ final case class Prism[S,T](get:PFunction[S,T], set:T=>S) {
 	def modF[F[_]](func:FEndo[F,T])(implicit F:Applicative[F]):FEndo[F,S]	= s	=> modOptF(func) apply s getOrElse (F pure s)
 	def modTheF[F[_]](s:S, func:FEndo[F,T])(implicit F:Applicative[F]):F[S]	= modF(func) apply s
 
+	// TODO optics this could be renamed to set, set is actually reverseGet in monocle (?)
+	def setMatching(value:T):Endo[S]	=
+		//mod(_ => value)
+		s => {
+			get(s) match {
+				case Some(_)	=> set(value)
+				case None		=> s
+			}
+		}
+
 	//------------------------------------------------------------------------------
 
 	def modOpt(func:Endo[T]):PEndo[S]			= s => get(s) map (func andThen set)
@@ -209,7 +219,7 @@ final case class Prism[S,T](get:PFunction[S,T], set:T=>S) {
 	def toOptional:Optional[S,T]	=
 		Optional(
 			get	= get,
-			set	= t => s => set(t)
+			set	= setMatching
 		)
 
 	def toPLens:PLens[S,T]	=

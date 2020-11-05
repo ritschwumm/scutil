@@ -4,15 +4,8 @@ import scutil.lang.implicits._
 import scutil.collection.implicits._
 
 object PLenses {
-	def opt[S,T](total:Lens[S,Option[T]]):PLens[S,T]	=
-		PLens { s =>
-			total get s map { t =>
-				Store[S,T](
-					t,
-					t => total set Some(t) apply s
-				)
-			}
-		}
+	@deprecated("use PLens.some", "0.185.0")
+	def opt[S,T](total:Lens[S,Option[T]]):PLens[S,T]	= PLens.some(total)
 
 	//------------------------------------------------------------------------------
 

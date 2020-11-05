@@ -1,16 +1,6 @@
 package scutil.lang
 
 object Prisms {
-	@deprecated("use Prism.left", "0.184.0")
-	def eitherLeft[A,B]:Prism[Either[A,B],A]		= Prism(_.swap.toOption,	Left.apply)
-	@deprecated("use Prism.right", "0.184.0")
-	def eitherRight[A,B]:Prism[Either[A,B],B]		= Prism(_.toOption,			Right.apply)
-
-	@deprecated("use Prism.bad", "0.184.0")
-	def validatedBad[A,B]:Prism[Validated[A,B],A]	= Prism(_.badToOption,		Bad.apply)
-	@deprecated("use Prism.good", "0.184.0")
-	def validatedGood[A,B]:Prism[Validated[A,B],B]	= Prism(_.toOption,			Good.apply)
-
 	def listCons[T]:Prism[List[T],(T,List[T])]	=
 		Prism(
 			_ match {

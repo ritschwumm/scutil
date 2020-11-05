@@ -19,5 +19,23 @@ class PrismTest extends Specification {
 			val opt:Option[Int]	= DragData.P.WorkMove get data
 			opt mustEqual Some(1)
 		}
+
+		"change the non-matching side when setting" in {
+			DragData.P.WorkMove.set(2).mustEqual(WorkMove(2))
+		}
+
+		"switch from the non-matching to the matchiong side when setting" in {
+			DragData.P.WorkInject.set((1,"")).mustEqual(WorkInject(1,""))
+		}
+
+		"change the non-matching side when setting the converted Optional" in {
+			val orig:DragData	= WorkMove(1)
+			DragData.P.WorkMove.toOptional.set(2)(orig).mustEqual(WorkMove(2))
+		}
+
+		"leave the non-matching side alone when setting the converted Optional" in {
+			val orig:DragData	= WorkMove(1)
+			DragData.P.WorkInject.toOptional.set((1,""))(orig).mustEqual(orig)
+		}
 	}
 }
