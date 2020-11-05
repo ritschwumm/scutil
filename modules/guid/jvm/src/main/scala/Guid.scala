@@ -2,7 +2,7 @@ package scutil.guid
 
 import java.security.SecureRandom
 
-import scutil.base.implicits._
+import scutil.core.implicits._
 import scutil.lang._
 
 object Guid extends GuidBase {

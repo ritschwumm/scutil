@@ -3,7 +3,7 @@ import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.187.0",
+	version			:= "0.188.0",
 
 	scalaVersion	:= "2.13.3",
 	scalacOptions	++= Seq(
@@ -81,8 +81,8 @@ def myCrossProject(id:String, base:File, crossType:CrossType):CrossProject	=
 lazy val `scutil`	=
 	(project	in	file("."))
 	.aggregate(
-		`scutil-base-jvm`,
-		`scutil-base-js`,
+		`scutil-core-jvm`,
+		`scutil-core-js`,
 		`scutil-jdk`,
 		`scutil-gui`,
 		`scutil-xml`,
@@ -95,8 +95,8 @@ lazy val `scutil`	=
 
 //------------------------------------------------------------------------------
 
-lazy val `scutil-base`	=
-	myCrossProject("scutil-base", file("modules/base"), CrossType.Pure)
+lazy val `scutil-core`	=
+	myCrossProject("scutil-core", file("modules/core"), CrossType.Pure)
 	.enablePlugins(
 		BoilerplatePlugin
 	)
@@ -120,8 +120,8 @@ lazy val `scutil-base`	=
 	.jsSettings(
 		noTestSettings
 	)
-lazy val `scutil-base-jvm`	= `scutil-base`.jvm
-lazy val `scutil-base-js`	= `scutil-base`.js
+lazy val `scutil-core-jvm`	= `scutil-core`.jvm
+lazy val `scutil-core-js`	= `scutil-core`.js
 
 lazy val `scutil-jdk`	=
 	(project	in	file("modules/jdk"))
@@ -147,7 +147,7 @@ lazy val `scutil-jdk`	=
 			import java.io.File
 			import scutil.lang._
 			import scutil.lang.Charsets.{ us_ascii, iso_8859_1, utf_8 }
-			import scutil.base.implicits._
+			import scutil.core.implicits._
 			import scutil.jdk.implicits._
 			import scutil.codec.Base64
 			import scutil.codec.URIComponent
@@ -159,7 +159,7 @@ lazy val `scutil-jdk`	=
 			import scutil.platform.Platform._
 		"""
 	)
-	.dependsOn	(`scutil-base-jvm`)
+	.dependsOn	(`scutil-core-jvm`)
 
 lazy val `scutil-gui`	=
 	(project	in	file("modules/gui"))
@@ -209,7 +209,7 @@ lazy val `scutil-guid`	=
 		)
 	)
 	.dependsOn(
-		`scutil-base`
+		`scutil-core`
 	)
 	.jvmSettings()
 	.jsSettings(

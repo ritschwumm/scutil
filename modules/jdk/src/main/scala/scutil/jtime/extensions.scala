@@ -1,6 +1,6 @@
 package scutil.jtime
 
-import scutil.jtime.pimp._
+import scutil.jtime.extension._
 
 object extensions extends extensions
 trait extensions

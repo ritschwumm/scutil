@@ -1,4 +1,4 @@
-package scutil.io.pimp
+package scutil.io.extension
 
 import java.io._
 

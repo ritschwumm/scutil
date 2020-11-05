@@ -1,6 +1,6 @@
 package scutil.jcollection
 
-import scutil.jcollection.pimp._
+import scutil.jcollection.extension._
 
 object extensions extends extensions
 trait extensions

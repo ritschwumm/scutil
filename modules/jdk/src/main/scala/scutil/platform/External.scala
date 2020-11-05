@@ -3,9 +3,9 @@ package scutil.platform
 import java.io._
 
 import scutil.lang._
-import scutil.base.implicits._
+import scutil.core.implicits._
 import scutil.jdk.implicits._
-import scutil.concurrent.Executors
+import scutil.concurrent._
 
 object External {
 	/** execute an external process. */
@@ -35,7 +35,7 @@ object External {
 		}
 	}
 
-	private val execute	= Executors.thread
+	private val execute	= Execution.thread
 
 	private def spawn[T](task: =>T):Thunk[T] =
 		execute withResult thunk(task)

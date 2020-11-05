@@ -5,7 +5,7 @@ import java.util.regex.Pattern
 import scala.util.matching.Regex
 
 import scutil.lang._
-import scutil.base.implicits._
+import scutil.core.implicits._
 
 object SearchCompiler {
 	def multi(pattern:SearchPattern):Predicate[Iterable[String]]	=

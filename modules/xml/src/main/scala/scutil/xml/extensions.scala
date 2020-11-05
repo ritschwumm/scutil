@@ -1,6 +1,6 @@
 package scutil.xml
 
-import scutil.xml.pimp._
+import scutil.xml.extension._
 
 object extensions extends extensions
 trait extensions

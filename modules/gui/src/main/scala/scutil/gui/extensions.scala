@@ -1,6 +1,6 @@
 package scutil.gui
 
-import scutil.gui.pimp._
+import scutil.gui.extension._
 
 object extensions extends extensions
 trait extensions

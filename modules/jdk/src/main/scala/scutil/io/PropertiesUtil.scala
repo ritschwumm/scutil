@@ -6,7 +6,7 @@ import java.net.URL
 import java.net.Proxy
 import java.util.Properties
 
-import scutil.base.implicits._
+import scutil.core.implicits._
 import scutil.jdk.implicits._
 
 object PropertiesUtil {

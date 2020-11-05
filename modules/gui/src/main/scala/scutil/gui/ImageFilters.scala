@@ -2,20 +2,19 @@ package scutil.gui
 
 import java.awt.image.RGBImageFilter
 
-import scutil.lang._
 import scutil.color._
 
 object ImageFilters {
-	def rgba(func:Endo[RGBA]):RGBImageFilter	=
+	def rgba(func:RGBA=>RGBA):RGBImageFilter	=
 		new RGBAFilter(func)
 
-	def hsba(func:Endo[HSBA]):RGBImageFilter	=
+	def hsba(func:HSBA=>HSBA):RGBImageFilter	=
 		rgba { rgba => func(rgba.toHSBA).toRGBA }
 
-	def rgb(func:Endo[RGB]):RGBImageFilter	=
+	def rgb(func:RGB=>RGB):RGBImageFilter	=
 		rgba { rgba => rgba copy (rgb = func(rgba.rgb)) }
 
-	def hsb(func:Endo[HSB]):RGBImageFilter	=
+	def hsb(func:HSB=>HSB):RGBImageFilter	=
 		hsba { hsba => hsba copy (hsb = func(hsba.hsb)) }
 }
 

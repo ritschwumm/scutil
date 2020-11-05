@@ -1,6 +1,6 @@
 package scutil.net
 
-import scutil.net.pimp._
+import scutil.net.extension._
 
 object extensions extends extensions
 trait extensions

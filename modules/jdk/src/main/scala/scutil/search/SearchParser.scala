@@ -1,6 +1,6 @@
 package scutil.search
 
-import scutil.base.implicits._
+import scutil.core.implicits._
 
 /**
 selects String who match a pattern with the following syntax:

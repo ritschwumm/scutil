@@ -2,15 +2,20 @@ package scutil.concurrent
 
 import java.util.concurrent.{ Executor=>JExecutor }
 
-import scutil.lang._
-import scutil.lang.implicits._
-
 object Executors {
-	val ignore:Executor	= task	=> ()
-	val direct:Executor	= task	=> task()
-	val thread:Executor	= task	=> new Thread(task.toRunnable).start()
-	val daemon:Executor	= task	=> new Thread(task.toRunnable).doto( _ setDaemon true).start()
+	@deprecated("use Execution", "0.188.0")
+	type Executor	= Execution
+
+	@deprecated("use Execution.ignore", "0.188.0")
+	val ignore:Executor	= Execution.ignore
+	@deprecated("use Execution.direct", "0.188.0")
+	val direct:Executor	= Execution.direct
+	@deprecated("use Execution.thread", "0.188.0")
+	val thread:Executor	= Execution.thread
+	@deprecated("use Execution.daemon", "0.188.0")
+	val daemon:Executor	= Execution.daemon
 
 	// BETTER move into JExecutorImplicits ?
-	def java(executor:JExecutor):Executor	= task => executor execute task.toRunnable
+	@deprecated("use Execution.fromExecutor", "0.188.0")
+	def java(executor:JExecutor):Executor	= Execution.fromExecutor(executor)
 }

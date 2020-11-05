@@ -4,7 +4,7 @@ import java.net.URL
 import java.io.InputStream
 import java.io.IOException
 
-import scutil.base.implicits._
+import scutil.core.implicits._
 import scutil.io.implicits._
 import scutil.lang.ByteString
 

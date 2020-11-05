@@ -8,13 +8,13 @@ import javax.swing.{ JComponent, TransferHandler }
 import javax.swing.TransferHandler.TransferSupport
 
 import scutil.lang._
-import scutil.base.implicits._
+import scutil.core.implicits._
 import scutil.jdk.implicits._
 import scutil.gui.implicits._
 import scutil.geom.IntPoint
 
 object DndFileImport {
-	def install(target:JComponent, consumer:PFunction[IntPoint,Effect[Validated[Nes[Exception],Nes[File]]]]):Disposable	= {
+	def install(target:JComponent, consumer:IntPoint=>Option[Effect[Validated[Nes[Exception],Nes[File]]]]):Disposable	= {
 		target setTransferHandler new FileTransferHandler(consumer)
 
 		Disposable delay {
@@ -29,7 +29,7 @@ object DndFileImport {
 			DndFlavors.url
 		)
 
-	private final class FileTransferHandler(consumer:PFunction[IntPoint,Effect[Validated[Nes[Exception],Nes[File]]]]) extends TransferHandler {
+	private final class FileTransferHandler(consumer:IntPoint=>Option[Effect[Validated[Nes[Exception],Nes[File]]]]) extends TransferHandler {
 		override def canImport(support:TransferSupport):Boolean =
 			importEffect(support).isDefined
 

@@ -1,6 +1,6 @@
 package scutil.resource
 
-import scutil.resource.pimp._
+import scutil.resource.extension._
 
 object extensions extends extensions
 trait extensions

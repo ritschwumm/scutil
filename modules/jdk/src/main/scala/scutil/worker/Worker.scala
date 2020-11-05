@@ -3,7 +3,7 @@ package scutil.worker
 import scala.annotation.tailrec
 
 import scutil.lang._
-import scutil.base.implicits._
+import scutil.core.implicits._
 import scutil.time._
 
 final class Worker(name:String, delay:MilliDuration, task:Thunk[Unit], error:Effect[Exception] = _ => ()) extends Disposable {
