@@ -39,17 +39,11 @@ object Optional {
 	def codiag[T]:Optional[Either[T,T],T]	=
 		identity[T] sum identity[T]
 
-	@deprecated("use Prism.some.toOptional", "0.185.0")
-	def some[T]:Optional[Option[T],T]	=
-		Prism.some.toOptional
-
-	@deprecated("use Prism.left.toOptional", "0.185.0")
-	def left[L,R]:Optional[Either[L,R],L]	=
-		Prism.left.toOptional
-
-	@deprecated("use Prism.right.toOptional", "0.185.0")
-	def right[L,R]:Optional[Either[L,R],R]	=
-		Prism.right.toOptional
+	def fromStoreAt[S,T](func:S=>Option[Store[S,T]]):Optional[S,T]	=
+		Optional(
+			get	= s			=> func(s).map(_.get),
+			set	= t => s	=> func(s).map(_ set t).getOrElse(s)
+		)
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances
@@ -230,12 +224,14 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 	//------------------------------------------------------------------------------
 
 	// TODO optics does this mean we have an Applicative instance?
+	// TODO optics PLens says this is impossible - investigate
 	def zip[U](that:Optional[S,U]):Optional[S,(T,U)]	=
 		Optional(
 			get	= s			=> (this get s) zip (that get s),
 			set	= tu => s	=> that set tu._2 apply (this set tu._1 apply s)
 		)
 
+	// |||
 	def sum[SS](that:Optional[SS,T]):Optional[Either[S,SS],T]	=
 		Optional(
 			get	=
@@ -250,9 +246,36 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 				}
 		)
 
+	// ***
 	def product[SS,TT](that:Optional[SS,TT]):Optional[(S,SS),(T,TT)]	=
 		Optional(
 			get	= sss			=> (this get sss._1) zip (that get sss._2),
 			set	= ttt => sss	=> (this set ttt._1 apply sss._1, that set ttt._2 apply sss._2)
 		)
+
+	//------------------------------------------------------------------------------
+
+	def on(s:S):Option[Store[S,T]]	=
+		get(s).map { t =>
+			Store[S,T](
+				get	= t,
+				set	= t => set(t)(s)
+			)
+		}
+
+	def over[R](store:Option[Store[R,S]]):Option[Store[R,T]]	=
+		for {
+			store	<- store
+			here	<- this on store.get
+		}
+		yield store andThen here
+
+	def overTotal[R](store:Store[R,S]):Option[Store[R,T]]	=
+		this on store.get map { _ compose store }
+
+	/*
+	// TODO optics does this make sense?
+	def toLens(default: =>Store[S,T]):Lens[S,T]	=
+		Lens fromStoreAt { on(_) getOrElse default }
+	*/
 }

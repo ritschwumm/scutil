@@ -222,11 +222,6 @@ final case class Prism[S,T](get:PFunction[S,T], set:T=>S) {
 			set	= setMatching
 		)
 
-	def toPLens:PLens[S,T]	=
-		PLens {
-			this get _ map (Store(_, this.set))
-		}
-
 	def writeExtractor:Extractor[S,T]	=
 		Extractor(get)
 

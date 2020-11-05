@@ -174,7 +174,4 @@ final case class Lens[S,T](get:S=>T, set:T=>S=>S) {
 
 	def over[R](store:Store[R,S]):Store[R,T]	=
 		this on store.get compose store
-
-	def toPLens:PLens[S,T]	=
-		PLens(on _ andThen Some.apply)
 }

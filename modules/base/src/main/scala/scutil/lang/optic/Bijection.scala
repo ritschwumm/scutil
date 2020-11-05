@@ -74,9 +74,4 @@ final case class Bijection[S,T](get:S=>T, set:T=>S) {
 			get	= get,
 			set	= t => s => set(t)
 		)
-
-	def toPLens:PLens[S,T]	=
-		PLens { s	=>
-			Some(Store(get(s), set))
-		}
 }

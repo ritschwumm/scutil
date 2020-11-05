@@ -3,12 +3,6 @@ package scutil.lang
 import scutil.collection.implicits._
 
 object Lenses {
-	@deprecated("use Lens.first", "0.185.0")
-	def pairFirst[S,T]:Lens[(S,T),S]	= Lens.first
-
-	@deprecated("use Lens.second", "0.185.0")
-	def pairSecond[S,T]:Lens[(S,T),T]	= Lens.second
-
 	def set[T](t:T):Lens[Set[T],Boolean]	=
 		Lens(
 			get	= _ contains t,
