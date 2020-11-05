@@ -85,7 +85,11 @@ trait EitherImplicits {
 				case (Left(a),	Left(b))	=> Left(a)
 			}
 
+		@deprecated("use map2", "0.187.0")
 		def zipWith[LL>:L,X,Y](that:Either[LL,X])(func:(R,X)=>Y):Either[LL,Y]	=
+			map2(that)(func)
+
+		def map2[LL>:L,X,Y](that:Either[LL,X])(func:(R,X)=>Y):Either[LL,Y]	=
 			peer zip that map func.tupled
 
 		/** handy replacement for tried.toISeq.flatten abusing Factory as a Zero typeclass */

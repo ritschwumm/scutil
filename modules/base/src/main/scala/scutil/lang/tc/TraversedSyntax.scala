@@ -6,11 +6,9 @@ trait TraversedSyntax {
 			traverse(ev)
 
 		def traverse[G[_],U](func:T=>G[U])(implicit TR:Traversed[F], AP:Applicative[G]):G[F[U]]	=
-			(TR traverse peer)(func)
+			TR.traverse(peer)(func)
 
-		def flatTraverse[G[_],U](func:T=>G[F[U]])(implicit TR:Traversed[F], M:Monad[F], AP:Applicative[G]):G[F[U]]	= {
-			val traversed:G[F[F[U]]]	= (TR traverse peer)(func)
-			AP.map(traversed)(M.flatten)
-		}
+		def flatTraverse[G[_],U](func:T=>G[F[U]])(implicit TR:Traversed[F], M:Monad[F], AP:Applicative[G]):G[F[U]]	=
+			TR.flatTraverse(peer)(func)
 	}
 }

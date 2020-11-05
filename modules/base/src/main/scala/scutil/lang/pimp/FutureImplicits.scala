@@ -8,12 +8,22 @@ object FutureImplicits extends FutureImplicits
 trait FutureImplicits {
 	@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
 	implicit final class FutureExt[T](peer:Future[T]) {
+		@deprecated("use map2", "0.187.0")
 		def zipWith[U,V](that:Future[U])(func:(T,U)=>V)(implicit executor:ExecutionContext):Future[V]	=
+			map2(that)(func)
+
+		def map2[U,V](that:Future[U])(func:(T,U)=>V)(implicit executor:ExecutionContext):Future[V]	=
 			peer zip that map func.tupled
 
+		// TODO is this correct, or should we use flatMap?
+		def tuple[U](that:Future[U]):Future[(T,U)]	=
+			peer zip that
+
+		// TODO is this correct, or should we use flatMap?
 		def pa[U](that:Future[T=>U])(implicit executor:ExecutionContext):Future[U]	=
 			peer zip that map { case (t, t2u) => t2u(t) }
 
+		// TODO is this correct, or should we use flatMap?
 		def ap[U,V](that:Future[U])(implicit ev:T=>U=>V, executor:ExecutionContext):Future[V]	=
 			peer zip that map { case (u2v, u) => u2v(u) }
 

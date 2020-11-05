@@ -34,6 +34,9 @@ trait Applicative[F[_]] extends Functor[F] {
 	def second[A,B](as:F[A], bs:F[B]):F[B]	=
 		map2(as, bs)((a,b) => b)
 
+	def aping[S,T](func:F[S=>T]):F[S]=>F[T]	=
+		ap(_)(func)
+
 	//------------------------------------------------------------------------------
 
 	// TODO allow F[T] forall T for these?

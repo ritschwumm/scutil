@@ -30,13 +30,14 @@ trait IterableImplicits {
 
 		// NOTE these don't terminate for infinite collections!
 
+		// NOTE zipWith and map2 are different things for Iterables
 		/** combine elements of two collections using a function */
-		def zipWith[U,V](that:Iterable[U])(f:(T,U)=>V)(implicit factory:Factory[V,CC[V]]):CC[V]	= {
+		def zipWith[U,V](that:Iterable[U])(func:(T,U)=>V)(implicit factory:Factory[V,CC[V]]):CC[V]	= {
 			val builder	= factory.newBuilder
 			val	xi	= peer.iterator
 			val yi	= that.iterator
 			while (xi.hasNext && yi.hasNext) {
-				builder	+= f(xi.next(), yi.next())
+				builder	+= func(xi.next(), yi.next())
 			}
 			builder.result()
 		}
@@ -83,16 +84,14 @@ trait IterableImplicits {
 			None
 		}
 
-		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def scanLeftNes[U](z: U)(op: (U, T) => U):Nes[U]	= {
 			val seq = peer.scanLeft(z)(op).to(Seq)
-			Nes(seq.head, seq.tail)
+			Nes.unsafeFromSeq(seq)
 		}
 
-		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def scanRightNes[U](z: U)(op: (T, U) => U): Nes[U]	= {
 			val seq = peer.scanRight(z)(op).to(Seq)
-			Nes(seq.head, seq.tail)
+			Nes.unsafeFromSeq(seq)
 		}
 
 		/** insert a separator between elements */
@@ -180,8 +179,14 @@ trait IterableImplicits {
 
 		// TODO state support StateT
 
+		@deprecated("use concatAll", "0.187.0")
 		def joinMonoid(implicit M:Monoid[T]):T	=
-			(peer foldLeft M.empty)(M.concat)
+			Monoid.concatAll(peer)
+
+		/*
+		def foldMap[U](func:T=>U)(implicit U:Monoid[U]):U	=
+			Monoid.foldMap(peer)(func)
+		*/
 	}
 
 	implicit final class IterableOpsExt[CC[_],T](peer:IterableOps[T,CC,CC[T]]) {

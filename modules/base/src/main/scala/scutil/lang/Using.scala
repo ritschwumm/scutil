@@ -63,17 +63,23 @@ trait Using[T] { self =>
 	final def run():T	= use(identity)
 
 	final def ap[U,V](that:Using[U])(implicit ev:T=>U=>V):Using[V]	=
-		zipWith(that) { (t,u) => t(u) }
+		map2(that) { (t,u) => t(u) }
 
 	def pa[U](func:Using[T=>U]):Using[U] =
-		func.zipWith(this) { (f,t) => f(t) }
+		func.map2(this) { (f,t) => f(t) }
 
-	// aka tuple
+	@deprecated("use tuple", "0.187.0")
 	final def zip[U](that:Using[U]):Using[(T,U)]	=
-		zipWith(that) { (t,u) => (t,u) }
+		tuple(that)
 
-	// aka map2
+	final def tuple[U](that:Using[U]):Using[(T,U)]	=
+		map2(that) { (t,u) => (t,u) }
+
+	@deprecated("use map2", "0.187.0")
 	final def zipWith[U,V](that:Using[U])(func:(T,U)=>V):Using[V]	=
+		map2(that)(func)
+
+	final def map2[U,V](that:Using[U])(func:(T,U)=>V):Using[V]	=
 		this flatMap { thisValue =>
 			that map { thatValue =>
 				func(thisValue, thatValue)

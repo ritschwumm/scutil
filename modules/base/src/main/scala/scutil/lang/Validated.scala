@@ -102,12 +102,20 @@ sealed trait Validated[+E,+T] {
 
 	/** function effect first */
 	def pa[EE>:E:Semigroup,U](that:Validated[EE,T=>U]):Validated[EE,U]	=
-		(that zip this) map { case (t2u, t) => t2u(t) }
+		(that map2 this)((t2u, t) => t2u(t))
 
+	@deprecated("use tuple", "0.187.0")
 	def zip[EE>:E:Semigroup,U](that:Validated[EE,U]):Validated[EE,(T,U)]	=
-		(this zipWith that)((_,_))
+		tuple(that)
 
+	def tuple[EE>:E:Semigroup,U](that:Validated[EE,U]):Validated[EE,(T,U)]	=
+		(this map2 that)((_,_))
+
+	@deprecated("use map2", "0.187.0")
 	def zipWith[EE>:E,U,V](that:Validated[EE,U])(func:(T,U)=>V)(implicit cc:Semigroup[EE]):Validated[EE,V]	=
+		map2(that)(func)
+
+	def map2[EE>:E,U,V](that:Validated[EE,U])(func:(T,U)=>V)(implicit cc:Semigroup[EE]):Validated[EE,V]	=
 		(this, that) match {
 			case (Bad(a),	Good(_))	=> Bad(a)
 			case (Good(_),	Bad(b))		=> Bad(b)

@@ -11,14 +11,13 @@ object Monoid {
 
 	//------------------------------------------------------------------------------
 
-	def empty[T](implicit SG:Monoid[T]):T	= SG.empty
+	def empty[T](implicit T:Monoid[T]):T	= T.empty
 
-	def concatOf[T:Monoid](xs:T*):T	=
-		concatAll(xs)
+	def concatOf[T:Monoid](items:T*):T	=
+		concatAll(items)
 
-	// TODO add a Foldable typeclass
-	def concatAll[T](xs:Iterable[T])(implicit SG:Monoid[T]):T	=
-		 (xs foldLeft SG.empty)(SG.concat)
+	def concatAll[T](items:Iterable[T])(implicit T:Monoid[T]):T	=
+		T.concatAll(items)
 }
 
 trait Monoid[F] extends Semigroup[F] {
@@ -26,6 +25,9 @@ trait Monoid[F] extends Semigroup[F] {
 	//## own
 
 	def empty:F
+
+	//------------------------------------------------------------------------------
+	//## derived
 
 	def times(item:F, count:Int):F	= {
 		var accu	= empty
@@ -36,4 +38,14 @@ trait Monoid[F] extends Semigroup[F] {
 		}
 		accu
 	}
+
+	// TODO foldable add a Foldable typeclass
+	def concatAll(items:Iterable[F]):F	=
+		 items.foldLeft(empty)(concat)
+
+	// TODO foldable add a Foldable typeclass
+	def foldMap[S](items:Iterable[S])(func:S=>F):F	=
+		 items.foldLeft(empty) { (f, s) =>
+		 	concat(f, func(s))
+		 }
 }

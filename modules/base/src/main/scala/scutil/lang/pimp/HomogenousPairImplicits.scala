@@ -10,6 +10,6 @@ trait HomogenousPairImplicits {
 			Seq(peer._1, peer._2)
 
 		def toNes:Nes[T]	=
-			Nes.multi(peer._1, peer._2)
+			Nes.of(peer._1, peer._2)
 	}
 }

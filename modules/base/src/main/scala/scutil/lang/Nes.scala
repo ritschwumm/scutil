@@ -8,16 +8,20 @@ object Nes {
 	def single[T](head:T):Nes[T]	=
 		Nes(head, Vector.empty)
 
+	@deprecated("use of", "0.187.0")
 	def multi[T](head:T, tail:T*):Nes[T]	=
 		Nes(head, tail.toVector)
 
 	def of[T](head:T, tail:T*):Nes[T]	=
 		Nes(head, tail.toVector)
 
-	@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 	def fromSeq[T](it:Seq[T]):Option[Nes[T]]	=
-		if (it.nonEmpty)	Some(Nes(it.head, it.tail))
+		if (it.nonEmpty)	Some(unsafeFromSeq(it))
 		else				None
+
+	@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
+	def unsafeFromSeq[T](it:Seq[T]):Nes[T]	=
+		Nes(it.head, it.tail)
 
 	object Var {
 		def apply[T](head:T, tail:T*):Nes[T]	=
@@ -97,6 +101,17 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 	def map[U](func:T=>U):Nes[U]	=
 		Nes(func(head), tail map func)
 
+	// NOTE zipWith and map2 are different things for Iterables
+	def map2[U,V](that:Nes[U])(func:(T,U)=>V):Nes[V]	=
+		for {
+			thisVal	<- this
+			thatVal	<- that
+		}
+		yield func(thisVal, thatVal)
+
+	def tuple[U](that:Nes[U]):Nes[(T,U)]	=
+		map2(that)((_,_))
+
 	def flatMap[U](func:T=>Nes[U]):Nes[U]	= {
 		val Nes(h, t)	= func(head)
 		val tt			= tail flatMap { it => func(it).toSeq }
@@ -174,6 +189,7 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 			this.tail zip that.tail
 		)
 
+	// NOTE zipWith and map2 are different things for Iterables
 	def zipWith[U,V](that:Nes[U])(func:(T,U)=>V):Nes[V]	=
 		Nes(
 			func(this.head, that.head),

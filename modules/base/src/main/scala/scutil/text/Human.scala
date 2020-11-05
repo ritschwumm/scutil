@@ -10,14 +10,18 @@ object Human {
 	private val zero	= BigDecimal(0)
 	private val one		= BigDecimal(1)
 
+	@deprecated("use of", "0.187.0")
 	def multi(head:HumanUnit, tail:HumanUnit*):Human	=
+		of(head, tail:_*)
+
+	def of(head:HumanUnit, tail:HumanUnit*):Human	=
 		Human(Nes(head, tail.toVector))
 
 	//------------------------------------------------------------------------------
 	//## predefined tables
 
 	val binary:Human	=
-		Human.multi(
+		Human.of(
 			HumanUnit("yotta",	"Y",	one*1024*1024*1024*1024*1024*1024*1024*1024),
 			HumanUnit("zeta",	"Z",	one*1024*1024*1024*1024*1024*1024*1024),
 			HumanUnit("exa",	"E",	one*1024*1024*1024*1024*1024*1024),
@@ -38,7 +42,7 @@ object Human {
 		)
 
 	val decimal:Human	=
-		Human.multi(
+		Human.of(
 			HumanUnit("yotta",	"Y",	one*1000*1000*1000*1000*1000*1000*1000*1000),
 			HumanUnit("zeta",	"Z",	one*1000*1000*1000*1000*1000*1000*1000),
 			HumanUnit("exa",	"E",	one*1000*1000*1000*1000*1000*1000),
@@ -59,7 +63,7 @@ object Human {
 		)
 
 	val time:Human	=
-		Human.multi(
+		Human.of(
 			HumanUnit("year",			"y",	one*60*60*24*365.24219052),	// tropical year
 			HumanUnit("day",			"d",	one*60*60*24),
 			HumanUnit("hour",			"h",	one*60*60),
@@ -70,7 +74,7 @@ object Human {
 		)
 
 	val degrees:Human	=
-		Human.multi(
+		Human.of(
 			HumanUnit("degree",	"°",	one),
 			HumanUnit("minute",	"'",	one/60),
 			HumanUnit("second",	"''",	one/60/60)

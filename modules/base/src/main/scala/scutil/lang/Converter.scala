@@ -135,11 +135,19 @@ abstract class Converter[E,S,T] {
 	def ap[U,V](that:Converter[E,S,U])(implicit ev:T=>U=>V, cc:Semigroup[E]):Converter[E,S,V]	=
 		that pa (this map ev)
 
+	@deprecated("use tuple", "0.187.0")
 	def zip[U](that:Converter[E,S,U])(implicit cc:Semigroup[E]):Converter[E,S,(T,U)] =
-		it	=> (this convert it) zip (that convert it)
+		tuple(that)
 
+	def tuple[U](that:Converter[E,S,U])(implicit cc:Semigroup[E]):Converter[E,S,(T,U)] =
+		it	=> (this convert it) tuple (that convert it)
+
+	@deprecated("use map2", "0.187.0")
 	def zipWith[U,V](that:Converter[E,S,U])(func:(T,U)=>V)(implicit cc:Semigroup[E]):Converter[E,S,V] =
-		it	=> ((this convert it) zipWith (that convert it))(func)
+		map2(that)(func)
+
+	def map2[U,V](that:Converter[E,S,U])(func:(T,U)=>V)(implicit cc:Semigroup[E]):Converter[E,S,V] =
+		it	=> ((this convert it) map2 (that convert it))(func)
 
 	def coZip[SS](that:Converter[E,SS,T]):Converter[E,Either[S,SS],T]	=
 		{
@@ -157,7 +165,7 @@ abstract class Converter[E,S,T] {
 		}
 
 	def pair[SS,TT](that:Converter[E,SS,TT])(implicit E:Semigroup[E]):Converter[E,(S,SS),(T,TT)]	=
-		{ case (s,ss) => (this convert s) zip (that convert ss) }
+		{ case (s,ss) => (this convert s) tuple (that convert ss) }
 
 	//------------------------------------------------------------------------------
 

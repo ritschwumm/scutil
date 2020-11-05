@@ -59,11 +59,18 @@ final case class State[S,+T](run:S=>(S,T)) {
 			(s2, tu(t))
 		}
 
+	@deprecated("use tuple", "0.187.0")
 	def zip[U](that:State[S,U]):State[S,(T,U)]	=
-		(this zipWith that)(_ -> _)
+		tuple(that)
 
-	// aka combine
+	def tuple[U](that:State[S,U]):State[S,(T,U)]	=
+		(this map2 that)(_ -> _)
+
+	@deprecated("use map2", "0.187.0")
 	def zipWith[U,X](that:State[S,U])(func:(T,U)=>X):State[S,X]	=
+		map2(that)(func)
+
+	def map2[U,X](that:State[S,U])(func:(T,U)=>X):State[S,X]	=
 		State { s =>
 			val (s1, t)	= this run s
 			val (s2, u)	= that run s1

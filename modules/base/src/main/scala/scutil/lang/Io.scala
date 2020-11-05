@@ -41,7 +41,7 @@ object Io extends IoInstancesLow {
 	implicit def IoMonoid[T](implicit F:Monoid[T]):Monoid[Io[T]]	=
 		new Monoid[Io[T]] {
 			def empty:Io[T]						= Io pure F.empty
-			def concat(a:Io[T], b:Io[T]):Io[T]	= (a zipWith b)(F.concat)
+			def concat(a:Io[T], b:Io[T]):Io[T]	= (a map2 b)(F.concat)
 		}
 
 	implicit val IoMonad:Monad[Io]	=
@@ -104,11 +104,19 @@ sealed trait Io[T] {
 	final def flatten[U](implicit ev:T=>Io[U]):Io[U]	=
 		flatMap(ev)
 
+	@deprecated("use tuple", "0.187.0")
 	final def zip[U](that:Io[U]):Io[(T,U)]	=
+		tuple(that)
+
+	final def tuple[U](that:Io[U]):Io[(T,U)]	=
 		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => (t,u)))
 		//for { t	<- this; u	<- that } yield (t,u)
 
+	@deprecated("use map2", "0.187.0")
 	final def zipWith[U,V](that:Io[U])(func:(T,U)=>V):Io[V]	=
+		map2(that)(func)
+
+	final def map2[U,V](that:Io[U])(func:(T,U)=>V):Io[V]	=
 		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => func(t,u)))
 		//for { t	<- this; u	<- that } yield func(t,u)
 
@@ -130,6 +138,6 @@ trait IoInstancesLow {
 	/** this exists for cases where we only have a Semigroup for T and not a full Monoid */
 	implicit def IoSemigroup[T](implicit F:Semigroup[T]):Semigroup[Io[T]]	=
 		new Semigroup[Io[T]] {
-			def concat(a:Io[T], b:Io[T]):Io[T]	= (a zipWith b)(F.concat)
+			def concat(a:Io[T], b:Io[T]):Io[T]	= (a map2 b)(F.concat)
 		}
 }

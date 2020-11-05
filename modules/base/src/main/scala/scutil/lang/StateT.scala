@@ -144,10 +144,18 @@ final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
 			}
 		}
 
+	@deprecated("use tuple", "0.187.0")
 	def zip[U](that:StateT[F,S,U])(implicit F:Monad[F]):StateT[F,S,(T,U)]	=
-		(this zipWith that)(_ -> _)
+		tuple(that)
 
+	def tuple[U](that:StateT[F,S,U])(implicit F:Monad[F]):StateT[F,S,(T,U)]	=
+		(this map2 that)(_ -> _)
+
+	@deprecated("use map2", "0.187.0")
 	def zipWith[U,X](that:StateT[F,S,U])(func:(T,U)=>X)(implicit F:Monad[F]):StateT[F,S,X]	=
+		map2(that)(func)
+
+	def map2[U,X](that:StateT[F,S,U])(func:(T,U)=>X)(implicit F:Monad[F]):StateT[F,S,X]	=
 		StateT { s0 =>
 			(F flatMap (this run s0)) { case (s1, t) =>
 				(F map (that run s1)) { case (s2, u) =>

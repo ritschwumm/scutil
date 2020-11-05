@@ -40,10 +40,21 @@ trait OptionImplicits {
 		def partition(pred:Predicate[T]):(Option[T],Option[T])	=
 			(peer filter pred, peer filterNot pred)
 
+		@deprecated("use tupleBy", "0.187.0")
 		def zipBy[U](func:T=>U):Option[(T,U)]	=
+			tupleBy(func)
+
+		def tupleBy[U](func:T=>U):Option[(T,U)]	=
 			peer map { it => (it,func(it)) }
 
+		def tuple[U](that:Option[U]):Option[(T,U)]	=
+			peer zip that
+
+		@deprecated("use map2", "0.187.0")
 		def zipWith[U,V](that:Option[U])(func:(T,U)=>V):Option[V]	=
+			map2(that)(func)
+
+		def map2[U,V](that:Option[U])(func:(T,U)=>V):Option[V]	=
 			(peer,that) match {
 				case ((Some(t),Some(u)))	=> Some(func(t,u))
 				case _						=> None

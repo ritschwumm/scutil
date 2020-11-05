@@ -12,15 +12,14 @@ object Semigroup {
 
 	//------------------------------------------------------------------------------
 
-	def concat[T](a:T, b:T)(implicit SG:Semigroup[T]):T	=
-		SG.concat(a, b)
+	def concat[T](a:T, b:T)(implicit T:Semigroup[T]):T	=
+		T.concat(a, b)
 
 	def concatOf1[T:Semigroup](x:T, xs:T*)	=
 		concatAll1(Nes(x, xs))
 
-	// TODO add a Foldable1 typeclass
-	def concatAll1[T](all:Nes[T])(implicit SG:Semigroup[T]):T	=
-		all.reduce(SG.concat)
+	def concatAll1[T](items:Nes[T])(implicit T:Semigroup[T]):T	=
+		T.concatAll1(items)
 }
 
 trait Semigroup[F] {
@@ -29,4 +28,16 @@ trait Semigroup[F] {
 
 	// TODO in cats this is named combine
 	def concat(a:F, b:F):F
+
+	//------------------------------------------------------------------------------
+	//## derived
+
+	// TODO foldable add a Foldable1 typeclass
+	def concatAll1(items:Nes[F]):F	=
+		items.reduce(concat)(this)
+
+	def foldMap1[S](items:Nes[S])(func:S=>F):F	=
+		items.tail.foldLeft(func(items.head)) { (f, s) =>
+			concat(f, func(s))
+		}
 }
