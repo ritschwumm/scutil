@@ -17,17 +17,26 @@ trait instances extends instancesLow {
 		}
 
 	implicit def VectorMonoid[T]:Monoid[Vector[T]]	=
-			Monoid.instance(Vector.empty, _ ++ _)
+		Monoid.instance(Vector.empty, _ ++ _)
 
 	implicit def ListTraversedMonad:TraversedMonad[List]	=
 		new TraversedMonad[List] {
 			override def map[A,B](it:List[A])(func:A=>B):List[B]			= it map func
 			override def pure[A](it:A):List[A]								= List(it)
 			override def flatMap[A,B](it:List[A])(func:A=>List[B]):List[B]	= it flatMap func
-			override def traverse[G[_],S,T](it:List[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[List[T]]	=
-				(it map func foldLeft (AP pure List.empty[T])) {
-					(xs, x) => AP.map2(xs, x)(_ :+ _)
-				}
+			override def traverse[G[_],S,T](it:List[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[List[T]]	= {
+				val mapped		= it map func
+				val empty		= AP pure List.empty[T]
+				val reversed	=
+					mapped.foldLeft(empty) { (xs, x) =>
+						AP.map2(xs, x) { (a,b) =>
+							// builds in reverse order because appending to a list is too expensive
+							b :: a
+						}
+					}
+				// reverse the effect of building in reverse
+				AP.map(reversed)(_.reverse)
+			}
 		}
 
 	implicit def ListMonoid[T]:Monoid[List[T]]	=

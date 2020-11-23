@@ -12,8 +12,8 @@ object Store {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def StoreFunctor[S]:Functor[Store[?,S]]	=
-		new Functor[Store[?,S]] {
+	implicit def StoreFunctor[S]:Functor[Store[*,S]]	=
+		new Functor[Store[*,S]] {
 			def map[A,B](it:Store[A,S])(func:A=>B):Store[B,S]	= it map func
 		}
 }

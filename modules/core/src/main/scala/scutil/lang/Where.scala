@@ -30,8 +30,8 @@ object Where {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def WhereFunctor[A]:Functor[Where[A,?]]	=
-		new Functor[Where[A,?]] {
+	implicit def WhereFunctor[A]:Functor[Where[A,*]]	=
+		new Functor[Where[A,*]] {
 			override def map[B,BB](it:Where[A,B])(func:B=>BB):Where[A,BB]	= it mapThere func
 		}
 }

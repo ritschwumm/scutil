@@ -19,11 +19,13 @@ object SearchCompiler {
 		 !(pattern.negative map token exists here)
 
 	private def token(token:SearchToken):Predicate[String]	= {
-		val pattern	= Pattern.compile(
-			(token.start.cata ("", "^")) + (Regex quote token.text) + (token.end.cata ("", "$")),
-			token.caseInsensitive.cata(0, Pattern.CASE_INSENSITIVE))
-		s:String	=> {
-			(pattern matcher s).find
-		}
+		val pattern	=
+			Pattern.compile(
+				token.start.cata("", "^") + Regex.quote(token.text) + token.end.cata("", "$"),
+				// TODO search this is not unicode-aware, for that we'd need UNICODE_CASE
+				token.caseInsensitive.cata(0, Pattern.CASE_INSENSITIVE)
+			)
+
+		(s:String)	=> pattern.matcher(s).find
 	}
 }

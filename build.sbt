@@ -1,9 +1,11 @@
 import spray.boilerplate.BoilerplatePlugin
 import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
+Global / onChangedBuildSource := ReloadOnSourceChanges
+
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.188.0",
+	version			:= "0.189.0",
 
 	scalaVersion	:= "2.13.3",
 	scalacOptions	++= Seq(
@@ -45,6 +47,10 @@ inThisBuild(Seq(
 		//Wart.Overloading,
 		//Wart.PublicInference,
 		Wart.TraversableOps,
+		Wart.ListUnapply,
+		Wart.ListAppend,
+		Wart.GlobalExecutionContext,
+		Wart.PlatformDefault,
 	)
 ))
 

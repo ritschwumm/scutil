@@ -28,13 +28,13 @@ object WriterT {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def WriterTDelay[F[_]:Delay:Functor,L:Monoid]:Delay[WriterT[F,L,?]]	=
-		new Delay[WriterT[F,L,?]] {
+	implicit def WriterTDelay[F[_]:Delay:Functor,L:Monoid]:Delay[WriterT[F,L,*]]	=
+		new Delay[WriterT[F,L,*]] {
 			def delay[T](it: =>T):WriterT[F,L,T]	= WriterT delay it
 		}
 
-	implicit def WriterTMonad[F[_]:Monad,L:Monoid]:Monad[WriterT[F,L,?]]	=
-		new Monad[WriterT[F,L,?]] {
+	implicit def WriterTMonad[F[_]:Monad,L:Monoid]:Monad[WriterT[F,L,*]]	=
+		new Monad[WriterT[F,L,*]] {
 			def pure[T](it:T):WriterT[F,L,T]											= WriterT pure it
 			def flatMap[S,T](its:WriterT[F,L,S])(func:S=>WriterT[F,L,T]):WriterT[F,L,T]	= its flatMap func
 		}

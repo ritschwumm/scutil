@@ -70,15 +70,15 @@ trait instances extends instancesLow {
 	//------------------------------------------------------------------------------
 	//## builtin Functor/Applicative/Monad
 
-	implicit def FunctionFunctor[S]:Functor[Function[S,?]]	=
-		new Functor[Function[S,?]] {
+	implicit def FunctionFunctor[S]:Functor[Function[S,*]]	=
+		new Functor[Function[S,*]] {
 			def map[A,B](it:Function[S,A])(func:A=>B):Function[S,B]	= it andThen func
 		}
 
 	// TODO can we have a TraversedMonad here?
 
-	implicit def PairFunctor[S]:Functor[(S,?)]	=
-		new Functor[(S,?)] {
+	implicit def PairFunctor[S]:Functor[(S,*)]	=
+		new Functor[(S,*)] {
 			def map[A,B](it:(S,A))(func:A=>B):(S,B)	= (it._1, func(it._2))
 		}
 
@@ -96,8 +96,8 @@ trait instances extends instancesLow {
 				}
 		}
 
-	implicit def EitherTraversedMonad[S]:TraversedMonad[Either[S,?]]	=
-		new TraversedMonad[Either[S,?]] {
+	implicit def EitherTraversedMonad[S]:TraversedMonad[Either[S,*]]	=
+		new TraversedMonad[Either[S,*]] {
 			override def pure[A](it:A):Either[S,A]										= Right(it)
 			override def map[A,B](it:Either[S,A])(func:A=>B):Either[S,B]				= it map func
 			override def flatMap[A,B](it:Either[S,A])(func:A=>Either[S,B]):Either[S,B]	= it flatMap func
@@ -118,7 +118,7 @@ trait instances extends instancesLow {
 	implicit def PEndoSemigroup[T]:Semigroup[T=>Option[T]]	=
 		Semigroup instance (_ andThenFixed _)
 
-	// TODO do we get this for free with FFunctionFunctor?
+	// TODO do we get this for free with FFunctionFunctor*
 	// NOTE PFunction and FFunction are both just ReaderT/Kleisli
 	implicit def PFunctionFunctor[S]:Functor[Lambda[X => S=>Option[X]]]	=
 		new Functor[Lambda[X => S=>Option[X]]] {

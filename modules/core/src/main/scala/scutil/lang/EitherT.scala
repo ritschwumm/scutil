@@ -68,13 +68,13 @@ object EitherT {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def EitherTDelay[F[_]:Delay,L]:Delay[EitherT[F,L,?]]	=
-		new Delay[EitherT[F,L,?]] {
+	implicit def EitherTDelay[F[_]:Delay,L]:Delay[EitherT[F,L,*]]	=
+		new Delay[EitherT[F,L,*]] {
 			override def delay[R](it: =>R):EitherT[F,L,R]	= EitherT delay it
 		}
 
-	implicit def EitherTMonad[F[_]:Monad,L]:Monad[EitherT[F,L,?]]	=
-		new Monad[EitherT[F,L,?]] {
+	implicit def EitherTMonad[F[_]:Monad,L]:Monad[EitherT[F,L,*]]	=
+		new Monad[EitherT[F,L,*]] {
 			override def pure[R](it:R):EitherT[F,L,R]												= EitherT pure it
 			override def map[R,RR](it:EitherT[F,L,R])(func:R=>RR):EitherT[F,L,RR]					= it map func
 			override def flatMap[R,RR](it:EitherT[F,L,R])(func:R=>EitherT[F,L,RR]):EitherT[F,L,RR]	= it flatMap func

@@ -17,6 +17,9 @@ object Using {
 	def resource[T](create: =>T)(implicit R:Resource[T]):Using[T]	=
 		of(() => create)(R.dispose(_))
 
+	def afterwards(dispose: =>Unit):Using[Unit]	=
+		of(()=>())(_ => dispose)
+
 	def of[T](create: ()=>T)(dispose:T=>Unit):Using[T]	=
 		new Using[T] {
 			def use[X](handler:T=>X):X	= {

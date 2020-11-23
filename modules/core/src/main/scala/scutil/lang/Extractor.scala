@@ -19,8 +19,8 @@ object Extractor {
 	def trivial[T]:Extractor[T,Any]	=
 		Extractor(constant(None))
 
-	implicit def ExtractorFunctor[S]:Functor[Extractor[S,?]]	=
-		new Functor[Extractor[S,?]] {
+	implicit def ExtractorFunctor[S]:Functor[Extractor[S,*]]	=
+		new Functor[Extractor[S,*]] {
 			def map[A,B](it:Extractor[S,A])(func:A=>B):Extractor[S,B]		= it map func
 		}
 

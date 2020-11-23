@@ -15,8 +15,8 @@ object StateT { outer =>
 	def fromStateFunc[F[_],S,T](it:S=>(S,T))(implicit F:Applicative[F]):StateT[F,S,T]	=
 		StateT { s => F pure it(s) }
 
-	def transformPureF[M[_],S](implicit F:Functor[M]):M ~> StateT[M,S,?]	=
-		new (M ~> StateT[M,S,?]) {
+	def transformPureF[M[_],S](implicit F:Functor[M]):M ~> StateT[M,S,*]	=
+		new (M ~> StateT[M,S,*]) {
 			def apply[X](it:M[X]):StateT[M,S,X]	=
 				 StateT pureF it
 		}
@@ -89,13 +89,13 @@ object StateT { outer =>
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def StateTDelay[F[_]:Delay,S]:Delay[StateT[F,S,?]]	=
-		new Delay[StateT[F,S,?]] {
+	implicit def StateTDelay[F[_]:Delay,S]:Delay[StateT[F,S,*]]	=
+		new Delay[StateT[F,S,*]] {
 			override def delay[T](it: =>T):StateT[F,S,T]	= StateT delay it
 		}
 
-	implicit def StateTMonad[F[_]:Monad,S]:Monad[StateT[F,S,?]]	=
-		new Monad[StateT[F,S,?]] {
+	implicit def StateTMonad[F[_]:Monad,S]:Monad[StateT[F,S,*]]	=
+		new Monad[StateT[F,S,*]] {
 			override def pure[T](it:T):StateT[F,S,T]											= StateT pure it
 			override def map[T,U](its:StateT[F,S,T])(func:T=>U):StateT[F,S,U]					= its map func
 			override def flatMap[T,U](its:StateT[F,S,T])(func:T=>StateT[F,S,U]):StateT[F,S,U]	= its flatMap func

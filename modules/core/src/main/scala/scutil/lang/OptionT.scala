@@ -49,13 +49,13 @@ object OptionT {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def OptionTDelay[F[_]:Delay]:Delay[OptionT[F,?]]	=
-		new Delay[OptionT[F,?]] {
+	implicit def OptionTDelay[F[_]:Delay]:Delay[OptionT[F,*]]	=
+		new Delay[OptionT[F,*]] {
 			override def delay[T](it: =>T):OptionT[F,T]	= OptionT delay it
 		}
 
-	implicit def OptionTMonad[F[_]](implicit MF:Monad[F]):Monad[OptionT[F,?]]	=
-		new Monad[OptionT[F,?]] {
+	implicit def OptionTMonad[F[_]](implicit MF:Monad[F]):Monad[OptionT[F,*]]	=
+		new Monad[OptionT[F,*]] {
 			override def pure[T](it:T):OptionT[F,T]											= OptionT pure it
 			override def map[S,T](its:OptionT[F,S])(func:S=>T):OptionT[F,T]					= its map func
 			override def flatMap[S,T](its:OptionT[F,S])(func:S=>OptionT[F,T]):OptionT[F,T]	= its flatMap func

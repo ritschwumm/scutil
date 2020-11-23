@@ -21,8 +21,8 @@ object State {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def StateMonad[S]:Monad[State[S,?]]	=
-		new Monad[State[S,?]] {
+	implicit def StateMonad[S]:Monad[State[S,*]]	=
+		new Monad[State[S,*]] {
 			override def pure[T](it:T):State[S,T]										= State pure it
 			override def map[T,U](its:State[S,T])(func:T=>U):State[S,U]					= its map func
 			override def flatMap[T,U](its:State[S,T])(func:T=>State[S,U]):State[S,U]	= its flatMap func

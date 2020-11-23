@@ -63,7 +63,7 @@ class ApplicativeTest extends Specification {
 		"do the function effect first" in {
 			val f:Either[String,Int=>Int]	= Left("function")
 			val v:Either[String,Int]		= Left("value")
-			(Applicative[Either[String,?]] ap v)(f) mustEqual Left("function")
+			(Applicative[Either[String,*]] ap v)(f) mustEqual Left("function")
 		}
 	}
 }

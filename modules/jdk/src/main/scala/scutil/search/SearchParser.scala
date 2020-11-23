@@ -1,5 +1,7 @@
 package scutil.search
 
+import java.util.Locale
+
 import scutil.core.implicits._
 
 /**
@@ -27,7 +29,8 @@ object SearchParser {
 		val (exclude,	a)	= scan(descriptor,	_ cutPrefix "-")
 		val (start,		b)	= scan(a,			_ cutPrefix "|")
 		val (end,		c)	= scan(b,			_ cutSuffix "|")
-		val noCase			= c == c.toLowerCase
+		// TODO search this should allow unicode
+		val noCase			= c == c.toLowerCase(Locale.US)
 		(exclude, SearchToken(c, noCase, start, end))
 	}
 

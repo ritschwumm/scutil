@@ -25,8 +25,8 @@ object Validated {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def ValidatedApplicative[S:Semigroup]:Applicative[Validated[S,?]]	=
-		new Applicative[Validated[S,?]] {
+	implicit def ValidatedApplicative[S:Semigroup]:Applicative[Validated[S,*]]	=
+		new Applicative[Validated[S,*]] {
 			override def pure[A](it:A):Validated[S,A]										= Validated good it
 			override def ap[A,B](it:Validated[S,A])(func:Validated[S,A=>B]):Validated[S,B]	= it pa func
 		}

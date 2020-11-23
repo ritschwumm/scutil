@@ -15,16 +15,29 @@ trait StringImplicits {
 
 		// toBoolean throws an IllegalArgumentException, not a NumberFormatException
 		def parseBoolean:Either[NumberFormatException,Boolean]	=
-			peer match {
-				case "true"							=> Right(true)
-				case "false"						=> Right(false)
-				case "TRUE"							=> Right(true)
-				case "FALSE"						=> Right(false)
-				case null							=> Left(new NumberFormatException("null is not a boolean"))
-				case x if x.toLowerCase == "true"	=> Right(true)
-				case x if x.toLowerCase == "false"	=> Right(false)
-				case x								=> Left(new NumberFormatException("not a boolean: " + x))
-			}
+				 if (caselessTrue(peer))	Right(true)
+			else if (caselessFalse(peer))	Right(false)
+			else							Left(new NumberFormatException("not a boolean: " + peer))
+
+		// NOTE does not use String.toLowercase because that would depend on the default Locale,
+		// and other Locales might not be supported in scala-js
+		private def caselessTrue(it:String):Boolean	=
+			it.length == 4 &&
+			{	val	c = it.charAt(0);	(c == 't' || c == 'T')	} &&
+			{	val	c = it.charAt(1);	(c == 'r' || c == 'R')	} &&
+			{	val	c = it.charAt(2);	(c == 'u' || c == 'U')	} &&
+			{	val	c = it.charAt(3);	(c == 'e' || c == 'E')	}
+
+		// NOTE does not use String.toLowercase because that would depend on the default Locale,
+		// and other Locales might not be supported in scala-js
+		private def caselessFalse(it:String):Boolean	=
+			it.length == 5 &&
+			{	val	c = it.charAt(0);	(c == 'f' || c == 'F')	}	&&
+			{	val	c = it.charAt(1);	(c == 'a' || c == 'A')	}	&&
+			{	val	c = it.charAt(2);	(c == 'l' || c == 'L')	}	&&
+			{	val	c = it.charAt(3);	(c == 's' || c == 'S')	}	&&
+			{	val	c = it.charAt(4);	(c == 'e' || c == 'E')	}
+
 		def parseByte:Either[NumberFormatException,Byte]		= parseNumber(_.toByte)
 		def parseShort:Either[NumberFormatException,Short]		= parseNumber(_.toShort)
 		def parseInt:Either[NumberFormatException,Int]			= parseNumber(_.toInt)
