@@ -5,9 +5,9 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.189.0",
+	version			:= "0.190.0",
 
-	scalaVersion	:= "2.13.3",
+	scalaVersion	:= "2.13.4",
 	scalacOptions	++= Seq(
 		"-feature",
 		"-deprecation",
@@ -21,7 +21,7 @@ inThisBuild(Seq(
 
 	conflictManager	:= ConflictManager.strict withOrganization "^(?!(org\\.scala-lang|org\\.scala-js)(\\..*)?)$",
 	resolvers 		+= Resolver sonatypeRepo "releases",
-	addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full),
+	addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.1" cross CrossVersion.full),
 
 	wartremoverErrors	++= Seq(
 		Wart.AsInstanceOf,

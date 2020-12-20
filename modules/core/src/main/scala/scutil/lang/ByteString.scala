@@ -114,7 +114,7 @@ object ByteString {
 	def apply(its:Byte*):ByteString	=
 		fromSeq(its)
 
-	def unapplySeq(it:ByteString):Option[Seq[Byte]]	=
+	def unapplySeq(it:ByteString):Some[Seq[Byte]]	=
 		Some(it.toSeq)
 
 	//------------------------------------------------------------------------------

@@ -12,7 +12,7 @@ object Bijection {
 final case class Bijection[S,T](get:S=>T, set:T=>S) {
 	// can be used as scala function and extractor
 	def apply(t:T):S			= set(t)
-	def unapply(s:S):Option[T]	= Some(get(s))
+	def unapply(s:S):Some[T]	= Some(get(s))
 
 	//------------------------------------------------------------------------------
 

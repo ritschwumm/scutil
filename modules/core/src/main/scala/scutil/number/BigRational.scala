@@ -51,7 +51,7 @@ object BigRational {
 			(JBigDecimal.ONE scaleByPowerOfTen numerator.scale).toBigInteger
 		)
 
-	def unapply(self:BigRational):Option[(JBigInteger,JBigInteger)] =
+	def unapply(self:BigRational):Some[(JBigInteger,JBigInteger)] =
 		Some((self.numerator, self.denominator))
 
 	//------------------------------------------------------------------------------

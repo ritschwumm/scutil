@@ -23,7 +23,7 @@ object Nes {
 		def apply[T](head:T, tail:T*):Nes[T]	=
 			Nes(head, tail.toVector)
 
-		def unapplySeq[T](nes:Nes[T]):Option[Seq[T]]	=
+		def unapplySeq[T](nes:Nes[T]):Some[Seq[T]]	=
 			Some(nes.toVector)
 	}
 

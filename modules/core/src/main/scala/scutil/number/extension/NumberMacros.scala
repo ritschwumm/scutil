@@ -24,11 +24,14 @@ private final class NumberMacros(val c:Context) {
 			q"""_root_.scutil.number.BigRational($num, $den).getOrElse(sys error "unexpected zero denominator")"""
 		}
 
-	def brImpl():c.Tree		= {
-		val Apply(_, List(Apply(_, List(Literal(Constant(str:String))))))	= c.prefix.tree
-		BigRational parse str match {
-			case Some(value)	=> q"$value"
-			case None			=> c.abort(c.enclosingPosition, s"invalid BigRational literal ${str}")
+	def brImpl():c.Tree		=
+		c.prefix.tree match {
+			case Apply(_, List(Apply(_, List(Literal(Constant(str:String))))))	=>
+				BigRational parse str match {
+					case Some(value)	=> q"$value"
+					case None			=> c.abort(c.enclosingPosition, s"invalid BigRational literal ${str}")
+				}
+			case x =>
+				c.abort(c.enclosingPosition, s"invalid BigRational literal ${x.toString}")
 		}
-	}
 }
