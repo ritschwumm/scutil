@@ -1,9 +1,9 @@
 package scutil.lang.tc
 
 object syntax extends syntax
+
 trait syntax
-	extends	ResourceSyntax
-	with	FunctorSyntax
+	extends	FunctorSyntax
 	with	ApplicativeSyntax
 	with	MonadSyntax
 	with	SemigroupSyntax

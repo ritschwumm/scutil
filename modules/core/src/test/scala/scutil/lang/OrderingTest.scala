@@ -1,29 +1,35 @@
 package scutil.lang
 
-import org.specs2.mutable._
+import minitest._
 
 import scutil.core.implicits._
 
-class OrderingTest extends Specification {
-	"seqOrdering" should {
-		"order by base order (same)" in {
-			Seq(Seq(1), Seq(2), Seq(1), Seq(2)) sorted (Ordering sequence[Int] true) mustEqual
+object OrderingTest extends SimpleTestSuite {
+	test("seqOrdering should order by base order (same)") {
+		assertEquals(
+			Seq(Seq(1), Seq(2), Seq(1), Seq(2)) sorted (Ordering sequence[Int] true),
 			Seq(Seq(1), Seq(1), Seq(2), Seq(2))
-		}
+		)
+	}
 
-		"order missing first" in {
-			Seq(Seq(1), Seq(1,2), Seq(1), Seq(1,2)) sorted (Ordering sequence[Int] true) mustEqual
+	test("seqOrdering should order missing first") {
+		assertEquals(
+			Seq(Seq(1), Seq(1,2), Seq(1), Seq(1,2)) sorted (Ordering sequence[Int] true),
 			Seq(Seq(1), Seq(1), Seq(1,2), Seq(1,2))
-		}
+		)
+	}
 
-		"order missing last" in {
-			Seq(Seq(1), Seq(1,2), Seq(1), Seq(1,2)) sorted (Ordering sequence[Int] false) mustEqual
+	test("seqOrdering should order missing last") {
+		assertEquals(
+			Seq(Seq(1), Seq(1,2), Seq(1), Seq(1,2)) sorted (Ordering sequence[Int] false),
 			Seq(Seq(1,2), Seq(1,2), Seq(1), Seq(1))
-		}
+		)
+	}
 
-		"order left to right" in {
-			Seq(Seq(1,1), Seq(1,2), Seq(2,1), Seq(2,2), Seq(1,1), Seq(1,2), Seq(2,1), Seq(2,2)) sorted (Ordering sequence[Int] false) mustEqual
+	test("seqOrdering should order left to right") {
+		assertEquals(
+			Seq(Seq(1,1), Seq(1,2), Seq(2,1), Seq(2,2), Seq(1,1), Seq(1,2), Seq(2,1), Seq(2,2)) sorted (Ordering sequence[Int] false),
 			Seq(Seq(1,1), Seq(1,1), Seq(1,2), Seq(1,2), Seq(2,1), Seq(2,1), Seq(2,2), Seq(2,2))
-		}
+		)
 	}
 }

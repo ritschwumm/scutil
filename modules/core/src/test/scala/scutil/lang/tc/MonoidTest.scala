@@ -1,24 +1,38 @@
 package scutil.lang.tc
 
-import org.specs2.mutable._
+import minitest._
 
 import scutil.core.implicits._
 
-class MonoidTest extends Specification {
-	"monoid" should {
-		"support times 0 on string" in {
-			"hallo".times(0) mustEqual ""
-		}
-		"support times n on string" in {
-			"hallo".times(3) mustEqual "hallohallohallo"
-		}
+object MonoidTest extends SimpleTestSuite {
+	test("monoid should support times 0 on string") {
+		assertEquals(
+			"hallo".times(0),
+			""
+		)
+	}
 
-		// TODO tc times() exists as a pimped method on Seq, too
-		"support times 0 on vector" in {
-			Vector(1,2,3).times(0) mustEqual Vector()
-		}
-		"support times n on vector" in {
-			Vector(1,2,3).times(3) mustEqual Vector(1,2,3,1,2,3,1,2,3)
-		}
+	test("monoid should support times n on string") {
+		assertEquals(
+			"hallo".times(3),
+			"hallohallohallo"
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
+	// TODO tc times() exists as a pimped method on Seq, too
+	test("monoid should support times 0 on vector") {
+		assertEquals(
+			Vector(1,2,3).times(0),
+			Vector()
+		)
+	}
+
+	test("monoid should support times n on vector") {
+		assertEquals(
+			Vector(1,2,3).times(3),
+			Vector(1,2,3,1,2,3,1,2,3)
+		)
 	}
 }

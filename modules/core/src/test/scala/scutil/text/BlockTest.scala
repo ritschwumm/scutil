@@ -1,181 +1,269 @@
 package scutil.text
 
-import org.specs2.mutable._
+import minitest._
 
 import scutil.text.literals._
 
-class BlockTest extends Specification {
-	"cooked Block interpolator" should {
-		"apply escape codes" in {
-			tb"""test\ntest""" mustEqual "test\ntest"
-		}
+object BlockTest extends SimpleTestSuite {
+	test("cooked Block interpolator should apply escape codes") {
+		assertEquals(
+			tb"""test\ntest""",
+			"test\ntest"
+		)
 	}
 
-	"raw Block interpolator" should {
-		"leave escape codes alone" in {
-			rtb"""test\ntest""" mustEqual "test\\ntest"
-		}
+	test("raw Block interpolator should leave escape codes alone") {
+		assertEquals(
+			rtb"""test\ntest""",
+			"test\\ntest"
+		)
 	}
 
-	"Block interpolator" should {
-		"generate 0" in {
-			tb"""foo""" mustEqual "foo"
-		}
-		"generate 1" in {
+	//------------------------------------------------------------------------------
+
+	test("Block interpolator should generate 0") {
+		assertEquals(
+			tb"""foo""",
+			"foo"
+		)
+	}
+
+	test("Block interpolator should generate 1") {
+		assertEquals(
 			tb"""
 			foo
-			""" mustEqual "foo"
-		}
-		"generate 2" in {
+			""",
+			"foo"
+		)
+	}
+
+	test("Block interpolator should generate 2") {
+		assertEquals(
 			tb"""
 			foo
 			bar
-			""" mustEqual "foo\nbar"
-		}
-		"generate 3" in {
+			""",
+			"foo\nbar"
+		)
+	}
+
+	test("Block interpolator should generate 3") {
+		assertEquals(
 			tb"""
 			${"foo"}
 			bar
-			""" mustEqual "foo\nbar"
-		}
-		"generate 4" in {
+			""",
+			"foo\nbar"
+		)
+	}
+
+	test("Block interpolator should generate 4") {
+		assertEquals(
 			tb"""
 			foo
 			${"bar"}
-			""" mustEqual "foo\nbar"
-		}
-		"generate 5" in {
+			""",
+			"foo\nbar"
+		)
+	}
+
+	test("Block interpolator should generate 5") {
+		assertEquals(
 			tb"""
 			foo
 			${"bar"}
 			quux
-			""" mustEqual "foo\nbar\nquux"
-		}
-		"generate 6" in {
+			""",
+			"foo\nbar\nquux"
+		)
+	}
+
+	test("Block interpolator should generate 6") {
+		assertEquals(
 			tb"""
 			${"foo"}
 			bar
 			${"quux"}
-			""" mustEqual "foo\nbar\nquux"
-		}
+			""",
+			"foo\nbar\nquux"
+		)
+	}
 
-		"generate 7" in {
+	test("Block interpolator should generate 7") {
+		assertEquals(
 			tb"""
 				foo
 			bar
-			""" mustEqual "\tfoo\nbar"
-		}
-		"generate 8" in {
+			""",
+			"\tfoo\nbar"
+		)
+	}
+
+	test("Block interpolator should generate 8") {
+		assertEquals(
 			tb"""
 			foo
 				bar
-			""" mustEqual "foo\n\tbar"
-		}
-		"generate 9" in {
+			""",
+			"foo\n\tbar"
+		)
+	}
+
+	test("Block interpolator should generate 9") {
+		assertEquals(
 			tb"""
 			foo
 				${"bar"}
-			""" mustEqual "foo\n\tbar"
-		}
-		"generate 10" in {
+			""",
+			"foo\n\tbar"
+		)
+	}
+
+	test("Block interpolator should generate 10") {
+		assertEquals(
 			tb"""
 				${"foo"}
 			bar
-			""" mustEqual "\tfoo\nbar"
-		}
+			""",
+			"\tfoo\nbar"
+		)
+	}
 
-		"generate 11" in {
+	test("Block interpolator should generate 11") {
+		assertEquals(
 			tb"""
 			foo
 			${"bar\nquux\nwibble"}
 			xyzzy
-			""" mustEqual "foo\nbar\nquux\nwibble\nxyzzy"
-		}
-		"generate 12" in {
+			""",
+			"foo\nbar\nquux\nwibble\nxyzzy"
+		)
+	}
+
+	test("Block interpolator should generate 12") {
+		assertEquals(
 			tb"""
 			foo
 				${"bar\nquux\nwibble"}
 			xyzzy
-			""" mustEqual "foo\n\tbar\n\tquux\n\twibble\nxyzzy"
-		}
+			""",
+			"foo\n\tbar\n\tquux\n\twibble\nxyzzy"
+		)
+	}
 
-		"generate 13" in {
+	test("Block interpolator should generate 13") {
+		assertEquals(
 			tb"""
 			${"bar"} ${"quux"}
-			""" mustEqual "bar quux"
-		}
+			""",
+			"bar quux"
+		)
+	}
 
-		"generate 14" in {
+	test("Block interpolator should generate 14") {
+		assertEquals(
 			tb"""
 			foo
 				${"bar"} ${"quux"}
 			wibble
-			""" mustEqual "foo\n\tbar quux\nwibble"
-		}
+			""",
+			"foo\n\tbar quux\nwibble"
+		)
+	}
 
-		"generate 15" in {
+	test("Block interpolator should generate 15") {
+		assertEquals(
 			tb"""
 			${"foo\nbar"} ${"quux\nwibble"}
-			""" mustEqual "foo\nbar quux\nwibble"
-		}
-		"generate 16" in {
+			""",
+			"foo\nbar quux\nwibble"
+		)
+	}
+
+	test("Block interpolator should generate 16") {
+		assertEquals(
 			tb"""
 			a
 				${"foo\nbar"} ${"quux\nwibble"}
 			b
-			""" mustEqual "a\n\tfoo\n\tbar quux\n\twibble\nb"
-		}
+			""",
+			"a\n\tfoo\n\tbar quux\n\twibble\nb"
+		)
+	}
 
-		"generate 17" in {
+	test("Block interpolator should generate 17") {
+		assertEquals(
 			tb"""
-			""" mustEqual ""
-		}
+			""",
+			""
+		)
+	}
 
-		"generate 18" in {
+	test("Block interpolator should generate 18") {
+		assertEquals(
 			tb"""
 				foo
-			""" mustEqual "foo"
-		}
+			""",
+			"foo"
+		)
+	}
 
-		"generate 19" in {
+	test("Block interpolator should generate 19") {
+		assertEquals(
 			tb"""
 				${"foo\nbar"}
-			""" mustEqual "foo\nbar"
-		}
+			""",
+			"foo\nbar"
+		)
+	}
 
-		"generate 20" in {
+	test("Block interpolator should generate 20") {
+		assertEquals(
 			tb"""
 				${"foo\n\nbar"}
-			""" mustEqual "foo\n\nbar"
-		}
+			""",
+			"foo\n\nbar"
+		)
+	}
 
-		"generate 20" in {
+	test("Block interpolator should generate 20") {
+		assertEquals(
 			tb"""
 			a
 				${"foo\n\nbar"}
 			b
-			""" mustEqual "a\n\tfoo\n\t\n\tbar\nb"
-		}
+			""",
+			"a\n\tfoo\n\t\n\tbar\nb"
+		)
+	}
 
-		"generate 21" in {
+	test("Block interpolator should generate 21") {
+		assertEquals(
 			tb"""
 				${""}
 				${"a"}
-			""" mustEqual "\na"
-		}
+			""",
+			"\na"
+		)
+	}
 
-		"generate 22" in {
+	test("Block interpolator should generate 22") {
+		assertEquals(
 			tb"""
 				${"a"}
 				${""}
-			""" mustEqual "a\n"
-		}
+			""",
+			"a\n"
+		)
+	}
 
-		"generate 23" in {
+	test("Block interpolator should generate 23") {
+		assertEquals(
 			tb"""
 				${""}
 				${""}
-			""" mustEqual "\n"
-		}
+			""",
+			"\n"
+		)
 	}
 }

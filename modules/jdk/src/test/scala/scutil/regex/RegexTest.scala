@@ -1,13 +1,14 @@
 package scutil.regex
 
-import org.specs2.mutable._
+import minitest._
 
 import scutil.regex.implicits._
 
-class RegexTest extends Specification {
-	"regex macro" should {
-		"just work" in {
-			re".*".pattern.pattern mustEqual ".*".r.pattern.pattern
-		}
+object RegexTest extends SimpleTestSuite {
+	test("regex macro should just work") {
+		assertEquals(
+			re".*".pattern.pattern,
+			".*".r.pattern.pattern
+		)
 	}
 }

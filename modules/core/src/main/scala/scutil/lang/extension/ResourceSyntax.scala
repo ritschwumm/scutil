@@ -1,4 +1,6 @@
-package scutil.lang.tc
+package scutil.lang.syntaxes
+
+import scutil.lang._
 
 object ResourceSyntax extends ResourceSyntax
 

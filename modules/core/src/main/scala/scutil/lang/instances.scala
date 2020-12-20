@@ -11,11 +11,6 @@ object instances extends instances
 
 trait instances extends instancesLow {
 	//------------------------------------------------------------------------------
-	//## builtin Resource
-
-	implicit def AutoCloseableResource[T<:AutoCloseable]:Resource[T]	= Resource instance (_.close())
-
-	//------------------------------------------------------------------------------
 	//## builting Show
 
 	implicit val ByteShow:Show[Byte]		= Show.toStringInstance
@@ -115,8 +110,11 @@ trait instances extends instancesLow {
 	implicit def EndoMonoid[T]:Monoid[T=>T]	=
 		Monoid.instance(identity, _ andThen _)
 
+	/*
+	// NOTE already done with PFunctionSemigroup
 	implicit def PEndoSemigroup[T]:Semigroup[T=>Option[T]]	=
 		Semigroup instance (_ andThenFixed _)
+	*/
 
 	// TODO do we get this for free with FFunctionFunctor*
 	// NOTE PFunction and FFunction are both just ReaderT/Kleisli

@@ -88,7 +88,7 @@ trait EitherImplicits {
 		def map2[LL>:L,X,Y](that:Either[LL,X])(func:(R,X)=>Y):Either[LL,Y]	=
 			peer zip that map func.tupled
 
-		/** handy replacement for tried.toISeq.flatten abusing Factory as a Zero typeclass */
+		/** handy replacement for tried.toSeq.flatten abusing Factory as a Zero typeclass */
 		def flattenMany[U,CC[_]](implicit ev:R=>CC[U], factory:Factory[U,CC[U]]):CC[U]	=
 			// toOption.flattenMany
 			peer map ev match {

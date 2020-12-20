@@ -1,43 +1,52 @@
 package scutil.lang
 
-import org.specs2.mutable._
+import minitest._
 
 import scutil.lang.assoc._
 
-class AssocTest extends Specification {
-	"arrow" should {
-		"construct" in {
-			val a	= "a" -> 1 -> 3L
-			a mustEqual ((("a",1),3L))
-		}
-		"destruct" in {
-			val a	= (("a",1),3L)
-			val b	= a match { case x -> y -> z => ((x,y),z) }
-			a mustEqual b
-		}
-		"type" in {
-			val a	= (("a",1),3L)
-			typed[ String -> Int -> Long ](a)
-			a mustEqual a
-		}
+object AssocTest extends SimpleTestSuite {
+	test("arrow should construct") {
+		val a	= "a" -> 1 -> 3L
+		assertEquals(
+			a,
+			(("a",1),3L)
+		)
+	}
 
-		//------------------------------------------------------------------------------
+	test("arrow should destruct") {
+		val a	= (("a",1),3L)
+		val b	= a match { case x -> y -> z => ((x,y),z) }
+		assertEquals(a, b)
+	}
 
-		"construct right-associative" in {
-			val a	= "a" ->: 1 ->: 2L
-			a mustEqual (("a", (1, 2L)))
-		}
+	test("arrow should type") {
+		val a	= (("a",1),3L)
+		typed[ String -> Int -> Long ](a)
+		assertEquals(a, a)
+	}
 
-		"destruct right-associative" in {
-			val a	= "a" ->: 1 ->: 2L
-			val b	= a match { case x ->: y ->: z => (x,y,z) }
-			b mustEqual (("a", 1, 2L))
-		}
+	//------------------------------------------------------------------------------
 
-		"type right-associative" in {
-			val a	= ("a",(1,2L))
-			typed[ String ->: Int ->: Long ](a)
-			a mustEqual a
-		}
+	test("arrow should construct right-associative") {
+		val a	= "a" ->: 1 ->: 2L
+		assertEquals(
+			a,
+			("a", (1, 2L))
+		)
+	}
+
+	test("arrow should destruct right-associative") {
+		val a	= "a" ->: 1 ->: 2L
+		val b	= a match { case x ->: y ->: z => (x,y,z) }
+		assertEquals(
+			b,
+			("a", 1, 2L)
+		)
+	}
+
+	test("arrow should type right-associative") {
+		val a	= ("a",(1,2L))
+		typed[ String ->: Int ->: Long ](a)
+		assertEquals(a, a)
 	}
 }

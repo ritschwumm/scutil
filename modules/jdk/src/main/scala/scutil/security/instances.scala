@@ -2,7 +2,7 @@ package scutil.security
 
 import javax.security.auth.Destroyable
 
-import scutil.lang.tc._
+import scutil.lang.Resource
 
 object instances extends instances
 

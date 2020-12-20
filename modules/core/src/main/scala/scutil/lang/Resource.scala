@@ -1,4 +1,4 @@
-package scutil.lang.tc
+package scutil.lang
 
 object Resource {
 	def apply[T](ev:Resource[T]):Resource[T]	= ev
@@ -7,6 +7,9 @@ object Resource {
 		new Resource[T] {
 			def dispose(it:T):Unit	= disposeFunc(it)
 		}
+
+	implicit def AutoCloseableResource[T<:AutoCloseable]:Resource[T]	=
+		instance(_.close())
 
 	// TODO should we use Io here?
 	//def useIo[R1,T](create:Io[R1])(destroy:R1=>Io[Unit])(consume:R1=>Io[T]):Io[T]	= ???

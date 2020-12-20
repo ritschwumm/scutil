@@ -3,6 +3,7 @@ package scutil.gui
 import scutil.gui.extension._
 
 object extensions extends extensions
+
 trait extensions
 	extends	RGBImplicits
 	with	RGBAImplicits

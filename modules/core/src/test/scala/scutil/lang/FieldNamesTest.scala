@@ -1,19 +1,27 @@
 package scutil.lang
 
-import org.specs2.mutable._
+import minitest._
 
 final case class Named(a:Int, b:String, c:java.util.Date)
 
-class FieldNamesTest extends Specification {
-	"FieldNames" should {
-		"work directly" in {
-			implicitly[FieldNames[Named]] mustEqual FieldNames(Vector("a", "b", "c"))
-		}
-		"work indirectly" in {
-			val names	= getNames[Named]
-			names mustEqual Seq("a", "b", "c")
-		}
+object FieldNamesTest extends SimpleTestSuite {
+	test("FieldNames should work directly") {
+		assertEquals(
+			implicitly[FieldNames[Named]],
+			FieldNames(Vector("a", "b", "c"))
+		)
 	}
 
-	def getNames[T:FieldNames]:Seq[String]	=implicitly[FieldNames[Named]].names
+	test("FieldNames should work indirectly") {
+		val names	= getNames[Named]
+		assertEquals(
+			names,
+			Seq("a", "b", "c")
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
+	private def getNames[T:FieldNames]:Seq[String]	=
+		implicitly[FieldNames[Named]].names
 }

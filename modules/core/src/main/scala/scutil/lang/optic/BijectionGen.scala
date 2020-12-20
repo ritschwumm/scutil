@@ -5,7 +5,6 @@ import scala.language.experimental.macros
 import scala.reflect.macros.whitebox.Context
 
 import scutil.lang.implicits._
-import scutil.collection.implicits._
 
 /** creates bijections from the apply/unapply methods in a case classes' companion object */
 object BijectionGen {
@@ -61,9 +60,8 @@ private final class BijectionGen(val c:Context) {
 					// Int			(Int,Short)
 
 					// Option has only one type parameter, which may be a product
-					unapplySingle		<-	unapplyOuts
-											.singleOption
-											.toRight	(s"expected unapply Option to contain a single value")
+					unapplySingle		<-	singleOption(unapplyOuts)
+											.toRight		(s"expected unapply Option to contain a single value")
 
 					unapplySignature	<-	unapplySingle
 											.matchOption	{ case t @ TypeRef(_, _, _)	=> t }
@@ -75,7 +73,7 @@ private final class BijectionGen(val c:Context) {
 					// (method, raw signature)
 					applyMethods0		=	for {
 												method	<- applyMethods collect { case (method:MethodSymbol) => method }
-												params	<- method.paramLists.singleOption.toVector
+												params	<- singleOption(method.paramLists).toVector
 											}
 											yield (
 												method,
@@ -93,34 +91,35 @@ private final class BijectionGen(val c:Context) {
 												}
 											}
 
-					applyTmp			<-	applyMethods1
-											.singleOption
+					applyTmp			<-	singleOption(applyMethods1)
 											.toRight		(s"expected a single apply method matching unapply's types")
 
 					(applyMethod, applySignature)	= applyTmp
 				}
 				yield {
 					// TODO use fully qualified companion symbol!
-					if (applySignature.size == 1)
-							q"""
-								_root_.scutil.lang.Bijection(
-									$companionSymbol.unapply _ andThen {
-										case _root_.scala.Some(x)	=> x
-										case _root_.scala.None		=> _root_.scala.sys error "case class unapply is expected to be total"
-									},
-									$companionSymbol.apply _
-								)
-							"""
-					else
-							q"""
-								_root_.scutil.lang.Bijection(
-									$companionSymbol.unapply _ andThen {
-										case _root_.scala.Some(x)	=> x
-										case _root_.scala.None		=> _root_.scala.sys error "case class unapply is expected to be total"
-									},
-									($companionSymbol.apply _).tupled
-								)
-							"""
+					if (applySignature.size == 1) {
+						q"""
+							_root_.scutil.lang.Bijection(
+								$companionSymbol.unapply _ andThen {
+									case _root_.scala.Some(x)	=> x
+									case _root_.scala.None		=> _root_.scala.sys error "case class unapply is expected to be total"
+								},
+								$companionSymbol.apply _
+							)
+						"""
+					}
+					else {
+						q"""
+							_root_.scutil.lang.Bijection(
+								$companionSymbol.unapply _ andThen {
+									case _root_.scala.Some(x)	=> x
+									case _root_.scala.None		=> _root_.scala.sys error "case class unapply is expected to be total"
+								},
+								($companionSymbol.apply _).tupled
+							)
+						"""
+					}
 				}
 			}
 
@@ -129,6 +128,9 @@ private final class BijectionGen(val c:Context) {
 			c untypecheck _
 		)
 	}
+
+	private def singleOption[T](xs:List[T]):Option[T]	=
+		xs matchOption 	{ case List(x) => x }
 
 	private def equalTypeLists(a:List[Type], b:List[Type]):Boolean	=
 		a.size == b.size

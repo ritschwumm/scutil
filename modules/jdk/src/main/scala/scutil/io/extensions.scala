@@ -3,6 +3,7 @@ package scutil.io
 import scutil.io.extension._
 
 object extensions extends extensions
+
 trait extensions
 	extends	DataOutputImplicits
 	with	FileImplicits

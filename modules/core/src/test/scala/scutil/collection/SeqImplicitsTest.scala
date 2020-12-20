@@ -1,151 +1,231 @@
 package scutil.collection
 
-import org.specs2.mutable._
+import minitest._
 
 import scutil.lang._
 import scutil.collection.implicits._
 
-class SeqImplicitsTest extends Specification {
-	"equivalentSpans" should {
-		def criterium(a:String, b:String):Boolean	=
-				(a charAt 0) == (b charAt 0)
-
-		"be empty for empty input" in {
-			//(Seq.empty[String] equivalentSpans criterium) must haveTheSameElementsAs(Seq.empty)
-			(Seq.empty[String] equivalentSpans criterium) mustEqual Seq.empty
-		}
-		"be simple for a 1-element input" in {
-			(Seq("hallo") equivalentSpans criterium) mustEqual Seq(Seq("hallo"))
-		}
-		"group together 2 equivalent elements" in {
-			(Seq("hallo", "hello") equivalentSpans criterium) mustEqual Seq(Seq("hallo", "hello"))
-		}
-		"group separate 2 non-equivalent elements" in {
-			(Seq("hallo", "ballo") equivalentSpans criterium) mustEqual Seq(Seq("hallo"), Seq("ballo"))
-		}
-		"leave 1 non-equivalent element at the end" in {
-			(Seq("hallo", "hello", "ballo") equivalentSpans criterium) mustEqual Seq(Seq("hallo", "hello"), Seq("ballo"))
-		}
+object SeqImplicitsTest extends SimpleTestSuite {
+	test("equivalentSpans should be empty for empty input") {
+		//(Seq.empty[String] equivalentSpans equivalentSpansCriterium) must haveTheSameElementsAs(Seq.empty)
+		assertEquals(
+			(Seq.empty[String] equivalentSpans equivalentSpansCriterium),
+			Seq.empty
+		)
 	}
 
+	test("equivalentSpans should be simple for a 1-element input") {
+		assertEquals(
+			(Seq("hallo") equivalentSpans equivalentSpansCriterium),
+			Seq(Seq("hallo"))
+		)
+	}
+
+	test("equivalentSpans should group together 2 equivalent elements") {
+		assertEquals(
+			(Seq("hallo", "hello") equivalentSpans equivalentSpansCriterium),
+			Seq(Seq("hallo", "hello"))
+		)
+	}
+
+	test("equivalentSpans should group separate 2 non-equivalent elements") {
+		assertEquals(
+			(Seq("hallo", "ballo") equivalentSpans equivalentSpansCriterium),
+			Seq(Seq("hallo"), Seq("ballo"))
+		)
+	}
+
+	test("equivalentSpans should leave 1 non-equivalent element at the end") {
+		assertEquals(
+			(Seq("hallo", "hello", "ballo") equivalentSpans equivalentSpansCriterium),
+			Seq(Seq("hallo", "hello"), Seq("ballo"))
+		)
+	}
+
+	private def equivalentSpansCriterium(a:String, b:String):Boolean	=
+		(a charAt 0) == (b charAt 0)
+
+	//------------------------------------------------------------------------------
+
 	/*
-	"splitAround" should {
-		"be empty for empty input" in {
-			(Seq.empty[Int] splitAround 1) must haveTheSameElementsAs(Seq.empty)
-		}
+	test("splitAround should be empty for empty input") {
+		(Seq.empty[Int] splitAround 1) must haveTheSameElementsAs(Seq.empty)
+	}
 
-		"be simple for a 1-element input" in {
-			(Seq(0) splitAround 1) must haveTheSameElementsAs(Seq(Seq(0)))
-		}
+	test("splitAround should be simple for a 1-element input") {
+		(Seq(0) splitAround 1) must haveTheSameElementsAs(Seq(Seq(0)))
+	}
 
-		"split into two for a single separator" in {
-			(Seq(1) splitAround 1) must haveTheSameElementsAs(Seq(Seq(),Seq()))
-		}
+	test("splitAround should split into two for a single separator") {
+		(Seq(1) splitAround 1) must haveTheSameElementsAs(Seq(Seq(),Seq()))
+	}
 
-		"split an empty Seq before a leading separator" in {
-			(Seq(1,2) splitAround 1) must haveTheSameElementsAs(Seq(Seq(),Seq(2)))
-		}
+	test("splitAround should split an empty Seq before a leading separator") {
+		(Seq(1,2) splitAround 1) must haveTheSameElementsAs(Seq(Seq(),Seq(2)))
+	}
 
-		"split an empty Seq after a trailing separator" in {
-			(Seq(0,1) splitAround 1) must haveTheSameElementsAs(Seq(Seq(0),Seq()))
-		}
+	test("splitAround should split an empty Seq after a trailing separator") {
+		(Seq(0,1) splitAround 1) must haveTheSameElementsAs(Seq(Seq(0),Seq()))
+	}
 
-		"split a simple Seq correctly" in {
-			(Seq(0,1,2) splitAround 1) must haveTheSameElementsAs(Seq(Seq(0),Seq(2)))
-		}
+	test("splitAround should split a simple Seq correctly") {
+		(Seq(0,1,2) splitAround 1) must haveTheSameElementsAs(Seq(Seq(0),Seq(2)))
+	}
 
-		"create an empty Seq between two adjacent separators" in {
-			(Seq(0,1,1,2) splitAround 1) must haveTheSameElementsAs(Seq(Seq(0),Seq(),Seq(2)))
-		}
+	test("splitAround should create an empty Seq between two adjacent separators") {
+		(Seq(0,1,1,2) splitAround 1) must haveTheSameElementsAs(Seq(Seq(0),Seq(),Seq(2)))
 	}
 	*/
 
-	"adjacents" should {
-		"work with 0 elements" in {
-			Seq.empty[Int].adjacents mustEqual Seq.empty
-		}
-		"work with 1 element" in {
-			Seq(1).adjacents mustEqual Seq((None,1,None))
-		}
-		"work with 2 elements" in {
-			Seq(1,2).adjacents mustEqual Seq((None,1,Some(2)), (Some(1),2,None))
-		}
-		"work with 3 elements" in {
-			Seq(1,2,3).adjacents mustEqual Seq((None,1,Some(2)), (Some(1),2,Some(3)), (Some(2),3,None))
-		}
+	//------------------------------------------------------------------------------
 
-		"return the right type" in {
-			val a	= Vector(1,2,3).adjacents
-			typed[ Vector[(Option[Int],Int,Option[Int])] ](a)
-			a mustEqual Seq((None,1,Some(2)), (Some(1),2,Some(3)), (Some(2),3,None))
-		}
+	test("adjacents should work with 0 elements") {
+		assertEquals(
+			Seq.empty[Int].adjacents,
+			Seq.empty
+		)
 	}
 
-	"splitWhere" should {
-		val p:Int=>Boolean	= _ == 1
-
-		"be empty for empty input" in {
-			(Seq.empty[Int] splitWhere p) mustEqual Seq.empty
-		}
-
-		"be simple for a 1-element input" in {
-			(Seq(0) splitWhere p) mustEqual Seq(Right(Seq(0)))
-		}
-
-		"split into two for a single separator" in {
-			(Seq(1) splitWhere p) mustEqual Seq(Right(Seq()),Left(1), Right(Seq()))
-		}
-
-		"split an empty Seq before a leading separator" in {
-			(Seq(1,2) splitWhere p) mustEqual Seq(Right(Seq()),Left(1),Right(Seq(2)))
-		}
-
-		"split an empty Seq after a trailing separator" in {
-			(Seq(0,1) splitWhere p) mustEqual Seq(Right(Seq(0)),Left(1),Right(Seq()))
-		}
-
-		"split  simple Seq correctly" in {
-			(Seq(0,1,2) splitWhere p) mustEqual Seq(Right(Seq(0)),Left(1),Right(Seq(2)))
-		}
-
-		"create an empty Seq between two adjacent separators" in {
-			(Seq(0,1,1,2) splitWhere p) mustEqual Seq(Right(Seq(0)),Left(1),Right(Seq()),Left(1),Right(Seq(2)))
-		}
+	test("adjacents should work with 1 element") {
+		assertEquals(
+			Seq(1).adjacents,
+			Seq((None,1,None))
+		)
 	}
 
-	"moveAt" should {
-		"fail without enough elements" in {
-			Seq().moveAt(0,0) mustEqual None
-		}
-
-		"move from start to end" in {
-			Seq(1,2,3).moveAt(0,3) mustEqual Some(Seq(2,3,1))
-		}
-
-		"move from end to start" in {
-			Seq(1,2,3).moveAt(2,0) mustEqual Some(Seq(3,1,2))
-		}
-
-		"not move to gap left" in {
-			Seq(1,2,3,4).moveAt(1,1) mustEqual None
-		}
-
-		"not move to gap right" in {
-			Seq(1,2,3,4).moveAt(1,2) mustEqual None
-		}
-
-		"move to gap further left" in {
-			Seq(1,2,3,4).moveAt(1,0) mustEqual Some(Seq(2,1,3,4))
-		}
-
-		"move to gap further right" in {
-			Seq(1,2,3,4).moveAt(1,3) mustEqual Some(Seq(1,3,2,4))
-		}
+	test("adjacents should work with 2 elements") {
+		assertEquals(
+			Seq(1,2).adjacents,
+			Seq((None,1,Some(2)), (Some(1),2,None))
+		)
 	}
 
-	"zipTail" should {
-		"just work" in {
-			Vector(1,2,3).zipTail mustEqual Vector((1,2),(2,3))
-		}
+	test("adjacents should work with 3 elements") {
+		assertEquals(
+			Seq(1,2,3).adjacents,
+			Seq((None,1,Some(2)), (Some(1),2,Some(3)), (Some(2),3,None))
+		)
+	}
+
+	test("adjacents should return the right type") {
+		val a	= Vector(1,2,3).adjacents
+		typed[ Vector[(Option[Int],Int,Option[Int])] ](a)
+		assertEquals(
+			a,
+			Seq((None,1,Some(2)), (Some(1),2,Some(3)), (Some(2),3,None))
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
+	private val splitWherePredicate:Int=>Boolean	= _ == 1
+
+	test("splitWhere should be empty for empty input") {
+		assertEquals(
+			Seq.empty[Int] splitWhere splitWherePredicate,
+			Seq.empty
+		)
+	}
+
+	test("splitWhere should be simple for a 1-element input") {
+		assertEquals(
+			Seq(0) splitWhere splitWherePredicate,
+			Seq(Right(Seq(0)))
+		)
+	}
+
+	test("splitWhere should split into two for a single separator") {
+		assertEquals(
+			Seq(1) splitWhere splitWherePredicate,
+			Seq(Right(Seq()),Left(1), Right(Seq()))
+		)
+	}
+
+	test("splitWhere should split an empty Seq before a leading separator") {
+		assertEquals(
+			Seq(1,2) splitWhere splitWherePredicate,
+			Seq(Right(Seq()),Left(1),Right(Seq(2)))
+		)
+	}
+
+	test("splitWhere should split an empty Seq after a trailing separator") {
+		assertEquals(
+			Seq(0,1) splitWhere splitWherePredicate,
+			Seq(Right(Seq(0)),Left(1),Right(Seq()))
+		)
+	}
+
+	test("splitWhere should split  simple Seq correctly") {
+		assertEquals(
+			Seq(0,1,2) splitWhere splitWherePredicate,
+			Seq(Right(Seq(0)),Left(1),Right(Seq(2)))
+		)
+	}
+
+	test("splitWhere should create an empty Seq between two adjacent separators") {
+		assertEquals(
+			Seq(0,1,1,2) splitWhere splitWherePredicate,
+			Seq(Right(Seq(0)),Left(1),Right(Seq()),Left(1),Right(Seq(2)))
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
+	test("moveAt should fail without enough elements") {
+		assertEquals(
+			Seq().moveAt(0,0),
+			None
+		)
+	}
+
+	test("moveAt should move from start to end") {
+		assertEquals(
+			Seq(1,2,3).moveAt(0,3),
+			Some(Seq(2,3,1))
+		)
+	}
+
+	test("moveAt should move from end to start") {
+		assertEquals(
+			Seq(1,2,3).moveAt(2,0),
+			Some(Seq(3,1,2))
+		)
+	}
+
+	test("moveAt should not move to gap left") {
+		assertEquals(
+			Seq(1,2,3,4).moveAt(1,1),
+			None
+		)
+	}
+
+	test("moveAt should not move to gap right") {
+		assertEquals(
+			Seq(1,2,3,4).moveAt(1,2),
+			None
+		)
+	}
+
+	test("moveAt should move to gap further left") {
+		assertEquals(
+			Seq(1,2,3,4).moveAt(1,0),
+			Some(Seq(2,1,3,4))
+		)
+	}
+
+	test("moveAt should move to gap further right") {
+		assertEquals(
+			Seq(1,2,3,4).moveAt(1,3),
+			Some(Seq(1,3,2,4))
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
+	test("zipTail should just work") {
+		assertEquals(
+			Vector(1,2,3).zipTail,
+			Vector((1,2),(2,3))
+		)
 	}
 }

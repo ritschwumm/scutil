@@ -1,54 +1,90 @@
 package scutil.text
 
-import org.specs2.mutable._
+import minitest._
 
-class HumanTest extends Specification {
-	"binary human" should {
-		"full decode multiple binary units" in {
-			Human fullBinary 47110815 mustEqual "44M 950k 671"
-		}
-		"full decode a single binary unit" in {
-			Human fullBinary 1023 mustEqual "1023"
-		}
-		"rounded decode binary units" in {
-			Human roundedBinary 47110815 mustEqual "44.93M"
-		}
+object HumanTest extends SimpleTestSuite {
+	test("Human should full decode multiple binary units") {
+		assertEquals(
+			Human fullBinary 47110815,
+			"44M 950k 671"
+		)
+	}
 
-		//------------------------------------------------------------------------------
+	test("Human should full decode a single binary unit") {
+		assertEquals(
+			Human fullBinary 1023,
+			"1023"
+		)
+	}
 
-		"full decode multiple decimal units" in {
-			Human fullDecimal 47110815 mustEqual "47M 110k 815"
-		}
-		"full decode a single decimal unit" in {
-			Human fullDecimal 999 mustEqual "999"
-		}
-		"rounded decode decimal units" in {
-			Human roundedDecimal 47110815 mustEqual "47.11M"
-		}
+	test("Human should rounded decode binary units") {
+		assertEquals(
+			Human roundedBinary 47110815,
+			"44.93M"
+		)
+	}
 
-		//------------------------------------------------------------------------------
+	//------------------------------------------------------------------------------
 
-		"full decode multiple milli time units" in {
-			Human fullMilliDuration 47110815L mustEqual "13h 5m 10s 815ms"
-		}
-		"rounded decode milli time units" in {
-			Human roundedMilliDuration 47110815L mustEqual "13.09h"
-		}
+	test("Human should full decode multiple decimal units") {
+		assertEquals(
+			Human fullDecimal 47110815,
+			"47M 110k 815"
+		)
+	}
 
-		//------------------------------------------------------------------------------
+	test("Human should full decode a single decimal unit") {
+		assertEquals(
+			Human fullDecimal 999,
+			"999"
+		)
+	}
 
-		// val dms	= Human render (Human.table.degree, decimalPlaces=3)
+	test("Human should rounded decode decimal units") {
+		assertEquals(
+			Human roundedDecimal 47110815,
+			"47.11M"
+		)
+	}
 
-		"properly format DMS" in {
-			Human roundedDms 360 mustEqual "360°"
-		}
+	//------------------------------------------------------------------------------
 
-		"properly format DMS" in {
-			Human roundedDms 10.5 mustEqual "10° 29' 60.000''"
-		}
+	test("Human should full decode multiple milli time units") {
+		assertEquals(
+			Human fullMilliDuration 47110815L,
+			"13h 5m 10s 815ms"
+		)
+	}
 
-		"properly format DMS" in {
-			Human roundedDms 48.125268 mustEqual "48° 7' 30.965''"
-		}
+	test("Human should rounded decode milli time units") {
+		assertEquals(
+			Human roundedMilliDuration 47110815L,
+			"13.09h"
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
+	// val dms	= Human render (Human.table.degree, decimalPlaces=3)
+
+	test("Human should properly format DMS") {
+		assertEquals(
+			Human roundedDms 360,
+			"360°"
+		)
+	}
+
+	test("Human should properly format DMS") {
+		assertEquals(
+			Human roundedDms 10.5,
+			"10° 29' 60.000''"
+		)
+	}
+
+	test("Human should properly format DMS") {
+		assertEquals(
+			Human roundedDms 48.125268,
+			"48° 7' 30.965''"
+		)
 	}
 }

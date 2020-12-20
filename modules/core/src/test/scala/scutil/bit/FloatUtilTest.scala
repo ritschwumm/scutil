@@ -2,36 +2,55 @@ package scutil.bit
 
 import java.lang.{ Float	=> JFloat }
 
-import org.specs2.mutable._
+import minitest._
 
-class FloatUtilTest extends Specification {
-	"FloatUtil" should {
-		"detect normal" in {
-			FloatUtil.denormal(JFloat.MIN_NORMAL) mustEqual false
-		}
+object FloatUtilTest extends SimpleTestSuite {
+	test("FloatUtil should detect normal") {
+		assertEquals(
+			FloatUtil.denormal(JFloat.MIN_NORMAL),
+			false
+		)
+	}
 
-		"detect denormal" in {
-			FloatUtil.denormal(JFloat.MIN_NORMAL / 2) mustEqual true
-		}
+	test("FloatUtil should detect denormal") {
+		assertEquals(
+			FloatUtil.denormal(JFloat.MIN_NORMAL / 2),
+			true
+		)
+	}
 
-		"detect +0 as not denormal" in {
-			FloatUtil.denormal(0f) mustEqual false
-		}
+	test("FloatUtil should detect +0 as not denormal") {
+		assertEquals(
+			FloatUtil.denormal(0f),
+			false
+		)
+	}
 
-		"detect -0 as not denormal" in {
-			FloatUtil.denormal(-0f) mustEqual false
-		}
+	test("FloatUtil should detect -0 as not denormal") {
+		assertEquals(
+			FloatUtil.denormal(-0f),
+			false
+		)
+	}
 
-		"detect Infinity as not denormal" in {
-			FloatUtil.denormal(1f / 0f) mustEqual false
-		}
+	test("FloatUtil should detect Infinity as not denormal") {
+		assertEquals(
+			FloatUtil.denormal(1f / 0f),
+			false
+		)
+	}
 
-		"detect NaN as not denormal" in {
-			FloatUtil.denormal(0f / 0f) mustEqual false
-		}
+	test("FloatUtil should detect NaN as not denormal") {
+		assertEquals(
+			FloatUtil.denormal(0f / 0f),
+			false
+		)
+	}
 
-		"flush denormal to zero" in {
-			FloatUtil.ftz(JFloat.MIN_NORMAL / 2) mustEqual 0f
-		}
+	test("FloatUtil should flush denormal to zero") {
+		assertEquals(
+			FloatUtil.ftz(JFloat.MIN_NORMAL / 2),
+			0f
+		)
 	}
 }

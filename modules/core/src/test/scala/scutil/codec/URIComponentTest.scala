@@ -1,97 +1,144 @@
 package scutil.codec
 
-import org.specs2.mutable._
+import minitest._
 
-class URIComponentTest extends Specification {
-	"URIComponent" should {
-		"roundtrip all usual chars (low)" in {
-			val str	= '\u0000' to '\ud7ff' map { _.toChar } mkString ""
-			val	enc	= URIComponent.utf_8 encode str
-			val	dec	= URIComponent.utf_8 decode enc
-			dec mustEqual Right(str)
-		}
-		"roundtrip all usual chars (high)" in {
-			val str	= '\ue000' to '\uffff' map { _.toChar } mkString ""
-			val	enc	= URIComponent.utf_8 encode str
-			val	dec	= URIComponent.utf_8 decode enc
-			dec mustEqual Right(str)
-		}
-		"roundtrip chars outside the 16 bit range" in {
-			val str	= Character toChars Integer.parseInt("00010400", 16) mkString ""
-			val	enc	= URIComponent.utf_8 encode str
-			val	dec	= URIComponent.utf_8 decode enc
-			dec mustEqual Right(str)
-		}
-
-		"encode plus as %2B" in {
-			URIComponent.utf_8 encode "+" mustEqual "%2B"
-		}
-		"encode blank as %20" in {
-			URIComponent.utf_8 encode " " mustEqual "%20"
-		}
-		"decode plus as plus" in {
-			URIComponent.utf_8 decode "+" mustEqual Right("+")
-		}
-
-		val interestingRaw	= "~!@#$%^&*(){}[]=:/,;?+'\"\\"
-		val interestingCode	= "~!%40%23%24%25%5E%26*()%7B%7D%5B%5D%3D%3A%2F%2C%3B%3F%2B'%22%5C"
-
-		"encode interesting chars just like encodeURIComponent" in {
-			URIComponent.utf_8 encode interestingRaw mustEqual interestingCode
-		}
-
-		"decode interesting chars just like decodeURIComponent" in {
-			URIComponent.utf_8 decode interestingCode mustEqual Right(interestingRaw)
-		}
-
-		"encode german umlauts" in {
-			URIComponent.utf_8 encode "äöü" mustEqual "%C3%A4%C3%B6%C3%BC"
-		}
-
-		"decode german umlauts" in {
-			URIComponent.utf_8 decode "%C3%A4%C3%B6%C3%BC" mustEqual Right("äöü")
-		}
-
-		"fail with invalid % sequences (1)" in {
-			URIComponent.utf_8 decode "%" mustEqual Left(URIComponentInvalid((1)))
-		}
-
-		"fail with invalid % sequences (2)" in {
-			URIComponent.utf_8 decode " %" mustEqual Left(URIComponentInvalid((2)))
-		}
-
-		"fail with invalid % sequences (3)" in {
-			URIComponent.utf_8 decode "%x" mustEqual Left(URIComponentInvalid((1)))
-		}
-
-		"fail with invalid % sequences (4)" in {
-			URIComponent.utf_8 decode "%1x" mustEqual Left(URIComponentInvalid((2)))
-		}
-
-		"fail with invalid % sequences (5)" in {
-			URIComponent.utf_8 decode "%%" mustEqual Left(URIComponentInvalid((1)))
-		}
-
-		/*
-		import javax.script.ScriptEngineManager
-
-		"encode everything just like encodeURIComponent" in {
-			val engine	= new ScriptEngineManager getEngineByName "JavaScript"
-			val str	= 0 until 256 map { _.toChar } mkString ""
-			val s1	= URIComponent.utf_8 encode (str, utf_8)
-			engine put ("str", str)
-			val s2	= engine eval """encodeURIComponent(str)"""
-			s1 mustEqual s2
-		}
-
-		"decode everything just like encodeURIComponent" in {
-			val engine	= new ScriptEngineManager getEngineByName "JavaScript"
-			val str	= 0 until 256 map { _.toChar } mkString ""
-			engine put ("str", str)
-			val s1	= (engine eval """encodeURIComponent(str)""").asInstanceOf[String]
-			val s2	= URIComponent.utf_8 decode (s1, utf_8)
-			s2 mustEqual str
-		}
-		*/
+object URIComponentTest extends SimpleTestSuite {
+	test("URIComponent should roundtrip all usual chars (low)") {
+		val str	= '\u0000' to '\ud7ff' map { _.toChar } mkString ""
+		val	enc	= URIComponent.utf_8 encode str
+		val	dec	= URIComponent.utf_8 decode enc
+		assertEquals(dec, Right(str))
 	}
+
+	test("URIComponent should roundtrip all usual chars (high)") {
+		val str	= '\ue000' to '\uffff' map { _.toChar } mkString ""
+		val	enc	= URIComponent.utf_8 encode str
+		val	dec	= URIComponent.utf_8 decode enc
+		assertEquals(dec, Right(str))
+	}
+
+	test("URIComponent should roundtrip chars outside the 16 bit range") {
+		val str	= Character toChars Integer.parseInt("00010400", 16) mkString ""
+		val	enc	= URIComponent.utf_8 encode str
+		val	dec	= URIComponent.utf_8 decode enc
+		assertEquals(dec, Right(str))
+	}
+
+	//------------------------------------------------------------------------------
+
+	test("URIComponent should encode plus as %2B") {
+		assertEquals(
+			URIComponent.utf_8 encode "+",
+			"%2B"
+		)
+	}
+	test("URIComponent should encode blank as %20") {
+		assertEquals(
+			URIComponent.utf_8 encode " ",
+			"%20"
+		)
+	}
+	test("URIComponent should decode plus as plus") {
+		assertEquals(
+			URIComponent.utf_8 decode "+",
+			Right("+")
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
+	private val interestingRaw	= "~!@#$%^&*(){}[]=:/,;?+'\"\\"
+	private val interestingCode	= "~!%40%23%24%25%5E%26*()%7B%7D%5B%5D%3D%3A%2F%2C%3B%3F%2B'%22%5C"
+
+	test("URIComponent should encode interesting chars just like encodeURIComponent") {
+		assertEquals(
+			URIComponent.utf_8 encode interestingRaw,
+			interestingCode
+		)
+	}
+
+	test("URIComponent should decode interesting chars just like decodeURIComponent") {
+		assertEquals(
+			URIComponent.utf_8 decode interestingCode,
+			Right(interestingRaw)
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
+	test("URIComponent should encode german umlauts") {
+		assertEquals(
+			URIComponent.utf_8 encode "äöü",
+			"%C3%A4%C3%B6%C3%BC"
+		)
+	}
+
+	test("URIComponent should decode german umlauts") {
+		assertEquals(
+			URIComponent.utf_8 decode "%C3%A4%C3%B6%C3%BC",
+			Right("äöü")
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
+	test("URIComponent should fail with invalid % sequences (1)") {
+		assertEquals(
+			URIComponent.utf_8 decode "%",
+			Left(URIComponentInvalid((1)))
+		)
+	}
+
+	test("URIComponent should fail with invalid % sequences (2)") {
+		assertEquals(
+			URIComponent.utf_8 decode " %",
+			Left(URIComponentInvalid((2)))
+		)
+	}
+
+	test("URIComponent should fail with invalid % sequences (3)") {
+		assertEquals(
+			URIComponent.utf_8 decode "%x",
+			Left(URIComponentInvalid((1)))
+		)
+	}
+
+	test("URIComponent should fail with invalid % sequences (4)") {
+		assertEquals(
+			URIComponent.utf_8 decode "%1x",
+			Left(URIComponentInvalid((2)))
+			)
+	}
+
+	test("URIComponent should fail with invalid % sequences (5)") {
+		assertEquals(
+			URIComponent.utf_8 decode "%%",
+			Left(URIComponentInvalid((1)))
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
+
+	/*
+	import javax.script.ScriptEngineManager
+
+	test("URIComponent should encode everything just like encodeURIComponent") {
+		val engine	= new ScriptEngineManager getEngineByName "JavaScript"
+		val str	= 0 until 256 map { _.toChar } mkString ""
+		val s1	= URIComponent.utf_8 encode (str, utf_8)
+		engine put ("str", str)
+		val s2	= engine eval """encodeURIComponent(str)"""
+		assertEquals(s1, s2)
+	}
+
+	test("URIComponent should decode everything just like encodeURIComponent") {
+		val engine	= new ScriptEngineManager getEngineByName "JavaScript"
+		val str	= 0 until 256 map { _.toChar } mkString ""
+		engine put ("str", str)
+		val s1	= (engine eval """encodeURIComponent(str)""").asInstanceOf[String]
+		val s2	= URIComponent.utf_8 decode (s1, utf_8)
+		assertEquals(s2, str)
+	}
+	*/
 }

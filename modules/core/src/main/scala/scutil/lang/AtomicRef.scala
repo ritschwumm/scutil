@@ -20,11 +20,13 @@ final class AtomicRef[F[_]:Delay,T](initial:T) {
 			ref.get
 		}
 
+	/** returns the previous value */
 	def set(it:T):F[T]	=
 		D delay {
 			ref getAndSet it
 		}
 
+	/** returns the previous value */
 	def update(func:T=>T):F[T]	=
 		modify { old =>
 			func(old) -> old

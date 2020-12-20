@@ -1,10 +1,60 @@
 package scutil.lang
 
-import org.specs2.mutable._
+import minitest._
 
 import scutil.lang.implicits._
 
-class ShowInterpolatorTest extends Specification {
+object ShowInterpolatorTest extends SimpleTestSuite {
+	test("show interpolator should do an empty string") {
+		assertEquals(
+			show"""""",
+			""
+		)
+	}
+
+	test("show interpolator should do a single string") {
+		assertEquals(
+			show"""a""",
+			"a"
+		)
+	}
+
+	test("show interpolator should do a single value") {
+		val a = "1"
+		assertEquals(
+			show"""$a""",
+			"1"
+		)
+	}
+
+	test("show interpolator should do a string and a value") {
+		val a = "1"
+		assertEquals(
+			show"""${a}test""",
+			"1test"
+		)
+	}
+
+	test("show interpolator should do a value and a string") {
+		val a = "1"
+		assertEquals(
+			show"""test${a}""",
+			"test1"
+		)
+	}
+
+	test("show interpolator should work with multiple values and types") {
+		val a = "1"
+		val b = 2
+		val c = true
+		assertEquals(
+			show"""aaa${a}bbb${b}ccc${c}""",
+			"aaa1bbb2ccctrue"
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
 	import scutil.lang.tc._
 	implicit def OptionShow[T:Show]:Show[Option[T]]	=
 		Show instance {
@@ -12,64 +62,63 @@ class ShowInterpolatorTest extends Specification {
 			case None		=> "none"
 		}
 
-	"show interpolator" should {
-		"do an empty string" in {
-			show"""""" mustEqual ""
-		}
-		"do a single string" in {
-			show"""a""" mustEqual "a"
-		}
-		"do a single value" in {
-			val a = "1"
-			show"""$a""" mustEqual "1"
-		}
-		"do a string and a value" in {
-			val a = "1"
-			show"""${a}test""" mustEqual "1test"
-		}
-		"do a value and a string" in {
-			val a = "1"
-			show"""test${a}""" mustEqual "test1"
-		}
-		"work with multiple values and types" in {
-			val a = "1"
-			val b = 2
-			val c = true
-			show"""aaa${a}bbb${b}ccc${c}""" mustEqual "aaa1bbb2ccctrue"
-		}
+	test("show interpolator should work with custom instances") {
+		val o:Option[Int]	= Some(1)
+		assertEquals(
+			show"""$o""",
+			"some: 1"
+		)
+	}
 
-		"work with custom instances" in {
-			val o:Option[Int]	= Some(1)
-			show"""$o""" mustEqual "some: 1"
-		}
-		/*
-		"work with inheritance" in {
-			val o:Some[Int]	= Some(1)
-			show"""$o""" mustEqual "some: 1"
-		}
-		*/
+	//------------------------------------------------------------------------------
 
-		"allow escapes" in {
-			show"\t" mustEqual "\t"
-		}
+	/*
+	test("show interpolator should work with inheritance") {
+		val o:Some[Int]	= Some(1)
+		assertEquals(
+			show"""$o""",
+			"some: 1"
+		)
+	}
+	*/
 
-		"allow escapes" in {
-			show"\u0000" mustEqual s"\u0000"
-		}
+	//------------------------------------------------------------------------------
 
-		/*
-		// fails at compile time, as it should
-		"disallow unknown escapes" in {
-			show"""\x""" mustEqual s"\t"
-		}
-		*/
+	test("show interpolator should allow escapes") {
+		assertEquals(
+			show"\t",
+			"\t"
+		)
+	}
 
-		"allow double quote escapes" in {
-			show"""\"""" mustEqual s"""\""""
-		}
+	test("show interpolator should allow escapes") {
+		assertEquals(
+			show"\u0000",
+			s"\u0000"
+		)
+	}
 
-		"allow double quote escapes" in {
-			show"""\"""" mustEqual "\""
-		}
+	/*
+	// fails at compile time, as it should
+	test("show interpolator should disallow unknown escapes") {
+		assertEquals(
+			show"""\x""",
+			s"\t"
+		)
+	}
+	*/
+
+	test("show interpolator should allow double quote escapes") {
+		assertEquals(
+			show"""\"""",
+			s"""\""""
+		)
+	}
+
+	test("show interpolator should allow double quote escapes") {
+		assertEquals(
+			show"""\"""",
+			"\""
+		)
 	}
 }

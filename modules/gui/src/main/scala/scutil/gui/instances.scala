@@ -5,7 +5,7 @@ import java.awt.Window
 import javax.imageio.ImageReader
 import javax.imageio.ImageWriter
 
-import scutil.lang.tc._
+import scutil.lang.Resource
 
 object instances extends instances
 

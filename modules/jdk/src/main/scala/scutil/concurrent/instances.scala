@@ -3,7 +3,7 @@ package scutil.concurrent
 import java.util.concurrent.locks.Lock
 import java.util.TimerTask
 
-import scutil.lang.tc._
+import scutil.lang.Resource
 
 object instances extends instances
 

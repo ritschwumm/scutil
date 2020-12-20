@@ -21,7 +21,7 @@ object Extractor {
 
 	implicit def ExtractorFunctor[S]:Functor[Extractor[S,*]]	=
 		new Functor[Extractor[S,*]] {
-			def map[A,B](it:Extractor[S,A])(func:A=>B):Extractor[S,B]		= it map func
+			def map[A,B](it:Extractor[S,A])(func:A=>B):Extractor[S,B]	= it map func
 		}
 
 	//------------------------------------------------------------------------------

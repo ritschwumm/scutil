@@ -3,6 +3,7 @@ package scutil.lang
 import scutil.lang.extension._
 
 object extensions extends extensions
+
 trait extensions
 	extends	AnyImplicits
 	with	AnyRefImplicits

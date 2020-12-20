@@ -3,6 +3,7 @@ package scutil.jcollection
 import scutil.jcollection.extension._
 
 object extensions extends extensions
+
 trait extensions
 	extends	ConcurrentLinkedQueueImplicits
 	with	JEnumerationImplicits

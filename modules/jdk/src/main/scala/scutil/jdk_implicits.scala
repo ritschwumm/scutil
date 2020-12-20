@@ -1,6 +1,7 @@
 package scutil.jdk
 
 object implicits extends implicits
+
 trait implicits
 	extends	scutil.concurrent.implicits
 	with	scutil.security.implicits

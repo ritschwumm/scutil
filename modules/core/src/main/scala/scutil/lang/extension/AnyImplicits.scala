@@ -28,6 +28,7 @@ trait AnyImplicits {
 		def |>[U](f:T=>U):U	= into(f)
 
 		/** symbolic alias for doto */
+		@deprecated("use doto", "0.191.0")
 		def |>>(effect:T=>Unit):T	= doto(effect)
 
 		/** apply a single unary function, just like F#'s operator or ruby's thrush */
@@ -113,6 +114,8 @@ trait AnyImplicits {
 				case Some(x)	=> Bad(x)
 				case None		=> Good(peer)
 			}
+
+		//------------------------------------------------------------------------------
 
 		/** pair with function applied */
 		def firstBy[U](func:T=>U):(T,U)	=

@@ -1,52 +1,88 @@
 package scutil.text
 
-import org.specs2.mutable._
+import minitest._
 
 import scutil.text.extension.StringContextImplicits._
 
-class TextTest extends Specification {
-	"stripMarginOnly" should {
-		"pass through blank input" in {
-			Text stripMarginOnly "" mustEqual ""
-		}
-		"ignore non-matching lines" in {
-			Text stripMarginOnly "test\n|test\ntest" mustEqual "test"
-		}
-		"ignore blank lines" in {
-			Text stripMarginOnly "\n|test\n\n|foo\n\n\n|bar" mustEqual "test\nfoo\nbar"
-		}
-		"ignore the last linefeed" in {
-			Text stripMarginOnly "|test\n" mustEqual "test"
-		}
-		"properly strip without whitespace" in {
-			Text stripMarginOnly "|test" mustEqual "test"
-		}
-		"properly strip with blanks whitespace" in {
-			Text stripMarginOnly "  |test" mustEqual "test"
-		}
-		"properly strip with tabs whitespace" in {
-			Text stripMarginOnly "\t\t|test" mustEqual "test"
-		}
-		"properly strip with mixed whitespace" in {
-			Text stripMarginOnly " \t \t |test" mustEqual "test"
-		}
-		"work with multiple lines" in {
-			Text stripMarginOnly "  |test\n foo\n| bar" mustEqual "test\n bar"
-		}
+object TextTest extends SimpleTestSuite {
+	test("stripMarginOnly should pass through blank input") {
+		assertEquals(
+			Text stripMarginOnly "",
+			""
+		)
 	}
 
-	"strip interpolator" should {
-		"just work" in {
+	test("stripMarginOnly should ignore non-matching lines") {
+		assertEquals(
+			Text stripMarginOnly "test\n|test\ntest",
+			"test"
+		)
+	}
+
+	test("stripMarginOnly should ignore blank lines") {
+		assertEquals(
+			Text stripMarginOnly "\n|test\n\n|foo\n\n\n|bar",
+			"test\nfoo\nbar"
+		)
+	}
+
+	test("stripMarginOnly should ignore the last linefeed") {
+		assertEquals(
+			Text stripMarginOnly "|test\n",
+			"test"
+		)
+	}
+
+	test("stripMarginOnly should properly strip without whitespace") {
+		assertEquals(
+			Text stripMarginOnly "|test",
+			"test"
+		)
+	}
+
+	test("stripMarginOnly should properly strip with blanks whitespace") {
+		assertEquals(
+			Text stripMarginOnly "  |test",
+			"test"
+		)
+	}
+
+	test("stripMarginOnly should properly strip with tabs whitespace") {
+		assertEquals(
+			Text stripMarginOnly "\t\t|test",
+			"test"
+		)
+	}
+
+	test("stripMarginOnly should properly strip with mixed whitespace") {
+		assertEquals(
+			Text stripMarginOnly " \t \t |test",
+			"test"
+		)
+	}
+
+	test("stripMarginOnly should work with multiple lines") {
+		assertEquals(
+			Text stripMarginOnly "  |test\n foo\n| bar",
+			"test\n bar"
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
+	test("strip interpolator just work") {
+		assertEquals(
 			strip"""
 			|one
 			| two
-			""" mustEqual "one\n two"
-		}
+			""",
+			"one\n two"
+		)
 	}
 
-	"table helper" should {
-		"format correctly" in {
-			Text table Vector(Vector("a","bb","ccc"),Vector("ddd","cccc","e")) mustEqual
+	test("table helper should format correctly") {
+		assertEquals(
+			Text table Vector(Vector("a","bb","ccc"),Vector("ddd","cccc","e")),
 			Vector(
 				"┌───┬────┬───┐",
 				"│a  │bb  │ccc│",
@@ -54,6 +90,6 @@ class TextTest extends Specification {
 				"│ddd│cccc│e  │",
 				"└───┴────┴───┘"
 			)
-		}
+		)
 	}
 }

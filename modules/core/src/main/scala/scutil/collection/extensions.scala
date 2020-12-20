@@ -3,6 +3,7 @@ package scutil.collection
 import scutil.collection.extension._
 
 object extensions extends extensions
+
 trait extensions
 	extends	IteratorImplicits
 	with	SeqImplicits

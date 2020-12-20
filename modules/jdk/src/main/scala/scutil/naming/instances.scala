@@ -3,7 +3,7 @@ package scutil.naming
 import javax.naming._
 import javax.naming.directory._
 
-import scutil.lang.tc.Resource
+import scutil.lang.Resource
 
 object instances extends instances
 

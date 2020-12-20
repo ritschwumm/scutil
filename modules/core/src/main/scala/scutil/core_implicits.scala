@@ -1,6 +1,7 @@
 package scutil.core
 
 object implicits extends implicits
+
 trait implicits
 	extends	scutil.lang.implicits
 	with	scutil.lang.tc.implicits

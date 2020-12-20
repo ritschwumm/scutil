@@ -90,7 +90,7 @@ final class GridBagDSL(peer:GridBagConstraints) {
 	def insets(v:Insets):GridBagConstraints													= modified { c => c.insets	= v.clone.asInstanceOf[Insets]			}
 	def insetsTLBR(top:Int, left:Int, bottom:Int, right:Int):GridBagConstraints				= modified { c => c.insets	= new Insets(top, left, bottom, right)	}
 
-	def modified(effect:GridBagConstraints=>Unit):GridBagConstraints = cloned |>> effect
+	def modified(effect:GridBagConstraints=>Unit):GridBagConstraints = cloned doto effect
 
 	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 	def cloned:GridBagConstraints	= peer.clone.asInstanceOf[GridBagConstraints]

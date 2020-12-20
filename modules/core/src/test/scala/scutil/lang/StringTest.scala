@@ -1,50 +1,97 @@
 package scutil.lang
 
-import org.specs2.mutable._
+import minitest._
 
 import scutil.core.implicits._
 
-class StringTest extends Specification {
-	"String extension" should {
-		"parse 'false' to Boolean" in {
-			"false".parseBoolean mustEqual Right(false)
-		}
-		"parse 'true' to Boolean" in {
-			"true".parseBoolean mustEqual Right(true)
-		}
-		"parse 'FALSE' to Boolean" in {
-			"FALSE".parseBoolean mustEqual Right(false)
-		}
-		"parse 'TRUE' to Boolean" in {
-			"TRUE".parseBoolean mustEqual Right(true)
-		}
+object StringTest extends SimpleTestSuite {
+	test("string extension should parse 'false' to Boolean") {
+		assertEquals(
+			"false".parseBoolean,
+			Right(false)
+		)
+	}
 
-		"parse 'False' to Boolean" in {
-			"False".parseBoolean mustEqual Right(false)
-		}
-		"parse 'True' to Boolean" in {
-			"True".parseBoolean mustEqual Right(true)
-		}
-		"parse 'fAlse' to Boolean" in {
-			"fAlse".parseBoolean mustEqual Right(false)
-		}
-		"parse 'tRrue' to Boolean" in {
-			"tRue".parseBoolean mustEqual Right(true)
-		}
-		"parse 'faLse' to Boolean" in {
-			"faLse".parseBoolean mustEqual Right(false)
-		}
-		"parse 'trUe' to Boolean" in {
-			"trUe".parseBoolean mustEqual Right(true)
-		}
-		"parse 'falSe' to Boolean" in {
-			"falSe".parseBoolean mustEqual Right(false)
-		}
-		"parse 'truE' to Boolean" in {
-			"truE".parseBoolean mustEqual Right(true)
-		}
-		"parse 'falsE' to Boolean" in {
-			"falsE".parseBoolean mustEqual Right(false)
-		}
+	test("string extension should parse 'true' to Boolean") {
+		assertEquals(
+			"true".parseBoolean,
+			Right(true)
+		)
+	}
+
+	test("string extension should parse 'FALSE' to Boolean") {
+		assertEquals(
+			"FALSE".parseBoolean,
+			Right(false)
+		)
+	}
+
+	test("string extension should parse 'TRUE' to Boolean") {
+		assertEquals(
+			"TRUE".parseBoolean,
+			Right(true)
+		)
+	}
+
+	test("string extension should parse 'False' to Boolean") {
+		assertEquals(
+			"False".parseBoolean,
+			Right(false)
+		)
+	}
+
+	test("string extension should parse 'True' to Boolean") {
+		assertEquals(
+			"True".parseBoolean,
+			Right(true)
+		)
+	}
+
+	test("string extension should parse 'fAlse' to Boolean") {
+		assertEquals(
+			"fAlse".parseBoolean,
+			Right(false)
+		)
+	}
+	test("string extension should parse 'tRrue' to Boolean") {
+		assertEquals(
+			"tRue".parseBoolean,
+			Right(true)
+		)
+	}
+
+	test("string extension should parse 'faLse' to Boolean") {
+		assertEquals(
+			"faLse".parseBoolean,
+			Right(false)
+		)
+	}
+
+	test("string extension should parse 'trUe' to Boolean") {
+		assertEquals(
+			"trUe".parseBoolean,
+			Right(true)
+		)
+	}
+
+	test("string extension should parse 'falSe' to Boolean") {
+		assertEquals(
+			"falSe".parseBoolean,
+			Right(false)
+		)
+	}
+
+	test("string extension should parse 'truE' to Boolean") {
+		assertEquals(
+			"truE".parseBoolean,
+			Right(true)
+		)
+	}
+
+	test("string extension should parse 'falsE' to Boolean") {
+		assertEquals(
+			"falsE".parseBoolean,
+			Right(false)
+		)
 	}
 }

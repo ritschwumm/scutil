@@ -1,30 +1,50 @@
 package scutil.lang
 
-import org.specs2.mutable._
+import minitest._
 
 @SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
-class SourceLocationTest extends Specification {
-	case class Check(x:Int)
+object SourceLocationTest extends SimpleTestSuite {
+	final case class Check(x:Int)
 	implicit val check:Check	= Check(1)
 
-	"implicit SourceLocation" should {
-		"be available with only an implicit parameter list" in {
-			foo mustEqual SourceLocation(Some("modules/core/src/test/scala/scutil/lang/SourceLocationTest.scala"), "SourceLocationTest.scala", 12)
-		}
-		"be available with one normal and an implicit parameter list" in {
-			bar(1) mustEqual SourceLocation(Some("modules/core/src/test/scala/scutil/lang/SourceLocationTest.scala"), "SourceLocationTest.scala", 15)
-		}
-		"be available with multiple normal and an implicit parameter list" in {
-			quux(1)(1) mustEqual SourceLocation(Some("modules/core/src/test/scala/scutil/lang/SourceLocationTest.scala"), "SourceLocationTest.scala", 18)
-		}
+	//------------------------------------------------------------------------------
 
-		"work with multiple implicit parameters" in {
-			xxx mustEqual SourceLocation(Some("modules/core/src/test/scala/scutil/lang/SourceLocationTest.scala"), "SourceLocationTest.scala", 22)
-		}
-		"work with multiple implicit parameters" in {
-			yyy mustEqual SourceLocation(Some("modules/core/src/test/scala/scutil/lang/SourceLocationTest.scala"), "SourceLocationTest.scala", 25)
-		}
+	test("implicit SourceLocation should be available with only an implicit parameter list") {
+		assertEquals(
+			foo,
+			SourceLocation(Some("modules/core/src/test/scala/scutil/lang/SourceLocationTest.scala"), "SourceLocationTest.scala", 14)
+		)
 	}
+
+	test("implicit SourceLocation should be available with one normal and an implicit parameter list") {
+		assertEquals(
+			bar(1),
+			SourceLocation(Some("modules/core/src/test/scala/scutil/lang/SourceLocationTest.scala"), "SourceLocationTest.scala", 21)
+		)
+	}
+
+	test("implicit SourceLocation should be available with multiple normal and an implicit parameter list") {
+		assertEquals(
+			quux(1)(1),
+			SourceLocation(Some("modules/core/src/test/scala/scutil/lang/SourceLocationTest.scala"), "SourceLocationTest.scala", 28)
+		)
+	}
+
+	test("implicit SourceLocation should work with multiple implicit parameters") {
+		assertEquals(
+			xxx,
+			SourceLocation(Some("modules/core/src/test/scala/scutil/lang/SourceLocationTest.scala"), "SourceLocationTest.scala", 35)
+		)
+	}
+
+	test("implicit SourceLocation should work with multiple implicit parameters") {
+		assertEquals(
+			yyy,
+			SourceLocation(Some("modules/core/src/test/scala/scutil/lang/SourceLocationTest.scala"), "SourceLocationTest.scala", 42)
+		)
+	}
+
+	//------------------------------------------------------------------------------
 
 	private def foo(implicit loc:SourceLocation):SourceLocation	= loc
 	private def bar(x:Int)(implicit loc:SourceLocation):SourceLocation			= loc

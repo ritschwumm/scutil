@@ -1,42 +1,65 @@
 package scutil.lang
 
-import org.specs2.mutable._
+import minitest._
 
 import scutil.lang.tc._
 
-class ByteStringTest extends Specification {
-	"ByteString" should {
-		"have a working monoid" in {
-			val xs	= Vector(ByteString fromUtf8String "a", ByteString fromUtf8String "b")
-			val out	= (xs foldLeft Monoid[ByteString].empty)(Monoid[ByteString].concat)
+object ByteStringTest extends SimpleTestSuite {
+	test("ByteString should have a working monoid") {
+		val xs	= Vector(ByteString fromUtf8String "a", ByteString fromUtf8String "b")
+		val out	= (xs foldLeft Monoid[ByteString].empty)(Monoid[ByteString].concat)
 
-			out mustEqual (ByteString fromUtf8String "ab")
-		}
+		assertEquals(
+			out,
+			(ByteString fromUtf8String "ab")
+		)
+	}
 
-		"split inside" in {
-			ByteString.of(1,2,3,4,5,6) splitAt 2 mustEqual Some((ByteString.of(1,2), ByteString.of(3,4,5,6)))
-		}
+	//------------------------------------------------------------------------------
 
-		"split at the start" in {
-			ByteString.of(1,2,3,4,5,6) splitAt 0 mustEqual Some((ByteString.empty, ByteString.of(1,2,3,4,5,6)))
-		}
+	test("ByteString should split inside") {
+		assertEquals(
+			ByteString.of(1,2,3,4,5,6) splitAt 2,
+			Some((ByteString.of(1,2), ByteString.of(3,4,5,6)))
+		)
+	}
 
-		"split at the end" in {
-			ByteString.of(1,2,3,4,5,6) splitAt 6 mustEqual Some((ByteString.of(1,2,3,4,5,6), ByteString.empty))
-		}
+	test("ByteString should split at the start") {
+		assertEquals(
+			ByteString.of(1,2,3,4,5,6) splitAt 0,
+			Some((ByteString.empty, ByteString.of(1,2,3,4,5,6)))
+		)
+	}
 
-		"not split before start" in {
-			ByteString.of(1,2,3,4,5,6) splitAt 0-1 mustEqual None
-		}
+	test("ByteString should split at the end") {
+		assertEquals(
+			ByteString.of(1,2,3,4,5,6) splitAt 6,
+			Some((ByteString.of(1,2,3,4,5,6), ByteString.empty))
+		)
+	}
 
-		"not split after end" in {
-			ByteString.of(1,2,3,4,5,6) splitAt 6+1 mustEqual None
-		}
+	test("ByteString should not split before start") {
+		assertEquals(
+			ByteString.of(1,2,3,4,5,6) splitAt 0-1,
+			None
+		)
+	}
 
-		"roundtrip big endian long" in {
-			val b	= 4607182418800017408L
-			val bb	= ByteString.fromBigEndianLong(b).toBigEndianLong.getOrElse(sys error "oops")
-			bb mustEqual b
-		}
+	test("ByteString should not split after end") {
+		assertEquals(
+			ByteString.of(1,2,3,4,5,6) splitAt 6+1,
+			None
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
+	test("ByteString should roundtrip big endian long") {
+		val b	= 4607182418800017408L
+		val bb	= ByteString.fromBigEndianLong(b).toBigEndianLong.getOrElse(sys error "oops")
+		assertEquals(
+			bb,
+			b
+		)
 	}
 }

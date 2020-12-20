@@ -5,6 +5,7 @@ import scala.annotation.tailrec
 import java.util.concurrent.atomic.AtomicReference
 
 object RefUtil {
+	/** works in scala-js where AtomicReference.getAndUpdate is not supported */
 	@tailrec
 	def modify[T,U](ref:AtomicReference[T], func:T=>(T,U)):U	= {
 		val cur			= ref.get()

@@ -2,36 +2,55 @@ package scutil.bit
 
 import java.lang.{ Double	=> JDouble }
 
-import org.specs2.mutable._
+import minitest._
 
-class DoubleUtilTest extends Specification {
-	"DoubleUtil" should {
-		"detect normal" in {
-			DoubleUtil.denormal(JDouble.MIN_NORMAL) mustEqual false
-		}
+object DoubleUtilTest extends SimpleTestSuite {
+	test("DoubleUtil should detect normal") {
+		assertEquals(
+			DoubleUtil.denormal(JDouble.MIN_NORMAL),
+			false
+		)
+	}
 
-		"detect denormal" in {
-			DoubleUtil.denormal(JDouble.MIN_NORMAL / 2) mustEqual true
-		}
+	test("DoubleUtil should detect denormal") {
+		assertEquals(
+			DoubleUtil.denormal(JDouble.MIN_NORMAL / 2),
+			true
+		)
+	}
 
-		"detect +0 as not denormal" in {
-			DoubleUtil.denormal(0d) mustEqual false
-		}
+	test("DoubleUtil should detect +0 as not denormal") {
+		assertEquals(
+			DoubleUtil.denormal(0d),
+			false
+		)
+	}
 
-		"detect -0 as not denormal" in {
-			DoubleUtil.denormal(-0d) mustEqual false
-		}
+	test("DoubleUtil should detect -0 as not denormal") {
+		assertEquals(
+			DoubleUtil.denormal(-0d),
+			false
+		)
+	}
 
-		"detect Infinity as not denormal" in {
-			DoubleUtil.denormal(1d / 0d) mustEqual false
-		}
+	test("DoubleUtil should detect Infinity as not denormal") {
+		assertEquals(
+			DoubleUtil.denormal(1d / 0d),
+			false
+		)
+	}
 
-		"detect NaN as not denormal" in {
-			DoubleUtil.denormal(0d / 0d) mustEqual false
-		}
+	test("DoubleUtil should detect NaN as not denormal") {
+		assertEquals(
+			DoubleUtil.denormal(0d / 0d),
+			false
+		)
+	}
 
-		"flush denormal to zero" in {
-			DoubleUtil.ftz(JDouble.MIN_NORMAL / 2) mustEqual 0d
-		}
-	 }
+	test("DoubleUtil should flush denormal to zero") {
+		assertEquals(
+			DoubleUtil.ftz(JDouble.MIN_NORMAL / 2),
+			0d
+		)
+	}
 }
