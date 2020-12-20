@@ -49,10 +49,6 @@ trait OptionImplicits {
 		def partition(pred:Predicate[T]):(Option[T],Option[T])	=
 			(peer filter pred, peer filterNot pred)
 
-		@deprecated("use zipBy form functor syntax", "0.193.0")
-		def tupleBy[U](func:T=>U):Option[(T,U)]	=
-			peer map { it => (it,func(it)) }
-
 		def partitionEither[U,V](implicit ev:T=>Either[U,V]):(Option[U],Option[V])	=
 			peer map ev match {
 				case Some(Left(x))	=> (Some(x),	None)
@@ -176,9 +172,9 @@ trait OptionImplicits {
 		// exists: toLeft
 		// exists: toRight
 
-		def toValid[F](problems: =>F):Validated[F,T]	=
+		def toValid[F](invalid: =>F):Validated[F,T]	=
 			peer match {
-				case None		=> Validated.invalid(problems)
+				case None		=> Validated.invalid(invalid)
 				case Some(x)	=> Validated.valid(x)
 			}
 
@@ -186,6 +182,12 @@ trait OptionImplicits {
 			peer match {
 				case None		=> Validated.valid(valid)
 				case Some(x)	=> Validated.invalid(x)
+			}
+
+		def toValidNes[F](invalid: =>F):Validated[Nes[F],T]	=
+			peer match {
+				case None		=> Validated.invalid(Nes.one(invalid))
+				case Some(x)	=> Validated.valid(x)
 			}
 
 		// NOTE toSeq there from Iterable, but we don't want the implicit conversion

@@ -32,7 +32,7 @@ object Validated {
 		}
 
 	implicit def ValidatedSemigroup[S:Semigroup,T]:Semigroup[Validated[S,T]]	=
-		Semigroup instance (_ orElse _)
+		Semigroup instance (_ or _)
 
 	//------------------------------------------------------------------------------
 
@@ -165,7 +165,8 @@ sealed trait Validated[+E,+T] {
 
 	//------------------------------------------------------------------------------
 
-	def orElse[EE>:E,TT>:T](that:Validated[EE,TT])(implicit cc:Semigroup[EE]):Validated[EE,TT]	=
+	// NOTE cats' orElse drops errors, this is like cats' <+>
+	def or[EE>:E,TT>:T](that:Validated[EE,TT])(implicit cc:Semigroup[EE]):Validated[EE,TT]	=
 		(this, that) match {
 			case (Validated.Invalid(a),		Validated.Invalid(b))	=> Validated.invalid(cc.combine(a, b))
 			case (Validated.Valid(a),	_)							=> Validated.valid(a)

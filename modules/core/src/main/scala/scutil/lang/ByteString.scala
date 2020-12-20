@@ -14,7 +14,7 @@ import scutil.bit._
 object ByteString {
 	val empty:ByteString			= new ByteString(Array.empty)
 
-	def single(it:Byte):ByteString	= apply(it)
+	def one(it:Byte):ByteString		= apply(it)
 
 	def of(its:Byte*):ByteString	= fromCollectionSeq(its)
 

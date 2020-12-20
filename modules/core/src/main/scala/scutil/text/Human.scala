@@ -111,7 +111,7 @@ final case class Human(table:Nes[HumanUnit]) {
 	private val smallCount	= table count { _.divisor < Human.one }
 
 	private def smallCut(smallUnits:Int):Nes[HumanUnit]	=
-		table.reverse.drop(smallCount - smallUnits).cata(Nes single table.head, _.reverse)
+		table.reverse.drop(smallCount - smallUnits).cata(Nes one table.head, _.reverse)
 
 	//------------------------------------------------------------------------------
 
@@ -124,8 +124,8 @@ final case class Human(table:Nes[HumanUnit]) {
 		value => {
 			require(value >= Human.zero, "value must be positive or zero")
 
-			val limit2	= limit1 dropWhile	{ _.divisor > value }	getOrElse (Nes single limit1.last)
-			val limit3	= limit2 take		config.maxUnits			getOrElse (Nes single limit2.head)
+			val limit2	= limit1 dropWhile	{ _.divisor > value }	getOrElse (Nes one limit1.last)
+			val limit3	= limit2 take		config.maxUnits			getOrElse (Nes one limit2.head)
 
 			renderRaw(limit3, config.decimalPlaces, value)
 		}

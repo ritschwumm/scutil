@@ -83,7 +83,7 @@ object Converter {
 	*/
 
 	implicit def ConverterSemigroup[E:Semigroup,S,T]:Semigroup[Converter[E,S,T]]	=
-		Semigroup instance (_ orElse _)
+		Semigroup instance (_ or _)
 }
 
 // Kleisli[Validated[E,_],S,T]
@@ -127,9 +127,8 @@ abstract class Converter[E,S,T] {
 	def as[U](it:U):Converter[E,S,U]	=
 		map(constant(it))
 
-	/** function effect first */
 	def ap[U,V](that:Converter[E,S,U])(implicit ev:T=>U=>V, cc:Semigroup[E]):Converter[E,S,V]	=
-		this map ev ap that
+		it => (this convert it map ev) ap (that convert it)
 
 	def tuple[U](that:Converter[E,S,U])(implicit cc:Semigroup[E]):Converter[E,S,(T,U)] =
 		it	=> (this convert it) tuple (that convert it)
@@ -143,8 +142,8 @@ abstract class Converter[E,S,T] {
 			case Right(x)	=> that convert x
 		}
 
-	def orElse(that:Converter[E,S,T])(implicit cc:Semigroup[E]):Converter[E,S,T]	=
-		it => (this convert it) orElse (that convert it)
+	def or(that:Converter[E,S,T])(implicit cc:Semigroup[E]):Converter[E,S,T]	=
+		it => (this convert it) or (that convert it)
 
 	def either[SS,TT](that:Converter[E,SS,TT]):Converter[E,Either[S,SS],Either[T,TT]]	=
 		{

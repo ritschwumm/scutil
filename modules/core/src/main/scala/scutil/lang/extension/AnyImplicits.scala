@@ -72,27 +72,7 @@ trait AnyImplicits {
 		def iorRight[A]:Ior[A,T]		= Ior.right(peer)
 		def iorBoth:Ior[T,T]			= Ior.both(peer, peer)
 
-		@deprecated("use some", "0.193.0")
-		def inSome:Option[T]			= Some(peer)
-
-		@deprecated("use asRight", "0.193.0")
-		def inRight[L]:Either[L,T]		= Right(peer)
-		@deprecated("use asLeft", "0.193.0")
-		def inLeft[R]:Either[T,R]		= Left(peer)
-
-		@deprecated("use valid", "0.193.0")
-		def inValid[L]:Validated[L,T]	= Validated.valid(peer)
-		@deprecated("use invalid", "0.193.0")
-		def inInvalid[R]:Validated[T,R]	= Validated.invalid(peer)
-
-		@deprecated("use iorLeft", "0.193.0")
-		def inHere[B]:Ior[T,B]		= Ior.left(peer)
-		@deprecated("use iorRight", "0.193.0")
-		def inThere[A]:Ior[A,T]		= Ior.right(peer)
-		@deprecated("use iorBoth", "0.193.0")
-		def inBoth:Ior[T,T]			= Ior.both(peer, peer)
-
-		def inNes:Nes[T]				= Nes.single(peer)
+		def inNes:Nes[T]				= Nes.one(peer)
 
 		def inVector:Vector[T]			= Vector(peer)
 		def inList:List[T]				= List(peer)

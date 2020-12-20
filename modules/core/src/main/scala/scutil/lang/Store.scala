@@ -19,14 +19,6 @@ object Store {
 }
 
 final case class Store[V,C](index:V, peek:V=>C) {
-	@deprecated("use extract", "0.192.0")
-	def container:C	= extract
-
-	@deprecated("use index", "0.192.0")
-	def get:V		= index
-	@deprecated("use peek", "0.192.0")
-	def set(v:V):C	= peek(v)
-
 	def extract:C	= peek(index)
 
 	def modify(func:V=>V):C		= peek(func(index))
@@ -44,12 +36,9 @@ final case class Store[V,C](index:V, peek:V=>C) {
 
 	//------------------------------------------------------------------------------
 
+	// aka coFlatten
 	def duplicate:Store[V,Store[V,C]]	=
 		Store(index, Store(_, peek))
-
-	@deprecated("use duplicate", "0.192.0")
-	def coFlatten:Store[V,Store[V,C]]	=
-		duplicate
 
 	def map[CC](func:C=>CC):Store[V,CC]	=
 		Store[V,CC](

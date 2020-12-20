@@ -5,7 +5,10 @@ import scala.collection.IterableFactory
 import scutil.lang.tc._
 
 object Nes {
-	def single[T](head:T):Nes[T]	=
+	def pure[T](head:T):Nes[T]	=
+		one(head)
+
+	def one[T](head:T):Nes[T]	=
 		Nes(head, Vector.empty)
 
 	def of[T](head:T, tail:T*):Nes[T]	=
@@ -33,10 +36,10 @@ object Nes {
 	implicit def NesTraversedMonad:TraversedMonad[Nes]	=
 		new TraversedMonad[Nes] {
 			override def map[A,B](it:Nes[A])(func:A=>B):Nes[B]			= it map func
-			override def pure[A](it:A):Nes[A]							= Nes single it
+			override def pure[A](it:A):Nes[A]							= Nes one it
 			override def flatMap[A,B](it:Nes[A])(func:A=>Nes[B]):Nes[B]	= it flatMap func
 			override def traverse[G[_],S,T](it:Nes[S])(func:S=>G[T])(implicit AP:Applicative[G]):G[Nes[T]]	=
-				((it.tail map func) foldLeft ((AP map  func(it.head))(Nes.single[T]))) { (xs, x) =>
+				((it.tail map func) foldLeft ((AP map  func(it.head))(Nes.one[T]))) { (xs, x) =>
 					AP.map2(xs, x)(_ :+ _)
 				}
 		}

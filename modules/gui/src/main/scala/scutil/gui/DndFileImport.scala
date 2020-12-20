@@ -65,7 +65,7 @@ object DndFileImport {
 
 		private def extractFileList[T](support:TransferSupport, flavor:DataFlavor, extractor:T=>Validated[Nes[Exception],Nes[File]]):Option[Validated[Nes[Exception],Nes[File]]]	=
 			support isDataFlavorSupported flavor option {
-				extractTransferData[T](support, flavor) leftMap Nes.single into (_.toValidated) flatMap extractor
+				extractTransferData[T](support, flavor) leftMap Nes.one into (_.toValidated) flatMap extractor
 			}
 
 		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
@@ -84,8 +84,8 @@ object DndFileImport {
 
 		// on el captain text/uri-list contains plain file path, but new File(URI) expects an absolute URI
 		private def fileFromURI(s:String):Validated[Nes[Exception],File]	=
-			(fileFromURI1(s) leftMap Nes.single into (_.toValidated))	orElse
-			(fileFromURI2(s) leftMap Nes.single into (_.toValidated))
+			(fileFromURI1(s) leftMap Nes.one into (_.toValidated))	or
+			(fileFromURI2(s) leftMap Nes.one into (_.toValidated))
 
 		private def fileFromURI1(s:String):Either[Exception,File]	=
 			Catch.exception in {
@@ -105,11 +105,11 @@ object DndFileImport {
 			jlist.toSeq.toNesOption toValid invalidMessage(s"empty file list")
 
 		private def filesFromURL(url:URL):Validated[Nes[Exception],Nes[File]]	=
-			url.toFile toValid invalidMessage(s"not a file url: ${url.toString}") map Nes.single
+			url.toFile toValid invalidMessage(s"not a file url: ${url.toString}") map Nes.one
 
 		//------------------------------------------------------------------------------
 
 		private def invalidMessage(message:String):Nes[Exception]	=
-			Nes single new IOException(message)
+			Nes one new IOException(message)
 	}
 }
