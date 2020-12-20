@@ -16,7 +16,6 @@ trait ApplicativeSyntax {
 	}
 
 	implicit final class ApplicativeValueSyntaxExt[F[_],T](peer:F[T])(implicit F:Applicative[F]) {
-		def pa[U](func:F[T=>U]):F[U]					= F.ap(peer)(func)
 		def map2[U,V](that:F[U])(func:(T,U)=>V):F[V]	= F.map2(peer, that)(func)
 
 		def tuple[U](that:F[U]):F[(T,U)]	= F.tuple(peer, that)
@@ -28,8 +27,6 @@ trait ApplicativeSyntax {
 	}
 
 	implicit final class ApplicativeArrowSyntaxExt[F[_],S,T](peer:F[S=>T])(implicit F:Applicative[F]) {
-		// TODO as ap, this collides with the same method defined in e.g. EitherExt
-		def apx(it:F[S]):F[T]	= F.ap(it)(peer)
-		def aping:F[S]=>F[T]	= F.aping(peer)
+		def ap(it:F[S]):F[T]	= F.ap(peer)(it)
 	}
 }

@@ -61,13 +61,13 @@ object ApplicativeTest extends SimpleTestSuite {
 		val bs	= Vector(f1, f2)
 
 		// function effect first
-		val x	= as pa bs
+		val x	= bs ap as
 		assertEquals(
 			x,
 			Vector(2,3,4,5)
 		)
 
-		val y	= (Applicative[Vector] ap as)(bs)
+		val y	= Applicative[Vector].ap(bs)(as)
 		assertEquals(y, x)
 	}
 
@@ -75,7 +75,7 @@ object ApplicativeTest extends SimpleTestSuite {
 		val f:Either[String,Int=>Int]	= Left("function")
 		val v:Either[String,Int]		= Left("value")
 		assertEquals(
-			(Applicative[Either[String,*]] ap v)(f),
+			Applicative[Either[String,*]].ap(f)(v),
 			Left("function")
 		)
 	}

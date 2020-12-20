@@ -16,10 +16,6 @@ trait FutureImplicits {
 			peer zip that
 
 		// TODO is this correct, or should we use flatMap?
-		def pa[U](that:Future[T=>U])(implicit executor:ExecutionContext):Future[U]	=
-			peer zip that map { case (t, t2u) => t2u(t) }
-
-		// TODO is this correct, or should we use flatMap?
 		def ap[U,V](that:Future[U])(implicit ev:T=>U=>V, executor:ExecutionContext):Future[V]	=
 			peer zip that map { case (u2v, u) => u2v(u) }
 

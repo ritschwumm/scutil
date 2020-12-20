@@ -47,8 +47,8 @@ object DndFileImport {
 						// not actually used?
 						extractFileList[URL]		(support, DndFlavors.url,			filesFromURL)		getOrElse
 						// unknown format
-						(Validated bad badMessage("unexpected transfer flavor"))
-					(extracted doto effect).isGood
+						(Validated invalid invalidMessage("unexpected transfer flavor"))
+					(extracted doto effect).isValid
 				}
 			)
 
@@ -80,7 +80,7 @@ object DndFileImport {
 			.filterNot			{ _ startsWith "#"	}
 			.map				(fileFromURI)
 			.sequenceValidated
-			.flatMap			{ _.toNesOption toGood badMessage(s"empty uri list") }
+			.flatMap			{ _.toNesOption toValid invalidMessage(s"empty uri list") }
 
 		// on el captain text/uri-list contains plain file path, but new File(URI) expects an absolute URI
 		private def fileFromURI(s:String):Validated[Nes[Exception],File]	=
@@ -102,14 +102,14 @@ object DndFileImport {
 			}
 
 		private def filesFromJList(jlist:JList[File]):Validated[Nes[Exception],Nes[File]]	=
-			jlist.toSeq.toNesOption toGood badMessage(s"empty file list")
+			jlist.toSeq.toNesOption toValid invalidMessage(s"empty file list")
 
 		private def filesFromURL(url:URL):Validated[Nes[Exception],Nes[File]]	=
-			url.toFile toGood badMessage(s"not a file url: ${url.toString}") map Nes.single
+			url.toFile toValid invalidMessage(s"not a file url: ${url.toString}") map Nes.single
 
 		//------------------------------------------------------------------------------
 
-		private def badMessage(message:String):Nes[Exception]	=
+		private def invalidMessage(message:String):Nes[Exception]	=
 			Nes single new IOException(message)
 	}
 }

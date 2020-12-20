@@ -14,15 +14,6 @@ object EitherTest extends SimpleTestSuite {
 		)
 	}
 
-	test("Either should do successful pa") {
-		val func:Either[String,Int=>Int]	= Either right (_ * 2)
-		val value:Either[String,Int]		= Either right 7
-		assertEquals(
-			value pa func,
-			Right(14)
-		)
-	}
-
 	test("Either should abort function-first in ap") {
 		val func:Either[String,Int=>Int]	= Either left "bug"
 		val value:Either[String,Int]		= Either left "error"
@@ -32,12 +23,11 @@ object EitherTest extends SimpleTestSuite {
 		)
 	}
 
-	test("Either should abort function-first in pa") {
-		val func:Either[String,Int=>Int]	= Either left "bug"
-		val value:Either[String,Int]		= Either left "error"
+	test("Either should convert to Try") {
+		val func:Either[Throwable,Int]	= Either right 1
 		assertEquals(
-			value pa func,
-			Left("bug")
+			func.toTry,
+			scala.util.Success(1)
 		)
 	}
 }

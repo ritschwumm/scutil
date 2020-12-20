@@ -49,8 +49,8 @@ trait BooleanImplicits {
 			if (peer)	Right(trueRight)
 			else		Left(falseLeft)
 
-		def validated[E,T](falseProblems: =>E, trueGood: =>T):Validated[E,T]	=
-			Validated.switch(peer, falseProblems, trueGood)
+		def validated[E,T](falseProblems: =>E, trueValid: =>T):Validated[E,T]	=
+			Validated.switch(peer, falseProblems, trueValid)
 
 		//------------------------------------------------------------------------------
 
@@ -89,12 +89,12 @@ trait BooleanImplicits {
 			else		Left(leftValue)
 
 		def guardValidated[E](problems: =>E):Validated[E,Unit]	=
-			if (peer)	Validated.good(())
-			else		Validated.bad(problems)
+			if (peer)	Validated.valid(())
+			else		Validated.invalid(problems)
 
 		def preventValidated[E](problems: =>E):Validated[E,Unit]	=
-			if (!peer)	Validated.good(())
-			else		Validated.bad(problems)
+			if (!peer)	Validated.valid(())
+			else		Validated.invalid(problems)
 
 		def guardSeq[T](trueValue: =>T):Seq[T] =
 			guardVector(trueValue)

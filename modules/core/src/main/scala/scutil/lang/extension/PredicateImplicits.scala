@@ -32,7 +32,7 @@ trait PredicateImplicits {
 		def eitherOn[S<:T,UL,UR](left:S=>UL, right:S=>UR):S=>Either[UL,UR]	=
 			it	=> if (peer(it))	Left(left(it))	else	Right(right(it))
 
-		def validatedOn[S<:T,UL,UR](bad:S=>UL, good:S=>UR):S=>Validated[UL,UR]	=
-			it	=> if (peer(it))	Validated.bad(bad(it))	else	Validated.good(good(it))
+		def validatedOn[S<:T,UL,UR](invalid:S=>UL, valid:S=>UR):S=>Validated[UL,UR]	=
+			it	=> if (peer(it))	Validated.invalid(invalid(it))	else	Validated.valid(valid(it))
 	}
 }

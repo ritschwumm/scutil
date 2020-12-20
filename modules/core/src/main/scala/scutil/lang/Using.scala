@@ -68,9 +68,6 @@ trait Using[T] { self =>
 	final def ap[U,V](that:Using[U])(implicit ev:T=>U=>V):Using[V]	=
 		map2(that) { (t,u) => t(u) }
 
-	def pa[U](func:Using[T=>U]):Using[U] =
-		func.map2(this) { (f,t) => f(t) }
-
 	final def tuple[U](that:Using[U]):Using[(T,U)]	=
 		map2(that) { (t,u) => (t,u) }
 

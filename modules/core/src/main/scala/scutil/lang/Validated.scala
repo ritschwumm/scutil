@@ -5,20 +5,20 @@ import scala.collection.Factory
 import scutil.lang.tc._
 
 object Validated {
-	def good[E,T](value:T):Validated[E,T]	= Good(value)
-	def bad[E,T](problems:E):Validated[E,T]	= Bad(problems)
+	def valid[E,T](value:T):Validated[E,T]		= Valid(value)
+	def invalid[E,T](problems:E):Validated[E,T]	= Invalid(problems)
 
 	//------------------------------------------------------------------------------
 
 	def switch[E,T](ok:Boolean, problems: =>E, value: =>T):Validated[E,T]	=
-		if (ok)	good(value)
-		else	bad(problems)
+		if (ok)	valid(value)
+		else	invalid(problems)
 
 	implicit final class MergeableValidated[T](peer:Validated[T,T]) {
 		def merge:T	=
 			peer match {
-				case Bad(x)		=> x
-				case Good(x)	=> x
+				case Invalid(x)		=> x
+				case Valid(x)		=> x
 			}
 	}
 
@@ -27,8 +27,8 @@ object Validated {
 
 	implicit def ValidatedApplicative[S:Semigroup]:Applicative[Validated[S,*]]	=
 		new Applicative[Validated[S,*]] {
-			override def pure[A](it:A):Validated[S,A]										= Validated good it
-			override def ap[A,B](it:Validated[S,A])(func:Validated[S,A=>B]):Validated[S,B]	= func ap it
+			override def pure[A](it:A):Validated[S,A]										= Validated valid it
+			override def ap[A,B](func:Validated[S,A=>B])(it:Validated[S,A]):Validated[S,B]	= func ap it
 		}
 
 	implicit def ValidatedSemigroup[S:Semigroup,T]:Semigroup[Validated[S,T]]	=
@@ -36,157 +36,152 @@ object Validated {
 
 	//------------------------------------------------------------------------------
 
-	final case class Bad[E](problems:E)	extends Validated[E,Nothing]
-	final case class Good[T](value:T)	extends Validated[Nothing,T]
+	final case class Invalid[E](problems:E)	extends Validated[E,Nothing]
+	final case class Valid[T](value:T)		extends Validated[Nothing,T]
 }
 
 sealed trait Validated[+E,+T] {
-	def cata[X](bad:E=>X, good:T=>X):X	=
+	def cata[X](invalid:E=>X, valid:T=>X):X	=
 		this match {
-			case Validated.Good(x)	=> good(x)
-			case Validated.Bad(x)	=> bad(x)
+			case Validated.Invalid(x)	=> invalid(x)
+			case Validated.Valid(x)		=> valid(x)
 		}
 
 	//------------------------------------------------------------------------------
 
-	def isGood:Boolean	=
+	def isValid:Boolean	=
 		this match {
-			case Validated.Bad(x)	=> false
-			case Validated.Good(x)	=> true
+			case Validated.Invalid(x)	=> false
+			case Validated.Valid(x)		=> true
 		}
 
-	def isBad:Boolean	=
-		!isGood
+	def isInvalid:Boolean	=
+		!isValid
 
 	//------------------------------------------------------------------------------
 
 	def exists(pred:Predicate[T]):Boolean	=
 		this match {
-			case Validated.Bad(x)	=> false
-			case Validated.Good(x)	=> pred(x)
+			case Validated.Invalid(x)	=> false
+			case Validated.Valid(x)		=> pred(x)
 		}
 
 	def forall(pred:Predicate[T]):Boolean	=
 		this match {
-			case Validated.Bad(x)	=> true
-			case Validated.Good(x)	=> pred(x)
+			case Validated.Invalid(x)	=> true
+			case Validated.Valid(x)		=> pred(x)
 		}
 
 	//------------------------------------------------------------------------------
 
 	def iterator:Iterator[T]	=
 		this match {
-			case Validated.Bad(x)	=> Iterator.empty
-			case Validated.Good(x)	=> Iterator single x
+			case Validated.Invalid(x)	=> Iterator.empty
+			case Validated.Valid(x)		=> Iterator single x
 		}
 
 	def foreach(effect:Effect[T]):Unit	=
 		this match {
-			case Validated.Bad(x)	=> ()
-			case Validated.Good(x)	=> effect(x)
+			case Validated.Invalid(x)	=> ()
+			case Validated.Valid(x)		=> effect(x)
 		}
 
 	def map[U](func:T=>U):Validated[E,U]	=
 		this match {
-			case Validated.Bad(x)	=> Validated.bad(x)
-			case Validated.Good(x)	=> Validated.good(func(x))
+			case Validated.Invalid(x)	=> Validated.invalid(x)
+			case Validated.Valid(x)		=> Validated.valid(func(x))
 		}
 
 	def flatMap[EE>:E,U](func:T=>Validated[EE,U]):Validated[EE,U]	=
 		this match {
-			case Validated.Bad(x)	=> Validated.bad(x)
-			case Validated.Good(x)	=> func(x)
+			case Validated.Invalid(x)	=> Validated.invalid(x)
+			case Validated.Valid(x)		=> func(x)
 		}
 
 	def flatten[EE>:E,U](implicit ev:T=>Validated[EE,U]):Validated[EE,U]	=
 		flatMap(ev)
 
-	/** function effect first */
 	def ap[EE>:E:Semigroup,U,V](that:Validated[EE,U])(implicit ev:T=>U=>V):Validated[EE,V]	=
-		that pa (this map ev)
-
-	/** function effect first */
-	def pa[EE>:E:Semigroup,U](that:Validated[EE,T=>U]):Validated[EE,U]	=
-		(that map2 this)((t2u, t) => t2u(t))
+		(this map2 that)(_(_))
 
 	def tuple[EE>:E:Semigroup,U](that:Validated[EE,U]):Validated[EE,(T,U)]	=
 		(this map2 that)((_,_))
 
 	def map2[EE>:E,U,V](that:Validated[EE,U])(func:(T,U)=>V)(implicit cc:Semigroup[EE]):Validated[EE,V]	=
 		(this, that) match {
-			case (Validated.Bad(a),		Validated.Good(_))	=> Validated.Bad(a)
-			case (Validated.Good(_),	Validated.Bad(b))	=> Validated.Bad(b)
-			case (Validated.Bad(a),		Validated.Bad(b))	=> Validated.Bad(cc.combine(a, b))
-			case (Validated.Good(a),	Validated.Good(b))	=> Validated.Good(func(a, b))
+			case (Validated.Invalid(a),	Validated.Valid(_))		=> Validated.Invalid(a)
+			case (Validated.Valid(_),	Validated.Invalid(b))	=> Validated.Invalid(b)
+			case (Validated.Invalid(a),	Validated.Invalid(b))	=> Validated.Invalid(cc.combine(a, b))
+			case (Validated.Valid(a),	Validated.Valid(b))		=> Validated.Valid(func(a, b))
 		}
 
 	/** handy replacement for tried.toSeq.flatten abusing Factory as a Zero typeclass */
 	def flattenMany[U,CC[_]](implicit ev:T=>CC[U], factory:Factory[U,CC[U]]):CC[U]	=
 		// toOption.flattenMany
 		this map ev match {
-			case Validated.Bad(_)	=> factory.newBuilder.result()
-			case Validated.Good(cc)	=> cc
+			case Validated.Invalid(_)	=> factory.newBuilder.result()
+			case Validated.Valid(cc)	=> cc
 		}
 
 	//------------------------------------------------------------------------------
 
 	def swap:Validated[T,E]	=
 		this match {
-			case Validated.Bad(x)	=> Validated.good(x)
-			case Validated.Good(x)	=> Validated.bad(x)
+			case Validated.Invalid(x)	=> Validated.valid(x)
+			case Validated.Valid(x)		=> Validated.invalid(x)
 		}
 
 	def withSwapped[EE,TT](func:Validated[T,E]=>Validated[TT,EE]):Validated[EE,TT]	=
 		func(swap).swap
 
-	def bimap[EE,TT](badFunc:E=>EE, goodFunc:T=>TT):Validated[EE,TT]	=
+	def bimap[EE,TT](invalidFunc:E=>EE, validFunc:T=>TT):Validated[EE,TT]	=
 		this match {
-			case Validated.Bad(x)	=> Validated.bad(badFunc(x))
-			case Validated.Good(x)	=> Validated.good(goodFunc(x))
+			case Validated.Invalid(x)	=> Validated.invalid(invalidFunc(x))
+			case Validated.Valid(x)		=> Validated.valid(validFunc(x))
 		}
 
 	//------------------------------------------------------------------------------
 
-	def badMap[EE](func:E=>EE):Validated[EE,T]	=
+	def invalidMap[EE](func:E=>EE):Validated[EE,T]	=
 		this match {
-			case Validated.Bad(x)	=> Validated.bad(func(x))
-			case Validated.Good(x)	=> Validated.good(x)
+			case Validated.Invalid(x)	=> Validated.invalid(func(x))
+			case Validated.Valid(x)		=> Validated.valid(x)
 		}
 
-	def badFlatMap[EE,TT>:T](func:E=>Validated[EE,TT]):Validated[EE,TT]	=
+	def invalidFlatMap[EE,TT>:T](func:E=>Validated[EE,TT]):Validated[EE,TT]	=
 		this match {
-			case Validated.Bad(x)	=> func(x)
-			case Validated.Good(x)	=> Validated.good(x)
+			case Validated.Invalid(x)	=> func(x)
+			case Validated.Valid(x)		=> Validated.valid(x)
 		}
 
-	def badFlatten[EE,TT>:T](implicit ev:E=>Validated[EE,TT]):Validated[EE,TT]	=
-		badFlatMap(ev)
+	def invalidFlatten[EE,TT>:T](implicit ev:E=>Validated[EE,TT]):Validated[EE,TT]	=
+		invalidFlatMap(ev)
 
-	def badToOption:Option[E]	=
+	def invalidToOption:Option[E]	=
 		this match {
-			case Validated.Bad(x)	=> Some(x)
-			case Validated.Good(x)	=> None
+			case Validated.Invalid(x)	=> Some(x)
+			case Validated.Valid(x)		=> None
 		}
 
 	//------------------------------------------------------------------------------
 
 	def orElse[EE>:E,TT>:T](that:Validated[EE,TT])(implicit cc:Semigroup[EE]):Validated[EE,TT]	=
 		(this, that) match {
-			case (Validated.Bad(a),		Validated.Bad(b))	=> Validated.bad(cc.combine(a, b))
-			case (Validated.Good(a),	_)					=> Validated.good(a)
-			case (_,					Validated.Good(b))	=> Validated.good(b)
+			case (Validated.Invalid(a),		Validated.Invalid(b))	=> Validated.invalid(cc.combine(a, b))
+			case (Validated.Valid(a),	_)							=> Validated.valid(a)
+			case (_,						Validated.Valid(b))		=> Validated.valid(b)
 		}
 
 	def getOrElse[TT>:T](that: =>TT):TT	=
 		this match {
-			case Validated.Bad(x)	=> that
-			case Validated.Good(x)	=> x
+			case Validated.Invalid(x)	=> that
+			case Validated.Valid(x)		=> x
 		}
 
 	def getOrRescue[TT>:T](func:E=>TT):TT	=
 		this match {
-			case Validated.Bad(x)	=> func(x)
-			case Validated.Good(x)	=> x
+			case Validated.Invalid(x)	=> func(x)
+			case Validated.Valid(x)		=> x
 		}
 
 	def getOrError(s: =>String):T	=
@@ -194,54 +189,54 @@ sealed trait Validated[+E,+T] {
 
 	def getOrThrow(func:E=>Throwable):T	=
 		this match {
-			case Validated.Bad(x)	=> throw func(x)
-			case Validated.Good(x)	=> x
+			case Validated.Invalid(x)	=> throw func(x)
+			case Validated.Valid(x)		=> x
 		}
 
 	//------------------------------------------------------------------------------
 
 	def rescue[TT>:T](func:E=>Option[TT]):Validated[E,TT]	=
 		this match {
-			case Validated.Bad(x)	=> func(x) map Validated.good getOrElse Validated.bad(x)
-			case Validated.Good(x)	=> Validated.good(x)
+			case Validated.Invalid(x)	=> func(x) map Validated.valid getOrElse Validated.invalid(x)
+			case Validated.Valid(x)		=> Validated.valid(x)
 		}
 
 	def reject[EE>:E](func:T=>Option[EE]):Validated[EE,T]	=
 		this match {
-			case Validated.Bad(x)	=> Validated.bad(x)
-			case Validated.Good(x)	=> func(x) map Validated.bad getOrElse Validated.good(x)
+			case Validated.Invalid(x)	=> Validated.invalid(x)
+			case Validated.Valid(x)		=> func(x) map Validated.invalid getOrElse Validated.valid(x)
 		}
 
-	def winByOr[EE>:E](func:Predicate[T], bad: =>EE):Validated[EE,T]	=
+	def validByOr[EE>:E](func:Predicate[T], invalid: =>EE):Validated[EE,T]	=
 		this match {
-			case Validated.Bad(x)	=> Validated.bad(x)
-			case Validated.Good(x)	=> if (func(x)) Validated.good(x) else Validated.bad(bad)
+			case Validated.Invalid(x)	=> Validated.invalid(x)
+			case Validated.Valid(x)		=> if (func(x)) Validated.valid(x) else Validated.invalid(invalid)
 		}
 
-	def winNotByOr[EE>:E](func:Predicate[T], bad: =>EE):Validated[EE,T]	=
+	def validNotByOr[EE>:E](func:Predicate[T], invalid: =>EE):Validated[EE,T]	=
 		this match {
-			case Validated.Bad(x)	=> Validated.bad(x)
-			case Validated.Good(x)	=> if (!func(x)) Validated.good(x) else Validated.bad(bad)
+			case Validated.Invalid(x)	=> Validated.invalid(x)
+			case Validated.Valid(x)		=> if (!func(x)) Validated.valid(x) else Validated.invalid(invalid)
 		}
 
-	def collapseOr[EE>:E,TT](func:T=>Option[TT], bad: =>EE):Validated[EE,TT]	=
+	def collapseOr[EE>:E,TT](func:T=>Option[TT], invalid: =>EE):Validated[EE,TT]	=
 		this match {
-			case Validated.Bad(x)	=> Validated.bad(x)
-			case Validated.Good(x)	=> func(x) map Validated.good getOrElse Validated.bad(bad)
+			case Validated.Invalid(x)	=> Validated.invalid(x)
+			case Validated.Valid(x)		=> func(x) map Validated.valid getOrElse Validated.invalid(invalid)
 		}
 
-	def collectOr[EE>:E,TT](func:PartialFunction[T,TT], bad: =>EE):Validated[EE,TT]	=
-		collapseOr(func.lift, bad)
+	def collectOr[EE>:E,TT](func:PartialFunction[T,TT], invalid: =>EE):Validated[EE,TT]	=
+		collapseOr(func.lift, invalid)
 
 	//------------------------------------------------------------------------------
 
-	def goodEffect(effect:Effect[T]):this.type	= {
+	def validEffect(effect:Effect[T]):this.type	= {
 		this foreach effect
 		this
 	}
 
-	def badEffect(effect:Effect[E]):this.type	= {
-		badToOption foreach effect
+	def invalidEffect(effect:Effect[E]):this.type	= {
+		invalidToOption foreach effect
 		this
 	}
 
@@ -249,14 +244,14 @@ sealed trait Validated[+E,+T] {
 
 	def toEither:Either[E,T]	=
 		this match {
-			case Validated.Bad(x)	=> Left(x)
-			case Validated.Good(x)	=> Right(x)
+			case Validated.Invalid(x)	=> Left(x)
+			case Validated.Valid(x)		=> Right(x)
 		}
 
 	def toOption:Option[T]	=
 		this match {
-			case Validated.Bad(x)	=> None
-			case Validated.Good(x)	=> Some(x)
+			case Validated.Invalid(x)	=> None
+			case Validated.Valid(x)		=> Some(x)
 		}
 
 	def toSeq:Seq[T]	=
@@ -264,14 +259,14 @@ sealed trait Validated[+E,+T] {
 
 	def toList:List[T]	=
 		this match {
-			case Validated.Bad(x)	=> Nil
-			case Validated.Good(x)	=> List(x)
+			case Validated.Invalid(x)	=> Nil
+			case Validated.Valid(x)		=> List(x)
 		}
 
 	def toVector:Vector[T]	=
 		this match {
-			case Validated.Bad(x)	=> Vector.empty
-			case Validated.Good(x)	=> Vector(x)
+			case Validated.Invalid(x)	=> Vector.empty
+			case Validated.Valid(x)		=> Vector(x)
 		}
 
 	//------------------------------------------------------------------------------

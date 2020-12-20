@@ -24,44 +24,44 @@ object Converter {
 		}
 
 	def identity[E,T]:Converter[E,T,T]	=
-		it => Validated good it
+		it => Validated valid it
 
 	def constant[E,S,T](it:T):Converter[E,S,T]	= pure(it)
 
 	def pure[E,S,T](it:T):Converter[E,S,T]	=
-		_ => Validated good it
+		_ => Validated valid it
 
 	def fail[E,S,T](it:E):Converter[E,S,T]	=
-		_ => Validated bad it
+		_ => Validated invalid it
 
 	def total[E,S,T](func:S=>T):Converter[E,S,T]	=
-		it => Validated good func(it)
+		it => Validated valid func(it)
 
-	def optional[E,S,T](func:S=>Option[T], bad: =>E):Converter[E,S,T]	=
-		it => func(it) toGood bad
+	def optional[E,S,T](func:S=>Option[T], invalid: =>E):Converter[E,S,T]	=
+		it => func(it) toValid invalid
 
-	def partial[E,S,T](func:PartialFunction[S,T], bad: =>E):Converter[E,S,T]	=
-		optional(func.lift, bad)
+	def partial[E,S,T](func:PartialFunction[S,T], invalid: =>E):Converter[E,S,T]	=
+		optional(func.lift, invalid)
 
-	def validate[E,S,T](func:S=>Option[T], bad: S=>E):Converter[E,S,T]	=
-		it => func(it) toGood bad(it)
+	def validate[E,S,T](func:S=>Option[T], invalid: S=>E):Converter[E,S,T]	=
+		it => func(it) toValid invalid(it)
 
 	def rejecting[E,T](func:T=>Option[E]):Converter[E,T,T]	=
-		it => func(it) toBad it
+		it => func(it) toInvalid it
 
 	def fromEitherFunction[E,S,T](func:S=>Either[E,T]):Converter[E,S,T]	=
 		func(_).toValidated
 
-	def required[E,S,T](base:Converter[E,S,Option[T]], bad: =>E):Converter[E,S,T]	=
-		input => base convert input flatMap { _ toGood bad }
+	def required[E,S,T](base:Converter[E,S,Option[T]], invalid: =>E):Converter[E,S,T]	=
+		input => base convert input flatMap { _ toValid invalid }
 
 	//------------------------------------------------------------------------------
 
-	def sum[E,S,T](subs:Seq[S=>Option[Validated[E,T]]], bad: =>E):Converter[E,S,T]	=
+	def sum[E,S,T](subs:Seq[S=>Option[Validated[E,T]]], invalid: =>E):Converter[E,S,T]	=
 		it => {
 			subs
 			.collapseMapFirst	{ _ apply it }
-			.getOrElse			(Validated bad bad)
+			.getOrElse			(Validated invalid invalid)
 		}
 
 	//------------------------------------------------------------------------------
@@ -70,7 +70,7 @@ object Converter {
 	implicit def ConverterApplicative[E,S](implicit E:Semigroup[E]):Applicative[Converter[E,S,*]]	=
 		new Applicative[Converter[E,S,*]] {
 			override def pure[A](it:A):Converter[E,S,A]												= Converter pure it
-			override def ap[A,B](its:Converter[E,S,A])(func:Converter[E,S,A=>B]):Converter[E,S,B]	= func ap its
+			override def ap[A,B](func:Converter[E,S,A=>B])(its:Converter[E,S,A]):Converter[E,S,B]	= func ap its
 		}
 
 	/*
@@ -128,12 +128,8 @@ abstract class Converter[E,S,T] {
 		map(constant(it))
 
 	/** function effect first */
-	def pa[U](that:Converter[E,S,T=>U])(implicit cc:Semigroup[E]):Converter[E,S,U]	=
-		it => (this convert it) pa (that convert it)
-
-	/** function effect first */
 	def ap[U,V](that:Converter[E,S,U])(implicit ev:T=>U=>V, cc:Semigroup[E]):Converter[E,S,V]	=
-		that pa (this map ev)
+		this map ev ap that
 
 	def tuple[U](that:Converter[E,S,U])(implicit cc:Semigroup[E]):Converter[E,S,(T,U)] =
 		it	=> (this convert it) tuple (that convert it)

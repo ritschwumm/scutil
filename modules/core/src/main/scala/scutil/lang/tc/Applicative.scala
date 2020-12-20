@@ -9,13 +9,13 @@ trait Applicative[F[_]] extends Functor[F] {
 	//## own
 
 	def pure[T](it:T):F[T]
-	def ap[S,T](its:F[S])(func:F[S=>T]):F[T]
+	def ap[S,T](func:F[S=>T])(its:F[S]):F[T]
 
 	//------------------------------------------------------------------------------
 	//## super
 
 	def map[S,T](its:F[S])(func:S=>T):F[T]	=
-		ap(its)(pure(func))
+		ap(pure(func))(its)
 
 	//------------------------------------------------------------------------------
 	//## derived
@@ -23,7 +23,7 @@ trait Applicative[F[_]] extends Functor[F] {
 	def unit:F[Unit]	= pure(())
 
 	def map2[A,B,C](as:F[A], bs:F[B])(func:(A,B)=>C):F[C]	=
-		ap(bs)(map(as)(func.curried))
+		ap(map(as)(func.curried))(bs)
 
 	def tuple[A,B](as:F[A], bs:F[B]):F[(A,B)]	=
 		map2(as, bs)((a,b) => (a,b))
@@ -33,9 +33,6 @@ trait Applicative[F[_]] extends Functor[F] {
 
 	def second[A,B](as:F[A], bs:F[B]):F[B]	=
 		map2(as, bs)((a,b) => b)
-
-	def aping[S,T](func:F[S=>T]):F[S]=>F[T]	=
-		ap(_)(func)
 
 	//------------------------------------------------------------------------------
 

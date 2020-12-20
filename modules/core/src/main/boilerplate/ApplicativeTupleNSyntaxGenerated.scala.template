@@ -7,7 +7,7 @@ trait ApplicativeTupleNSyntaxGenerated {
 		def mapN[T](func:([#S1#])=>T)(implicit F:Applicative[F]):F[T]	= {
 			[1..1#val f0	= func.curried
 			val f1	= (F map	items._1)(f0)#]
-			[2..#val f1	= (F ap		items._1)(f0)#
+			[2..#val f1	= F.ap(f0)(items._1)#
 			]
 			f1
 		}

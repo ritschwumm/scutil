@@ -14,12 +14,12 @@ trait SetImplicits {
 		def hereAndThere(that:Set[T]):(Set[T],Set[T])	=
 			(peer -- that, that -- peer)
 
-		def where[U](that:Set[T]):Set[Where[T,T]]	= {
+		def ior[U](that:Set[T]):Set[Ior[T,T]]	= {
 			val (here, there)	= this hereAndThere that
 			val both			= peer & that
-			(both	map { it => Where.both	(it,it) })	++
-			(here	map { it => Where.here	(it)	})	++
-			(there	map { it => Where.there	(it)	})
+			(both	map { it => Ior.both	(it,it) })	++
+			(here	map { it => Ior.left	(it)	})	++
+			(there	map { it => Ior.right	(it)	})
 		}
 
 		/** get one element and all other elements */

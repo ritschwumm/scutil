@@ -90,13 +90,8 @@ sealed trait Io[T] {
 		Io.Map(this, func)
 
 	/** function effect first */
-	final def pa[U](that:Io[T=>U]):Io[U]	=
-		Io.FlatMap(that, (tu:(T=>U)) => Io.Map(this, (t:T) => tu(t)))
-		//for { f <- that; v <- this } yield f(v)
-
-	/** function effect first */
 	final def ap[U,V](that:Io[U])(implicit ev:T=>U=>V):Io[V]	=
-		that pa (this map ev)
+		for { f	<- this; v	<- that } yield f(v)
 
 	final def flatMap[U](func:T=>Io[U]):Io[U]	=
 		Io.FlatMap(this, func)

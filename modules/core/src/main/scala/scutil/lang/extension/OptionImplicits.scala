@@ -28,20 +28,12 @@ trait OptionImplicits {
 				case None		=> none
 			}
 
-		/** ap of the monad, <*> of the applicative functor */
+		/*
+		// NOTE we get these from applicative syntax
+
+		// * ap of the monad, <*> of the applicative functor
 		def ap[U,V](source:Option[U])(implicit ev:T=>U=>V):Option[V] =
 			for { f	<- peer; s	<- source } yield f(s)
-
-		/** ap with inverted parameters, aka <**> */
-		def pa[U](func:Option[T=>U]):Option[U] =
-			for { f	<- func; s	<- peer } yield f(s)
-
-		/** the partition method defined on Iterable is useless */
-		def partition(pred:Predicate[T]):(Option[T],Option[T])	=
-			(peer filter pred, peer filterNot pred)
-
-		def tupleBy[U](func:T=>U):Option[(T,U)]	=
-			peer map { it => (it,func(it)) }
 
 		def tuple[U](that:Option[U]):Option[(T,U)]	=
 			peer zip that
@@ -51,6 +43,15 @@ trait OptionImplicits {
 				case ((Some(t),Some(u)))	=> Some(func(t,u))
 				case _						=> None
 			}
+		*/
+
+		/** the partition method defined on Iterable is useless */
+		def partition(pred:Predicate[T]):(Option[T],Option[T])	=
+			(peer filter pred, peer filterNot pred)
+
+		@deprecated("use zipBy form functor syntax", "0.193.0")
+		def tupleBy[U](func:T=>U):Option[(T,U)]	=
+			peer map { it => (it,func(it)) }
 
 		def partitionEither[U,V](implicit ev:T=>Either[U,V]):(Option[U],Option[V])	=
 			peer map ev match {
@@ -136,9 +137,9 @@ trait OptionImplicits {
 
 		def traverseValidated[F,W](func:T=>Validated[F,W]):Validated[F,Option[W]]	=
 			peer map func match {
-				case None						=> Validated.good(None)
-				case Some(Validated.Bad(x))		=> Validated.bad(x)
-				case Some(Validated.Good(x))	=> Validated.good(Some(x))
+				case None						=> Validated.valid(None)
+				case Some(Validated.Invalid(x))	=> Validated.invalid(x)
+				case Some(Validated.Valid(x))	=> Validated.valid(Some(x))
 			}
 
 		def sequenceState[S,U](implicit ev:T=>State[S,U]):State[S,Option[U]]	=
@@ -165,43 +166,40 @@ trait OptionImplicits {
 		//------------------------------------------------------------------------------
 
 		def failEither:Either[T,Unit]	=
-			toLeft(())
+			peer.toLeft(())
 
 		def failValidated:Validated[T,Unit]	=
-			toBad(())
+			toInvalid(())
 
 		//------------------------------------------------------------------------------
 
-		def toRight[F](leftValue: =>F):Either[F,T]	=
+		// exists: toLeft
+		// exists: toRight
+
+		def toValid[F](problems: =>F):Validated[F,T]	=
 			peer match {
-				case None		=> Left(leftValue)
-				case Some(x)	=> Right(x)
+				case None		=> Validated.invalid(problems)
+				case Some(x)	=> Validated.valid(x)
 			}
 
-		def toLeft[W](rightValue: =>W):Either[T,W]	=
+		def toInvalid[ES,W](valid: =>W):Validated[T,W]	=
 			peer match {
-				case None		=> Right(rightValue)
-				case Some(x)	=> Left(x)
+				case None		=> Validated.valid(valid)
+				case Some(x)	=> Validated.invalid(x)
 			}
 
-		def toGood[F](problems: =>F):Validated[F,T]	=
-			peer match {
-				case None		=> Validated.bad(problems)
-				case Some(x)	=> Validated.good(x)
-			}
-
-		def toBad[ES,W](good: =>W):Validated[T,W]	=
-			peer match {
-				case None		=> Validated.good(good)
-				case Some(x)	=> Validated.bad(x)
-			}
-
+		// NOTE toSeq there from Iterable, but we don't want the implicit conversion
 		def toSeq:Seq[T]	=
-			toVector
+			peer.toList
 
+		// NOTE toSet there from Iterable, but we don't want the implicit conversion
 		def toSet:Set[T]	=
-			toVector.toSet
+			peer match {
+				case Some(x)	=> Set(x)
+				case None		=> Set.empty
+			}
 
+		// NOTE toVector there from Iterable, but we don't want the implicit conversion
 		def toVector:Vector[T]	=
 			peer match {
 				case Some(x)	=> Vector(x)

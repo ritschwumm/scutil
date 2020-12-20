@@ -60,17 +60,37 @@ trait AnyImplicits {
 
 		//------------------------------------------------------------------------------
 
+		def some:Option[T]			= Some(peer)
+
+		def asRight[L]:Either[L,T]		= Right(peer)
+		def asLeft[R]:Either[T,R]		= Left(peer)
+
+		def valid[L]:Validated[L,T]		= Validated.valid(peer)
+		def invalid[R]:Validated[T,R]	= Validated.invalid(peer)
+
+		def iorLeft[B]:Ior[T,B]			= Ior.left(peer)
+		def iorRight[A]:Ior[A,T]		= Ior.right(peer)
+		def iorBoth:Ior[T,T]			= Ior.both(peer, peer)
+
+		@deprecated("use some", "0.193.0")
 		def inSome:Option[T]			= Some(peer)
 
+		@deprecated("use asRight", "0.193.0")
 		def inRight[L]:Either[L,T]		= Right(peer)
+		@deprecated("use asLeft", "0.193.0")
 		def inLeft[R]:Either[T,R]		= Left(peer)
 
-		def inGood[L]:Validated[L,T]	= Validated.good(peer)
-		def inBad[R]:Validated[T,R]		= Validated.bad(peer)
+		@deprecated("use valid", "0.193.0")
+		def inValid[L]:Validated[L,T]	= Validated.valid(peer)
+		@deprecated("use invalid", "0.193.0")
+		def inInvalid[R]:Validated[T,R]	= Validated.invalid(peer)
 
-		def inHere[B]:Where[T,B]		= Where.here(peer)
-		def inThere[A]:Where[A,T]		= Where.there(peer)
-		def inBoth:Where[T,T]			= Where.both(peer, peer)
+		@deprecated("use iorLeft", "0.193.0")
+		def inHere[B]:Ior[T,B]		= Ior.left(peer)
+		@deprecated("use iorRight", "0.193.0")
+		def inThere[A]:Ior[A,T]		= Ior.right(peer)
+		@deprecated("use iorBoth", "0.193.0")
+		def inBoth:Ior[T,T]			= Ior.both(peer, peer)
 
 		def inNes:Nes[T]				= Nes.single(peer)
 
@@ -105,10 +125,10 @@ trait AnyImplicits {
 			func(peer) toLeft peer
 
 		/** Fail if Some else original value in Win */
-		def badBy[E](func:T=>Option[E]):Validated[E,T]	=
+		def invalidBy[E](func:T=>Option[E]):Validated[E,T]	=
 			func(peer) match {
-				case Some(x)	=> Validated.bad(x)
-				case None		=> Validated.good(peer)
+				case Some(x)	=> Validated.invalid(x)
+				case None		=> Validated.valid(peer)
 			}
 
 		//------------------------------------------------------------------------------

@@ -1,6 +1,5 @@
 package scutil.lang.extension
 
-import scala.util.{ Try, Success, Failure }
 import scala.collection.Factory
 
 import scutil.lang._
@@ -36,11 +35,11 @@ trait EitherImplicits {
 
 		// exists: merge
 
-		def whereFail[LL,RR](that:Either[LL,RR]):Either[Where[L,LL],(R,RR)]	=
+		def iorFail[LL,RR](that:Either[LL,RR]):Either[Ior[L,LL],(R,RR)]	=
 			(peer, that) match {
-				case (Left(a),	Left(b))	=> Left(Where.both(a, b))
-				case (Left(a),	Right(_))	=> Left(Where.here(a))
-				case (Right(_),	Left(b))	=> Left(Where.there(b))
+				case (Left(a),	Left(b))	=> Left(Ior.both(a, b))
+				case (Left(a),	Right(_))	=> Left(Ior.left(a))
+				case (Right(_),	Left(b))	=> Left(Ior.right(b))
 				case (Right(a),	Right(b))	=> Right((a, b))
 			}
 
@@ -58,15 +57,19 @@ trait EitherImplicits {
 		// exists: foreach
 		// exists: map
 		// exists: flatMap
+		// exists: flatten
+
+		/*
+		// NOTE we get these from applicative syntax
 
 		def flatten[LL>:L,X](implicit ev:R=>Either[LL,X]):Either[LL,X]	=
 			peer flatMap ev
 
-		/** function effect first */
+		// * function effect first
 		def ap[LL>:L,X,Y](that:Either[LL,X])(implicit ev:R=>X=>Y):Either[LL,Y]	=
 			that pa (peer map ev)
 
-		/** function effect first */
+		// * function effect first
 		def pa[LL>:L,X](that:Either[LL,R=>X]):Either[LL,X]	=
 			that match {
 				case Left(l1)	=> Left(l1)
@@ -77,6 +80,10 @@ trait EitherImplicits {
 					}
 			}
 
+		def map2[LL>:L,X,Y](that:Either[LL,X])(func:(R,X)=>Y):Either[LL,Y]	=
+			peer zip that map func.tupled
+		*/
+
 		def zip[LL>:L,X](that:Either[LL,X]):Either[LL,(R,X)]	=
 			(peer, that) match {
 				case (Right(a),	Right(b))	=> Right((a, b))
@@ -84,9 +91,6 @@ trait EitherImplicits {
 				case (Right(_),	Left(b))	=> Left(b)
 				case (Left(a),	Left(b))	=> Left(a)
 			}
-
-		def map2[LL>:L,X,Y](that:Either[LL,X])(func:(R,X)=>Y):Either[LL,Y]	=
-			peer zip that map func.tupled
 
 		/** handy replacement for tried.toSeq.flatten abusing Factory as a Zero typeclass */
 		def flattenMany[U,CC[_]](implicit ev:R=>CC[U], factory:Factory[U,CC[U]]):CC[U]	=
@@ -229,28 +233,28 @@ trait EitherImplicits {
 
 		//------------------------------------------------------------------------------
 
-		def toWhere:Where[L,R]	=
+		def toIor:Ior[L,R]	=
 			peer match {
-				case Left(a)	=> Where.here(a)
-				case Right(b)	=> Where.there(b)
+				case Left(a)	=> Ior.left(a)
+				case Right(b)	=> Ior.right(b)
 			}
 
+		/*
 		def toTry(implicit ev:L=>Throwable):Try[R]	=
 			peer match {
 				case Left(x)	=> Failure(x)
 				case Right(x)	=> Success(x)
 			}
+		*/
 
 		def toValidated:Validated[L,R]	=
 			peer match {
-				case Left(x)	=> Validated.bad(x)
-				case Right(x)	=> Validated.good(x)
+				case Left(x)	=> Validated.invalid(x)
+				case Right(x)	=> Validated.valid(x)
 			}
 
 		// exists: toOption
-
-		def toSeq:Seq[R]	=
-			toVector
+		// exists: toSeq
 
 		def toList:List[R]	=
 			peer match {

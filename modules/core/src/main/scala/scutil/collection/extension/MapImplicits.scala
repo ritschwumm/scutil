@@ -34,25 +34,25 @@ trait MapImplicits {
 
 		/*
 		// elegant, but dog slow
-		def where[U](that:Map[S,U]):Map[S,Where[T,U]]	=
+		def ior[U](that:Map[S,U]):Map[S,Where[T,U]]	=
 			(peer.keySet ++ that.keySet)
 			.map { k =>
-				k -> (Where from (peer get k, that get k) getOrElse nothing)
+				k -> (Ior from (peer get k, that get k) getOrElse nothing)
 			}
 			.toMap
 		*/
-		def where[U](that:Map[S,U]):Map[S,Where[T,U]]	= {
-			var out	= Map.empty[S,Where[T,U]]
+		def ior[U](that:Map[S,U]):Map[S,Ior[T,U]]	= {
+			var out	= Map.empty[S,Ior[T,U]]
 			peer foreach { case (s, t) =>
 				that get s match {
-					case Some(u)	=> out += (s -> Where.both(t, u))
-					case None		=> out += (s -> Where.here(t))
+					case Some(u)	=> out += (s -> Ior.both(t, u))
+					case None		=> out += (s -> Ior.left(t))
 				}
 			}
 			that foreach { case (s, u) =>
 				peer get s match {
 					case Some(t1)	=>
-					case None		=> out += (s -> Where.there(u))
+					case None		=> out += (s -> Ior.right(u))
 				}
 			}
 			out

@@ -25,6 +25,6 @@ trait Monad[F[_]] extends Applicative[F] {
 	override def map[S,T](its:F[S])(func:S=>T):F[T]		=
 		flatMap(its)(func andThen pure[T])
 
-	override def ap[S,T](its:F[S])(func:F[S=>T]):F[T]	=
+	override def ap[S,T](func:F[S=>T])(its:F[S]):F[T]	=
 		flatMap(func)(map(its)(_))
 }
