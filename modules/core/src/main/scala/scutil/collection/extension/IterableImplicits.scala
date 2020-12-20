@@ -145,20 +145,20 @@ trait IterableImplicits {
 			val builder	= factory.newBuilder
 			peer foreach { it =>
 				func(it) match {
-					case Good(x)	=>
+					case Validated.Good(x)	=>
 						if (problems.isEmpty) {
 							builder	+= x
 						}
-					case Bad(x)		=>
+					case Validated.Bad(x)		=>
 						problems	= problems match {
 							case None		=> Some(x)
-							case Some(p)	=> Some(cc.concat(p, x))
+							case Some(p)	=> Some(cc.combine(p, x))
 						}
 				}
 			}
 			problems match {
-				case Some(p)	=> Bad(p)
-				case None		=> Good(builder.result())
+				case Some(p)	=> Validated.bad(p)
+				case None		=> Validated.good(builder.result())
 			}
 		}
 
@@ -199,8 +199,8 @@ trait IterableImplicits {
 		/** all Bads if there is at least one, else all Goods */
 		def validateValidated[F,W](implicit ev:T=>Validated[F,W]):Validated[CC[F],CC[W]]	= {
 			val (bads, goods)	= peer.partitionValidated
-			if (bads.isEmpty)	Good(goods)
-			else				Bad(bads)
+			if (bads.isEmpty)	Validated.good(goods)
+			else				Validated.bad(bads)
 		}
 	}
 }

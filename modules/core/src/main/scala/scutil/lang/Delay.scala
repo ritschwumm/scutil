@@ -1,6 +1,4 @@
-package scutil.lang.tc
-
-import scutil.lang._
+package scutil.lang
 
 object Delay {
 	def apply[F[_]](implicit ev:Delay[F]):Delay[F]	= ev

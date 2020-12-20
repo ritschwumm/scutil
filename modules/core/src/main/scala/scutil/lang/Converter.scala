@@ -70,7 +70,7 @@ object Converter {
 	implicit def ConverterApplicative[E,S](implicit E:Semigroup[E]):Applicative[Converter[E,S,*]]	=
 		new Applicative[Converter[E,S,*]] {
 			override def pure[A](it:A):Converter[E,S,A]												= Converter pure it
-			override def ap[A,B](its:Converter[E,S,A])(func:Converter[E,S,A=>B]):Converter[E,S,B]	= its pa func
+			override def ap[A,B](its:Converter[E,S,A])(func:Converter[E,S,A=>B]):Converter[E,S,B]	= func ap its
 		}
 
 	/*

@@ -6,74 +6,85 @@ object Store {
 	def identity[T](value:T):Store[T,T]	=
 		Store(value, t => t)
 
-	def trivial[T](value:T):Store[T,Unit]	=
+	def trivial[T](value:T):Store[Unit,T]	=
 		Store((), _ => value)
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def StoreFunctor[S]:Functor[Store[*,S]]	=
-		new Functor[Store[*,S]] {
-			def map[A,B](it:Store[A,S])(func:A=>B):Store[B,S]	= it map func
+	implicit def StoreFunctor[S]:Functor[Store[S,*]]	=
+		new Functor[Store[S,*]] {
+			def map[A,B](it:Store[S,A])(func:A=>B):Store[S,B]	= it map func
 		}
 }
 
-final case class Store[C,V](get:V, set:V=>C) {
-	/** aka extract */
-	def container:C				= set(get)
+final case class Store[V,C](index:V, peek:V=>C) {
+	@deprecated("use extract", "0.192.0")
+	def container:C	= extract
 
-	def modify(func:V=>V):C		= set(func(get))
+	@deprecated("use index", "0.192.0")
+	def get:V		= index
+	@deprecated("use peek", "0.192.0")
+	def set(v:V):C	= peek(v)
+
+	def extract:C	= peek(index)
+
+	def modify(func:V=>V):C		= peek(func(index))
 
 	def modifyF[F[_]](func:V=>F[V])(implicit F:Functor[F]):F[C]	=
-		(F map func(get))(set)
+		(F map func(index))(peek)
 
 	def modifyState[X](func:State[V,X]):(C,X)	= {
-		val (v2, side)	= func run get
-		(set(v2), side)
+		val (v2, side)	= func run index
+		(peek(v2), side)
 	}
 
 	def modifyStateT[F[_],X](func:StateT[F,V,X])(implicit F:Functor[F]):F[(C,X)]	=
-		(F map (func run get)) { case (v, x) => (set(v), x) }
+		(F map (func run index)) { case (v, x) => (peek(v), x) }
 
 	//------------------------------------------------------------------------------
 
-	/** aka duplicate */
-	def coFlatten:Store[Store[C,V],V]	=
-		Store(get, Store(_, set))
+	def duplicate:Store[V,Store[V,C]]	=
+		Store(index, Store(_, peek))
 
-	def map[CC](func:C=>CC):Store[CC,V]	=
-		Store[CC,V](
-			get,
-			set andThen func
+	@deprecated("use duplicate", "0.192.0")
+	def coFlatten:Store[V,Store[V,C]]	=
+		duplicate
+
+	def map[CC](func:C=>CC):Store[V,CC]	=
+		Store[V,CC](
+			index,
+			peek andThen func
 		)
 
-	def coFlatMap[CC](func:Store[C,V]=>CC):Store[CC,V] =
-		Store[CC,V](
-			get,
-			x => func(Store(x, set))
+	// TODO does this have a better name?
+	def coFlatMap[CC](func:Store[V,C]=>CC):Store[V,CC] =
+		Store[V,CC](
+			index,
+			x => func(Store(x, peek))
 		)
 
 	/** symbolic alias for andThen */
-	def >=>[VV](that:Store[V,VV]):Store[C,VV]	=
+	def >=>[VV](that:Store[VV,V]):Store[VV,C]	=
 		this andThen that
 
 	/** symbolic alias for compose */
-	def <=<[CC](that:Store[CC,C]):Store[CC,V]	=
+	def <=<[CC](that:Store[C,CC]):Store[V,CC]	=
 		this compose that
 
-	def andThen[VV](that:Store[V,VV]):Store[C,VV]	=
+	def andThen[VV](that:Store[VV,V]):Store[VV,C]	=
 		Store(
-			that.get,
-			that.set andThen this.set
+			that.index,
+			that.peek andThen this.peek
 		)
 
-	def compose[CC](that:Store[CC,C]):Store[CC,V]	=
+	def compose[CC](that:Store[C,CC]):Store[V,CC]	=
 		that andThen this
 
 	// TODO optics cleanup
-	def andThenBijection[U](that:Bijection[V,U]):Store[C,U]	=
+	def andThenBijection[U](that:Bijection[V,U]):Store[U,C]	=
 		Store(
-			that get get,
-			that.set andThen set
+			that get index,
+			that.set andThen peek
 		)
 }

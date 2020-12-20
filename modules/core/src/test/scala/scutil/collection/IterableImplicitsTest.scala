@@ -25,7 +25,7 @@ object IterableImplicitsTest extends SimpleTestSuite {
 	}
 
 	test("iterable extension should return the correct type and values for partitionValidated") {
-		val in:List[Validated[Int,Long]]	= List[Validated[Int,Long]](Bad(1), Good(2L))
+		val in:List[Validated[Int,Long]]	= List[Validated[Int,Long]](Validated.bad(1), Validated.good(2L))
 		val out:(List[Int], List[Long])	= in.partitionValidated
 		assertEquals(
 			out,
@@ -34,11 +34,11 @@ object IterableImplicitsTest extends SimpleTestSuite {
 	}
 
 	test("iterable extension should return the correct type and values for validateValidated") {
-		val in:List[Validated[Int,Long]]	= List[Validated[Int,Long]](Bad(1), Good(2L))
+		val in:List[Validated[Int,Long]]	= List[Validated[Int,Long]](Validated.bad(1), Validated.good(2L))
 		val out:Validated[List[Int],List[Long]]	= in.validateValidated
 		assertEquals(
 			out,
-			Bad(List(1))
+			Validated.bad(List(1))
 		)
 	}
 

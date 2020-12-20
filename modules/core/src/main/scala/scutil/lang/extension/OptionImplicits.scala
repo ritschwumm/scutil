@@ -136,9 +136,9 @@ trait OptionImplicits {
 
 		def traverseValidated[F,W](func:T=>Validated[F,W]):Validated[F,Option[W]]	=
 			peer map func match {
-				case None			=> Good(None)
-				case Some(Bad(x))	=> Bad(x)
-				case Some(Good(x))	=> Good(Some(x))
+				case None						=> Validated.good(None)
+				case Some(Validated.Bad(x))		=> Validated.bad(x)
+				case Some(Validated.Good(x))	=> Validated.good(Some(x))
 			}
 
 		def sequenceState[S,U](implicit ev:T=>State[S,U]):State[S,Option[U]]	=
@@ -154,12 +154,12 @@ trait OptionImplicits {
 
 		//------------------------------------------------------------------------------
 
-		def oneOrTwo(that:Option[T])(concat:(T,T)=>T):Option[T]	=
+		def oneOrTwo(that:Option[T])(combine:(T,T)=>T):Option[T]	=
 			(peer, that) match {
 				case (None,		None)		=> None
 				case (Some(aa),	None)		=> Some(aa)
 				case (None,		Some(bb))	=> Some(bb)
-				case (Some(aa),	Some(bb))	=> Some(concat(aa, bb))
+				case (Some(aa),	Some(bb))	=> Some(combine(aa, bb))
 			}
 
 		//------------------------------------------------------------------------------
@@ -186,14 +186,14 @@ trait OptionImplicits {
 
 		def toGood[F](problems: =>F):Validated[F,T]	=
 			peer match {
-				case None		=> Bad(problems)
-				case Some(x)	=> Good(x)
+				case None		=> Validated.bad(problems)
+				case Some(x)	=> Validated.good(x)
 			}
 
 		def toBad[ES,W](good: =>W):Validated[T,W]	=
 			peer match {
-				case None		=> Good(good)
-				case Some(x)	=> Bad(x)
+				case None		=> Validated.good(good)
+				case Some(x)	=> Validated.bad(x)
 			}
 
 		def toSeq:Seq[T]	=

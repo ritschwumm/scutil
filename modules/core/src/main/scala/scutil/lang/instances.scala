@@ -40,15 +40,15 @@ trait instances extends instancesLow {
 		Monoid.instance(
 			(T1.empty, T2.empty),
 			(a, b) => (
-				T1.concat(a._1, b._1),
-				T2.concat(a._2, b._2)
+				T1.combine(a._1, b._1),
+				T2.combine(a._2, b._2)
 			)
 		)
 
 	implicit def OptionMonoid[T](implicit S:Semigroup[T]):Monoid[Option[T]]	=
 		Monoid.instance(
 			None,
-			(a,b) => (a oneOrTwo b)(S.concat)
+			(a,b) => (a oneOrTwo b)(S.combine)
 		)
 
 	/*

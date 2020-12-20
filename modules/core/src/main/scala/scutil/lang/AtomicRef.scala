@@ -2,8 +2,7 @@ package scutil.lang
 
 import java.util.concurrent.atomic.AtomicReference
 
-import scutil.lang.tc._
-
+// TODO cats get rid of this
 object AtomicRef {
 	// NOTE initial could be lazy here
 	def apply[F[_]:Delay,G[_]:Delay,T](initial:T):F[AtomicRef[G,T]]	=

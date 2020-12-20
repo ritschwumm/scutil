@@ -39,10 +39,10 @@ object Optional {
 	def codiag[T]:Optional[Either[T,T],T]	=
 		identity[T] sum identity[T]
 
-	def fromStoreAt[S,T](func:S=>Option[Store[S,T]]):Optional[S,T]	=
+	def fromStoreAt[S,T](func:S=>Option[Store[T,S]]):Optional[S,T]	=
 		Optional(
-			get	= s			=> func(s).map(_.get),
-			set	= t => s	=> func(s).map(_ set t).getOrElse(s)
+			get	= s			=> func(s).map(_.index),
+			set	= t => s	=> func(s).map(_ peek t).getOrElse(s)
 		)
 
 	//------------------------------------------------------------------------------
@@ -255,27 +255,27 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 
 	//------------------------------------------------------------------------------
 
-	def on(s:S):Option[Store[S,T]]	=
+	def on(s:S):Option[Store[T,S]]	=
 		get(s).map { t =>
-			Store[S,T](
-				get	= t,
-				set	= t => set(t)(s)
+			Store[T,S](
+				index	= t,
+				peek	= t => set(t)(s)
 			)
 		}
 
-	def over[R](store:Option[Store[R,S]]):Option[Store[R,T]]	=
+	def over[R](store:Option[Store[S,R]]):Option[Store[T,R]]	=
 		for {
 			store	<- store
-			here	<- this on store.get
+			here	<- this on store.index
 		}
 		yield store andThen here
 
-	def overTotal[R](store:Store[R,S]):Option[Store[R,T]]	=
-		this on store.get map { _ compose store }
+	def overTotal[R](store:Store[S,R]):Option[Store[T,R]]	=
+		this on store.index map { _ compose store }
 
 	/*
 	// TODO optics does this make sense?
-	def toLens(default: =>Store[S,T]):Lens[S,T]	=
+	def toLens(default: =>Store[T,S]):Lens[S,T]	=
 		Lens fromStoreAt { on(_) getOrElse default }
 	*/
 }

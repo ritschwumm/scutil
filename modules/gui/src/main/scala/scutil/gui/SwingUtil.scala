@@ -8,8 +8,6 @@ import scutil.concurrent._
 
 object SwingUtil {
 	def insideEDT:Boolean		= SwingUtilities.isEventDispatchThread
-	@deprecated("use edtExecution", "0.188.0")
-	val edtExecutor:Executor	= task	=> SwingUtilities invokeLater task.toRunnable
 	val edtExecution:Execution	= Execution { task	=> SwingUtilities invokeLater task.toRunnable }
 
 	// transports Exceptions but not every Throwable

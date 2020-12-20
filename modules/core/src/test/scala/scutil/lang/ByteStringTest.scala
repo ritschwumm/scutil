@@ -7,7 +7,7 @@ import scutil.lang.tc._
 object ByteStringTest extends SimpleTestSuite {
 	test("ByteString should have a working monoid") {
 		val xs	= Vector(ByteString fromUtf8String "a", ByteString fromUtf8String "b")
-		val out	= (xs foldLeft Monoid[ByteString].empty)(Monoid[ByteString].concat)
+		val out	= (xs foldLeft Monoid[ByteString].empty)(Monoid[ByteString].combine)
 
 		assertEquals(
 			out,

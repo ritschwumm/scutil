@@ -89,12 +89,12 @@ trait BooleanImplicits {
 			else		Left(leftValue)
 
 		def guardValidated[E](problems: =>E):Validated[E,Unit]	=
-			if (peer)	Good(())
-			else		Bad(problems)
+			if (peer)	Validated.good(())
+			else		Validated.bad(problems)
 
 		def preventValidated[E](problems: =>E):Validated[E,Unit]	=
-			if (!peer)	Good(())
-			else		Bad(problems)
+			if (!peer)	Validated.good(())
+			else		Validated.bad(problems)
 
 		def guardSeq[T](trueValue: =>T):Seq[T] =
 			guardVector(trueValue)

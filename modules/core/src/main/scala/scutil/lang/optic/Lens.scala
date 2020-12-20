@@ -14,10 +14,10 @@ object Lens {
 	def codiag[T]:Lens[Either[T,T],T]	=
 		identity[T] sum identity[T]
 
-	def fromStoreAt[S,T](func:S=>Store[S,T]):Lens[S,T]	=
+	def fromStoreAt[S,T](func:S=>Store[T,S]):Lens[S,T]	=
 		Lens(
-			get	= s			=> func(s).get,
-			set	= t => s	=> func(s) set t
+			get	= s			=> func(s).index,
+			set	= t => s	=> func(s) peek t
 		)
 
 	def first[S,T]:Lens[(S,T),S]	=
@@ -166,12 +166,12 @@ final case class Lens[S,T](get:S=>T, set:T=>S=>S) {
 
 	//------------------------------------------------------------------------------
 
-	def on(s:S):Store[S,T]	=
+	def on(s:S):Store[T,S]	=
 		Store(
-			get	= get(s),
-			set	= t => set(t)(s)
+			index	= get(s),
+			peek	= t => set(t)(s)
 		)
 
-	def over[R](store:Store[R,S]):Store[R,T]	=
-		this on store.get compose store
+	def over[R](store:Store[S,R]):Store[T,R]	=
+		this on store.index compose store
 }

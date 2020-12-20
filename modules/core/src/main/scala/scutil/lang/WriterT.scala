@@ -57,7 +57,7 @@ final case class WriterT[F[_],L,T](run:F[(L,T)]) {
 				(e2, t)	=	tmp2
 			}
 			yield {
-				val	fin	= SG.concat(e1, e2)
+				val	fin	= SG.combine(e1, e2)
 				fin -> t
 			}
 		}

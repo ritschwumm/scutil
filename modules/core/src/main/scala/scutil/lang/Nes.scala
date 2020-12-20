@@ -199,7 +199,7 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		)
 
 	def reduce[U>:T](func:(U,U)=>U)(implicit S:Semigroup[U]):U	=
-		reduceWith(S.concat)
+		reduceWith(S.combine)
 
 	def reduceWith[U>:T](func:(U,U)=>U):U	= {
 		var state:U	= head
@@ -209,7 +209,7 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		state
 	}
 
-	def storeAt[U>:T](index:Int):Option[Store[Nes[U],U]]	=
+	def storeAt[U>:T](index:Int):Option[Store[U,Nes[U]]]	=
 		get(index) map { item =>
 			Store(
 				item,

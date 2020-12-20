@@ -14,7 +14,7 @@ object ValidatedTest extends SimpleTestSuite {
 		val value:Validated[E,Int]		= Validated good 7
 		assertEquals(
 			func ap value,
-			Good(14)
+			Validated.good(14)
 		)
 	}
 
@@ -23,25 +23,25 @@ object ValidatedTest extends SimpleTestSuite {
 		val value:Validated[E,Int]		= Validated good 7
 		assertEquals(
 			value pa func,
-			Good(14)
+			Validated.good(14)
 		)
 	}
 
-	test("Validated should concat function-first in ap") {
+	test("Validated should combine function-first in ap") {
 		val func:Validated[E,Int=>Int]	= Validated bad E("bug")
 		val value:Validated[E,Int]		= Validated bad E("error")
 		assertEquals(
 			func ap value,
-			Bad(EE("bug", "error"))
+			Validated.bad(EE("bug", "error"))
 		)
 	}
 
-	test("Validated should concat function-first in pa") {
+	test("Validated should combine function-first in pa") {
 		val func:Validated[E,Int=>Int]	= Validated bad E("bug")
 		val value:Validated[E,Int]		= Validated bad E("error")
 		assertEquals(
 			value pa func,
-			Bad(EE("bug", "error"))
+			Validated.bad(EE("bug", "error"))
 		)
 	}
 }

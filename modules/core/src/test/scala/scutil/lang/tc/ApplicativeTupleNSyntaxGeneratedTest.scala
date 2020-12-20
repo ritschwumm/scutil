@@ -60,7 +60,7 @@ object ApplicativeTupleNSyntaxGeneratedTest extends SimpleTestSuite {
 	test("applicative tuple syntax should zip validated") {
 		assertEquals(
 			(Validated.good[String,Int](1), Validated.good[String,Int](2), Validated.good[String,Int](3)).zipN,
-			Good((1,2,3))
+			Validated.good((1,2,3))
 		)
 	}
 }

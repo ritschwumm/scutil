@@ -45,14 +45,14 @@ trait MapImplicits {
 			var out	= Map.empty[S,Where[T,U]]
 			peer foreach { case (s, t) =>
 				that get s match {
-					case Some(u)	=> out += (s -> Both(t, u))
-					case None		=> out += (s -> Here(t))
+					case Some(u)	=> out += (s -> Where.both(t, u))
+					case None		=> out += (s -> Where.here(t))
 				}
 			}
 			that foreach { case (s, u) =>
 				peer get s match {
 					case Some(t1)	=>
-					case None		=> out += (s -> There(u))
+					case None		=> out += (s -> Where.there(u))
 				}
 			}
 			out
@@ -111,15 +111,15 @@ trait MapImplicits {
 			if (peer contains key)	(peer, false)
 			else					(peer + (key -> value), true)
 
-		def storeAt(key:S):Option[Store[Map[S,T],T]]	=
+		def storeAt(key:S):Option[Store[T,Map[S,T]]]	=
 			peer get key map { item	=>
-				Store[Map[S,T],T](
+				Store[T,Map[S,T]](
 					item,
 					peer.updated(key, _)
 				)
 			}
 
-		def optionStoreAt(key:S):Store[Map[S,T],Option[T]]	=
+		def optionStoreAt(key:S):Store[Option[T],Map[S,T]]	=
 			Store(
 				peer get key,
 				set(key, _)

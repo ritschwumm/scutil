@@ -38,9 +38,9 @@ trait EitherImplicits {
 
 		def whereFail[LL,RR](that:Either[LL,RR]):Either[Where[L,LL],(R,RR)]	=
 			(peer, that) match {
-				case (Left(a),	Left(b))	=> Left(Both(a, b))
-				case (Left(a),	Right(_))	=> Left(Here(a))
-				case (Right(_),	Left(b))	=> Left(There(b))
+				case (Left(a),	Left(b))	=> Left(Where.both(a, b))
+				case (Left(a),	Right(_))	=> Left(Where.here(a))
+				case (Right(_),	Left(b))	=> Left(Where.there(b))
 				case (Right(a),	Right(b))	=> Right((a, b))
 			}
 
@@ -231,8 +231,8 @@ trait EitherImplicits {
 
 		def toWhere:Where[L,R]	=
 			peer match {
-				case Left(a)	=> Here(a)
-				case Right(b)	=> There(b)
+				case Left(a)	=> Where.here(a)
+				case Right(b)	=> Where.there(b)
 			}
 
 		def toTry(implicit ev:L=>Throwable):Try[R]	=
@@ -243,8 +243,8 @@ trait EitherImplicits {
 
 		def toValidated:Validated[L,R]	=
 			peer match {
-				case Left(x)	=> Bad(x)
-				case Right(x)	=> Good(x)
+				case Left(x)	=> Validated.bad(x)
+				case Right(x)	=> Validated.good(x)
 			}
 
 		// exists: toOption

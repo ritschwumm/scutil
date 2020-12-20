@@ -23,9 +23,9 @@ object Io extends IoInstancesLow {
 
 	//------------------------------------------------------------------------------
 
-	val ToLater:NaturalTransformation[Io,Later]	=
-		new NaturalTransformation[Io,Later] {
-			def apply[T](orig:Io[T]):Later[T]	= orig.toLater
+	val ToResponder:NaturalTransformation[Io,Responder]	=
+		new NaturalTransformation[Io,Responder] {
+			def apply[T](orig:Io[T]):Responder[T]	= orig.toResponder
 		}
 
 	//------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ object Io extends IoInstancesLow {
 	implicit def IoMonoid[T](implicit F:Monoid[T]):Monoid[Io[T]]	=
 		new Monoid[Io[T]] {
 			def empty:Io[T]						= Io pure F.empty
-			def concat(a:Io[T], b:Io[T]):Io[T]	= (a map2 b)(F.concat)
+			def combine(a:Io[T], b:Io[T]):Io[T]	= (a map2 b)(F.combine)
 		}
 
 	implicit val IoMonad:Monad[Io]	=
@@ -120,8 +120,8 @@ sealed trait Io[T] {
 		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => u))
 		//for { _	<- this; u	<- that } yield u
 
-	final def toLater:Later[T]	=
-		Later { cont =>
+	final def toResponder:Responder[T]	=
+		Responder { cont =>
 			cont(unsafeRun())
 		}
 }
@@ -130,6 +130,6 @@ trait IoInstancesLow {
 	/** this exists for cases where we only have a Semigroup for T and not a full Monoid */
 	implicit def IoSemigroup[T](implicit F:Semigroup[T]):Semigroup[Io[T]]	=
 		new Semigroup[Io[T]] {
-			def concat(a:Io[T], b:Io[T]):Io[T]	= (a map2 b)(F.concat)
+			def combine(a:Io[T], b:Io[T]):Io[T]	= (a map2 b)(F.combine)
 		}
 }

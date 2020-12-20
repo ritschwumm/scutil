@@ -6,11 +6,11 @@ object SemigroupSyntax extends SemigroupSyntax
 
 trait SemigroupSyntax {
 	implicit final class SemigroupSyntaxExt[T](peer:T)(implicit T:Semigroup[T]) {
-		def concat(that:T):T	= T.concat(peer, that)
+		def combine(that:T):T	= T.combine(peer, that)
 	}
 
 	implicit final class NesMonoidSyntaxExt[T](peer:Nes[T])(implicit T:Semigroup[T]) {
-		def concatAll1:T	= T.concatAll1(peer)
+		def combineAll1:T	= T.combineAll1(peer)
 	}
 
 	implicit final class NesMonoidSyntax2Ext[T](peer:Nes[T]) {

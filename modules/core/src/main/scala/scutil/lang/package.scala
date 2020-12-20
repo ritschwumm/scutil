@@ -6,21 +6,6 @@ package object lang {
 
 	type Thunk[+T]			= ()=>T
 	type Effect[-T]			= T=>Unit
-	@deprecated("use scutil.concurrent.Execution", "0.188.0")
-	type Executor			= Effect[Thunk[Unit]]
-
-	@deprecated("use S=>Option[T]", "0.188.0")
-	type PFunction[-S,+T]		= S=>Option[T]
-	// NOTE this is ReaderT
-	@deprecated("use S=>F[T]", "0.188.0")
-	type FFunction[F[_],S,T]	= S=>F[T]
-
-	@deprecated("use T=>T", "0.188.0")
-	type Endo[T]				= T=>T
-	@deprecated("use T=>Option[T]", "0.188.0")
-	type PEndo[T]				= T=>Option[T]
-	@deprecated("use T=>F[T]", "0.188.0")
-	type FEndo[F[_],T]			= T=>F[T]
 
 	//------------------------------------------------------------------------------
 

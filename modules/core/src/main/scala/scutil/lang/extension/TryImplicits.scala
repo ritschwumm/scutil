@@ -25,8 +25,8 @@ trait TryImplicits {
 
 		def toValidated:Validated[Throwable,T]	=
 			peer match {
-				case Failure(t)	=> Bad(t)
-				case Success(t)	=> Good(t)
+				case Failure(t)	=> Validated.bad(t)
+				case Success(t)	=> Validated.good(t)
 			}
 
 		def toEitherT[F[_]:Applicative]:EitherT[F,Throwable,T]	=

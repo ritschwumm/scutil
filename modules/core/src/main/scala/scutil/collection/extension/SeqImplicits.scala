@@ -211,10 +211,10 @@ trait SeqImplicits {
 			}
 			else None
 
-		def storeAt(index:Int)(implicit factory:Factory[T,CC[T]]):Option[Store[CC[T],T]]	=
+		def storeAt(index:Int)(implicit factory:Factory[T,CC[T]]):Option[Store[T,CC[T]]]	=
 			// TODO generify without factory - but lift is not in SeqOps
 			peer lift index map { item =>
-				Store[CC[T],T](
+				Store[T,CC[T]](
 					item,
 					peer.updated (index, _).to(factory)
 				)

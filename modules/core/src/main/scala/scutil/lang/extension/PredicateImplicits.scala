@@ -33,6 +33,6 @@ trait PredicateImplicits {
 			it	=> if (peer(it))	Left(left(it))	else	Right(right(it))
 
 		def validatedOn[S<:T,UL,UR](bad:S=>UL, good:S=>UR):S=>Validated[UL,UR]	=
-			it	=> if (peer(it))	Bad(bad(it))	else	Good(good(it))
+			it	=> if (peer(it))	Validated.bad(bad(it))	else	Validated.good(good(it))
 	}
 }

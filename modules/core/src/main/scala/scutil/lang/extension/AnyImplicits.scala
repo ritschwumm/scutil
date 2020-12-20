@@ -27,10 +27,6 @@ trait AnyImplicits {
 		/** symbolic alias for into */
 		def |>[U](f:T=>U):U	= into(f)
 
-		/** symbolic alias for doto */
-		@deprecated("use doto", "0.191.0")
-		def |>>(effect:T=>Unit):T	= doto(effect)
-
 		/** apply a single unary function, just like F#'s operator or ruby's thrush */
 		def into[U](f:T=>U):U	= f(peer)
 
@@ -69,12 +65,12 @@ trait AnyImplicits {
 		def inRight[L]:Either[L,T]		= Right(peer)
 		def inLeft[R]:Either[T,R]		= Left(peer)
 
-		def inGood[L]:Validated[L,T]	= Good(peer)
-		def inBad[R]:Validated[T,R]		= Bad(peer)
+		def inGood[L]:Validated[L,T]	= Validated.good(peer)
+		def inBad[R]:Validated[T,R]		= Validated.bad(peer)
 
-		def inHere[B]:Where[T,B]		= Here(peer)
-		def inThere[A]:Where[A,T]		= There(peer)
-		def inBoth:Where[T,T]			= Both(peer, peer)
+		def inHere[B]:Where[T,B]		= Where.here(peer)
+		def inThere[A]:Where[A,T]		= Where.there(peer)
+		def inBoth:Where[T,T]			= Where.both(peer, peer)
 
 		def inNes:Nes[T]				= Nes.single(peer)
 
@@ -111,8 +107,8 @@ trait AnyImplicits {
 		/** Fail if Some else original value in Win */
 		def badBy[E](func:T=>Option[E]):Validated[E,T]	=
 			func(peer) match {
-				case Some(x)	=> Bad(x)
-				case None		=> Good(peer)
+				case Some(x)	=> Validated.bad(x)
+				case None		=> Validated.good(peer)
 			}
 
 		//------------------------------------------------------------------------------

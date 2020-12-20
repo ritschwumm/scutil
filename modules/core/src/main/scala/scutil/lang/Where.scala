@@ -34,27 +34,34 @@ object Where {
 		new Functor[Where[A,*]] {
 			override def map[B,BB](it:Where[A,B])(func:B=>BB):Where[A,BB]	= it mapThere func
 		}
+
+	//------------------------------------------------------------------------------
+
+	final case class Here[A,B](here:A)			extends Where[A,B]
+	final case class There[A,B](there:B)		extends Where[A,B]
+	final case class Both[A,B](here:A, there:B)	extends Where[A,B]
 }
 
 sealed trait Where[+A,+B] {
 	def cata[X](here:A=>X, there:B=>X, both:(A,B)=>X):X	=
 		this match {
-			case Here(a)	=> here(a)
-			case There(b)	=> there(b)
-			case Both(a,b)	=> both(a, b)
+			case Where.Here(a)		=> here(a)
+			case Where.There(b)		=> there(b)
+			case Where.Both(a,b)	=> both(a, b)
 		}
 
 	def hereOption:Option[A]	=
 		this match {
-			case Here(a)	=> Some(a)
-			case Both(a,_)	=> Some(a)
-			case There(_)	=> None
+			case Where.Here(a)		=> Some(a)
+			case Where.Both(a,_)	=> Some(a)
+			case Where.There(_)		=> None
 		}
+
 	def thereOption:Option[B]	=
 		this match {
-			case There(b)	=> Some(b)
-			case Both(_,b)	=> Some(b)
-			case Here(_)	=> None
+			case Where.There(b)		=> Some(b)
+			case Where.Both(_,b)	=> Some(b)
+			case Where.Here(_)		=> None
 		}
 
 	def certainlyHere[AA](a:AA):Where[AA,B]	=
@@ -65,32 +72,30 @@ sealed trait Where[+A,+B] {
 
 	def mapHere[X](func:A=>X):Where[X,B]	=
 		this match {
-			case Here(x)	=> Here(func(x))
-			case There(x)	=> There(x)
-			case Both(x,b)	=> Both(func(x), b)
+			case Where.Here(x)		=> Where.here(func(x))
+			case Where.There(x)		=> Where.there(x)
+			case Where.Both(x,b)	=> Where.both(func(x), b)
 		}
 
 	def mapThere[X](func:B=>X):Where[A,X]	=
 		this match {
-			case Here(x)	=> Here(x)
-			case There(x)	=> There(func(x))
-			case Both(a,x)	=> Both(a, func(x))
+			case Where.Here(x)		=> Where.here(x)
+			case Where.There(x)		=> Where.there(func(x))
+			case Where.Both(a,x)	=> Where.both(a, func(x))
 		}
 
 	def bimap[AA,BB](funcA:A=>AA, funcB:B=>BB):Where[AA,BB]	=
 		this match {
-			case Here(a)	=> Here(funcA(a))
-			case There(b)	=> There(funcB(b))
-			case Both(a,b)	=> Both(funcA(a), funcB(b))
+			case Where.Here(a)		=> Where.here(funcA(a))
+			case Where.There(b)		=> Where.there(funcB(b))
+			case Where.Both(a,b)	=> Where.both(funcA(a), funcB(b))
 		}
 
 	def swap:Where[B,A]	=
 		this match {
-			case Here(a)	=> There(a)
-			case There(b)	=> Here(b)
-			case Both(a,b)	=> Both(b,a)
+			case Where.Here(a)		=> Where.there(a)
+			case Where.There(b)		=> Where.here(b)
+			case Where.Both(a,b)	=> Where.both(b,a)
 		}
 }
-final case class Here[A,B](here:A)			extends Where[A,B]
-final case class There[A,B](there:B)		extends Where[A,B]
-final case class Both[A,B](here:A, there:B)	extends Where[A,B]
+

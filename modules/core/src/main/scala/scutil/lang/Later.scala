@@ -2,50 +2,50 @@ package scutil.lang
 
 import scutil.lang.tc._
 
-object Later {
-	def empty[T]:Later[T]	=
-		Later { cont => }
+object Responder {
+	def empty[T]:Responder[T]	=
+		Responder { cont => }
 
-	def pure[T](value:T):Later[T]	=
-		Later { cont =>
+	def pure[T](value:T):Responder[T]	=
+		Responder { cont =>
 			cont(value)
 		}
 
-	def delay[T](value: =>T):Later[T]	=
+	def delay[T](value: =>T):Responder[T]	=
 		thunk(() => value)
 
-	def thunk[T](value:()=>T):Later[T]	=
-		Later { cont =>
+	def thunk[T](value:()=>T):Responder[T]	=
+		Responder { cont =>
 			cont(value())
 		}
 
-	def optional[T](value:Option[T]):Later[T]	=
-		Later { cont =>
+	def optional[T](value:Option[T]):Responder[T]	=
+		Responder { cont =>
 			value foreach cont
 		}
 
-	def many[T](value:Iterable[T]):Later[T]	=
-		Later { cont =>
+	def many[T](value:Iterable[T]):Responder[T]	=
+		Responder { cont =>
 			value foreach cont
 		}
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit val LaterMonad:Monad[Later]	=
-		new Monad[Later] {
-			override def pure[R](it:R):Later[R]										= Later pure it
-			override def map[R,RR](it:Later[R])(func:R=>RR):Later[RR]				= it map func
-			override def flatMap[R,RR](it:Later[R])(func:R=>Later[RR]):Later[RR]	= it flatMap func
+	implicit val ResponderMonad:Monad[Responder]	=
+		new Monad[Responder] {
+			override def pure[R](it:R):Responder[R]										= Responder pure it
+			override def map[R,RR](it:Responder[R])(func:R=>RR):Responder[RR]				= it map func
+			override def flatMap[R,RR](it:Responder[R])(func:R=>Responder[RR]):Responder[RR]	= it flatMap func
 		}
 
-	implicit val LaterDelay:Delay[Later]	=
-		new Delay[Later] {
-			override def delay[R](it: =>R):Later[R]	= Later delay it
+	implicit val ResponderDelay:Delay[Responder]	=
+		new Delay[Responder] {
+			override def delay[R](it: =>R):Responder[R]	= Responder delay it
 		}
 }
 
-final case class Later[T](unsafeRun:(T=>Unit)=>Unit) {
+final case class Responder[T](unsafeRun:(T=>Unit)=>Unit) {
 	def foreach(handler:T=>Unit):Unit	= unsafeRun(handler)
 
 	def runUnit():Unit	=
@@ -64,69 +64,69 @@ final case class Later[T](unsafeRun:(T=>Unit)=>Unit) {
 
 	//------------------------------------------------------------------------------
 
-	def map[U](func:T=>U):Later[U]	=
-		Later { cont =>
+	def map[U](func:T=>U):Responder[U]	=
+		Responder { cont =>
 			unsafeRun { item =>
 				cont(func(item))
 			}
 		}
 
-	def flatMap[U](func:T=>Later[U]):Later[U]	=
-		Later { cont =>
+	def flatMap[U](func:T=>Responder[U]):Responder[U]	=
+		Responder { cont =>
 			unsafeRun { item =>
 				func(item) unsafeRun cont
 			}
 		}
 
-	def flatten[U](implicit ev:T=>Later[U]):Later[U]	=
+	def flatten[U](implicit ev:T=>Responder[U]):Responder[U]	=
 		flatMap(ev)
 
-	def collapseMap[U](func:T=>Option[U]):Later[U]	=
-		Later { cont =>
+	def collapseMap[U](func:T=>Option[U]):Responder[U]	=
+		Responder { cont =>
 			unsafeRun { item =>
 				func(item) foreach cont
 			}
 		}
 
-	def collapse[U](implicit ev:T=>Option[U]):Later[U]	=
+	def collapse[U](implicit ev:T=>Option[U]):Responder[U]	=
 		collapseMap(ev)
 
-	def collect[U](pf:PartialFunction[T,U]):Later[U]	=
+	def collect[U](pf:PartialFunction[T,U]):Responder[U]	=
 		collapseMap(pf.lift)
 
-	def withFilter(pred:T=>Boolean):Later[T]	=
+	def withFilter(pred:T=>Boolean):Responder[T]	=
 		filter(pred)
 
-	def filter(pred:T=>Boolean):Later[T]	=
-		Later { cont =>
+	def filter(pred:T=>Boolean):Responder[T]	=
+		Responder { cont =>
 			unsafeRun(t => if (pred(t)) cont(t))
 		}
 
-	def filterNot(pred:T=>Boolean):Later[T]	=
-		Later { cont =>
+	def filterNot(pred:T=>Boolean):Responder[T]	=
+		Responder { cont =>
 			unsafeRun(t => if (!pred(t)) cont(t))
 		}
 
-	def concat(that:Later[T]):Later[T]	=
-		Later { cont =>
+	def concat(that:Responder[T]):Responder[T]	=
+		Responder { cont =>
 			this unsafeRun cont
 			that unsafeRun cont
 		}
 
-	def prepend(item:T):Later[T]	=
-		Later { cont =>
+	def prepend(item:T):Responder[T]	=
+		Responder { cont =>
 			cont(item)
 			unsafeRun(cont)
 		}
 
-	def append(item:T):Later[T]	=
-		Later { cont =>
+	def append(item:T):Responder[T]	=
+		Responder { cont =>
 			unsafeRun(cont)
 			cont(item)
 		}
 
-	def exists(pred:T=>Boolean):Later[Boolean]	=
-		Later { cont =>
+	def exists(pred:T=>Boolean):Responder[Boolean]	=
+		Responder { cont =>
 			var state	= false
 			unsafeRun { item =>
 				state	= state || pred(item)
@@ -134,8 +134,8 @@ final case class Later[T](unsafeRun:(T=>Unit)=>Unit) {
 			cont(state)
 		}
 
-	def forall(pred:T=>Boolean):Later[Boolean]	=
-		Later { cont =>
+	def forall(pred:T=>Boolean):Responder[Boolean]	=
+		Responder { cont =>
 			var state	= true
 			unsafeRun { item =>
 				state	= state && pred(item)
@@ -143,25 +143,25 @@ final case class Later[T](unsafeRun:(T=>Unit)=>Unit) {
 			cont(state)
 		}
 
-	def take(size:Long):Later[T]	=
+	def take(size:Long):Responder[T]	=
 		whereIndex(_ < size)
 
-	def drop(size:Long):Later[T]	=
+	def drop(size:Long):Responder[T]	=
 		whereIndex(_ >= size)
 
-	def whereIndex(pred:Long=>Boolean):Later[T]	=
+	def whereIndex(pred:Long=>Boolean):Responder[T]	=
 		zipWithIndex
 		.filter { case (_, index)	=> pred(index) }
 		.map	{ case (value, _)	=> value }
 
-	def zipWithIndex:Later[(T,Long)]	=
+	def zipWithIndex:Responder[(T,Long)]	=
 		scan(0L) { (index, _) => index + 1 }
 
-	def fold[U](initial:U)(combine:(U,T)=>U):Later[U]	=
+	def fold[U](initial:U)(combine:(U,T)=>U):Responder[U]	=
 		scan(initial)(combine) map (_._2)
 
-	def scan[U](initial:U)(combine:(U,T)=>U):Later[(T,U)]	=
-		Later { cont =>
+	def scan[U](initial:U)(combine:(U,T)=>U):Responder[(T,U)]	=
+		Responder { cont =>
 			var state	= initial
 			unsafeRun { item =>
 				cont(item -> state)
@@ -169,8 +169,8 @@ final case class Later[T](unsafeRun:(T=>Unit)=>Unit) {
 			}
 		}
 
-	def grouped(size:Long):Later[Vector[T]]	=
-		Later { cont =>
+	def grouped(size:Long):Responder[Vector[T]]	=
+		Responder { cont =>
 			var batch	= Vector.empty[T]
 			unsafeRun { item =>
 				batch	:+= item
