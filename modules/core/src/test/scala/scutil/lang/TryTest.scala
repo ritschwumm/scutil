@@ -1,0 +1,30 @@
+package scutil.lang
+
+import scala.util.Try
+
+import minitest._
+
+import scutil.core.implicits._
+
+object TryTest extends SimpleTestSuite {
+	test("Try should convert to Either") {
+		assertEquals(
+			Try("test").toEither,
+			Right("test")
+		)
+	}
+
+	test("Try should convert to Validated") {
+		assertEquals(
+			Try("test").toValidated,
+			Validated.Valid("test")
+		)
+	}
+
+	test("Try should convert to EitherT") {
+		assertEquals(
+			Try("test").toEitherT[List],
+			EitherT.pure[List,Throwable,String]("test")
+		)
+	}
+}

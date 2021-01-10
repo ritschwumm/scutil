@@ -99,7 +99,11 @@ sealed trait Io[T] {
 	final def flatten[U](implicit ev:T=>Io[U]):Io[U]	=
 		flatMap(ev)
 
+	@deprecated("use product", "0.195.0")
 	final def tuple[U](that:Io[U]):Io[(T,U)]	=
+		product(that)
+
+	final def product[U](that:Io[U]):Io[(T,U)]	=
 		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => (t,u)))
 		//for { t	<- this; u	<- that } yield (t,u)
 
@@ -107,11 +111,19 @@ sealed trait Io[T] {
 		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => func(t,u)))
 		//for { t	<- this; u	<- that } yield func(t,u)
 
+	@deprecated("use productL", "0.195.0")
 	final def first[U](that:Io[U]):Io[T]	=
+		productL(that)
+
+	final def productL[U](that:Io[U]):Io[T]	=
 		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => t))
 		//for { t	<- this; _	<- that } yield t
 
+	@deprecated("use productR", "0.195.0")
 	final def second[U](that:Io[U]):Io[U]	=
+		productR(that)
+
+	final def productR[U](that:Io[U]):Io[U]	=
 		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => u))
 		//for { _	<- this; u	<- that } yield u
 

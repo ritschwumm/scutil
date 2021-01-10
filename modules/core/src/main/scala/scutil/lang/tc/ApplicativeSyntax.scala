@@ -8,7 +8,11 @@ trait ApplicativeSyntax {
 	}
 
 	implicit final class ApplicativeBooleanSyntax(peer:Boolean) {
-		def ifA[F[_]](action:F[Unit])(implicit F:Applicative[F]):F[Unit]	= F.ifA(peer)(action)
+		@deprecated("use whenA", "0.195.0")
+		def ifA[F[_]](action:F[Unit])(implicit F:Applicative[F]):F[Unit]	= whenA(action)
+
+		def whenA[F[_]](action: =>F[Unit])(implicit F:Applicative[F]):F[Unit]	= F.whenA(peer)(action)
+		def unlessA[F[_]](action: =>F[Unit])(implicit F:Applicative[F]):F[Unit]	= F.unlessA(peer)(action)
 	}
 
 	implicit final class ApplicativeOptionSyntax[T](peer:Option[T]) {
@@ -18,12 +22,23 @@ trait ApplicativeSyntax {
 	implicit final class ApplicativeValueSyntaxExt[F[_],T](peer:F[T])(implicit F:Applicative[F]) {
 		def map2[U,V](that:F[U])(func:(T,U)=>V):F[V]	= F.map2(peer, that)(func)
 
-		def tuple[U](that:F[U]):F[(T,U)]	= F.tuple(peer, that)
-		def first[U](that:F[U]):F[T]		= F.first(peer, that)
-		def second[U](that:F[U]):F[U]		= F.second(peer, that)
+		@deprecated("use product", "0.195.0")
+		def tuple[U](that:F[U]):F[(T,U)]	= product(that)
 
-		def <* [U](that:F[U]):F[T]	= first(that)
-		def *> [U](that:F[U]):F[U]	= second(that)
+		def product[U](that:F[U]):F[(T,U)]	= F.product(peer, that)
+
+		@deprecated("use productL", "0.195.0")
+		def first[U](that:F[U]):F[T]		= productL(that)
+
+		def productL[U](that:F[U]):F[T]		= F.productL(peer, that)
+
+		@deprecated("use productR", "0.195.0")
+		def second[U](that:F[U]):F[U]		= productR(that)
+
+		def productR[U](that:F[U]):F[U]		= F.productR(peer, that)
+
+		def <* [U](that:F[U]):F[T]	= productL(that)
+		def *> [U](that:F[U]):F[U]	= productR(that)
 	}
 
 	implicit final class ApplicativeArrowSyntaxExt[F[_],S,T](peer:F[S=>T])(implicit F:Applicative[F]) {

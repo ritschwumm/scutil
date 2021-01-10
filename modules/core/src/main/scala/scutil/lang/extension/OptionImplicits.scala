@@ -35,7 +35,7 @@ trait OptionImplicits {
 		def ap[U,V](source:Option[U])(implicit ev:T=>U=>V):Option[V] =
 			for { f	<- peer; s	<- source } yield f(s)
 
-		def tuple[U](that:Option[U]):Option[(T,U)]	=
+		def product[U](that:Option[U]):Option[(T,U)]	=
 			peer zip that
 
 		def map2[U,V](that:Option[U])(func:(T,U)=>V):Option[V]	=

@@ -60,7 +60,7 @@ object Converter {
 	def sum[E,S,T](subs:Seq[S=>Option[Validated[E,T]]], invalid: =>E):Converter[E,S,T]	=
 		it => {
 			subs
-			.collapseMapFirst	{ _ apply it }
+			.collectFirstSome	{ _ apply it }
 			.getOrElse			(Validated invalid invalid)
 		}
 
@@ -130,8 +130,12 @@ abstract class Converter[E,S,T] {
 	def ap[U,V](that:Converter[E,S,U])(implicit ev:T=>U=>V, cc:Semigroup[E]):Converter[E,S,V]	=
 		it => (this convert it map ev) ap (that convert it)
 
+	@deprecated("use product", "0.195.0")
 	def tuple[U](that:Converter[E,S,U])(implicit cc:Semigroup[E]):Converter[E,S,(T,U)] =
-		it	=> (this convert it) tuple (that convert it)
+		product(that)
+
+	def product[U](that:Converter[E,S,U])(implicit cc:Semigroup[E]):Converter[E,S,(T,U)] =
+		it	=> (this convert it) product (that convert it)
 
 	def map2[U,V](that:Converter[E,S,U])(func:(T,U)=>V)(implicit cc:Semigroup[E]):Converter[E,S,V] =
 		it	=> ((this convert it) map2 (that convert it))(func)
@@ -152,7 +156,7 @@ abstract class Converter[E,S,T] {
 		}
 
 	def pair[SS,TT](that:Converter[E,SS,TT])(implicit E:Semigroup[E]):Converter[E,(S,SS),(T,TT)]	=
-		{ case (s,ss) => (this convert s) tuple (that convert ss) }
+		{ case (s,ss) => (this convert s) product (that convert ss) }
 
 	//------------------------------------------------------------------------------
 

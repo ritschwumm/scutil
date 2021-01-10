@@ -5,16 +5,14 @@ import minitest._
 import scutil.core.implicits._
 
 object OptionTest extends SimpleTestSuite {
-	test("Option extension and ApplicativeExtension should not clash") {
-		// both OptionImplicits and ApplicativeSyntax provide a tuple method
+	test("Option.procuts works") {
 		assertEquals(
-			Option(1) tuple Option(2),
+			Option(1) product Option(2),
 			Option((1,2))
 		)
 	}
 
 	test("Option.zip returns an Option") {
-		// both OptionImplicits and ApplicativeSyntax provide a tuple method
 		assertEquals(
 			Option(1) zip Option(2),
 			Option((1,2))
@@ -22,7 +20,6 @@ object OptionTest extends SimpleTestSuite {
 	}
 
 	test("Option.partition returns Options") {
-		// both OptionImplicits and ApplicativeSyntax provide a tuple method
 		assertEquals(
 			Option(1) partition (_ == 1),
 			(Some(1), None)

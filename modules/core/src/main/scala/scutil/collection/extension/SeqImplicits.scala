@@ -44,16 +44,22 @@ trait SeqImplicits {
 		/** like collectFirst but searching from the end to the front */
 		def collectLast[U](pf:PartialFunction[T,U]):Option[U]	=
 			// behaves like peer.reverse collectFirst pf
-			collapseLast(pf.lift)
+			collectLastSome(pf.lift)
 
+		@deprecated("use flattenOptionLast", "0.195.0")
 		def collapseLast[U](implicit ev:T=>Option[U]):Option[U]	=
-			collapseMapLast(ev)
+			flattenOptionLast
 
-		// NOTE this is in IterableImplicits
-		// def collapseMapFirst[U](find:PFunction[T,U]):Option[U]
+		def flattenOptionLast[U](implicit ev:T=>Option[U]):Option[U]	=
+			collectLastSome(ev)
+
+		@deprecated("use collectLastSome", "0.195.0")
+		def collapseMapLast[U](find:T=>Option[U]):Option[U]	=
+			collectLastSome(find)
 
 		/** like collectLast but using a PFunction */
-		def collapseMapLast[U](find:T=>Option[U]):Option[U]	= {
+		// TODO cats mapFilterLast would be better
+		def collectLastSome[U](find:T=>Option[U]):Option[U]	= {
 			val iter	= peer.reverseIterator
 			while (iter.hasNext) {
 				val out	= find(iter.next())

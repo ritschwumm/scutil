@@ -12,7 +12,7 @@ trait assocGenerated extends assocBase {
 	//------------------------------------------------------------------------------
 	// arrowed
 
-	def arrow1[T1](it:(T1)):(T1)		= it
+	def arrow1[T1](it:(T1)):(T1)	= it
 
 	[2..#def arrow1[[#T1#]](it:([#T1#])):([#T1# -> ])	=
 		[#it._1# -> ]#

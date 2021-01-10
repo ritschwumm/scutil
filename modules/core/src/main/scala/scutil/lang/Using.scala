@@ -68,7 +68,11 @@ trait Using[T] { self =>
 	final def ap[U,V](that:Using[U])(implicit ev:T=>U=>V):Using[V]	=
 		map2(that) { (t,u) => t(u) }
 
+	@deprecated("use product", "0.195.0")
 	final def tuple[U](that:Using[U]):Using[(T,U)]	=
+		product(that)
+
+	final def product[U](that:Using[U]):Using[(T,U)]	=
 		map2(that) { (t,u) => (t,u) }
 
 	final def map2[U,V](that:Using[U])(func:(T,U)=>V):Using[V]	=

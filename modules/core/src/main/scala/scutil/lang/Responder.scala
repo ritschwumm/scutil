@@ -34,8 +34,8 @@ object Responder {
 
 	implicit val ResponderMonad:Monad[Responder]	=
 		new Monad[Responder] {
-			override def pure[R](it:R):Responder[R]										= Responder pure it
-			override def map[R,RR](it:Responder[R])(func:R=>RR):Responder[RR]				= it map func
+			override def pure[R](it:R):Responder[R]												= Responder pure it
+			override def map[R,RR](it:Responder[R])(func:R=>RR):Responder[RR]					= it map func
 			override def flatMap[R,RR](it:Responder[R])(func:R=>Responder[RR]):Responder[RR]	= it flatMap func
 		}
 
@@ -81,18 +81,26 @@ final case class Responder[T](unsafeRun:(T=>Unit)=>Unit) {
 	def flatten[U](implicit ev:T=>Responder[U]):Responder[U]	=
 		flatMap(ev)
 
+	@deprecated("use mapFilter", "0.195.0")
 	def collapseMap[U](func:T=>Option[U]):Responder[U]	=
+		mapFilter(func)
+
+	def mapFilter[U](func:T=>Option[U]):Responder[U]	=
 		Responder { cont =>
 			unsafeRun { item =>
 				func(item) foreach cont
 			}
 		}
 
+	@deprecated("use flattenOption", "0.195.0")
 	def collapse[U](implicit ev:T=>Option[U]):Responder[U]	=
-		collapseMap(ev)
+		flattenOption
+
+	def flattenOption[U](implicit ev:T=>Option[U]):Responder[U]	=
+		mapFilter(ev)
 
 	def collect[U](pf:PartialFunction[T,U]):Responder[U]	=
-		collapseMap(pf.lift)
+		mapFilter(pf.lift)
 
 	def withFilter(pred:T=>Boolean):Responder[T]	=
 		filter(pred)

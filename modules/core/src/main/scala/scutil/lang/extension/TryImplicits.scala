@@ -17,12 +17,6 @@ trait TryImplicits {
 				case Success(t)	=> success(t)
 			}
 
-		def toEither:Either[Throwable,T]	=
-			peer match {
-				case Failure(t)	=> Left(t)
-				case Success(t)	=> Right(t)
-			}
-
 		def toValidated:Validated[Throwable,T]	=
 			peer match {
 				case Failure(t)	=> Validated.invalid(t)
@@ -30,6 +24,6 @@ trait TryImplicits {
 			}
 
 		def toEitherT[F[_]:Applicative]:EitherT[F,Throwable,T]	=
-			toEither.toEitherT
+			peer.toEither.toEitherT
 	}
 }

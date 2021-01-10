@@ -32,8 +32,8 @@ private final class LensGenImpl(val c:Context) {
 				valueType		<-	member.typeSignatureIn(containerType)
 									.matchOption	{ case NullaryMethodType(tpe) => tpe }
 									.toRight		(s"member ${name} of ${containerType.toString} is not a field")
-				containerName	= TermName("c$")
-				valueName		= TermName("v$")
+				containerName	= 	TermName("c$")
+				valueName		= 	TermName("v$")
 			}
 			yield q"""
 				_root_.scutil.lang.Lens[$containerType,$valueType](

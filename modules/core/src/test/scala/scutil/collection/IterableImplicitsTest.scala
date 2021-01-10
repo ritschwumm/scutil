@@ -42,9 +42,9 @@ object IterableImplicitsTest extends SimpleTestSuite {
 		)
 	}
 
-	test("iterable extension should return the correct type and values for zipBy") {
+	test("iterable extension should return the correct type and values for fproduct") {
 		val in:List[Int]			= List(1,2,3)
-		val out:List[(Int,Long)]	= in zipBy (_ * 2)
+		val out:List[(Int,Long)]	= in fproduct (_ * 2)
 		assertEquals(
 			out,
 			List((1,2L),(2,4L), (3,6L))
