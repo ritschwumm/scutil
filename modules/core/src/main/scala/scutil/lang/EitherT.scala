@@ -82,7 +82,11 @@ object EitherT {
 }
 
 final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
+	@deprecated("use mapK", "0.196.0")
 	def transform[G[_]](nat:F ~> G):EitherT[G,L,R]	=
+		mapK(nat)
+
+	def mapK[G[_]](nat:F ~> G):EitherT[G,L,R]	=
 		transformFunc(nat.apply)
 
 	def transformFunc[G[_]](func:F[Either[L,R]]=>G[Either[L,R]]):EitherT[G,L,R]	=
@@ -91,7 +95,7 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 	//------------------------------------------------------------------------------
 
 	def map[RR](func:R=>RR)(implicit M:Functor[F]):EitherT[F,L,RR]	=
-		mapEither(_ map func)
+		transform(_ map func)
 
 	def flatMap[RR](func:R=>EitherT[F,L,RR])(implicit M:Monad[F]):EitherT[F,L,RR]	=
 		EitherT(
@@ -109,7 +113,7 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 	//------------------------------------------------------------------------------
 
 	def leftMap[LL](func:L=>LL)(implicit M:Functor[F]):EitherT[F,LL,R]	=
-		mapEither(_ leftMap func)
+		transform(_ leftMap func)
 
 	def leftFlatMap[LL](func:L=>EitherT[F,LL,R])(implicit M:Monad[F]):EitherT[F,LL,R]	=
 		EitherT(
@@ -127,13 +131,22 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 	//------------------------------------------------------------------------------
 
 	def bimap[LL,RR](leftFunc:L=>LL, rightFunc:R=>RR)(implicit M:Functor[F]):EitherT[F,LL,RR]	=
-		mapEither(_.bimap(leftFunc, rightFunc))
+		transform(_.bimap(leftFunc, rightFunc))
 
+
+	@deprecated("use transform", "0.196.0")
 	def mapEither[LL,RR](func:Either[L,R]=>Either[LL,RR])(implicit M:Functor[F]):EitherT[F,LL,RR]	=
+		transform(func)
+
+	def transform[LL,RR](func:Either[L,R]=>Either[LL,RR])(implicit M:Functor[F]):EitherT[F,LL,RR]	=
 		EitherT((M map value)(func))
 
+	@deprecated("use subflatMap", "0.196.0")
 	def flatMapEither[LL,RR](func:R=>Either[L,RR])(implicit M:Functor[F]):EitherT[F,L,RR]	=
-		mapEither(_ flatMap func)
+		subflatMap(func)
+
+	def subflatMap[LL,RR](func:R=>Either[L,RR])(implicit M:Functor[F]):EitherT[F,L,RR]	=
+		transform(_ flatMap func)
 
 	//------------------------------------------------------------------------------
 
@@ -145,7 +158,11 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 			}
 		)
 
+	@deprecated("use orElseT", "0.196.0")
 	def orElsePure[LL>:L,RR>:R](that: =>Either[LL,RR])(implicit M:Functor[F]):EitherT[F,LL,RR]	=
+		orElseT(that)
+
+	def orElseT[LL>:L,RR>:R](that: =>Either[LL,RR])(implicit M:Functor[F]):EitherT[F,LL,RR]	=
 		EitherT(
 			(M map value) {
 				case Left(_)	=> that
@@ -155,7 +172,11 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 
 	//------------------------------------------------------------------------------
 
+	@deprecated("use toOption", "0.196.0")
 	def toOptionT(implicit M:Functor[F]):OptionT[F,R]	=
+		toOption
+
+	def toOption(implicit M:Functor[F]):OptionT[F,R]	=
 		OptionT((M map value)(_.toOption))
 
 	//------------------------------------------------------------------------------

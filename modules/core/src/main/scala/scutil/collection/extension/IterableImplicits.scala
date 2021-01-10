@@ -53,17 +53,9 @@ trait IterableImplicits {
 		def mapToMap[U,V](func:T=>(U,V)):Map[U,V]	=
 			(peer map func).toMap
 
-		@deprecated("use flattenOption", "0.195.0")
-		def collapse[U](implicit ev:T=>Option[U], factory:Factory[U,CC[U]]):CC[U]	=
-			flattenOption
-
 		/** like flatten, but avoiding the dubious Option=>Iterable implicit */
 		def flattenOption[U](implicit ev:T=>Option[U], factory:Factory[U,CC[U]]):CC[U]	=
 			mapFilter(ev)
-
-		@deprecated("use mapFilter", "0.195.0")
-		def collapseMap[U](func:T=>Option[U])(implicit factory:Factory[U,CC[U]]):CC[U]	=
-			mapFilter(func)
 
 		/** like flatMap, but avoiding the dubious Option=>Iterable implicit  */
 		def mapFilter[U](func:T=>Option[U])(implicit factory:Factory[U,CC[U]]):CC[U]	= {
@@ -76,23 +68,9 @@ trait IterableImplicits {
 			builder.result()
 		}
 
-		@deprecated("use flattenOptionFirst", "0.195.0")
-		def collapseFirst[U](implicit ev:T=>Option[U]):Option[U]	=
-			flattenOptionFirst
-
 		// NOTE this does not exist in cats
 		def flattenOptionFirst[U](implicit ev:T=>Option[U]):Option[U]	=
 			collectFirstSome(ev)
-
-		@deprecated("use collectFirstSome", "0.195.0")
-		def collapseMapFirst[U](find:T=>Option[U]):Option[U]	= {
-			val iter	= peer.iterator
-			while (iter.hasNext) {
-				val opt	= find(iter.next())
-				if (opt.isDefined)	return opt
-			}
-			None
-		}
 
 		/**
 		return the first Some find creates from elements of this collection
@@ -207,9 +185,6 @@ trait IterableImplicits {
 	implicit final class IterableOpsExt[CC[_],T](peer:IterableOps[T,CC,CC[T]]) {
 		def partitionEither[U,V](implicit ev:T=>Either[U,V]):(CC[U],CC[V])			= peer partitionMap ev
 		def partitionValidated[U,V](implicit ev:T=>Validated[U,V]):(CC[U],CC[V])	= peer partitionMap { it => ev(it).toEither }
-
-		@deprecated("use fproduct", "0.195.0")
-		def zipBy[U](func:T=>U):CC[(T,U)]	= fproduct(func)
 
 		/** pair elements of a collection with a function applied to an element */
 		def fproduct[U](func:T=>U):CC[(T,U)]	= peer map { it => (it, func(it)) }

@@ -106,10 +106,6 @@ sealed trait Validated[+E,+T] {
 	def ap[EE>:E:Semigroup,U,V](that:Validated[EE,U])(implicit ev:T=>U=>V):Validated[EE,V]	=
 		(this map2 that)(_(_))
 
-	@deprecated("use product", "0.195.0")
-	def tuple[EE>:E:Semigroup,U](that:Validated[EE,U]):Validated[EE,(T,U)]	=
-		product(that)
-
 	def product[EE>:E:Semigroup,U](that:Validated[EE,U]):Validated[EE,(T,U)]	=
 		(this map2 that)((_,_))
 

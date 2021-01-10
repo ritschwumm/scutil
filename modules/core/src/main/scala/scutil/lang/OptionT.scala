@@ -63,7 +63,11 @@ object OptionT {
 }
 
 final case class OptionT[F[_],T](value:F[Option[T]]) {
+	@deprecated("use mapK", "0.196.0")
 	def transform[G[_]:Monad](nat:F ~> G):OptionT[G,T]	=
+		mapK(nat)
+
+	def mapK[G[_]:Monad](nat:F ~> G):OptionT[G,T]	=
 		transformFunc(nat.apply)
 
 	def transformFunc[G[_]:Monad](func:F[Option[T]]=>G[Option[T]]):OptionT[G,T]	=
@@ -115,7 +119,11 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 			}
 		)
 
+	@deprecated("use orElseT", "0.196.0")
 	def orElsePure[TT>:T](that:Option[TT])(implicit M:Functor[F]):OptionT[F,TT]	=
+		orElseT(that)
+
+	def orElseT[TT>:T](that:Option[TT])(implicit M:Functor[F]):OptionT[F,TT]	=
 		OptionT(
 			(M map value) {
 				case None	=> that
@@ -123,13 +131,17 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 			}
 		)
 
-	def getOrElse[TT>:T](that:F[TT])(implicit M:Monad[F]):F[TT]	=
+	def getOrElseF[TT>:T](that:F[TT])(implicit M:Monad[F]):F[TT]	=
 		(M flatMap value) {
 			case None		=> that
 			case Some(x)	=> M pure x
 		}
 
+	@deprecated("use getOrElse", "0.196.0")
 	def getOrElsePure[TT>:T](that:TT)(implicit M:Functor[F]):F[TT]	=
+		getOrElse(that)
+
+	def getOrElse[TT>:T](that:TT)(implicit M:Functor[F]):F[TT]	=
 		(M map value) {
 			case None		=> that
 			case Some(x)	=> x
@@ -137,7 +149,7 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 
 	//------------------------------------------------------------------------------
 
-	def toRight[L](leftValue: =>F[L])(implicit M:Monad[F]):EitherT[F,L,T]	=
+	def toRightF[L](leftValue: =>F[L])(implicit M:Monad[F]):EitherT[F,L,T]	=
 		EitherT {
 			(M flatMap value) {
 				case Some(x)	=> M pure Right(x)
@@ -145,10 +157,14 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 			}
 		}
 
+	@deprecated("use toRight", "0.196.0")
 	def toRightPure[L](leftValue: =>L)(implicit M:Functor[F]):EitherT[F,L,T]	=
+		toRight(leftValue)
+
+	def toRight[L](leftValue: =>L)(implicit M:Functor[F]):EitherT[F,L,T]	=
 		EitherT((M map value)(_ toRight leftValue))
 
-	def toLeft[R](rightValue: =>F[R])(implicit M:Monad[F]):EitherT[F,T,R]	=
+	def toLeftF[R](rightValue: =>F[R])(implicit M:Monad[F]):EitherT[F,T,R]	=
 		EitherT {
 			(M flatMap value) {
 				case Some(x)	=> M pure Left(x)
@@ -156,6 +172,10 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 			}
 		}
 
+	@deprecated("use toLeft", "0.196.0")
 	def toLeftPure[R](rightValue: =>R)(implicit M:Functor[F]):EitherT[F,T,R]	=
+		toLeft(rightValue)
+
+	def toLeft[R](rightValue: =>R)(implicit M:Functor[F]):EitherT[F,T,R]	=
 		EitherT((M map value)(_ toLeft rightValue))
 }

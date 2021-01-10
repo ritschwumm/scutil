@@ -46,16 +46,8 @@ trait SeqImplicits {
 			// behaves like peer.reverse collectFirst pf
 			collectLastSome(pf.lift)
 
-		@deprecated("use flattenOptionLast", "0.195.0")
-		def collapseLast[U](implicit ev:T=>Option[U]):Option[U]	=
-			flattenOptionLast
-
 		def flattenOptionLast[U](implicit ev:T=>Option[U]):Option[U]	=
 			collectLastSome(ev)
-
-		@deprecated("use collectLastSome", "0.195.0")
-		def collapseMapLast[U](find:T=>Option[U]):Option[U]	=
-			collectLastSome(find)
 
 		/** like collectLast but using a PFunction */
 		// TODO cats mapFilterLast would be better

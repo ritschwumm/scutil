@@ -81,20 +81,12 @@ final case class Responder[T](unsafeRun:(T=>Unit)=>Unit) {
 	def flatten[U](implicit ev:T=>Responder[U]):Responder[U]	=
 		flatMap(ev)
 
-	@deprecated("use mapFilter", "0.195.0")
-	def collapseMap[U](func:T=>Option[U]):Responder[U]	=
-		mapFilter(func)
-
 	def mapFilter[U](func:T=>Option[U]):Responder[U]	=
 		Responder { cont =>
 			unsafeRun { item =>
 				func(item) foreach cont
 			}
 		}
-
-	@deprecated("use flattenOption", "0.195.0")
-	def collapse[U](implicit ev:T=>Option[U]):Responder[U]	=
-		flattenOption
 
 	def flattenOption[U](implicit ev:T=>Option[U]):Responder[U]	=
 		mapFilter(ev)

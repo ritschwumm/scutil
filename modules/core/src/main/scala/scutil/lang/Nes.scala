@@ -108,10 +108,6 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		}
 		yield func(thisVal, thatVal)
 
-	@deprecated("use product", "0.195.0")
-	def tuple[U](that:Nes[U]):Nes[(T,U)]	=
-		product(that)
-
 	def product[U](that:Nes[U]):Nes[(T,U)]	=
 		map2(that)((_,_))
 

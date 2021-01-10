@@ -11,10 +11,6 @@ trait FutureImplicits {
 		def map2[U,V](that:Future[U])(func:(T,U)=>V)(implicit executor:ExecutionContext):Future[V]	=
 			peer zip that map func.tupled
 
-		@deprecated("use product", "0.195.0")
-		def tuple[U](that:Future[U]):Future[(T,U)]	=
-			product(that)
-
 		// TODO is this correct, or should we use flatMap?
 		def product[U](that:Future[U]):Future[(T,U)]	=
 			peer zip that

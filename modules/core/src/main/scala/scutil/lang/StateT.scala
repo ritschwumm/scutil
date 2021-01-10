@@ -103,7 +103,11 @@ object StateT { outer =>
 }
 
 final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
+	@deprecated("use mapK", "0.196.0")
 	def transform[G[_]](nat:F ~> G):StateT[G,S,T]	=
+		mapK(nat)
+
+	def mapK[G[_]](nat:F ~> G):StateT[G,S,T]	=
 		StateT { s0 =>
 			nat(run(s0))
 		}
@@ -143,10 +147,6 @@ final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
 				}
 			}
 		}
-
-	@deprecated("use product", "0.195.0")
-	def tuple[U](that:StateT[F,S,U])(implicit F:Monad[F]):StateT[F,S,(T,U)]	=
-		product(that)
 
 	def product[U](that:StateT[F,S,U])(implicit F:Monad[F]):StateT[F,S,(T,U)]	=
 		(this map2 that)(_ -> _)

@@ -59,10 +59,6 @@ final case class State[S,+T](run:S=>(S,T)) {
 			(s2, tu(t))
 		}
 
-	@deprecated("use product", "0.195.0")
-	def tuple[U](that:State[S,U]):State[S,(T,U)]	=
-		product(that)
-
 	def product[U](that:State[S,U]):State[S,(T,U)]	=
 		(this map2 that)(_ -> _)
 

@@ -13,10 +13,6 @@ trait Functor[F[_]] {
 	//------------------------------------------------------------------------------
 	//## derived
 
-	@deprecated("use lift", "0.195.0")
-	def mapping[A,B](func:A=>B):F[A]=>F[B]	=
-		lift(func)
-
 	def lift[A,B](func:A=>B):F[A]=>F[B]	=
 		map(_)(func)
 
@@ -25,10 +21,6 @@ trait Functor[F[_]] {
 
 	def void[A](peer:F[A]):F[Unit]	=
 		as(peer)(())
-
-	@deprecated("use fproduct", "0.195.0")
-	def zipBy[A,B](peer:F[A])(func:A=>B):F[(A,B)]		=
-		fproduct(peer)(func)
 
 	def fproduct[A,B](peer:F[A])(func:A=>B):F[(A,B)]		=
 		map(peer)(it => (it, func(it)))
