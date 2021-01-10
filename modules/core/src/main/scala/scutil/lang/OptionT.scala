@@ -3,13 +3,6 @@ package scutil.lang
 import scutil.lang.tc._
 
 object OptionT {
-	@deprecated("use OptionT.some", "0.197.0")
-	def pure[F[_]:Applicative,T](it:T):OptionT[F,T]					= some(it)
-	@deprecated("use OptionT.someF", "0.197.0")
-	def pureF[F[_],T](it:F[T])(implicit M:Functor[F]):OptionT[F,T]	= someF(it)
-
-	//------------------------------------------------------------------------------
-
 	def some[F[_]:Applicative,T](it:T):OptionT[F,T]					= fromOption(Some(it))
 	def someF[F[_],T](it:F[T])(implicit M:Functor[F]):OptionT[F,T]	= OptionT((M map it)(Some.apply))
 

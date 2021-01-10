@@ -4,18 +4,6 @@ import scutil.core.implicits._
 import scutil.lang.tc._
 
 object EitherT {
-	@deprecated("use EitherT.right", "0.197.0")
-	def pure[F[_]:Applicative,L,R](it:R):EitherT[F,L,R]		= right(it)
-	@deprecated("use EitherT.rightF", "0.197.0")
-	def pureF[F[_]:Functor,L,R](it:F[R]):EitherT[F,L,R]		= rightF(it)
-
-	@deprecated("use EitherT.left", "0.197.0")
-	def error[F[_]:Applicative,L,R](it:L):EitherT[F,L,R]	= left(it)
-	@deprecated("use EitherT.leftF", "0.197.0")
-	def errorF[F[_]:Functor,L,R](it:F[L]):EitherT[F,L,R]	= leftF(it)
-
-	//------------------------------------------------------------------------------
-
 	def right[F[_]:Applicative,L,R](it:R):EitherT[F,L,R]	= fromEither(Either right it)
 	def rightF[F[_]:Functor,L,R](it:F[R]):EitherT[F,L,R]	= EitherT(it map Right.apply)
 

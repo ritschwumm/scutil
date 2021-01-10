@@ -18,11 +18,9 @@ trait extensions
 	with	Function1Implicits
 	with	Function2Implicits
 	with	FutureImplicits
-	with	HomogenousPairImplicits
 	with	OptionImplicits
 	with	PEndoImplicits
 	with	PFunctionImplicits
-	with	PairImplicits
 	with	PartialFunctionImplicits
 	with	PredicateImplicits
 	with	StringImplicits

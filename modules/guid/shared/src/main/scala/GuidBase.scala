@@ -6,9 +6,6 @@ import scutil.lang._
 import scutil.codec._
 
 protected abstract class GuidBase {
-	@deprecated("use fresh", "0.197.0")
-	val freshIo:Io[String]	= Io delay unsafeFresh()
-
 	def fresh[F[_]:Delay]:F[String]	=
 		Delay[F] delay unsafeFresh()
 

@@ -6,6 +6,7 @@ import scutil.lang._
 import scutil.core.implicits._
 import scutil.time._
 
+@deprecated("use scutil.concurrent.SimpleWorker", "0.198.0")
 final class Worker(name:String, delay:MilliDuration, task:Thunk[Unit], error:Effect[Exception] = _ => ()) extends AutoCloseable {
 	private val shortly	= 50.millis
 
@@ -34,9 +35,6 @@ final class Worker(name:String, delay:MilliDuration, task:Thunk[Unit], error:Eff
 		queue push WorkerCommand.Stop
 	}
 
-	@deprecated("use close", "0.197.0")
-	def dispose():Unit = close()
-
 	/** stop working, release resources asap, then die */
 	def close():Unit = {
 		queue push WorkerCommand.Die
@@ -52,9 +50,6 @@ final class Worker(name:String, delay:MilliDuration, task:Thunk[Unit], error:Eff
 	def join():Unit = {
 		thread.join()
 	}
-
-	@deprecated("use closeAndWait", "0.197.0")
-	def disposeAndWait():Unit = closeAndWait()
 
 	def closeAndWait():Unit = {
 		close()

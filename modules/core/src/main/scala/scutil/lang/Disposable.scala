@@ -8,20 +8,12 @@ object Disposable {
 	/** forms a monoids with and */
 	val empty:Disposable	= Disposable(() => ())
 
-	// TODO use Monoid.combineAll
-	@deprecated("use combineAll", "0.197.0")
-	def all(subs:Seq[Disposable]):Disposable	= combineAll(subs)
-
 	def combineAll(subs:Seq[Disposable]):Disposable	=
 		delay {
 			subs foreach {
 				_.dispose()
 			}
 		}
-
-	// TODO use Monoid.combineOf?
-	@deprecated("use combineOf", "0.197.0")
-	def allVar(subs:Disposable*):Disposable		= combineOf(subs:_*)
 
 	def combineOf(subs:Disposable*):Disposable	= combineAll(subs.toVector)
 
@@ -37,10 +29,6 @@ object Disposable {
 }
 
 final case class Disposable(dispose:()=>Unit) {
-	@deprecated("use combine", "0.197.0")
-	final def and(that:Disposable):Disposable	=
-		this combine that
-
 	/**
 	 * forms a monoid with empty
 	 * in case of exceptions, the first occuring one is thrown, if a second occurs it's addSuppressed to the first

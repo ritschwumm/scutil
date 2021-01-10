@@ -5,7 +5,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.197.0",
+	version			:= "0.198.0",
 
 	scalaVersion	:= "2.13.4",
 	scalacOptions	++= Seq(
@@ -118,7 +118,7 @@ lazy val `scutil-core`	=
 		),
 		libraryDependencies	++= Seq(
 			"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-			"io.monix"			%%	"minitest"		% "2.9.1"				% "test"
+			"io.monix"			%%	"minitest"		% "2.9.2"				% "test"
 		),
 		testFrameworks	+= new TestFramework("minitest.runner.Framework"),
 		Compile / boilerplateSource	:= baseDirectory.value.getParentFile / "src" / "main" / "boilerplate"
@@ -144,7 +144,7 @@ lazy val `scutil-jdk`	=
 		),
 		libraryDependencies	++= Seq(
 			"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-			"io.monix"			%%	"minitest"		% "2.9.1"				% "test"
+			"io.monix"			%%	"minitest"		% "2.9.2"				% "test"
 		),
 		testFrameworks	+= new TestFramework("minitest.runner.Framework"),
 

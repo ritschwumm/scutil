@@ -9,18 +9,18 @@ object Using {
 	def delay[T](value: =>T):Using[T]	=
 		() => value -> Disposable.empty
 
+	def resource[T](create: =>T)(implicit R:Resource[T]):Using[T]	=
+		of(() => create)(R.dispose(_))
+
+	def afterwards(dispose: =>Unit):Using[Unit]	=
+		of(()=>())(_ => dispose)
+
 	def of[T](create: ()=>T)(dispose:T=>Unit):Using[T]	=
 		() => {
 			val t	= create()
 			val d	= Disposable delay { dispose(t) }
 			t -> d
 		}
-
-	def resource[T](create: =>T)(implicit R:Resource[T]):Using[T]	=
-		of(() => create)(R.dispose(_))
-
-	def afterwards(dispose: =>Unit):Using[Unit]	=
-		of(()=>())(_ => dispose)
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances
@@ -40,6 +40,8 @@ object Using {
 // TODO maybe this should just be Io[(T,Io[Unit])]
 trait Using[T] {
 	def open():(T, Disposable)
+
+	final def openVoid():Disposable	= open()._2
 
 	final def run():T	= use(identity)
 
