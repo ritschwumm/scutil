@@ -24,7 +24,7 @@ object TryTest extends SimpleTestSuite {
 	test("Try should convert to EitherT") {
 		assertEquals(
 			Try("test").toEitherT[List],
-			EitherT.pure[List,Throwable,String]("test")
+			EitherT.right[List,Throwable,String]("test")
 		)
 	}
 }

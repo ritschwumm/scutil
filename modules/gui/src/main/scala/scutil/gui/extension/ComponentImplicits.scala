@@ -32,10 +32,7 @@ trait ComponentImplicits {
 
 		/** get all parent Containers starting with the immediate parent and ending with the component root */
 		def parentChain:List[Container]	=
-			List.unfoldRightSimple(
-				peer,
-				(it:Component) => Option(it.getParent)
-			)
+			List.unfoldSimple(peer) { it => Option(it.getParent) }
 
 		/** sets minimum, preferred and maximum size */
 		def setAllSizes(size:Dimension):Unit	= {

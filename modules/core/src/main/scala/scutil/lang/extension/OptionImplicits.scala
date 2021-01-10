@@ -11,7 +11,7 @@ object OptionImplicits extends OptionImplicits
 
 trait OptionImplicits {
 	implicit final class OptionCompanionImplicits(peer:Option.type) {
-		def none[T]:Option[T]	= None
+		def none[T]:Option[T]		= None
 		def some[T](it:T):Option[T]	= Some(it)
 
 		def switch[T](condition:Boolean, trueSome: =>T):Option[T]	=
@@ -219,30 +219,14 @@ trait OptionImplicits {
 		def toOptionT[F[_]:Applicative]:OptionT[F,T]	=
 			OptionT fromOption peer
 
-		@deprecated("use toRightF", "0.196.0")
-		def toRightT[F[_]:Monad,L](leftValue: =>F[L]):EitherT[F,L,T]	=
-			toRightT(leftValue)
-
 		def toRightF[F[_]:Monad,L](leftValue: =>F[L]):EitherT[F,L,T]	=
 			toOptionT[F] toRightF leftValue
-
-		@deprecated("use toRightT", "0.196.0")
-		def toRightPureT[F[_]:Applicative,L](leftValue: =>L):EitherT[F,L,T]	=
-			toRightT(leftValue)
 
 		def toRightT[F[_]:Applicative,L](leftValue: =>L):EitherT[F,L,T]	=
 			toOptionT[F] toRight leftValue
 
-		@deprecated("use toLeftF", "0.196.0")
-		def toLeftT[F[_]:Monad,R](rightValue: =>F[R]):EitherT[F,T,R]	=
-			toLeftF(rightValue)
-
 		def toLeftF[F[_]:Monad,R](rightValue: =>F[R]):EitherT[F,T,R]	=
 			toOptionT[F] toLeftF rightValue
-
-		@deprecated("use toLeftT", "0.196.0")
-		def toLeftPureT[F[_]:Applicative,R](rightValue: =>R):EitherT[F,T,R]	=
-			toLeftT(rightValue)
 
 		def toLeftT[F[_]:Applicative,R](rightValue: =>R):EitherT[F,T,R]	=
 			toOptionT[F] toLeft rightValue

@@ -3,6 +3,7 @@ package scutil.lang.extension
 import scala.annotation.tailrec
 import scala.util.{ Try, Success, Failure }
 import scala.concurrent.Future
+import scala.collection.IterableFactory
 
 import scutil.lang._
 
@@ -81,6 +82,8 @@ trait AnyImplicits {
 		def inFailure[X](implicit ev:T=>Throwable):Try[X]	= Failure(peer)
 
 		def inFuture:Future[T]			= Future successful peer
+
+		def one[CC[_]](factory:IterableFactory[CC]):CC[T]	= factory(peer)
 
 		//------------------------------------------------------------------------------
 

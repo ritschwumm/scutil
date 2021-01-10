@@ -4,10 +4,14 @@ import scutil.core.implicits._
 import scutil.lang.tc._
 
 object EitherT {
+	@deprecated("use EitherT.right", "0.197.0")
 	def pure[F[_]:Applicative,L,R](it:R):EitherT[F,L,R]		= right(it)
+	@deprecated("use EitherT.rightF", "0.197.0")
 	def pureF[F[_]:Functor,L,R](it:F[R]):EitherT[F,L,R]		= rightF(it)
 
+	@deprecated("use EitherT.left", "0.197.0")
 	def error[F[_]:Applicative,L,R](it:L):EitherT[F,L,R]	= left(it)
+	@deprecated("use EitherT.leftF", "0.197.0")
 	def errorF[F[_]:Functor,L,R](it:F[L]):EitherT[F,L,R]	= leftF(it)
 
 	//------------------------------------------------------------------------------
@@ -25,28 +29,6 @@ object EitherT {
 
 	def switch[F[_]:Applicative,L,R](condition:Boolean, falseLeft: =>L, trueRight: =>R):EitherT[F,L,R]	=
 		fromEither(Either.cond(condition, trueRight, falseLeft))
-
-	//------------------------------------------------------------------------------
-
-	// inference helper
-	def pureU[F[_],L]:EitherTPure[F,L]	= new EitherTPure[F,L]
-	final class EitherTPure[F[_],L] {
-		def apply[T](it:T)(implicit F:Applicative[F]):EitherT[F,L,T]	= EitherT pure it
-	}
-
-	// inference helper
-	def errorU[F[_],R]:EitherTError[F,R]	= new EitherTError[F,R]
-	final class EitherTError[F[_],R] {
-		def apply[T](it:T)(implicit F:Applicative[F]):EitherT[F,T,R]	= EitherT error it
-	}
-
-	// inference helper
-	def wrap[F[_]]:Wrap[F]	= new Wrap[F]
-	final class Wrap[F[_]] {
-		def apply[L,R](it:F[Either[L,R]]):EitherT[F,L,R]							= EitherT(it)
-		def either[L,R](it:Either[L,R])(implicit M:Applicative[F]):EitherT[F,L,R]	= fromEither(it)
-		// left and right need more type parameters
-	}
 
 	//------------------------------------------------------------------------------
 
@@ -75,17 +57,13 @@ object EitherT {
 
 	implicit def EitherTMonad[F[_]:Monad,L]:Monad[EitherT[F,L,*]]	=
 		new Monad[EitherT[F,L,*]] {
-			override def pure[R](it:R):EitherT[F,L,R]												= EitherT pure it
+			override def pure[R](it:R):EitherT[F,L,R]												= EitherT right it
 			override def map[R,RR](it:EitherT[F,L,R])(func:R=>RR):EitherT[F,L,RR]					= it map func
 			override def flatMap[R,RR](it:EitherT[F,L,R])(func:R=>EitherT[F,L,RR]):EitherT[F,L,RR]	= it flatMap func
 		}
 }
 
 final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
-	@deprecated("use mapK", "0.196.0")
-	def transform[G[_]](nat:F ~> G):EitherT[G,L,R]	=
-		mapK(nat)
-
 	def mapK[G[_]](nat:F ~> G):EitherT[G,L,R]	=
 		transformFunc(nat.apply)
 
@@ -134,16 +112,8 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 		transform(_.bimap(leftFunc, rightFunc))
 
 
-	@deprecated("use transform", "0.196.0")
-	def mapEither[LL,RR](func:Either[L,R]=>Either[LL,RR])(implicit M:Functor[F]):EitherT[F,LL,RR]	=
-		transform(func)
-
 	def transform[LL,RR](func:Either[L,R]=>Either[LL,RR])(implicit M:Functor[F]):EitherT[F,LL,RR]	=
 		EitherT((M map value)(func))
-
-	@deprecated("use subflatMap", "0.196.0")
-	def flatMapEither[LL,RR](func:R=>Either[L,RR])(implicit M:Functor[F]):EitherT[F,L,RR]	=
-		subflatMap(func)
 
 	def subflatMap[LL,RR](func:R=>Either[L,RR])(implicit M:Functor[F]):EitherT[F,L,RR]	=
 		transform(_ flatMap func)
@@ -158,10 +128,6 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 			}
 		)
 
-	@deprecated("use orElseT", "0.196.0")
-	def orElsePure[LL>:L,RR>:R](that: =>Either[LL,RR])(implicit M:Functor[F]):EitherT[F,LL,RR]	=
-		orElseT(that)
-
 	def orElseT[LL>:L,RR>:R](that: =>Either[LL,RR])(implicit M:Functor[F]):EitherT[F,LL,RR]	=
 		EitherT(
 			(M map value) {
@@ -171,10 +137,6 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 		)
 
 	//------------------------------------------------------------------------------
-
-	@deprecated("use toOption", "0.196.0")
-	def toOptionT(implicit M:Functor[F]):OptionT[F,R]	=
-		toOption
 
 	def toOption(implicit M:Functor[F]):OptionT[F,R]	=
 		OptionT((M map value)(_.toOption))

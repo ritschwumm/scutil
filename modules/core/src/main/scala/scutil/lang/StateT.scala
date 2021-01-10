@@ -23,30 +23,6 @@ object StateT { outer =>
 
 	//------------------------------------------------------------------------------
 
-	// inference helper
-	def pureU[F[_],S]:StateTPure[F,S]	= new StateTPure[F,S]
-	final class StateTPure[F[_],S] {
-		def apply[T](it:T)(implicit F:Applicative[F]):StateT[F,S,T]	= StateT pure it
-	}
-
-	// inference helper
-	def wrap[F[_]]:Wrap[F]	= new Wrap[F]
-	final class Wrap[F[_]] {
-		def apply[S,T](it:S=>F[(S,T)]):StateT[F,S,T]							= StateT(it)
-		def state[S,T](it:State[S,T])(implicit M:Applicative[F]):StateT[F,S,T]	= fromState(it)
-		def func[S,T](it:S=>(S,T))(implicit M:Applicative[F]):StateT[F,S,T]		= fromStateFunc(it)
-
-		def get[S](implicit F:Applicative[F]) 								= outer.get[F,S]
-		def set[S](it:S)(implicit F:Applicative[F]):StateT[F,S,Unit]		= outer set it
-		def setOld[S](it:S)(implicit F:Applicative[F]):StateT[F,S,S]		= outer setOld it
-		def mod[S](func:S=>S)(implicit F:Applicative[F]):StateT[F,S,Unit]	= outer mod func
-		def modOld[S](func:S=>S)(implicit F:Applicative[F]):StateT[F,S,S]	= outer modOld func
-
-		def stateless[S,T](func:S=>T)(implicit F:Applicative[F]):StateT[F,S,T]	= outer stateless func
-	}
-
-	//------------------------------------------------------------------------------
-
 	def delay[F[_],S,T](it: =>T)(implicit D:Delay[F]):StateT[F,S,T]	=
 		StateT { s => D delay (s -> it) }
 
@@ -103,10 +79,6 @@ object StateT { outer =>
 }
 
 final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
-	@deprecated("use mapK", "0.196.0")
-	def transform[G[_]](nat:F ~> G):StateT[G,S,T]	=
-		mapK(nat)
-
 	def mapK[G[_]](nat:F ~> G):StateT[G,S,T]	=
 		StateT { s0 =>
 			nat(run(s0))

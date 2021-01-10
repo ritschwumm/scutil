@@ -9,7 +9,9 @@ object EitherImplicits extends EitherImplicits
 
 trait EitherImplicits {
 	implicit final class EitherCompanionImplicits(peer:Either.type) {
+		@deprecated("use Either.right", "0.197.0")
 		def pure[L,R](it:R):Either[L,R]		= right(it)
+		@deprecated("use Either.left", "0.197.0")
 		def error[L,R](it:L):Either[L,R]	= left(it)
 
 		//------------------------------------------------------------------------------

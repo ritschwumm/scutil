@@ -12,3 +12,4 @@ trait extensions
 	with	QueueImplicits
 	with	SetImplicits
 	with	IterableImplicits
+	with	IterableFactoryImplicits

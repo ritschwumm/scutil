@@ -44,10 +44,7 @@ trait FileImplicits {
 
 		/** get all parent Files starting with the immediate parent and ending with the directory root */
 		def parentChain:List[File]	=
-			List.unfoldRightSimple(
-				peer,
-				(it:File) => Option(it.getParentFile)
-			)
+			List.unfoldSimple(peer) { it => Option(it.getParentFile) }
 
 		/** like parentChain but includes the starting file itself */
 		def selfAndParentChain:List[File]	=

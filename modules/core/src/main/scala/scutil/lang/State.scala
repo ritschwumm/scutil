@@ -11,14 +11,6 @@ object State {
 	def modOld[S](func:S=>S):State[S,S]	= State { s => (func(s),	s)	}
 
 	//------------------------------------------------------------------------------
-
-	// inference helper allowing to specifiy the state value typ while still let the result type be inferred
-	def pureU[S]:StatePure[S]	= new StatePure[S]
-	final class StatePure[S] {
-		def apply[T](it:T):State[S,T]	= State pure it
-	}
-
-	//------------------------------------------------------------------------------
 	//## typeclass instances
 
 	implicit def StateMonad[S]:Monad[State[S,*]]	=

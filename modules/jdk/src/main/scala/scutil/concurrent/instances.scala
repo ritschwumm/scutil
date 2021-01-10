@@ -8,6 +8,6 @@ import scutil.lang.Resource
 object instances extends instances
 
 trait instances {
-	implicit def LockResource[T<:Lock]:Resource[T]				= Resource instance (_.unlock())
-	implicit def TimerTaskResource[T<:TimerTask]:Resource[T]	= Resource instance (_.cancel())
+	implicit def LockResource[T<:Lock]:Resource[T]				= _.unlock()
+	implicit def TimerTaskResource[T<:TimerTask]:Resource[T]	= _.cancel()
 }

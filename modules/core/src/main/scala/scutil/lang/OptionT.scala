@@ -3,7 +3,9 @@ package scutil.lang
 import scutil.lang.tc._
 
 object OptionT {
+	@deprecated("use OptionT.some", "0.197.0")
 	def pure[F[_]:Applicative,T](it:T):OptionT[F,T]					= some(it)
+	@deprecated("use OptionT.someF", "0.197.0")
 	def pureF[F[_],T](it:F[T])(implicit M:Functor[F]):OptionT[F,T]	= someF(it)
 
 	//------------------------------------------------------------------------------
@@ -23,24 +25,6 @@ object OptionT {
 
 	//------------------------------------------------------------------------------
 
-	// inference helper
-	def pureU[F[_]]:OptionTPure[F]	= new OptionTPure[F]
-	final class OptionTPure[F[_]] {
-		def apply[T](it:T)(implicit F:Applicative[F]):OptionT[F,T]	= OptionT pure it
-	}
-
-	// inference helper
-	def wrap[F[_]]:Wrap[F]	= new Wrap[F]
-	final class Wrap[F[_]] {
-		def apply[T](it:F[Option[T]]):OptionT[F,T]							= OptionT(it)
-		def option[T](it:Option[T])(implicit M:Applicative[F]):OptionT[F,T]	= fromOption(it)
-		def some[T](it:T)(implicit M:Monad[F]):OptionT[F,T]					= OptionT some it
-		def none[T](implicit M:Monad[F]):OptionT[F,T]						= OptionT.none
-		def delay[T](it: =>T)(implicit D:Delay[F]):OptionT[F,T]				= OptionT delay it
-	}
-
-	//------------------------------------------------------------------------------
-
 	def delay[F[_],T](it: =>T)(implicit D:Delay[F]):OptionT[F,T]	= OptionT(D delay Some(it))
 
 	def delayFromOption[F[_],T](it: =>Option[T])(implicit D:Delay[F]):OptionT[F,T]	=
@@ -56,17 +40,13 @@ object OptionT {
 
 	implicit def OptionTMonad[F[_]](implicit MF:Monad[F]):Monad[OptionT[F,*]]	=
 		new Monad[OptionT[F,*]] {
-			override def pure[T](it:T):OptionT[F,T]											= OptionT pure it
+			override def pure[T](it:T):OptionT[F,T]											= OptionT some it
 			override def map[S,T](its:OptionT[F,S])(func:S=>T):OptionT[F,T]					= its map func
 			override def flatMap[S,T](its:OptionT[F,S])(func:S=>OptionT[F,T]):OptionT[F,T]	= its flatMap func
 		}
 }
 
 final case class OptionT[F[_],T](value:F[Option[T]]) {
-	@deprecated("use mapK", "0.196.0")
-	def transform[G[_]:Monad](nat:F ~> G):OptionT[G,T]	=
-		mapK(nat)
-
 	def mapK[G[_]:Monad](nat:F ~> G):OptionT[G,T]	=
 		transformFunc(nat.apply)
 
@@ -119,10 +99,6 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 			}
 		)
 
-	@deprecated("use orElseT", "0.196.0")
-	def orElsePure[TT>:T](that:Option[TT])(implicit M:Functor[F]):OptionT[F,TT]	=
-		orElseT(that)
-
 	def orElseT[TT>:T](that:Option[TT])(implicit M:Functor[F]):OptionT[F,TT]	=
 		OptionT(
 			(M map value) {
@@ -136,10 +112,6 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 			case None		=> that
 			case Some(x)	=> M pure x
 		}
-
-	@deprecated("use getOrElse", "0.196.0")
-	def getOrElsePure[TT>:T](that:TT)(implicit M:Functor[F]):F[TT]	=
-		getOrElse(that)
 
 	def getOrElse[TT>:T](that:TT)(implicit M:Functor[F]):F[TT]	=
 		(M map value) {
@@ -157,10 +129,6 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 			}
 		}
 
-	@deprecated("use toRight", "0.196.0")
-	def toRightPure[L](leftValue: =>L)(implicit M:Functor[F]):EitherT[F,L,T]	=
-		toRight(leftValue)
-
 	def toRight[L](leftValue: =>L)(implicit M:Functor[F]):EitherT[F,L,T]	=
 		EitherT((M map value)(_ toRight leftValue))
 
@@ -171,10 +139,6 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 				case None		=> (M map rightValue)(Right.apply)
 			}
 		}
-
-	@deprecated("use toLeft", "0.196.0")
-	def toLeftPure[R](rightValue: =>R)(implicit M:Functor[F]):EitherT[F,T,R]	=
-		toLeft(rightValue)
 
 	def toLeft[R](rightValue: =>R)(implicit M:Functor[F]):EitherT[F,T,R]	=
 		EitherT((M map value)(_ toLeft rightValue))
