@@ -28,8 +28,8 @@ object Catch {
 			else					None
 		}
 
-	def byPrism[E<:Throwable](subtype:Prism[Throwable,E]):Catch[E]	=
-		Catch(subtype.get)
+	def byPrism[E<:Throwable](prism:Prism[Throwable,E]):Catch[E]	=
+		Catch(prism.get)
 }
 
 final class Catch[E<:Throwable](func:Throwable=>Option[E]) {

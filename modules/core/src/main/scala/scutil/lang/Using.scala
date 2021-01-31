@@ -11,10 +11,6 @@ object Using {
 	def delay[T](value: =>T):Using[T]	=
 		() => value -> Disposer.empty
 
-	@deprecated("use releasable", "0.200.0")
-	def resource[T](create: =>T)(implicit R:Releasable[T]):Using[T]	=
-		releasable(create)
-
 	def releasable[T](create: =>T)(implicit R:Releasable[T]):Using[T]	=
 		of(() => create)(R.release(_))
 
@@ -27,6 +23,9 @@ object Using {
 			val d	= Disposer delay { dispose(t) }
 			t -> d
 		}
+
+	def lifecycle(before: =>Unit, after: =>Unit):Using[Unit]	=
+		of(() => before)(_ => after)
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances

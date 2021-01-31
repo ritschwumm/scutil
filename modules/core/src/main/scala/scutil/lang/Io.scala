@@ -5,15 +5,30 @@ import scala.annotation.tailrec
 import scutil.lang.tc._
 
 object Io extends IoInstancesLow {
-	def pure[T](it:T):Io[T]			= Io.Pure(it)
-	def delay[T](it: =>T):Io[T]		= Io.Suspend(() => it)
-	def thunk[T](it:Thunk[T]):Io[T]	= Io.Suspend(it)
-
-	def unit:Io[Unit]	= Io.Pure(())
+	def pure[T](it:T):Io[T]				= Pure(it)
+	def raise[T](error:Exception):Io[T]	= Raise(error)
+	def delay[T](it: =>T):Io[T]			= Suspend(() => it)
+	def thunk[T](it:()=>T):Io[T]		= Suspend(it)
 
 	//------------------------------------------------------------------------------
 
-	// TODO how about cokleisli?
+	def unit:Io[Unit]	= Pure(())
+
+	def fromEither[T](value:Either[Exception,T]):Io[T]	=
+		value match {
+			case Left(e)	=> Raise(e)
+			case Right(t)	=> Pure(t)
+		}
+
+	// TODO have a node for this?
+	def suspend[T](it: =>Io[T]):Io[T]	= delay(it).flatten
+
+	def raiseWithSecondary[T](primary:Exception, secondary:Exception):Io[T]	=
+		Io.delay{ primary.addSuppressed(secondary) } productR Io.raise(primary)
+
+	//------------------------------------------------------------------------------
+
+	// NOTE cokleisli would be unsafe by definition
 
 	def staticToKleisli[S,T](func:Io[S=>T]):(S => Io[T])	=
 		s	=>  delay { func.unsafeRun().apply(s) }
@@ -31,6 +46,7 @@ object Io extends IoInstancesLow {
 	//------------------------------------------------------------------------------
 
 	final case class Pure[T](value:T) 							extends Io[T]
+	final case class Raise[T](error:Exception)					extends Io[T]
 	final case class Suspend[T](thunk:()=>T) 					extends Io[T]
 	final case class Map[S,T](base:Io[S], func:S=>T) 			extends Io[T]
 	final case class FlatMap[S,T](base:Io[S], func:S=>Io[T]) 	extends Io[T]
@@ -63,10 +79,12 @@ sealed trait Io[T] {
 	final def unsafeRun():T	=
 		this match {
 			case Io.Pure(value)		=> value
+			case Io.Raise(error)	=> throw error
 			case Io.Suspend(thunk)	=> thunk()
 			case Io.Map(base2, func2)	=>
 				base2 match {
 					case Io.Pure(value)				=> func2(value)
+					case Io.Raise(error)			=> throw error
 					case Io.Suspend(thunk)			=> func2(thunk())
 					case Io.Map(base1, func1)		=> Io.Map(base1, func1 andThen func2).asInstanceOf[Io[T]].unsafeRun()
 					case Io.FlatMap(base1, func1)	=> Io.FlatMap(base1, (it:Any) => Io.Map(func1(it), func2)).asInstanceOf[Io[T]].unsafeRun()
@@ -74,16 +92,11 @@ sealed trait Io[T] {
 			case Io.FlatMap(base2, func2)	=>
 				base2 match {
 					case Io.Pure(value)				=> func2(value).unsafeRun()
+					case Io.Raise(error)			=> throw error
 					case Io.Suspend(thunk)			=> func2(thunk()).unsafeRun()
 					case Io.Map(base1, func1)		=> Io.FlatMap(base1, func1 andThen func2).asInstanceOf[Io[T]].unsafeRun()
 					case Io.FlatMap(base1, func1)	=> Io.FlatMap(base1, (it:Any) => Io.FlatMap(func1(it), func2)).asInstanceOf[Io[T]].unsafeRun()
 				}
-		}
-
-	final def attempt:Io[Either[Exception,T]]	=
-		Io.Suspend { () =>
-			try { Right(unsafeRun()) }
-			catch { case e:Exception => Left(e) }
 		}
 
 	final def map[U](func:T=>U):Io[U]	=
@@ -91,29 +104,34 @@ sealed trait Io[T] {
 
 	/** function effect first */
 	final def ap[U,V](that:Io[U])(implicit ev:T=>U=>V):Io[V]	=
-		for { f	<- this; v	<- that } yield f(v)
+		Io.FlatMap(this, (f:T) => Io.Map(that, (u:U) => f(u)))
 
 	final def flatMap[U](func:T=>Io[U]):Io[U]	=
 		Io.FlatMap(this, func)
 
 	final def flatten[U](implicit ev:T=>Io[U]):Io[U]	=
-		flatMap(ev)
+		Io.FlatMap(this, ev)
 
 	final def product[U](that:Io[U]):Io[(T,U)]	=
 		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => (t,u)))
-		//for { t	<- this; u	<- that } yield (t,u)
 
 	final def map2[U,V](that:Io[U])(func:(T,U)=>V):Io[V]	=
 		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => func(t,u)))
-		//for { t	<- this; u	<- that } yield func(t,u)
 
 	final def productL[U](that:Io[U]):Io[T]	=
 		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => t))
-		//for { t	<- this; _	<- that } yield t
 
 	final def productR[U](that:Io[U]):Io[U]	=
 		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => u))
-		//for { _	<- this; u	<- that } yield u
+
+	final def attempt:Io[Either[Exception,T]]	=
+		Io.Suspend { () =>
+			try { Right(unsafeRun()) }
+			catch { case e:Exception => Left(e) }
+		}
+
+	final def rethrow[U](implicit ev:T=>Either[Exception,U]):Io[U]	=
+		Io.FlatMap(this, (it:T) => Io.fromEither(ev(it)))
 
 	final def toResponder:Responder[T]	=
 		Responder { cont =>

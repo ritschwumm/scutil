@@ -3,7 +3,11 @@ package scutil.lang
 import scutil.lang.tc._
 
 object Responder {
+	@deprecated("use never", "0.201.0")
 	def empty[T]:Responder[T]	=
+		never
+
+	def never[T]:Responder[T]	=
 		Responder { cont => }
 
 	def pure[T](value:T):Responder[T]	=
@@ -29,6 +33,9 @@ object Responder {
 			value foreach cont
 		}
 
+	def of[T](values:T*):Responder[T]	=
+		many(values)
+
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
@@ -46,7 +53,8 @@ object Responder {
 }
 
 final case class Responder[T](unsafeRun:(T=>Unit)=>Unit) {
-	def foreach(handler:T=>Unit):Unit	= unsafeRun(handler)
+	def foreach(handler:T=>Unit):Unit	=
+		unsafeRun(handler)
 
 	def runUnit():Unit	=
 		runFold(())((_,_)=>())

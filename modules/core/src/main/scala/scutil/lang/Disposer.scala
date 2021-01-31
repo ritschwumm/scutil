@@ -7,7 +7,7 @@ import scutil.lang.tc._
 object Disposer {
 	def delay(todo: =>Unit):Disposer	= Disposer(() => todo)
 
-	/** forms a monoids with and */
+	/** forms a monoid with combine */
 	val empty:Disposer	= Disposer(() => ())
 
 	def combineAll(subs:Iterable[Disposer]):Disposer	=
