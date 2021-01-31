@@ -2,6 +2,7 @@ package scutil.lang
 
 import minitest._
 
+@deprecated("use IoResource", "0.203.0")
 object UsingTest extends SimpleTestSuite {
 	test("failing to open a second Using inside a first one should dispose the first") {
 		var tmp	= ""

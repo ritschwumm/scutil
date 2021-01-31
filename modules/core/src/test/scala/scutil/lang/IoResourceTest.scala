@@ -14,7 +14,7 @@ object IoResourceTest extends SimpleTestSuite {
 
 		var err	= null:Exception
 		try {
-			u.useVoid().unsafeRun()
+			u.useVoid.unsafeRun()
 		}
 		catch { case e:Exception =>
 			err = e
@@ -35,7 +35,7 @@ object IoResourceTest extends SimpleTestSuite {
 
 		var err	= null:Exception
 		try {
-			u.useVoid().unsafeRun()
+			u.useVoid.unsafeRun()
 		}
 		catch { case e:Exception =>
 			err = e
@@ -54,7 +54,7 @@ object IoResourceTest extends SimpleTestSuite {
 
 		val res	=
 			IoResource.unsafe.disposing(1){ it => tmp	= it }
-			.unsafeUse{ it => "test" + it.toString}
+			.useDelay{ it => "test" + it.toString}
 			.unsafeRun()
 
 		assertEquals(tmp, 1)
@@ -67,7 +67,7 @@ object IoResourceTest extends SimpleTestSuite {
 
 		try {
 			IoResource.unsafe.disposing(1){ it => tmp	= it }
-			.unsafeUse{ it => sys error "consume failed"; "" }
+			.useDelay{ it => sys error "consume failed"; "" }
 			.unsafeRun()
 		}
 		catch { case e:Exception =>
@@ -83,7 +83,7 @@ object IoResourceTest extends SimpleTestSuite {
 
 		try {
 			IoResource.unsafe.disposing(1){ it => sys error "dispose failed" }
-			.unsafeUse{ it => it.toString }
+			.useDelay{ it => it.toString }
 			.unsafeRun()
 		}
 		catch { case e:Exception =>
@@ -98,7 +98,7 @@ object IoResourceTest extends SimpleTestSuite {
 
 		try {
 			IoResource.unsafe.disposing(1){ it => sys error "dispose failed" }
-			.unsafeUse{ it => sys error "consume failed"; "" }
+			.useDelay{ it => sys error "consume failed"; "" }
 			.unsafeRun()
 		}
 		catch { case e:Exception =>

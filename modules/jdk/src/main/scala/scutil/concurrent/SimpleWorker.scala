@@ -6,6 +6,7 @@ import scutil.core.implicits._
 import scutil.lang._
 
 object SimpleWorker {
+	@deprecated("use SimpleWorker.ioResource", "0.203.0")
 	def build(name:String, priority:Int, action:Io[Boolean]):Using[Unit]	=
 		Using.of { () =>
 			// used in addition to checking the interrupted status to prevent

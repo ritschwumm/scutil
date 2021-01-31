@@ -4,6 +4,7 @@ import  scala.util.Using.Releasable
 
 import scutil.lang.tc._
 
+@deprecated("use IoResource", "0.203.0")
 object Using {
 	def pure[T](value:T):Using[T]	=
 		() => value -> Disposer.empty
@@ -64,7 +65,7 @@ object Using {
 	}
 }
 
-// TODO maybe this should just be Io[(T,Io[Unit])]
+@deprecated("use IoResource", "0.203.0")
 trait Using[T] {
 	def open():(T, Disposer)
 

@@ -61,13 +61,25 @@ object IoResource {
 }
 
 final case class IoResource[T](open:Io[(T,Io[Unit])]) {
-	final def openVoid:Io[IoDisposer]	=
-		open map { case (_, dt) => IoDisposer(dt) }
+	final def openDisposer:Io[(T,IoDisposer)]	=
+		open map { case (t, disposer) => (t, IoDisposer(disposer)) }
 
-	final def useVoid():Io[Unit]	=
+	// TODO this is questionable
+	final def openVoid:Io[Io[Unit]]	=
+		open map (_._2)
+
+	// TODO this is questionable
+	final def openVoidDisposer:Io[IoDisposer]	=
+		openDisposer map (_._2)
+
+	final def useVoid:Io[Unit]	=
 		use(_ => Io.unit)
 
+	@deprecated("use useDelay", "0.203.0")
 	final def unsafeUse[U](handler:T=>U):Io[U]	=
+		useDelay(handler)
+
+	final def useDelay[U](handler:T=>U):Io[U]	=
 		use(it => Io.delay(handler(it)))
 
 	final def use[U](handler:T=>Io[U]):Io[U]	=
@@ -131,4 +143,6 @@ final case class IoResource[T](open:Io[(T,Io[Unit])]) {
 			}
 			yield out
 		}
+
+	final def void:IoResource[Unit]	= map(_ => ())
 }

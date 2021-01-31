@@ -25,6 +25,7 @@ final case class Execution(submit:(()=>Unit)=>Unit) {
 		thunk { out.take().throwException }
 	}
 
+	@deprecated("use Execution.wrapIoResource", "0.203.0")
 	def wrapUsing[T](using:Using[T]):Using[T]	=
 		() => {
 			val (resource, disposer)	= withResult{ () => using.open() }()

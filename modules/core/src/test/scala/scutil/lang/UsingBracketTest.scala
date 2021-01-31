@@ -2,6 +2,7 @@ package scutil.lang
 
 import minitest._
 
+@deprecated("use IoResource", "0.203.0")
 object UsingBracketTest extends SimpleTestSuite {
 	test("Resource.bracket should execute a disposer and a consumer") {
 		var tmp	= 0
