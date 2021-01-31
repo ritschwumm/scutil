@@ -14,10 +14,11 @@ import scutil.gui.implicits._
 import scutil.geom.IntPoint
 
 object DndFileImport {
-	def install(target:JComponent, consumer:IntPoint=>Option[Effect[Validated[Nes[Exception],Nes[File]]]]):Disposable	= {
+	// TOD using this is a Using
+	def install(target:JComponent, consumer:IntPoint=>Option[Effect[Validated[Nes[Exception],Nes[File]]]]):Disposer	= {
 		target setTransferHandler new FileTransferHandler(consumer)
 
-		Disposable delay {
+		Disposer delay {
 			target setTransferHandler null
 		}
 	}

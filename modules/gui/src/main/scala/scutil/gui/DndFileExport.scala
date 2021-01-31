@@ -12,7 +12,8 @@ import scutil.geom._
 import scutil.gui.implicits._
 
 object DndFileExport {
-	def install(target:JComponent, provider:IntPoint=>Option[Nes[File]]):Disposable	= {
+	// TODO using this is a Using
+	def install(target:JComponent, provider:IntPoint=>Option[Nes[File]]):Disposer	= {
 		val dragGestureListener	=
 			new DragGestureListener {
 				def dragGestureRecognized(ev:DragGestureEvent):Unit	= {
@@ -34,7 +35,7 @@ object DndFileExport {
 				dragGestureListener
 			)
 
-		Disposable delay {
+		Disposer delay {
 			dragGestureRecognizer setComponent null
 		}
 	}

@@ -1,7 +1,6 @@
 package scutil.concurrent
 
-// TODO get rid of the rename import when Executor type alias is gone
-import java.util.concurrent.{ Executor=>JExecutor, LinkedBlockingQueue }
+import java.util.concurrent._
 
 import scutil.lang._
 import scutil.lang.implicits._
@@ -13,7 +12,7 @@ object Execution {
 	val daemon:Execution	= Execution { task	=> new Thread(task.toRunnable).doto( _ setDaemon true).start() }
 
 	// BETTER move into JExecutorImplicits ?
-	def fromExecutor(executor:JExecutor):Execution	= Execution { task => executor execute task.toRunnable }
+	def fromExecutor(executor:Executor):Execution	= Execution { task => executor execute task.toRunnable }
 }
 
 // NOTE this is equivalent to Later[Unit]
@@ -25,10 +24,13 @@ final case class Execution(submit:(()=>Unit)=>Unit) {
 		thunk { out.take().throwException }
 	}
 
-	def toExecutor:JExecutor	=
-		new JExecutor {
-			def execute(command:Runnable):Unit = {
-				submit(command.run _)
-			}
+	def wrapUsing[T](using:Using[T]):Using[T]	=
+		() => {
+			val (resource, disposer)	= withResult{ () => using.open() }()
+			val disposer2	= Disposer delay { withResult{ () => disposer.dispose() }() }
+			resource -> disposer2
 		}
+
+	def toExecutor:Executor	=
+		(command:Runnable) => submit(command.run _)
 }

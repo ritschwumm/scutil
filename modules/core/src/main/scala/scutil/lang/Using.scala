@@ -4,10 +4,10 @@ import scutil.lang.tc._
 
 object Using {
 	def pure[T](value:T):Using[T]	=
-		() => value -> Disposable.empty
+		() => value -> Disposer.empty
 
 	def delay[T](value: =>T):Using[T]	=
-		() => value -> Disposable.empty
+		() => value -> Disposer.empty
 
 	def resource[T](create: =>T)(implicit R:Resource[T]):Using[T]	=
 		of(() => create)(R.dispose(_))
@@ -18,7 +18,7 @@ object Using {
 	def of[T](create: ()=>T)(dispose:T=>Unit):Using[T]	=
 		() => {
 			val t	= create()
-			val d	= Disposable delay { dispose(t) }
+			val d	= Disposer delay { dispose(t) }
 			t -> d
 		}
 
@@ -35,18 +35,43 @@ object Using {
 		new Delay[Using] {
 			def delay[T](value: =>T):Using[T]	= Using delay value
 		}
+
+	//------------------------------------------------------------------------------
+
+	def unsafeBracket[T,U](resource:T)(dispose:T=>Unit)(consume:T=>U):U	= {
+		var primary:Throwable	= null
+		try {
+			consume(resource)
+		}
+		catch { case e:Throwable	=>
+			primary	= e
+			throw e
+		}
+		finally {
+			try {
+				dispose(resource)
+			}
+			catch { case e:Throwable	=>
+				if (primary ne null)	primary addSuppressed e
+				else					throw e
+			}
+		}
+	}
 }
 
 // TODO maybe this should just be Io[(T,Io[Unit])]
 trait Using[T] {
-	def open():(T, Disposable)
+	def open():(T, Disposer)
 
-	final def openVoid():Disposable	= open()._2
+	final def openVoid():Disposer	= open()._2
 
+	@deprecated("use runVoid", "0.199")
 	final def run():T	= use(identity)
 
+	final def runVoid():Unit	= use(_ => ())
+
 	final def use[X](handler:T=>X):X	=
-		Resource.bracket[(T,Disposable),X]
+		Using.unsafeBracket[(T,Disposer),X]
 			{ open() }
 			{ case (t,d) => d.dispose()	}
 			{ case (t,d) => handler(t)	}
@@ -87,6 +112,6 @@ trait Using[T] {
 			}
 		}
 
-	final def foreach(func:T=>Unit):Using[Unit]	=
-		map(func)
+	final def foreach(func:T=>Unit):Unit	=
+		use(func)
 }

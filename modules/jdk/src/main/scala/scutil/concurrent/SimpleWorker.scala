@@ -2,6 +2,7 @@ package scutil.concurrent
 
 import java.util.concurrent.atomic.AtomicBoolean
 
+import scutil.core.implicits._
 import scutil.lang._
 
 object SimpleWorker {
@@ -30,5 +31,5 @@ object SimpleWorker {
 			thread.interrupt()
 			thread.join()
 		}
-		.map(_ => ())
+		.void
 }

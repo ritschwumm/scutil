@@ -2,14 +2,14 @@ package scutil.lang
 
 import minitest._
 
-object ResourceTest extends SimpleTestSuite {
+object UsingBracketTest extends SimpleTestSuite {
 	test("Resource.bracket should execute a disposer and a consumer") {
 		var tmp	= 0
 
 		val res	=
-			Resource.bracket(1)
-			{ it => tmp	= it }
-			{ it => "test" + it.toString}
+			Using.unsafeBracket(1)
+				{ it => tmp	= it }
+				{ it => "test" + it.toString}
 
 		assertEquals(tmp, 1)
 		assertEquals(res, "test1")
@@ -20,7 +20,7 @@ object ResourceTest extends SimpleTestSuite {
 		var err	= null:Exception
 
 		try {
-			Resource.bracket[Int,String](1)
+			Using.unsafeBracket[Int,String](1)
 				{ it => tmp	= it }
 				{ it => sys error "consume failed"; "" }
 		}
@@ -36,7 +36,7 @@ object ResourceTest extends SimpleTestSuite {
 		var err	= null:Exception
 
 		try {
-			Resource.bracket[Int,String](1)
+			Using.unsafeBracket[Int,String](1)
 				{ it => sys error "dispose failed" }
 				{ it => it.toString }
 		}
@@ -51,7 +51,7 @@ object ResourceTest extends SimpleTestSuite {
 		var err	= null:Exception
 
 		try {
-			Resource.bracket[Int,String](1)
+			Using.unsafeBracket[Int,String](1)
 				{ it => sys error "dispose failed" }
 				{ it => sys error "consume failed"; "" }
 		}

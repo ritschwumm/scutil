@@ -14,7 +14,7 @@ object UsingTest extends SimpleTestSuite {
 
 		var err	= null:Exception
 		try {
-			u.run()
+			u.runVoid()
 		}
 		catch { case e:Exception =>
 			err = e
@@ -35,7 +35,7 @@ object UsingTest extends SimpleTestSuite {
 
 		var err	= null:Exception
 		try {
-			u.run()
+			u.runVoid()
 		}
 		catch { case e:Exception =>
 			err = e

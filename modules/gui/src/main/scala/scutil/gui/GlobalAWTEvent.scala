@@ -6,14 +6,15 @@ import java.awt.event._
 import scutil.lang._
 
 object GlobalAWTEvent {
-	def connect(mask:Long)(handler:AWTEvent=>Unit):Disposable = {
+	// TODO using this is a Using
+	def connect(mask:Long)(handler:AWTEvent=>Unit):Disposer = {
 		val listener	=
 			new AWTEventListener {
 				def eventDispatched(ev:AWTEvent):Unit	= handler(ev)
 			}
 		val toolkit	= Toolkit.getDefaultToolkit
 		toolkit.addAWTEventListener(listener, mask)
-		Disposable delay {
+		Disposer delay {
 			toolkit removeAWTEventListener listener
 		}
 	}

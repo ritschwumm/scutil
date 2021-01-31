@@ -33,8 +33,8 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 
 	private var entries	= new mutable.WeakHashMap[Component,Entry]
 
-	/** keep a hard reference to the component and either the callback or the resulting disposable or updates will stop */
-	def listen(component:Component, callback:Callback):Disposable	= {
+	/** keep a hard reference to the component and either the callback or the resulting Disposer or updates will stop */
+	def listen(component:Component, callback:Callback):Disposer	= {
 		val nowUnderMouse	= underMousePredicate() apply component
 		val componentRef	= new WeakReference(callback)
 		val newCallbacks	=
@@ -43,7 +43,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 				case None			=> Vector(componentRef)
 			}
 		entries	+= (component -> Entry(nowUnderMouse, newCallbacks))
-		Disposable delay {
+		Disposer delay {
 			entries	=
 				entries flatMap { case (component, entry) =>
 					val newCallbacks	=

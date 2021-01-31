@@ -6,7 +6,8 @@ import java.awt.event._
 import scutil.lang._
 
 object GlobalKeyEvent {
-	def connect(handler:KeyEvent=>Boolean):Disposable = {
+	// TODO using this is a Using
+	def connect(handler:KeyEvent=>Boolean):Disposer = {
 		val dispatcher	=
 			new KeyEventDispatcher {
 				def dispatchKeyEvent(ev:KeyEvent):Boolean	= handler(ev)
@@ -14,7 +15,7 @@ object GlobalKeyEvent {
 		val focusManager	= KeyboardFocusManager.getCurrentKeyboardFocusManager
 		// addKeyEventPostProcessor
 		focusManager addKeyEventDispatcher dispatcher
-		Disposable delay {
+		Disposer delay {
 			focusManager removeKeyEventDispatcher dispatcher
 		}
 	}

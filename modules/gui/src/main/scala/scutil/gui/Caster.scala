@@ -7,14 +7,14 @@ abstract class Caster[L,E] private[gui] (
 	removeListener:Effect[L],
 	createListener:Effect[E]=>L
 ) {
-	def connect(callback:E=>Unit):Disposable =
+	def connect(callback:E=>Unit):Disposer =
 		listen(createListener(callback))
 
-	def listen(listener:L):Disposable = {
+	def listen(listener:L):Disposer = {
 		{
 			addListener(listener)
 		}
-		Disposable delay {
+		Disposer delay {
 			removeListener(listener)
 		}
 	}
