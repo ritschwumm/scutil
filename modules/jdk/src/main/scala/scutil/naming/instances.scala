@@ -3,11 +3,11 @@ package scutil.naming
 import javax.naming._
 import javax.naming.directory._
 
-import scutil.lang.Resource
+import scala.util.Using.Releasable
 
 object instances extends instances
 
 trait instances {
-	implicit def DirContextResource[T<:DirContext]:Resource[T]					= _.close()
-	implicit def NamingEnumerationResource[T<:NamingEnumeration[_]]:Resource[T]	= _.close()
+	implicit def DirContextReleasable[T<:DirContext]:Releasable[T]					= _.close()
+	implicit def NamingEnumerationReleasable[T<:NamingEnumeration[_]]:Releasable[T]	= _.close()
 }

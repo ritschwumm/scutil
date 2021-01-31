@@ -1,5 +1,7 @@
 package scutil.lang
 
+import  scala.util.Using.Releasable
+
 import scutil.lang.tc._
 
 object Disposer {
@@ -21,8 +23,9 @@ object Disposer {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit val DisposerMonoid:Monoid[Disposer]			= Monoid.instance(empty, _ combine _)
-	implicit def DisposerResource[T<:Disposer]:Resource[T]	= _.dispose()
+	implicit def DisposerReleasable[T<:Disposer]:Releasable[T]	= _.dispose()
+
+	implicit val DisposerMonoid:Monoid[Disposer]				= Monoid.instance(empty, _ combine _)
 }
 
 final case class Disposer(dispose:()=>Unit) {

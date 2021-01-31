@@ -1,4 +1,4 @@
-package scutil.resource
+package scutil.classpath
 
 object implicits extends implicits
 

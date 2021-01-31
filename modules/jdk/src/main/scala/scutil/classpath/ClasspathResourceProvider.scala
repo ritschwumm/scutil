@@ -1,4 +1,4 @@
-package scutil.resource
+package scutil.classpath
 
 import java.net.URL
 import java.io.InputStream
@@ -8,7 +8,7 @@ import scutil.core.implicits._
 import scutil.io.implicits._
 import scutil.lang.ByteString
 
-final class ResourceProvider(val findUrl:String=>Option[URL]) {
+final class ClasspathResourceProvider(val findUrl:String=>Option[URL]) {
 	def readByteString(path:String):Option[ByteString]	=
 		withInputStream(path, _.readFullyByteString())
 

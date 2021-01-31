@@ -1,5 +1,7 @@
 package scutil.lang
 
+import  scala.util.Using.Releasable
+
 import scutil.lang.tc._
 
 object Using {
@@ -9,8 +11,12 @@ object Using {
 	def delay[T](value: =>T):Using[T]	=
 		() => value -> Disposer.empty
 
-	def resource[T](create: =>T)(implicit R:Resource[T]):Using[T]	=
-		of(() => create)(R.dispose(_))
+	@deprecated("use releasable", "0.200.0")
+	def resource[T](create: =>T)(implicit R:Releasable[T]):Using[T]	=
+		releasable(create)
+
+	def releasable[T](create: =>T)(implicit R:Releasable[T]):Using[T]	=
+		of(() => create)(R.release(_))
 
 	def afterwards(dispose: =>Unit):Using[Unit]	=
 		of(()=>())(_ => dispose)
@@ -64,9 +70,6 @@ trait Using[T] {
 	def open():(T, Disposer)
 
 	final def openVoid():Disposer	= open()._2
-
-	@deprecated("use runVoid", "0.199")
-	final def run():T	= use(identity)
 
 	final def runVoid():Unit	= use(_ => ())
 

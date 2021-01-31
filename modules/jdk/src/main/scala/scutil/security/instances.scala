@@ -2,10 +2,10 @@ package scutil.security
 
 import javax.security.auth.Destroyable
 
-import scutil.lang.Resource
+import scala.util.Using.Releasable
 
 object instances extends instances
 
 trait instances {
-	implicit def DestroyableResource[T<:Destroyable]:Resource[T]	= _.destroy()
+	implicit def DestroyableReleasable[T<:Destroyable]:Releasable[T]	= _.destroy()
 }

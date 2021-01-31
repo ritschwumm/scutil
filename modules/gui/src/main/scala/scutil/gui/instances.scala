@@ -5,13 +5,13 @@ import java.awt.Window
 import javax.imageio.ImageReader
 import javax.imageio.ImageWriter
 
-import scutil.lang.Resource
+import scala.util.Using.Releasable
 
 object instances extends instances
 
 trait instances {
-	implicit def GraphicsResource[T<:Graphics]:Resource[T]			= _.dispose()
-	implicit def ImageReaderResource[T<:ImageReader]:Resource[T]	= _.dispose()
-	implicit def ImageWriterResource[T<:ImageWriter]:Resource[T]	= _.dispose()
-	implicit def WindowResource[T<:Window]:Resource[T]				= _.dispose()
+	implicit def GraphicsReleasable[T<:Graphics]:Releasable[T]			= _.dispose()
+	implicit def ImageReaderReleasable[T<:ImageReader]:Releasable[T]	= _.dispose()
+	implicit def ImageWriterReleasable[T<:ImageWriter]:Releasable[T]	= _.dispose()
+	implicit def WindowReleasable[T<:Window]:Releasable[T]				= _.dispose()
 }

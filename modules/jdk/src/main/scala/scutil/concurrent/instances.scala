@@ -3,11 +3,11 @@ package scutil.concurrent
 import java.util.concurrent.locks.Lock
 import java.util.TimerTask
 
-import scutil.lang.Resource
+import scala.util.Using.Releasable
 
 object instances extends instances
 
 trait instances {
-	implicit def LockResource[T<:Lock]:Resource[T]				= _.unlock()
-	implicit def TimerTaskResource[T<:TimerTask]:Resource[T]	= _.cancel()
+	implicit def LockReleasable[T<:Lock]:Releasable[T]				= _.unlock()
+	implicit def TimerTaskReleasable[T<:TimerTask]:Releasable[T]	= _.cancel()
 }
