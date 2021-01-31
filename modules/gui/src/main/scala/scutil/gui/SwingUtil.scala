@@ -9,7 +9,7 @@ import scutil.concurrent._
 import scutil.time._
 
 object SwingUtil {
-	def insideEdt:Boolean		= SwingUtilities.isEventDispatchThread
+	def insideEdt:Boolean	= SwingUtilities.isEventDispatchThread
 
 	val edtExecution:Execution	=
 		Execution { task	=>
@@ -19,6 +19,9 @@ object SwingUtil {
 	def edtUsing[T](peer:Using[T]):Using[T]	=
 		edtExecution wrapUsing peer
 
+	def edtIoResource[T](peer:IoResource[T]):IoResource[T]	=
+		edtExecution wrapIoResource peer
+
 	// transports Exceptions but not every Throwable
 	def worker[T](job: =>T):Thunk[T]	= Execution.thread	withResult thunk(job)
 
@@ -27,6 +30,18 @@ object SwingUtil {
 
 	def swingTimerUsing(updateDelay:MilliDuration, action:Io[Unit]):Using[Unit]	=
 		Using.of{ () =>
+			new Timer(
+				updateDelay.millis.toInt,
+				_ => action.unsafeRun()
+			)
+			.doto(_.start())
+		}{
+			_.stop()
+		}
+		.void
+
+	def swingTimerIoResource(updateDelay:MilliDuration, action:Io[Unit]):IoResource[Unit]	=
+		IoResource.unsafe.disposing {
 			new Timer(
 				updateDelay.millis.toInt,
 				_ => action.unsafeRun()

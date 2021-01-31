@@ -14,7 +14,7 @@ import scutil.gui.implicits._
 import scutil.geom.IntPoint
 
 object DndFileImport {
-	// TOD using this is a Using
+	// TODO using this is a Using
 	def install(target:JComponent, consumer:IntPoint=>Option[Effect[Validated[Nes[Exception],Nes[File]]]]):Disposer	= {
 		target setTransferHandler new FileTransferHandler(consumer)
 

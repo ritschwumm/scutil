@@ -3,10 +3,6 @@ package scutil.lang
 import scutil.lang.tc._
 
 object Responder {
-	@deprecated("use never", "0.201.0")
-	def empty[T]:Responder[T]	=
-		never
-
 	def never[T]:Responder[T]	=
 		Responder { cont => }
 

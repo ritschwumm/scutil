@@ -16,6 +16,7 @@ object Execution {
 }
 
 // NOTE this is equivalent to Later[Unit]
+// TODO the ()=>Unit in here should be an Io, right?
 final case class Execution(submit:(()=>Unit)=>Unit) {
 	/** transports Exceptions (but not every Throwable) to the user of the value */
 	def withResult[T](job:Thunk[T]):Thunk[T] = {
@@ -30,6 +31,15 @@ final case class Execution(submit:(()=>Unit)=>Unit) {
 			val disposer2	= Disposer delay { withResult{ () => disposer.dispose() }() }
 			resource -> disposer2
 		}
+
+	def wrapIoResource[T](resource:IoResource[T]):IoResource[T]	=
+		IoResource(
+			Io delay {
+				val (value, disposer)	= withResult{ () => resource.open.unsafeRun() }()
+				val disposer2			= Io delay { withResult{ () => disposer.unsafeRun() }() }
+				value -> disposer2
+			}
+		)
 
 	def toExecutor:Executor	=
 		(command:Runnable) => submit(command.run _)
