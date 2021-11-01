@@ -3,6 +3,12 @@ package scutil.geom
 object DoubleRect {
 	val zero	= new DoubleRect(DoubleSpan.zero, DoubleSpan.zero)
 
+	def zeroSized(size:DoublePoint):DoubleRect	=
+		new DoubleRect(
+			horizontal	= DoubleSpan.startSize(0, size.x),
+			vertical	= DoubleSpan.startSize(0, size.y)
+		)
+
 	def leftTopRightBottom(left:Double, top:Double, right:Double, bottom:Double):DoubleRect	=
 		new DoubleRect(
 			horizontal	= DoubleSpan.startEnd(left, right),

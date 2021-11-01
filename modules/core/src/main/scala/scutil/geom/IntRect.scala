@@ -3,6 +3,12 @@ package scutil.geom
 object IntRect {
 	val zero	= new IntRect(IntSpan.zero, IntSpan.zero)
 
+	def zeroSized(size:IntPoint):IntRect	=
+		new IntRect(
+			horizontal	= IntSpan.startSize(0, size.x),
+			vertical	= IntSpan.startSize(0, size.y)
+		)
+
 	def leftTopRightBottom(left:Int, top:Int, right:Int, bottom:Int):IntRect	=
 		new IntRect(
 			horizontal	= IntSpan.startEnd(left, right),

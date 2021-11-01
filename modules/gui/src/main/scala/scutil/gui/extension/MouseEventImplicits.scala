@@ -9,9 +9,9 @@ object MouseEventImplicits extends MouseEventImplicits
 trait MouseEventImplicits {
 	implicit final class MouseEventExt(peer:MouseEvent) {
 		def doublePoint:DoublePoint	=
-		DoublePoint(
-			peer.getX,
-			peer.getY
-		)
+			DoublePoint(
+				peer.getX,
+				peer.getY
+			)
 	}
 }

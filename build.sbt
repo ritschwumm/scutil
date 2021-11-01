@@ -5,7 +5,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.206.0",
+	version			:= "0.207.0",
 
 	scalaVersion	:= "2.13.6",
 	scalacOptions	++= Seq(
@@ -24,7 +24,7 @@ inThisBuild(Seq(
 	conflictManager	:= ConflictManager.strict withOrganization "^(?!(org\\.scala-lang|org\\.scala-js)(\\..*)?)$",
 	resolvers 		+= Resolver sonatypeRepo "releases",
 
-	addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.13.0" cross CrossVersion.full),
+	addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full),
 
 	wartremoverErrors	++= Seq(
 		Wart.AsInstanceOf,
@@ -204,7 +204,7 @@ lazy val `scutil-xml`	=
 			// "-language:experimental.macros",
 		),
 		libraryDependencies	++= Seq(
-			"org.scala-lang.modules"	%% "scala-xml"	% "2.0.0"	% "compile"
+			"org.scala-lang.modules"	%% "scala-xml"	% "2.0.1"	% "compile"
 		)
 	)
 	.dependsOn(
@@ -230,7 +230,7 @@ lazy val `scutil-guid`	=
 	.jsSettings(
 		noTestSettings,
 		libraryDependencies	++= Seq(
-			"org.scala-js"	%%%	"scalajs-dom"	% "1.1.0"	% "compile"
+			"org.scala-js"	%%%	"scalajs-dom"	% "2.0.0"	% "compile"
 		)
 	)
 lazy val `scutil-guid-jvm`	= `scutil-guid`.jvm
