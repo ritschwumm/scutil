@@ -107,7 +107,7 @@ final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
 		flatMap(ev)
 
 	/** function effect first */
-	def ap[A,B](that:StateT[F,S,A])(implicit F:Monad[F], ev:T=>(A=>B)):StateT[F,S,B]	=
+	def ap[A,B](that:StateT[F,S,A])(implicit F:Monad[F], ev:T <:< (A=>B)):StateT[F,S,B]	=
 		that pa (this map ev)
 
 	/** function effect first */
