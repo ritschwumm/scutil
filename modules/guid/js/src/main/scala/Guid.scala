@@ -11,8 +11,9 @@ object Guid extends GuidBase {
 	// org.scalajs.dom.crypto.GlobalCrypto.crypto
 	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 	private lazy val undefOrCrypto:UndefOr[Crypto]	=
-		//js.Dynamic.global.crypto.asInstanceOf[UndefOr[Crypto]]	orElse
-		webcrypto.asInstanceOf[UndefOr[Crypto]]	orElse
+		// TODO crypto does not work - why?
+		//webcrypto.asInstanceOf[UndefOr[Crypto]]	orElse
+		js.Dynamic.global.crypto.asInstanceOf[UndefOr[Crypto]]	orElse
 		js.Dynamic.global.msCrypto.asInstanceOf[UndefOr[Crypto]]
 
 	protected def randomBytes(size:Int):ByteString	=
