@@ -5,15 +5,16 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.205.0",
+	version			:= "0.206.0",
 
-	scalaVersion	:= "2.13.5",
+	scalaVersion	:= "2.13.6",
 	scalacOptions	++= Seq(
 		"-feature",
 		"-deprecation",
 		"-unchecked",
 		"-Werror",
 		"-Xlint",
+		"-Xsource:3",
 		"-opt:l:method",
 		"-opt:l:inline",
 		"-opt-inline-from:scutil.**",
@@ -23,7 +24,7 @@ inThisBuild(Seq(
 	conflictManager	:= ConflictManager.strict withOrganization "^(?!(org\\.scala-lang|org\\.scala-js)(\\..*)?)$",
 	resolvers 		+= Resolver sonatypeRepo "releases",
 
-	addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.12.0" cross CrossVersion.full),
+	addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.13.0" cross CrossVersion.full),
 
 	wartremoverErrors	++= Seq(
 		Wart.AsInstanceOf,
@@ -181,7 +182,11 @@ lazy val `scutil-gui`	=
 			// "-language:reflectiveCalls",
 			// "-language:dynamics",
 			// "-language:experimental.macros",
-		)
+		),
+		libraryDependencies	++= Seq(
+			"io.monix"			%%	"minitest"		% "2.9.6"				% "test"
+		),
+		testFrameworks	+= new TestFramework("minitest.runner.Framework"),
 	)
 	.dependsOn(
 		`scutil-jdk`
