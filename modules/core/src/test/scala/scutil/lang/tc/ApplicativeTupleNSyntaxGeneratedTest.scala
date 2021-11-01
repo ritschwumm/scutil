@@ -6,6 +6,13 @@ import scutil.core.implicits._
 import scutil.lang._
 
 object ApplicativeTupleNSyntaxGeneratedTest extends SimpleTestSuite {
+	test("applicative tuple syntax should zip 1 element") {
+		assertEquals(
+			Tuple1(Vector(1)).zipN,
+			Vector(Tuple1(1))
+		)
+	}
+
 	test("applicative tuple syntax should zip 2 elements") {
 		assertEquals(
 			(Vector(1), Vector(2)).zipN,
@@ -17,6 +24,13 @@ object ApplicativeTupleNSyntaxGeneratedTest extends SimpleTestSuite {
 		assertEquals(
 			(Vector(1), Vector(2), Vector(3)).zipN,
 			Vector((1,2,3))
+		)
+	}
+
+	test("applicative tuple syntax should map 1 element") {
+		assertEquals(
+			Tuple1(Vector(1)) mapN ((a) => Tuple1(a)),
+			Vector(Tuple1(1))
 		)
 	}
 

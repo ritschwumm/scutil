@@ -8,7 +8,7 @@ final case class	PrismClass(a:Int)	extends PrismSuper
 
 object PrismGenTest extends SimpleTestSuite {
 	test("PrismGen should get a case object") {
-		val prism					= PrismGen[PrismSuper,PrismObject.type]
+		val prism					= Prism.Gen[PrismSuper,PrismObject.type]
 		val sub:PrismObject.type	= PrismObject
 		val sup:PrismSuper			= sub
 		assertEquals(
@@ -18,7 +18,7 @@ object PrismGenTest extends SimpleTestSuite {
 	}
 
 	test("PrismGen should put a case object") {
-		val prism					= PrismGen[PrismSuper,PrismObject.type]
+		val prism					= Prism.Gen[PrismSuper,PrismObject.type]
 		val sub:PrismObject.type	= PrismObject
 		val sup:PrismSuper			= sub
 		assertEquals(
@@ -28,7 +28,7 @@ object PrismGenTest extends SimpleTestSuite {
 	}
 
 	test("PrismGen should get a case class") {
-		val prism			= PrismGen[PrismSuper,PrismClass]
+		val prism			= Prism.Gen[PrismSuper,PrismClass]
 		val sub:PrismClass	= PrismClass(1)
 		val sup:PrismSuper	= sub
 		assertEquals(
@@ -37,7 +37,7 @@ object PrismGenTest extends SimpleTestSuite {
 		)
 	}
 	test("PrismGen should put a case class") {
-		val prism			= PrismGen[PrismSuper,PrismClass]
+		val prism			= Prism.Gen[PrismSuper,PrismClass]
 		val sub:PrismClass	= PrismClass(1)
 		val sup:PrismSuper	= sub
 		assertEquals(

@@ -25,7 +25,7 @@ object Wrapper {
 object BijectionGenTest extends SimpleTestSuite {
 	test("BijectionGen should work with case objects") {
 		val value		= CaseObj
-		val	bijection	= BijectionGen[CaseObj.type]
+		val	bijection	= Bijection.Gen[CaseObj.type]
 		assertEquals(
 			bijection get value,
 			(())
@@ -34,7 +34,7 @@ object BijectionGenTest extends SimpleTestSuite {
 
 	test("BijectionGen should work with unary case classes") {
 		val value		= Unary(1)
-		val	bijection	= BijectionGen[Unary]
+		val	bijection	= Bijection.Gen[Unary]
 		assertEquals(
 			bijection get value,
 			1
@@ -43,7 +43,7 @@ object BijectionGenTest extends SimpleTestSuite {
 
 	test("BijectionGen should work with binary case classes") {
 		val value		= Binary(1,2)
-		val	bijection	= BijectionGen[Binary]
+		val	bijection	= Bijection.Gen[Binary]
 		assertEquals[(Int,Short)](
 			bijection get value,
 			(1,2)
@@ -52,7 +52,7 @@ object BijectionGenTest extends SimpleTestSuite {
 
 	test("BijectionGen should work with nested case classes") {
 		val value		= Container(Unary(1))
-		val	bijection	= BijectionGen[Container]
+		val	bijection	= Bijection.Gen[Container]
 		assertEquals(
 			bijection get value,
 			Unary(1)
@@ -61,7 +61,7 @@ object BijectionGenTest extends SimpleTestSuite {
 
 	test("BijectionGen should work with unary case classes where the argument is a Product") {
 		val value		= UnaryOption(Some(1))
-		val	bijection	= BijectionGen[UnaryOption]
+		val	bijection	= Bijection.Gen[UnaryOption]
 		assertEquals(
 			bijection get value,
 			Some(1)
@@ -70,7 +70,7 @@ object BijectionGenTest extends SimpleTestSuite {
 
 	test("BijectionGen should work with case classes with one type parameter") {
 		// TODO why does this infer Nothing?
-		val _ = BijectionGen[Parametrized1[Int]]
+		val _ = Bijection.Gen[Parametrized1[Int]]
 		assertEquals(
 			1,
 			1
@@ -78,7 +78,7 @@ object BijectionGenTest extends SimpleTestSuite {
 	}
 
 	test("BijectionGen should work with case classes with multiple type parameters") {
-		val _ = BijectionGen[Parametrized2[Int,String]]
+		val _ = Bijection.Gen[Parametrized2[Int,String]]
 		assertEquals(
 			1,
 			1

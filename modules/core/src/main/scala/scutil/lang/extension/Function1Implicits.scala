@@ -40,5 +40,11 @@ trait Function1Implicits {
 
 		def toThunk(s:S):Thunk[T]	=
 			() => peer(s)
+
+		// standard lib only has this at arity 2 and above
+		def curried:Function1[S,T]			= peer
+
+		// standard lib only has this at arity 2 and above
+		def tupled:Function1[Tuple1[S],T]	= it => peer(it._1)
 	}
 }

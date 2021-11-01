@@ -6,3 +6,4 @@ object syntax extends syntax
 
 trait syntax
 	extends ReleaseableSyntax
+	with	TupleNApplySyntax

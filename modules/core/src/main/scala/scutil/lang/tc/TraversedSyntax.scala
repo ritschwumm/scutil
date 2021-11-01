@@ -1,5 +1,7 @@
 package scutil.lang.tc
 
+object TraversedSyntax extends TraversedSyntax
+
 trait TraversedSyntax {
 	implicit final class TraversedSyntaxExt[F[_],T](peer:F[T]) {
 		def sequence[G[_],U](implicit ev: T <:< G[U], TR:Traversed[F], AP:Applicative[G]):G[F[U]]	=

@@ -2,7 +2,9 @@ package scutil.lang.extension
 
 import java.util.{ Optional => JOptional }
 
+import scala.annotation.nowarn
 import scala.collection.Factory
+import scala.collection.generic.IsIterable
 
 import scutil.lang._
 import scutil.lang.tc._
@@ -56,16 +58,29 @@ trait OptionImplicits {
 				case None			=> (None,		None)
 			}
 
-		/** handy replacement for opt.toSeq flatMap func abusing Factory as a Zero typeclass */
+		/*
+		// TODO dotty remove, these fail horribly, only here as a bad example
+
+		// handy replacement for opt.toSeq flatMap func abusing Factory as a Zero typeclass
 		def flatMapMany[U,CC[_]](func:T=>CC[U])(implicit factory:Factory[U,CC[U]]):CC[U]	=
 			peer map func match {
 				case Some(cc)	=> cc
 				case None		=> factory.newBuilder.result()
 			}
 
-		/** handy replacement for opt.toSeq.flatten abusing Factory as a Zero typeclass */
+		// handy replacement for opt.toSeq.flatten abusing Factory as a Zero typeclass
 		def flattenMany[U,CC[_]](implicit ev:T <:< CC[U], factory:Factory[U,CC[U]]):CC[U]	=
 			flatMapMany(ev)
+		*/
+
+		@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
+		def flatMapMany[U,Repr](func:T=>Repr)(implicit iter:IsIterable[Repr] { type A = U }, factory:Factory[U,Repr]):Repr	=
+			peer.map(func).flattenMany
+
+		@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
+		@nowarn("msg=parameter value iter in method flattenMany is never used")
+		def flattenMany[U,Repr](implicit iter:IsIterable[T] { type A = U }, factory:Factory[U,T]):T	=
+			peer.getOrElse(factory.newBuilder.result())
 
 		//------------------------------------------------------------------------------
 

@@ -1,0 +1,15 @@
+package scutil.lang
+
+object TupleNApplySyntax extends TupleNApplySyntax
+
+trait TupleNApplySyntax {
+	[1..#implicit final class Tuple1ApplySyntax[[#S1#], [#T1#]](functions:Tuple1[[#S1=>T1#]]) {
+		def applyN(values:Tuple1[[#S1#]]):Tuple1[[#T1#]]	=
+			Tuple1(
+				[#functions._1(values._1)#,
+				]
+			)
+	}#
+
+	]
+}

@@ -12,7 +12,7 @@ trait assocGenerated extends assocBase {
 	//------------------------------------------------------------------------------
 	// arrowed
 
-	def arrow1[T1](it:(T1)):(T1)	= it
+	def arrow1[T1](it:Tuple1[T1]):T1	= it._1
 
 	[2..#def arrow1[[#T1#]](it:([#T1#])):([#T1# -> ])	=
 		[#it._1# -> ]#
@@ -21,7 +21,7 @@ trait assocGenerated extends assocBase {
 	//------------------------------------------------------------------------------
 	// unarrowed
 
-	def unarrow1[T1](it:(T1)):(T1)	= it
+	def unarrow1[T1](it:T1):Tuple1[T1]	= Tuple1(it)
 
 	[2..#def unarrow1[[#T1#]](it:([#T1# -> ])):([#T1#])	=
 		it match { case ([#t1# -> ]) => ([#t1#]) }#
