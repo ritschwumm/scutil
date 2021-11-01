@@ -4,7 +4,7 @@ object ClassImplicits extends ClassImplicits
 
 trait ClassImplicits {
 	implicit final class ClassExt[T](peer:Class[T]) {
-		def boxed:Class[_]	= peer match {
+		def boxed:Class[?]	= peer match {
 			case java.lang.Boolean.TYPE		=> classOf[java.lang.Boolean]
 			case java.lang.Character.TYPE	=> classOf[java.lang.Character]
 			case java.lang.Byte.TYPE		=> classOf[java.lang.Byte]

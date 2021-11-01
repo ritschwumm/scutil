@@ -27,8 +27,8 @@ object Validated {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def ValidatedApplicative[S:Semigroup]:Applicative[Validated[S,*]]	=
-		new Applicative[Validated[S,*]] {
+	implicit def ValidatedApplicative[S:Semigroup]:Applicative[Validated[S,_]]	=
+		new Applicative[Validated[S,_]] {
 			override def pure[A](it:A):Validated[S,A]										= Validated valid it
 			override def ap[A,B](func:Validated[S,A=>B])(it:Validated[S,A]):Validated[S,B]	= func ap it
 		}
@@ -100,10 +100,10 @@ sealed trait Validated[+E,+T] {
 			case Validated.Valid(x)		=> func(x)
 		}
 
-	def flatten[EE>:E,U](implicit ev:T=>Validated[EE,U]):Validated[EE,U]	=
+	def flatten[EE>:E,U](implicit ev: T <:< Validated[EE,U]):Validated[EE,U]	=
 		flatMap(ev)
 
-	def ap[EE>:E:Semigroup,U,V](that:Validated[EE,U])(implicit ev:T=>U=>V):Validated[EE,V]	=
+	def ap[EE>:E:Semigroup,U,V](that:Validated[EE,U])(implicit ev: T <:< (U=>V)):Validated[EE,V]	=
 		(this map2 that)(_(_))
 
 	def product[EE>:E:Semigroup,U](that:Validated[EE,U]):Validated[EE,(T,U)]	=
@@ -118,7 +118,7 @@ sealed trait Validated[+E,+T] {
 		}
 
 	/** handy replacement for tried.toSeq.flatten abusing Factory as a Zero typeclass */
-	def flattenMany[U,CC[_]](implicit ev:T=>CC[U], factory:Factory[U,CC[U]]):CC[U]	=
+	def flattenMany[U,CC[_]](implicit ev: T <:< CC[U], factory:Factory[U,CC[U]]):CC[U]	=
 		// toOption.flattenMany
 		this map ev match {
 			case Validated.Invalid(_)	=> factory.newBuilder.result()
@@ -156,7 +156,7 @@ sealed trait Validated[+E,+T] {
 			case Validated.Valid(x)		=> Validated.valid(x)
 		}
 
-	def invalidFlatten[EE,TT>:T](implicit ev:E=>Validated[EE,TT]):Validated[EE,TT]	=
+	def invalidFlatten[EE,TT>:T](implicit ev: E <:< Validated[EE,TT]):Validated[EE,TT]	=
 		invalidFlatMap(ev)
 
 	def invalidToOption:Option[E]	=

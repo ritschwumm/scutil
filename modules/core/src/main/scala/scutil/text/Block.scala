@@ -60,8 +60,8 @@ object Block {
 				.filter		{ idx => allBlank(unixPart.substring(idx+1, unixPart.length)) }
 				.getOrElse	(unixPart.length)
 
-				 if (front == 0 && behind == unixPart.length)	unixPart
-			else if (front > behind)							""
+			if		(front == 0 && behind == unixPart.length)	unixPart
+			else if	(front > behind)							""
 			else												unixPart.substring(front, behind)
 		}
 

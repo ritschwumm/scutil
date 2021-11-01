@@ -16,7 +16,7 @@ trait FutureImplicits {
 			peer zip that
 
 		// TODO is this correct, or should we use flatMap?
-		def ap[U,V](that:Future[U])(implicit ev:T=>U=>V, executor:ExecutionContext):Future[V]	=
+		def ap[U,V](that:Future[U])(implicit ev: T <:< (U=>V), executor:ExecutionContext):Future[V]	=
 			peer zip that map { case (u2v, u) => u2v(u) }
 
 		//------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ trait FutureImplicits {
 			peer transform { it => Try(it.toEither) }
 
 		/** succeeds for a Win, fails for a Fail */
-		def unwrapEither[X](implicit ev:T=>Either[Throwable,X], executor:ExecutionContext):Future[X]	=
+		def unwrapEither[X](implicit ev: T <:< Either[Throwable,X], executor:ExecutionContext):Future[X]	=
 			peer transform { _ flatMap { ev(_).toTry } }
 
 		def mapEither[X](func:Either[Throwable,T]=>Either[Throwable,X])(implicit executor:ExecutionContext):Future[X]	=

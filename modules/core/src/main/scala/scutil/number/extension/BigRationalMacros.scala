@@ -6,7 +6,7 @@ import scala.reflect.macros.blackbox.Context
 
 import scutil.number.BigRational
 
-private final class NumberMacros(val c:Context) {
+private final class BigRationalMacros(val c:Context) {
 	import c.universe._
 
 	// NOTE linter error if private

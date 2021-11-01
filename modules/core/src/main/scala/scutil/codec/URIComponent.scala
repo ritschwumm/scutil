@@ -67,17 +67,17 @@ final class URIComponent(charset:Charset) {
 		var i	= 0
 		while (i<s.length) {
 			val c	= s charAt i
-			if (c >= 256)	return Left(URIComponentInvalid(i))
+			if (c >= 256)	return Left(URIComponentProblem.Invalid(i))
 			else if (c == '%') {
 				i	+= 1
-				if (i >= s.length)	return Left(URIComponentInvalid(i))
+				if (i >= s.length)	return Left(URIComponentProblem.Invalid(i))
 				val n1	= decodeNibble(s charAt i)
-				if (n1 == -1)		return Left(URIComponentInvalid(i))
+				if (n1 == -1)		return Left(URIComponentProblem.Invalid(i))
 
 				i	+= 1
-				if (i >= s.length)	return Left(URIComponentInvalid(i))
+				if (i >= s.length)	return Left(URIComponentProblem.Invalid(i))
 				val n2	= decodeNibble(s charAt i)
-				if (n2 == -1)		return Left(URIComponentInvalid(i))
+				if (n2 == -1)		return Left(URIComponentProblem.Invalid(i))
 
 				b	+= ((n1 << 4) | (n2 << 0)).toByte
 				i	+= 1
@@ -87,12 +87,12 @@ final class URIComponent(charset:Charset) {
 				i	+= 1
 			}
 		}
-		charset decodeEitherByteString (ByteString fromArrayBuffer b) leftMap URIComponentException
+		charset decodeEitherByteString (ByteString fromArrayBuffer b) leftMap URIComponentProblem.Exception.apply
 	}
 
 	private def decodeNibble(nibble:Char):Int	=
-			 if (nibble >= '0' && nibble <= '9')	nibble - '0'
-		else if (nibble >= 'a' && nibble <= 'f')	nibble - 'a' + 10
-		else if (nibble >= 'A' && nibble <= 'F')	nibble - 'A' + 10
+		if		(nibble >= '0' && nibble <= '9')	nibble - '0'
+		else if	(nibble >= 'a' && nibble <= 'f')	nibble - 'a' + 10
+		else if	(nibble >= 'A' && nibble <= 'F')	nibble - 'A' + 10
 		else										-1
 }

@@ -11,8 +11,8 @@ object SgOrientation {
 
 	//------------------------------------------------------------------------------
 
-	final object Horizontal	extends SgOrientation
-	final object Vertical	extends SgOrientation
+	object Horizontal	extends SgOrientation
+	object Vertical	extends SgOrientation
 }
 
 sealed trait SgOrientation {

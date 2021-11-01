@@ -57,11 +57,11 @@ trait EitherImplicits {
 		/*
 		// NOTE we get these from applicative syntax
 
-		def flatten[LL>:L,X](implicit ev:R=>Either[LL,X]):Either[LL,X]	=
+		def flatten[LL>:L,X](implicit ev: R <:< Either[LL,X]):Either[LL,X]	=
 			peer flatMap ev
 
 		// * function effect first
-		def ap[LL>:L,X,Y](that:Either[LL,X])(implicit ev:R=>X=>Y):Either[LL,Y]	=
+		def ap[LL>:L,X,Y](that:Either[LL,X])(implicit ev: R <:< (X=>Y)):Either[LL,Y]	=
 			that pa (peer map ev)
 
 		// * function effect first
@@ -88,7 +88,7 @@ trait EitherImplicits {
 			}
 
 		/** handy replacement for tried.toSeq.flatten abusing Factory as a Zero typeclass */
-		def flattenMany[U,CC[_]](implicit ev:R=>CC[U], factory:Factory[U,CC[U]]):CC[U]	=
+		def flattenMany[U,CC[_]](implicit ev: R <:< CC[U], factory:Factory[U,CC[U]]):CC[U]	=
 			// toOption.flattenMany
 			peer map ev match {
 				case Left(_)	=> factory.newBuilder.result()
@@ -122,7 +122,7 @@ trait EitherImplicits {
 				case Right(x)	=> Right(x)
 			}
 
-		def leftFlatten[LL,RR>:R](implicit ev:L=>Either[LL,RR]):Either[LL,RR]	=
+		def leftFlatten[LL,RR>:R](implicit ev: L <:< Either[LL,RR]):Either[LL,RR]	=
 			leftFlatMap(ev)
 
 		def leftToOption:Option[L]	=
@@ -190,25 +190,25 @@ trait EitherImplicits {
 
 		//------------------------------------------------------------------------------
 
-		def throwMessage(implicit ev:L=>String):R	=
+		def throwMessage(implicit ev: L <:< String):R	=
 			peer match {
 				case Left(x)	=> throw new RuntimeException(x)
 				case Right(x)	=> x
 			}
 
-		def throwThrowable(implicit ev:L=>Throwable):R	=
+		def throwThrowable(implicit ev: L <:< Throwable):R	=
 			peer match {
 				case Left(x)	=> throw x
 				case Right(x)	=> x
 			}
 
-		def throwException(implicit ev:L=>Exception):R	=
+		def throwException(implicit ev: L <:< Exception):R	=
 			peer match {
 				case Left(x)	=> throw x
 				case Right(x)	=> x
 			}
 
-		def getOrThrow(func:L=>Throwable):R	=
+		def getOrThrow(func: L <:< Throwable):R	=
 			peer match {
 				case Left(x)	=> throw func(x)
 				case Right(x)	=> x
@@ -235,7 +235,7 @@ trait EitherImplicits {
 			}
 
 		/*
-		def toTry(implicit ev:L=>Throwable):Try[R]	=
+		def toTry(implicit ev: L <:< Throwable):Try[R]	=
 			peer match {
 				case Left(x)	=> Failure(x)
 				case Right(x)	=> Success(x)

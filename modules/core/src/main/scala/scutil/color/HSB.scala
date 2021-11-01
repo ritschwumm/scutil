@@ -36,5 +36,5 @@ final case class HSB(h:Float, s:Float, b:Float) {
 			case 4	=> RGB(T, P, b)
 			case 5	=> RGB(b, P, Q)
 		}
-    }
+	}
 }

@@ -39,11 +39,11 @@ final class IntSpan private (val start:Int, val size:Int) {
 		)
 
 	def intersect(that:IntSpan):Option[IntSpan]	=
-			 if (this.end   <= that.start)							None
-		else if (this.start >= that.end)							None
-		else if (this.start	>= that.start && this.end <= that.end)	Some(this)
-		else if (this.start	<= that.start && this.end >= that.end)	Some(that)
-		else if (this.start	<= that.start && this.end <= that.end)	Some(IntSpan.startEnd(that.start, this.end))
+		if		(this.end   <= that.start)							None
+		else if	(this.start >= that.end)							None
+		else if	(this.start	>= that.start && this.end <= that.end)	Some(this)
+		else if	(this.start	<= that.start && this.end >= that.end)	Some(that)
+		else if	(this.start	<= that.start && this.end <= that.end)	Some(IntSpan.startEnd(that.start, this.end))
 		else														Some(IntSpan.startEnd(this.start, that.end))
 
 	def rectWith(that:IntSpan):IntRect	=

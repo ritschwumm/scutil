@@ -13,8 +13,8 @@ object State {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def StateMonad[S]:Monad[State[S,*]]	=
-		new Monad[State[S,*]] {
+	implicit def StateMonad[S]:Monad[State[S,_]]	=
+		new Monad[State[S,_]] {
 			override def pure[T](it:T):State[S,T]										= State pure it
 			override def map[T,U](its:State[S,T])(func:T=>U):State[S,U]					= its map func
 			override def flatMap[T,U](its:State[S,T])(func:T=>State[S,U]):State[S,U]	= its flatMap func
@@ -40,7 +40,7 @@ final case class State[S,+T](run:S=>(S,T)) {
 		}
 
 	/** function effect first */
-	def ap[A,B](that:State[S,A])(implicit ev:T=>(A=>B)):State[S,B]	=
+	def ap[A,B](that:State[S,A])(implicit ev: T <:< (A=>B)):State[S,B]	=
 		that pa (this map ev)
 
 	/** function effect first */

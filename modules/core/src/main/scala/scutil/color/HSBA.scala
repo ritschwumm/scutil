@@ -22,6 +22,6 @@ final case class HSBA(hsb:HSB, alpha:Alpha) {
 	def toRGBA:RGBA	=
 		RGBA(hsb.toRGB, alpha)
 
-    def toIntARGB:Int	=
+	def toIntARGB:Int	=
 		toRGBA.toIntARGB
 }

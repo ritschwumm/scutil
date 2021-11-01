@@ -170,9 +170,9 @@ final class ByteString private (private val value:Array[Byte]) {
 		else						None
 
 	def slice(begin:Int, end:Int):Option[ByteString]	=
-			 if (!containsSlice(begin, end))	None
-		else if (begin == end)					Some(ByteString.empty)
-		else if (begin == 0 && end == size)		Some(this)
+		if		(!containsSlice(begin, end))	None
+		else if	(begin == end)					Some(ByteString.empty)
+		else if	(begin == 0 && end == size)		Some(this)
 		else 									Some(unsafeSlice(begin, end))
 
 	def splitFirst:Option[(ByteString,Byte)]	=
@@ -184,9 +184,9 @@ final class ByteString private (private val value:Array[Byte]) {
 		else			None
 
 	def splitAt(index:Int):Option[(ByteString,ByteString)]	=
-			 if (!containsGap(index))	None
-		else if (index == 0)			Some((ByteString.empty, this))
-		else if (index == size)			Some((this, ByteString.empty))
+		if		(!containsGap(index))	None
+		else if	(index == 0)			Some((ByteString.empty, this))
+		else if	(index == size)			Some((this, ByteString.empty))
 		else 							Some((unsafeSlice(0, index), unsafeSlice(index, size)))
 
 	def containsAt(index:Int, that:ByteString):Boolean	=

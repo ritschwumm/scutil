@@ -85,35 +85,35 @@ object URIComponentTest extends SimpleTestSuite {
 	test("URIComponent should fail with invalid % sequences (1)") {
 		assertEquals(
 			URIComponent.utf_8 decode "%",
-			Left(URIComponentInvalid((1)))
+			Left(URIComponentProblem.Invalid((1)))
 		)
 	}
 
 	test("URIComponent should fail with invalid % sequences (2)") {
 		assertEquals(
 			URIComponent.utf_8 decode " %",
-			Left(URIComponentInvalid((2)))
+			Left(URIComponentProblem.Invalid((2)))
 		)
 	}
 
 	test("URIComponent should fail with invalid % sequences (3)") {
 		assertEquals(
 			URIComponent.utf_8 decode "%x",
-			Left(URIComponentInvalid((1)))
+			Left(URIComponentProblem.Invalid((1)))
 		)
 	}
 
 	test("URIComponent should fail with invalid % sequences (4)") {
 		assertEquals(
 			URIComponent.utf_8 decode "%1x",
-			Left(URIComponentInvalid((2)))
+			Left(URIComponentProblem.Invalid((2)))
 			)
 	}
 
 	test("URIComponent should fail with invalid % sequences (5)") {
 		assertEquals(
 			URIComponent.utf_8 decode "%%",
-			Left(URIComponentInvalid((1)))
+			Left(URIComponentProblem.Invalid((1)))
 		)
 	}
 

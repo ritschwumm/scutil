@@ -15,8 +15,8 @@ trait StringImplicits {
 
 		// toBoolean throws an IllegalArgumentException, not a NumberFormatException
 		def parseBoolean:Either[NumberFormatException,Boolean]	=
-				 if (caselessTrue(peer))	Right(true)
-			else if (caselessFalse(peer))	Right(false)
+			if		(caselessTrue(peer))	Right(true)
+			else if	(caselessFalse(peer))	Right(false)
 			else							Left(new NumberFormatException("not a boolean: " + peer))
 
 		// NOTE does not use String.toLowercase because that would depend on the default Locale,

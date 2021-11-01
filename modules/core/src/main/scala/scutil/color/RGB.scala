@@ -58,8 +58,8 @@ final case class RGB(r:Float, g:Float, b:Float) {
 		val	bc	= (cmax - b) / cdiff
 
 		val hh	=
-					 if (r == cmax)	bc - gc
-				else if (g == cmax)	2f + rc - bc
+				if		(r == cmax)	bc - gc
+				else if	(g == cmax)	2f + rc - bc
 				else 				4f + gc - rc
 		val	h	= hh / 6f
 		val	H	=

@@ -26,13 +26,13 @@ object OptionT {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def OptionTDelay[F[_]:Delay]:Delay[OptionT[F,*]]	=
-		new Delay[OptionT[F,*]] {
+	implicit def OptionTDelay[F[_]:Delay]:Delay[OptionT[F,_]]	=
+		new Delay[OptionT[F,_]] {
 			override def delay[T](it: =>T):OptionT[F,T]	= OptionT delay it
 		}
 
-	implicit def OptionTMonad[F[_]](implicit MF:Monad[F]):Monad[OptionT[F,*]]	=
-		new Monad[OptionT[F,*]] {
+	implicit def OptionTMonad[F[_]](implicit MF:Monad[F]):Monad[OptionT[F,_]]	=
+		new Monad[OptionT[F,_]] {
 			override def pure[T](it:T):OptionT[F,T]											= OptionT some it
 			override def map[S,T](its:OptionT[F,S])(func:S=>T):OptionT[F,T]					= its map func
 			override def flatMap[S,T](its:OptionT[F,S])(func:S=>OptionT[F,T]):OptionT[F,T]	= its flatMap func
@@ -62,7 +62,7 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 			)
 		)
 
-	def flatten[U](implicit ev:T=>OptionT[F,U], M:Monad[F]):OptionT[F,U]	=
+	def flatten[U](implicit ev: T <:< OptionT[F,U], M:Monad[F]):OptionT[F,U]	=
 		flatMap(ev)
 
 	//------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 			)
 		)
 
-	def flattenOption[U](implicit ev:T=>Option[U], M:Monad[F]):OptionT[F,U]	=
+	def flattenOption[U](implicit ev: T <:< Option[U], M:Monad[F]):OptionT[F,U]	=
 		flatMapOption(ev)
 
 	//------------------------------------------------------------------------------

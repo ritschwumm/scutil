@@ -48,7 +48,7 @@ final case class SgSpan private (start:Double, end:Double) {
 		)
 
 	def intersect(that:SgSpan):Option[SgSpan]	=
-			 if (this.empty || that.empty)							None
+		if		(this.empty || that.empty)							None
 		else if (this.end	<= that.start)							None
 		else if (this.start	>= that.end)							None
 		else if (this.start	<= that.start && this.end >= that.end)	Some(that)

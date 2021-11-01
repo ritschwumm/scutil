@@ -60,7 +60,7 @@ object BigRational {
 	def parse(s:String):Option[BigRational] =
 		s splitAroundChar '/' match {
 			case Seq(num, den)	=>
-				try { Some(new BigRational(new JBigInteger(num), new JBigInteger(den))) }
+				try { BigRational(new JBigInteger(num), new JBigInteger(den)) }
 				catch { case e:NumberFormatException	=> None }
 			case _	=> None
 		}
@@ -95,32 +95,32 @@ final class BigRational private (_numerator:JBigInteger, _denominator:JBigIntege
 	//## calculation
 
 	def +(that:BigRational):BigRational =
-			 if (this == BigRational.zero)	that
-		else if (that == BigRational.zero)	this
+		if		(this == BigRational.zero)	that
+		else if	(that == BigRational.zero)	this
 		else new BigRational(
 			(this.numerator multiply that.denominator) add (this.denominator multiply that.numerator),
 			this.denominator multiply that.denominator
 		)
 
 	def -(that:BigRational):BigRational =
-			 if (this == BigRational.zero)	that.negate
-		else if (that == BigRational.zero)	this
+		if		(this == BigRational.zero)	that.negate
+		else if	(that == BigRational.zero)	this
 		else new BigRational(
 			(this.numerator multiply that.denominator) subtract (this.denominator multiply that.numerator),
 			this.denominator multiply that.denominator
 		)
 
 	def *(that:BigRational):BigRational =
-			 if (this == BigRational.one)	that
-		else if (that == BigRational.one)	this
+		if		(this == BigRational.one)	that
+		else if	(that == BigRational.one)	this
 		else new BigRational(
 			this.numerator		multiply that.numerator,
 			this.denominator	multiply that.denominator
 		)
 
 	def /(that:BigRational):BigRational =
-			 if (this == BigRational.one)	that.reciprocal
-		else if (that == BigRational.one)	this
+		if		(this == BigRational.one)	that.reciprocal
+		else if	(that == BigRational.one)	this
 		else new BigRational(
 			this.numerator		multiply that.denominator,
 			this.denominator	multiply that.numerator

@@ -42,11 +42,11 @@ final class DoubleSpan private (val start:Double, val size:Double) {
 		)
 
 	def intersect(that:DoubleSpan):Option[DoubleSpan]	=
-			 if (this.end   <= that.start)							None
-		else if (this.start >= that.end)							None
-		else if (this.start	>= that.start && this.end <= that.end)	Some(this)
-		else if (this.start	<= that.start && this.end >= that.end)	Some(that)
-		else if (this.start	<= that.start && this.end <= that.end)	Some(DoubleSpan.startEnd(that.start, this.end))
+		if		(this.end   <= that.start)							None
+		else if	(this.start >= that.end)							None
+		else if	(this.start	>= that.start && this.end <= that.end)	Some(this)
+		else if	(this.start	<= that.start && this.end >= that.end)	Some(that)
+		else if	(this.start	<= that.start && this.end <= that.end)	Some(DoubleSpan.startEnd(that.start, this.end))
 		else														Some(DoubleSpan.startEnd(this.start, that.end))
 
 	def rectWith(that:DoubleSpan):DoubleRect	=

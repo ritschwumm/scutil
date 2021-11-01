@@ -32,7 +32,7 @@ trait OptionImplicits {
 		// NOTE we get these from applicative syntax
 
 		// * ap of the monad, <*> of the applicative functor
-		def ap[U,V](source:Option[U])(implicit ev:T=>U=>V):Option[V] =
+		def ap[U,V](source:Option[U])(implicit ev: T <:< (U=>V)):Option[V] =
 			for { f	<- peer; s	<- source } yield f(s)
 
 		def product[U](that:Option[U]):Option[(T,U)]	=
@@ -49,7 +49,7 @@ trait OptionImplicits {
 		def partition(pred:Predicate[T]):(Option[T],Option[T])	=
 			(peer filter pred, peer filterNot pred)
 
-		def partitionEither[U,V](implicit ev:T=>Either[U,V]):(Option[U],Option[V])	=
+		def partitionEither[U,V](implicit ev: T <:< Either[U,V]):(Option[U],Option[V])	=
 			peer map ev match {
 				case Some(Left(x))	=> (Some(x),	None)
 				case Some(Right(x))	=> (None,		Some(x))
@@ -64,7 +64,7 @@ trait OptionImplicits {
 			}
 
 		/** handy replacement for opt.toSeq.flatten abusing Factory as a Zero typeclass */
-		def flattenMany[U,CC[_]](implicit ev:T=>CC[U], factory:Factory[U,CC[U]]):CC[U]	=
+		def flattenMany[U,CC[_]](implicit ev:T <:< CC[U], factory:Factory[U,CC[U]]):CC[U]	=
 			flatMapMany(ev)
 
 		//------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ trait OptionImplicits {
 
 		//------------------------------------------------------------------------------
 
-		def sequenceOption[U](implicit ev:T=>Option[U]):Option[Option[U]]	=
+		def sequenceOption[U](implicit ev: T <:< Option[U]):Option[Option[U]]	=
 			traverseOption(ev)
 
 		def traverseOption[U](func:T=>Option[U]):Option[Option[U]]	=
@@ -93,7 +93,7 @@ trait OptionImplicits {
 
 		// TODO generify to any Iterable
 
-		def sequenceSeq[U](implicit ev:T=>Seq[U]):Seq[Option[U]]	=
+		def sequenceSeq[U](implicit ev: T <:< Seq[U]):Seq[Option[U]]	=
 			traverseSeq(ev)
 
 		def traverseSeq[U](func:T=>Seq[U]):Seq[Option[U]]	=
@@ -105,7 +105,7 @@ trait OptionImplicits {
 		/*
 		// TODO generify these - right now, they are not working
 
-		def sequenceIterable[CC[_]<:Iterable[U],U](implicit ev:T=>CC[U], factory:Factory[Option[U],CC[Option[U]]]):CC[Option[U]]	=
+		def sequenceIterable[CC[_]<:Iterable[U],U](implicit ev: T <:< CC[U], factory:Factory[Option[U],CC[Option[U]]]):CC[Option[U]]	=
 				traverseIterable(ev)
 
 		def traverseIterable[CC[_]<:Iterable[U],U](func:T=>CC[U])(implicit factory:Factory[Option[U],CC[Option[U]]]):CC[Option[U]]	= {
@@ -118,7 +118,7 @@ trait OptionImplicits {
 		}
 		*/
 
-		def sequenceEither[F,W](implicit ev:T=>Either[F,W]):Either[F,Option[W]]	=
+		def sequenceEither[F,W](implicit ev: T <:< Either[F,W]):Either[F,Option[W]]	=
 			traverseEither(ev)
 
 		def traverseEither[F,W](func:T=>Either[F,W]):Either[F,Option[W]]	=
@@ -128,7 +128,7 @@ trait OptionImplicits {
 				case Some(Right(x))	=> Right(Some(x))
 			}
 
-		def sequenceValidated[F,W](implicit ev:T=>Validated[F,W]):Validated[F,Option[W]]	=
+		def sequenceValidated[F,W](implicit ev: T <:< Validated[F,W]):Validated[F,Option[W]]	=
 			traverseValidated(ev)
 
 		def traverseValidated[F,W](func:T=>Validated[F,W]):Validated[F,Option[W]]	=
@@ -138,7 +138,7 @@ trait OptionImplicits {
 				case Some(Validated.Valid(x))	=> Validated.valid(Some(x))
 			}
 
-		def sequenceState[S,U](implicit ev:T=>State[S,U]):State[S,Option[U]]	=
+		def sequenceState[S,U](implicit ev:T <:< State[S,U]):State[S,Option[U]]	=
 			traverseState(ev)
 
 		def traverseState[S,U](func:T=>State[S,U]):State[S,Option[U]]	=

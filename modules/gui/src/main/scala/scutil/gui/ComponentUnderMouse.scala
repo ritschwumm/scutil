@@ -6,7 +6,6 @@ import java.awt.MouseInfo
 import java.awt.Point
 import java.awt.Window
 import java.awt.IllegalComponentStateException
-import java.applet.Applet
 
 import scala.collection.mutable
 
@@ -106,9 +105,9 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 		var y:Int		= point.y
 		var c:Component	= component
 
-    	while (true) {
+		while (true) {
 			c match {
-				case cc @ (_:Applet | _:Window) =>
+				case cc @ (_:Window) =>
 					try {
 						val	pp	= cc.getLocationOnScreen
 						x	-= pp.x

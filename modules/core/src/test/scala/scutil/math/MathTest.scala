@@ -100,10 +100,10 @@ object MathTest extends SimpleTestSuite {
 	}
 
 	test("functions.roundDivInt should throw an ArithmeticException for a zero raster") {
-		 intercept[ArithmeticException] {
-		 	 functions.roundDivInt(1, 0)
-      	 }
-      	 ()
+		intercept[ArithmeticException] {
+			functions.roundDivInt(1, 0)
+		}
+		()
 	}
 
 	//------------------------------------------------------------------------------

@@ -75,7 +75,7 @@ object ApplicativeTest extends SimpleTestSuite {
 		val f:Either[String,Int=>Int]	= Left("function")
 		val v:Either[String,Int]		= Left("value")
 		assertEquals(
-			Applicative[Either[String,*]].ap(f)(v),
+			Applicative[Either[String,_]].ap(f)(v),
 			Left("function")
 		)
 	}

@@ -5,7 +5,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.209.0",
+	version			:= "0.210.0",
 
 	scalaVersion	:= "2.13.6",
 	scalacOptions	++= Seq(
@@ -15,6 +15,7 @@ inThisBuild(Seq(
 		"-Werror",
 		"-Xlint",
 		"-Xsource:3",
+		"-P:kind-projector:underscore-placeholders",
 		"-opt:l:method",
 		"-opt:l:inline",
 		"-opt-inline-from:scutil.**",

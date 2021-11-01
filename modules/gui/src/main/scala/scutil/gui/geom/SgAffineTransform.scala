@@ -53,7 +53,7 @@ final case class SgAffineTransform private (delegate:AffineTransform) {
 
 	/** fast bounds calculation for a transformed rectangle, as long as the transform is orthogonal */
 	def transformBounds(rect:SgRectangle):SgRectangle	=
-			 if (isIdentity)	rect
+		if		(isIdentity)	rect
 		else if (!isOrthogonal)	SgRectangle fromAwtRectangle2D (delegate createTransformedShape rect.toAwtRectangle2D).getBounds2D
 		else {
 			val coords:Array[Double]	=

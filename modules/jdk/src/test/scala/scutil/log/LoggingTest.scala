@@ -3,7 +3,7 @@ package scutil.log
 import minitest._
 
 trait TestLogging extends Logging {
-	override val logHandler	= new TestLogHandler
+	override val logHandler:TestLogHandler	= new TestLogHandler
 }
 
 class TestLogHandler extends DefaultLogHandler {

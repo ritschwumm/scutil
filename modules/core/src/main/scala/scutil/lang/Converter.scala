@@ -67,15 +67,15 @@ object Converter {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def ConverterApplicative[E,S](implicit E:Semigroup[E]):Applicative[Converter[E,S,*]]	=
-		new Applicative[Converter[E,S,*]] {
+	implicit def ConverterApplicative[E,S](implicit E:Semigroup[E]):Applicative[Converter[E,S,_]]	=
+		new Applicative[Converter[E,S,_]] {
 			override def pure[A](it:A):Converter[E,S,A]												= Converter pure it
 			override def ap[A,B](func:Converter[E,S,A=>B])(its:Converter[E,S,A]):Converter[E,S,B]	= func ap its
 		}
 
 	/*
-	implicit def ConverterMonad[E,S]:Monad[Converter[E,S,*]]	=
-		new Monad[Converter[E,S,*]] {
+	implicit def ConverterMonad[E,S]:Monad[Converter[E,S,_]]	=
+		new Monad[Converter[E,S,_]] {
 			override def pure[A](it:A):Converter[E,S,A]													= Converter pure it
 			override def map[A,B](it:Converter[E,S,A])(func:A=>B):Converter[E,S,B]						= it map func
 			override def flatMap[A,B](it:Converter[E,S,A])(func:A=>Converter[E,S,B]):Converter[E,S,B]	= it flatMap func
@@ -127,7 +127,7 @@ abstract class Converter[E,S,T] {
 	def as[U](it:U):Converter[E,S,U]	=
 		map(constant(it))
 
-	def ap[U,V](that:Converter[E,S,U])(implicit ev:T=>U=>V, cc:Semigroup[E]):Converter[E,S,V]	=
+	def ap[U,V](that:Converter[E,S,U])(implicit ev: T <:< (U=>V), cc:Semigroup[E]):Converter[E,S,V]	=
 		it => (this convert it map ev) ap (that convert it)
 
 	def product[U](that:Converter[E,S,U])(implicit cc:Semigroup[E]):Converter[E,S,(T,U)] =

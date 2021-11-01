@@ -88,7 +88,7 @@ final case class IoResource[T](open:Io[(T,Io[Unit])]) {
 	final def map[U](func:T=>U):IoResource[U]	=
 		flatMap(func andThen IoResource.pure)
 
-	final def ap[U,V](that:IoResource[U])(implicit ev:T=>U=>V):IoResource[V]	=
+	final def ap[U,V](that:IoResource[U])(implicit ev: T <:< (U=>V)):IoResource[V]	=
 		map2(that) { (t,u) => t(u) }
 
 	final def product[U](that:IoResource[U]):IoResource[(T,U)]	=

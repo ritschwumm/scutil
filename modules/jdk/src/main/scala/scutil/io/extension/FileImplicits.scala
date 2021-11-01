@@ -15,7 +15,7 @@ object FileImplicits extends FileImplicits
 trait FileImplicits {
 	/** utility methods for java File objects */
 	implicit final class FileExt(peer:File) {
-		private implicit def mkFileFilter(predicate:File=>Boolean) =
+		private implicit def mkFileFilter(predicate:File=>Boolean):FileFilter =
 			new PredicateFileFilter(predicate)
 
 		//------------------------------------------------------------------------------
@@ -77,8 +77,8 @@ trait FileImplicits {
 		/** the path upwards from another File to this File */
 		def containsRecursive(that:File):Option[Seq[String]]	= {
 			def loop(test:File, path:Seq[String]):Option[Seq[String]]	=
-					 if (test == null)	None
-				else if (test == peer)	Some(path)
+				if		(test == null)	None
+				else if	(test == peer)	Some(path)
 				else					loop(test.getParentFile, test.getName +: path)
 			loop(that, Vector.empty)
 		}
@@ -142,20 +142,20 @@ trait FileImplicits {
 
 		/** copy this File over another */
 		def copyTo(to:File, force:Boolean=false):Unit = {
-			 if (!to.exists) {
+			if (!to.exists) {
 				to.createNewFile()
-			 }
-			 new FileInputStream(peer).getChannel use { source =>
-				 new FileOutputStream(to).getChannel use { target =>
-					 var position	= 0L
-					 while (position < source.size) {
-						 position	+= target.transferFrom(source, 0, source.size-position)
-					 }
-					 if (force) {
-						 target force true
-					 }
-				 }
-			 }
+			}
+			new FileInputStream(peer).getChannel use { source =>
+				new FileOutputStream(to).getChannel use { target =>
+					var position	= 0L
+					while (position < source.size) {
+						position	+= target.transferFrom(source, 0, source.size-position)
+					}
+					if (force) {
+						target force true
+					}
+				}
+			}
 		}
 
 		/** delete all children and the file itself */

@@ -54,7 +54,7 @@ trait IterableImplicits {
 			(peer map func).toMap
 
 		/** like flatten, but avoiding the dubious Option=>Iterable implicit */
-		def flattenOption[U](implicit ev:T=>Option[U], factory:Factory[U,CC[U]]):CC[U]	=
+		def flattenOption[U](implicit ev: T <:< Option[U], factory:Factory[U,CC[U]]):CC[U]	=
 			mapFilter(ev)
 
 		/** like flatMap, but avoiding the dubious Option=>Iterable implicit  */
@@ -69,7 +69,7 @@ trait IterableImplicits {
 		}
 
 		// NOTE this does not exist in cats
-		def flattenOptionFirst[U](implicit ev:T=>Option[U]):Option[U]	=
+		def flattenOptionFirst[U](implicit ev: T <:< Option[U]):Option[U]	=
 			collectFirstSome(ev)
 
 		/**
@@ -107,7 +107,7 @@ trait IterableImplicits {
 		// NOTE these should be generalized to other AFs, not just Option and Tried
 		// NOTE supplying pure and flatMap of a Monad would work, too!
 
-		def sequenceOption[U](implicit ev:T=>Option[U], factory:Factory[U,CC[U]]):Option[CC[U]]	=
+		def sequenceOption[U](implicit ev: T <:< Option[U], factory:Factory[U,CC[U]]):Option[CC[U]]	=
 			traverseOption(ev)
 
 		def traverseOption[U](func:T=>Option[U])(implicit factory:Factory[U,CC[U]]):Option[CC[U]]	= {
@@ -122,7 +122,7 @@ trait IterableImplicits {
 			Some(builder.result())
 		}
 
-		def sequenceEither[F,W](implicit ev:T=>Either[F,W], factory:Factory[W,CC[W]]):Either[F,CC[W]]	=
+		def sequenceEither[F,W](implicit ev: T <:< Either[F,W], factory:Factory[W,CC[W]]):Either[F,CC[W]]	=
 			traverseEither(ev)
 
 		def traverseEither[F,W](func:T=>Either[F,W])(implicit factory:Factory[W,CC[W]]):Either[F,CC[W]]	= {
@@ -138,7 +138,7 @@ trait IterableImplicits {
 		}
 
 		/** peer is traversable (in the haskell sense), Validated is an idiom. */
-		def sequenceValidated[F,W](implicit ev:T=>Validated[F,W], factory:Factory[W,CC[W]], cc:Semigroup[F]):Validated[F,CC[W]]	=
+		def sequenceValidated[F,W](implicit ev:T <:< Validated[F,W], factory:Factory[W,CC[W]], cc:Semigroup[F]):Validated[F,CC[W]]	=
 			traverseValidated(ev)
 
 		/** peer is traversable (in the haskell sense), Validated is an idiom. */
@@ -164,7 +164,7 @@ trait IterableImplicits {
 			}
 		}
 
-		def sequenceState[S,U](implicit ev:T=>State[S,U], factory:Factory[U,CC[U]]):State[S,CC[U]]	=
+		def sequenceState[S,U](implicit ev: T <:< State[S,U], factory:Factory[U,CC[U]]):State[S,CC[U]]	=
 			traverseState(ev)
 
 		def traverseState[S,U](func:T=>State[S,U])(implicit factory:Factory[U,CC[U]]):State[S,CC[U]]	=
@@ -183,23 +183,23 @@ trait IterableImplicits {
 	}
 
 	implicit final class IterableOpsExt[CC[_],T](peer:IterableOps[T,CC,CC[T]]) {
-		def partitionEither[U,V](implicit ev:T=>Either[U,V]):(CC[U],CC[V])			= peer partitionMap ev
-		def partitionValidated[U,V](implicit ev:T=>Validated[U,V]):(CC[U],CC[V])	= peer partitionMap { it => ev(it).toEither }
+		def partitionEither[U,V](implicit ev: T <:< Either[U,V]):(CC[U],CC[V])			= peer partitionMap ev
+		def partitionValidated[U,V](implicit ev: T <:< Validated[U,V]):(CC[U],CC[V])	= peer partitionMap { it => ev(it).toEither }
 
 		/** pair elements of a collection with a function applied to an element */
 		def fproduct[U](func:T=>U):CC[(T,U)]	= peer map { it => (it, func(it)) }
 	}
 
-	implicit final class IterableWithOpsExt[CC[_] <: Iterable[_],T](peer:IterableOps[T,CC,CC[T]]) {
+	implicit final class IterableWithOpsExt[CC[_] <: Iterable[?],T](peer:IterableOps[T,CC,CC[T]]) {
 		/** all Lefts if there is at least one, else all Rights */
-		def validateEither[F,W](implicit ev:T=>Either[F,W]):Either[CC[F],CC[W]]	= {
+		def validateEither[F,W](implicit ev:T <:< Either[F,W]):Either[CC[F],CC[W]]	= {
 			val (lefts, rights)	= peer.partitionEither
 			if (lefts.isEmpty)	Right(rights)
 			else				Left(lefts)
 		}
 
 		/** all Invalids if there is at least one, else all Valids */
-		def validateValidated[F,W](implicit ev:T=>Validated[F,W]):Validated[CC[F],CC[W]]	= {
+		def validateValidated[F,W](implicit ev: T <:< Validated[F,W]):Validated[CC[F],CC[W]]	= {
 			val (invalids, valids)	= peer.partitionValidated
 			if (invalids.isEmpty)	Validated.valid(valids)
 			else					Validated.invalid(invalids)

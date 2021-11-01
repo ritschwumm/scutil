@@ -38,13 +38,13 @@ object EitherT {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def EitherTDelay[F[_]:Delay,L]:Delay[EitherT[F,L,*]]	=
-		new Delay[EitherT[F,L,*]] {
+	implicit def EitherTDelay[F[_]:Delay,L]:Delay[EitherT[F,L,_]]	=
+		new Delay[EitherT[F,L,_]] {
 			override def delay[R](it: =>R):EitherT[F,L,R]	= EitherT delay it
 		}
 
-	implicit def EitherTMonad[F[_]:Monad,L]:Monad[EitherT[F,L,*]]	=
-		new Monad[EitherT[F,L,*]] {
+	implicit def EitherTMonad[F[_]:Monad,L]:Monad[EitherT[F,L,_]]	=
+		new Monad[EitherT[F,L,_]] {
 			override def pure[R](it:R):EitherT[F,L,R]												= EitherT right it
 			override def map[R,RR](it:EitherT[F,L,R])(func:R=>RR):EitherT[F,L,RR]					= it map func
 			override def flatMap[R,RR](it:EitherT[F,L,R])(func:R=>EitherT[F,L,RR]):EitherT[F,L,RR]	= it flatMap func
@@ -73,7 +73,7 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 			}
 		)
 
-	def flatten[RR](implicit ev:R=>EitherT[F,L,RR], M:Monad[F]):EitherT[F,L,RR]	=
+	def flatten[RR](implicit ev: R <:< EitherT[F,L,RR], M:Monad[F]):EitherT[F,L,RR]	=
 		flatMap(ev)
 
 	//------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 			}
 		)
 
-	def leftFlatten[LL](implicit ev:L=>EitherT[F,LL,R], M:Monad[F]):EitherT[F,LL,R]	=
+	def leftFlatten[LL](implicit ev: L <:< EitherT[F,LL,R], M:Monad[F]):EitherT[F,LL,R]	=
 		leftFlatMap(ev)
 
 	//------------------------------------------------------------------------------
