@@ -208,7 +208,7 @@ trait EitherImplicits {
 				case Right(x)	=> x
 			}
 
-		def getOrThrow(func: L <:< Throwable):R	=
+		def getOrThrow(func:L=>Throwable):R	=
 			peer match {
 				case Left(x)	=> throw func(x)
 				case Right(x)	=> x
