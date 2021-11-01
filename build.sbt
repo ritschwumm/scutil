@@ -5,7 +5,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.204.0",
+	version			:= "0.205.0",
 
 	scalaVersion	:= "2.13.5",
 	scalacOptions	++= Seq(
@@ -23,7 +23,7 @@ inThisBuild(Seq(
 	conflictManager	:= ConflictManager.strict withOrganization "^(?!(org\\.scala-lang|org\\.scala-js)(\\..*)?)$",
 	resolvers 		+= Resolver sonatypeRepo "releases",
 
-	addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.3" cross CrossVersion.full),
+	addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.12.0" cross CrossVersion.full),
 
 	wartremoverErrors	++= Seq(
 		Wart.AsInstanceOf,
@@ -120,7 +120,7 @@ lazy val `scutil-core`	=
 		),
 		libraryDependencies	++= Seq(
 			"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-			"io.monix"			%%	"minitest"		% "2.9.3"				% "test"
+			"io.monix"			%%	"minitest"		% "2.9.6"				% "test"
 		),
 		testFrameworks	+= new TestFramework("minitest.runner.Framework"),
 		Compile / boilerplateSource	:= baseDirectory.value.getParentFile / "src" / "main" / "boilerplate"
@@ -146,7 +146,7 @@ lazy val `scutil-jdk`	=
 		),
 		libraryDependencies	++= Seq(
 			"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
-			"io.monix"			%%	"minitest"		% "2.9.3"				% "test"
+			"io.monix"			%%	"minitest"		% "2.9.6"				% "test"
 		),
 		testFrameworks	+= new TestFramework("minitest.runner.Framework"),
 
@@ -199,7 +199,7 @@ lazy val `scutil-xml`	=
 			// "-language:experimental.macros",
 		),
 		libraryDependencies	++= Seq(
-			"org.scala-lang.modules"	%% "scala-xml"	% "1.3.0"	% "compile"
+			"org.scala-lang.modules"	%% "scala-xml"	% "2.0.0"	% "compile"
 		)
 	)
 	.dependsOn(

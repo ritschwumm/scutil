@@ -5,10 +5,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 import scutil.lang._
 
 object SimpleWorker {
-	@deprecated("use create", "0.204.0")
-	def ioResource(name:String, priority:Int, action:Io[Boolean]):IoResource[Unit]	=
-		create(name, priority, action)
-
 	def create(name:String, priority:Int, action:Io[Boolean]):IoResource[Unit]	=
 		IoResource.unsafe.disposing {
 			// used in addition to checking the interrupted status to prevent

@@ -3,9 +3,10 @@ package scutil.geom
 object IntSpan {
 	val zero	= new IntSpan(0, 0)
 
-	def startSize(start:Int, size:Int):IntSpan	= new IntSpan(start, size)
-	def endSize(end:Int, size:Int):IntSpan		= new IntSpan(end - size, size)
-	def startEnd(start:Int, end:Int):IntSpan	= new IntSpan(start, end-start)
+	def startSize(start:Int, size:Int):IntSpan		= new IntSpan(start, size)
+	def endSize(end:Int, size:Int):IntSpan			= new IntSpan(end - size, size)
+	def startEnd(start:Int, end:Int):IntSpan		= new IntSpan(start, end-start)
+	def centerSize(center:Int, size:Int):IntSpan	= new IntSpan(center - size, size)
 }
 
 final class IntSpan private (val start:Int, val size:Int) {

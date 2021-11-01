@@ -53,6 +53,9 @@ final case class DoublePoint(x:Double, y:Double) {
 	def length:Double	= smath sqrt lengthQ
 	def lengthQ:Double	= x*x + y*y
 
+	def distance(that:DoublePoint):Double	= (that - this).length
+	def distanceQ(that:DoublePoint):Double	= (that - this).lengthQ
+
 	def rotate(angle:Double):DoublePoint	= {
 		val	s	= smath sin angle
 		val	c	= smath cos angle
