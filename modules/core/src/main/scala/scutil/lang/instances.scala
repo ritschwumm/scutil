@@ -33,6 +33,9 @@ trait instances extends instancesLow {
 	//------------------------------------------------------------------------------
 	//## builting Semigroup/Monoid
 
+	implicit val UnitMonoid:Monoid[Unit]	=
+		Monoid.instance((), (_,_)=>())
+
 	implicit val StringMonoid:Monoid[String]	=
 		Monoid.instance("", _ + _)
 

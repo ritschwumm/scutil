@@ -29,17 +29,5 @@ final case class IoDisposer(toIo:Io[Unit]) {
 	 * in case of exceptions, the first occuring one is thrown, if a second occurs it's addSuppressed to the first
 	 */
 	final def combine(that:IoDisposer):IoDisposer	=
-		IoDisposer(
-			for {
-				thisEither	<-	this.toIo.attempt
-				thatEither	<-	that.toIo.attempt
-				result		<-	(thisEither, thatEither) match {
-									case (Left(thisError),	Left(thatError))	=> Io.raiseWithSecondary(thisError, thatError)
-									case (Left(thisError),	_)					=> Io.raise(thisError)
-									case (_,				Left(thatError))	=> Io.raise(thatError)
-									case (_,				_)					=> Io.unit
-							}
-			}
-			yield result
-		)
+		IoDisposer(this.toIo.guarantee(that.toIo))
 }

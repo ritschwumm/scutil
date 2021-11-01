@@ -25,14 +25,6 @@ final case class Execution(submit:(()=>Unit)=>Unit) {
 		thunk { out.take().throwException }
 	}
 
-	@deprecated("use Execution.wrapIoResource", "0.203.0")
-	def wrapUsing[T](using:Using[T]):Using[T]	=
-		() => {
-			val (resource, disposer)	= withResult{ () => using.open() }()
-			val disposer2	= Disposer delay { withResult{ () => disposer.dispose() }() }
-			resource -> disposer2
-		}
-
 	def wrapIoResource[T](resource:IoResource[T]):IoResource[T]	=
 		IoResource(
 			Io delay {

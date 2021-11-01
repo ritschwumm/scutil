@@ -61,23 +61,19 @@ object IoResource {
 }
 
 final case class IoResource[T](open:Io[(T,Io[Unit])]) {
+	@deprecated("wrap in IoDisposer manually or combine disposals with Io#guarantee", "0.204.0")
 	final def openDisposer:Io[(T,IoDisposer)]	=
 		open map { case (t, disposer) => (t, IoDisposer(disposer)) }
 
-	// TODO this is questionable
 	final def openVoid:Io[Io[Unit]]	=
 		open map (_._2)
 
-	// TODO this is questionable
+	@deprecated("wrap in IoDisposer manually or combine disposals with Io#guarantee", "0.204.0")
 	final def openVoidDisposer:Io[IoDisposer]	=
 		openDisposer map (_._2)
 
 	final def useVoid:Io[Unit]	=
 		use(_ => Io.unit)
-
-	@deprecated("use useDelay", "0.203.0")
-	final def unsafeUse[U](handler:T=>U):Io[U]	=
-		useDelay(handler)
 
 	final def useDelay[U](handler:T=>U):Io[U]	=
 		use(it => Io.delay(handler(it)))

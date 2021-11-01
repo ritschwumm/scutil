@@ -133,6 +133,19 @@ sealed trait Io[T] {
 	final def rethrow[U](implicit ev:T=>Either[Exception,U]):Io[U]	=
 		Io.FlatMap(this, (it:T) => Io.fromEither(ev(it)))
 
+	def guarantee(cleanup:Io[Unit]):Io[T]	=
+		for {
+			thisEither	<-	this.attempt
+			thatEither	<-	cleanup.attempt
+			result		<-	(thisEither, thatEither) match {
+								case (Left(thisError),	Left(thatError))	=> Io.raiseWithSecondary(thisError, thatError)
+								case (Left(thisError),	_)					=> Io.raise(thisError)
+								case (_,				Left(thatError))	=> Io.raise(thatError)
+								case (Right(thisOut),	_)					=> Io.pure(thisOut)
+						}
+		}
+		yield result
+
 	final def toResponder:Responder[T]	=
 		Responder { cont =>
 			cont(unsafeRun())
