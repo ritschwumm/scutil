@@ -3,7 +3,7 @@ package scutil.lang
 import minitest._
 
 sealed trait PrismSuper
-	  case object	PrismObject			extends PrismSuper
+case object			PrismObject			extends PrismSuper
 final case class	PrismClass(a:Int)	extends PrismSuper
 
 object PrismGenTest extends SimpleTestSuite {

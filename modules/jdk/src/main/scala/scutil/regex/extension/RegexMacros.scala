@@ -2,25 +2,28 @@ package scutil.regex.extension
 
 import java.util.regex.PatternSyntaxException
 
-import scala.reflect.macros.blackbox.Context
+import scala.quoted.*
+import scala.util.matching.Regex
 
-private final class RegexMacros(val c:Context) {
-	import c.universe._
+private object RegexMacros {
+	def re(context:Expr[StringContext])(using Quotes):Expr[Regex]	= {
+		import quotes.reflect.*
 
-	def reImpl():c.Tree	=
-		c.prefix.tree match {
-			case Apply(_, List(Apply(_, List(Literal(Constant(str:String))))))	=>
-				try {
-					str.r
-					q"${str}.r"
-				}
-				catch { case e:PatternSyntaxException =>
-					c.abort(
-						c.enclosingPosition,
-						s"invalid regex literal ${str} at index ${e.getIndex.toString}: ${e.getDescription.toString}"
-					)
-				}
-			case x =>
-				c.abort(c.enclosingPosition, s"invalid regex literal ${x.toString}")
+		val literal	=
+			context.valueOrAbort.parts match {
+				case Seq(it)	=> it
+				case _			=> report.errorAndAbort("interpolation is not supported")
+			}
+
+		try {
+			literal.r
 		}
+		catch { case e:PatternSyntaxException =>
+			report.errorAndAbort(s"invalid regex literal ${literal} at index ${e.getIndex.toString}: ${e.getDescription.toString}")
+		}
+
+		val text	= Expr(literal)
+
+		'{ $text.r }
+	}
 }

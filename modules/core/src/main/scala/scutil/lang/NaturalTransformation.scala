@@ -7,6 +7,8 @@ object NaturalTransformation {
 		}
 }
 
+// TODO dotty is this just type ~>[A[_], B[_]] = [t] => A[t] => B[t] ?
+
 // aka FunctionK
 trait NaturalTransformation[-F[_],+G[_]] { self =>
 	def apply[A](fa:F[A]):G[A]

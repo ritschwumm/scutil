@@ -1,13 +1,11 @@
 package scutil.number.extension
 
-import scala.language.experimental.macros
-
 import scutil.number.BigRational
 
 object StringContextImplicits extends StringContextImplicits
 
 trait StringContextImplicits {
-	implicit final class NumberStringContextExt(peer:StringContext) {
-		def br():BigRational	= macro BigRationalMacros.brImpl
+	extension (inline peer:StringContext) {
+		inline def br(inline parts:Any*):BigRational	= ${ BigRationalMacros.br('peer) }
 	}
 }

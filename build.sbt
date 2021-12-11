@@ -5,27 +5,21 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.213.0",
+	version			:= "0.214.0",
 
-	scalaVersion	:= "2.13.7",
+	scalaVersion	:= "3.1.0",
 	scalacOptions	++= Seq(
 		"-feature",
 		"-deprecation",
 		"-unchecked",
-		"-Werror",
-		"-Xlint",
-		"-Xsource:3",
-		"-P:kind-projector:underscore-placeholders",
-		"-opt:l:method",
-		"-opt:l:inline",
-		"-opt-inline-from:scutil.**",
+		"-Wunused:all",
+		"-Xfatal-warnings",
+		"-Ykind-projector:underscores",
 	),
 
 	versionScheme	:= Some("early-semver"),
 	conflictManager	:= ConflictManager.strict withOrganization "^(?!(org\\.scala-lang|org\\.scala-js)(\\..*)?)$",
 	resolvers 		+= Resolver sonatypeRepo "releases",
-
-	addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full),
 
 	wartremoverErrors	++= Seq(
 		Wart.AsInstanceOf,
@@ -61,8 +55,8 @@ inThisBuild(Seq(
 lazy val fixConsoleSettings	=
 	Seq(
 		Compile / console / scalacOptions ~= (opts => opts filterNot Set(
-			"-Xlint",
-			"-Werror"
+			"-Wunused:all",
+			"-Xfatal-warnings",
 		))
 	)
 
@@ -121,7 +115,6 @@ lazy val `scutil-core`	=
 			// "-Ymacro-debug-lite",
 		),
 		libraryDependencies	++= Seq(
-			"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
 			"io.monix"			%%	"minitest"		% "2.9.6"				% "test"
 		),
 		testFrameworks	+= new TestFramework("minitest.runner.Framework"),
@@ -147,7 +140,6 @@ lazy val `scutil-jdk`	=
 			// "-Ymacro-debug-lite",
 		),
 		libraryDependencies	++= Seq(
-			"org.scala-lang"	%	"scala-reflect"	% scalaVersion.value	% "provided",
 			"io.monix"			%%	"minitest"		% "2.9.6"				% "test"
 		),
 		testFrameworks	+= new TestFramework("minitest.runner.Framework"),

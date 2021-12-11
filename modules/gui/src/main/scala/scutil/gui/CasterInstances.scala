@@ -1,6 +1,6 @@
 package scutil.gui
 
-import scala.language.reflectiveCalls
+import scala.reflect.Selectable.reflectiveSelectable
 
 import java.beans._
 import java.awt.event._

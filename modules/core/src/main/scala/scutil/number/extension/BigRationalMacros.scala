@@ -2,36 +2,38 @@ package scutil.number.extension
 
 import java.math.{ BigInteger => JBigInteger }
 
-import scala.reflect.macros.blackbox.Context
+import scala.quoted.*
 
 import scutil.number.BigRational
 
-private final class BigRationalMacros(val c:Context) {
-	import c.universe._
+private object BigRationalMacros {
+	def br(context:Expr[StringContext])(using Quotes):Expr[BigRational]	= {
+		import quotes.reflect.*
 
-	// NOTE linter error if private
-	protected implicit val liftJBigInteger:Liftable[JBigInteger]	=
-		Liftable[JBigInteger] { it =>
-			val bar	= it.toByteArray
-			q"new _root_.java.math.BigInteger($bar)"
-		}
+		val literal	=
+			context.valueOrAbort.parts match {
+				case Seq(it)	=> it
+				case _			=> report.errorAndAbort("interpolation is not supported")
+			}
 
-	// NOTE linter error if private
-	protected implicit val liftBigRational:Liftable[BigRational]	=
-		Liftable[BigRational] { it =>
-			val num:JBigInteger	= it.numerator
-			val den:JBigInteger	= it.denominator
-			q"""_root_.scutil.number.BigRational($num, $den).getOrElse(sys error "unexpected zero denominator")"""
-		}
+		val decoded	=
+			BigRational.parse(literal).getOrElse(report.errorAndAbort(s"cannot decode big rational number ${literal}"))
 
-	def brImpl():c.Tree		=
-		c.prefix.tree match {
-			case Apply(_, List(Apply(_, List(Literal(Constant(str:String))))))	=>
-				BigRational parse str match {
-					case Some(value)	=> q"$value"
-					case None			=> c.abort(c.enclosingPosition, s"invalid BigRational literal ${str}")
-				}
-			case x =>
-				c.abort(c.enclosingPosition, s"invalid BigRational literal ${x.toString}")
+		Expr(decoded)
+	}
+
+	private implicit val BigRationalToExpr:ToExpr[BigRational]	= new ToExpr[BigRational] {
+		def apply(it:BigRational)(using Quotes):Expr[BigRational] = {
+			val num	= Expr(it.numerator)
+			val den	= Expr(it.denominator)
+			'{ BigRational.unsafeCreate($num, $den) }
 		}
+	}
+
+	private implicit val JBigIntegerToExpr:ToExpr[JBigInteger] = new ToExpr[JBigInteger] {
+		def apply(it:JBigInteger)(using Quotes):Expr[JBigInteger] = {
+			val value	= Expr(it.toByteArray)
+			'{ new JBigInteger($value) }
+		}
+	}
 }

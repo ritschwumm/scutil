@@ -1,15 +1,13 @@
 package scutil.color.extension
 
-import scala.language.experimental.macros
-
 import scutil.color._
 
 object StringContextImplicits extends StringContextImplicits
 
 trait StringContextImplicits {
 	/** provide string interpolators for web-style hex colors */
-	implicit final class ColorStringContextExt(peer:StringContext) {
-		def rgb():RGB	= macro HexColorMacros.rgbImpl
-		def rgba():RGBA	= macro HexColorMacros.rgbaImpl
+	extension (inline peer:StringContext) {
+		inline def rgb(inline parts:Any*):RGB	= ${ HexColorMacros.rgb('peer) }
+		inline def rgba(inline parts:Any*):RGBA	= ${ HexColorMacros.rgba('peer) }
 	}
 }

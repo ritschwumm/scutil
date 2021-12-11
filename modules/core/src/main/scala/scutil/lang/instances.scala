@@ -121,16 +121,16 @@ trait instances extends instancesLow {
 
 	// TODO do we get this for free with FFunctionFunctor*
 	// NOTE PFunction and FFunction are both just ReaderT/Kleisli
-	implicit def PFunctionFunctor[S]:Functor[Lambda[X => S=>Option[X]]]	=
-		new Functor[Lambda[X => S=>Option[X]]] {
+	implicit def PFunctionFunctor[S]:Functor[[X] =>> S=>Option[X]]	=
+		new Functor[[X] =>> S=>Option[X]] {
 			def map[A,B](it:S=>Option[A])(func:A=>B):S=>Option[B]		= it(_) map func
 		}
 
 	implicit def PFunctionSemigroup[S,T]:Semigroup[S=>Option[T]]	=
 		Semigroup instance (_ orElse _)
 
-	implicit def FFunctionFunctor[F[_]:Functor,S]:Functor[Lambda[X => S=>F[X]]]	=
-		new Functor[Lambda[X => S=>F[X]]] {
+	implicit def FFunctionFunctor[F[_]:Functor,S]:Functor[[X] =>> S=>F[X]]	=
+		new Functor[[X] =>> S=>F[X]] {
 			def map[A,B](it:S=>F[A])(func:A=>B):S=>F[B]	=
 					a => (Functor[F] map it(a))(func)
 		}

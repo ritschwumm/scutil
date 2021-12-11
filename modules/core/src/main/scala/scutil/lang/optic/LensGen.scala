@@ -1,50 +1,90 @@
 package scutil.lang
 
 import scala.language.dynamics
-import scala.language.experimental.macros
-import scala.reflect.macros.whitebox.Context
-
-import scutil.lang.implicits._
+import scala.quoted.*
 
 /** creates lens instances for a case classes' fields */
 object LensGen {
 	def apply[T]	= new LensGen[T]
 }
 
+// NOTE dotty Selectable is not good enough for this
 final class LensGen[T] extends Dynamic {
-	def selectDynamic(propName:String):AnyRef	= macro LensGenImpl.compile[T]
+	// NOTE passing T as a type parameter leads to a compiler error:
+	// Cyclic macro dependencies in .../LensGenTest.scala.
+	inline transparent def selectDynamic(inline name:String):Any	= ${ LensGenImpl.selectImpl('this, 'name) }
 }
 
-private final class LensGenImpl(val c:Context) {
-	import c.universe._
+object LensGenImpl {
+	// NOTE needs a transparent call to make the return type flexible
+	def selectImpl(self:Expr[Any], name:Expr[String])(using quotes:Quotes):Expr[Any] = {
+		import quotes.reflect.*
 
-	def compile[T:c.WeakTypeTag](propName:c.Tree):c.Tree	= {
-		val out:Either[String,Tree]	=
-			for {
-				name			<-	propName
-									.matchOption	{ case Literal(Constant(name:String))	=> name }
-									.toRight		(s"unexpected propName: ${propName.toString}")
-				fieldName		= 	TermName(name)
-				containerType	= 	c.weakTypeOf[T]
-				member			<-	containerType.member(fieldName)
-									.optionBy		{ _ != NoSymbol }
-									.toRight		(s"value ${name} is not a member of ${containerType.toString}")
-				valueType		<-	member.typeSignatureIn(containerType)
-									.matchOption	{ case NullaryMethodType(tpe) => tpe }
-									.toRight		(s"member ${name} of ${containerType.toString} is not a field")
-				containerName	= 	TermName("c$")
-				valueName		= 	TermName("v$")
+		// NOTE this would get us the container type parameter, but that doesn't work, see above
+		//val containerTypeRepr	= TypeRepr.of[T]
+
+		val containerTypeRepr:TypeRepr	=
+			self.asTerm match {
+				case Inlined(_, _, ident) =>
+					ident.tpe.widenTermRefByName match {
+						case AppliedType(_, List(next))	=>
+							next.dealias
+					}
 			}
-			yield q"""
-				_root_.scutil.lang.Lens[$containerType,$valueType](
-					get	= ($containerName:$containerType) => $containerName.$fieldName,
-					set	= ($valueName:$valueType) => ($containerName:$containerType) => $containerName.copy($fieldName=$valueName)
-				)
-			"""
+		val containerTypeSymbol:Symbol	=
+			containerTypeRepr.typeSymbol
 
-		out.cata(
-			c.abort(c.enclosingPosition, _),
-			c untypecheck _
-		)
+		val containerGenericTypeArguments	=
+			containerTypeRepr match {
+				case AppliedType(_, argTypeReprs)	=> argTypeReprs
+				case _								=> Nil
+			}
+
+		val nameValue:String	= name.valueOrAbort
+
+		val caseFieldSymbol:Symbol	=
+			containerTypeSymbol.caseFields.find(it => it.name == nameValue).getOrElse {
+				report.errorAndAbort(
+					s"field ${containerTypeSymbol.fullName}#${name} does not exist",
+					// put the error on the name
+					name.asTerm.pos
+				)
+			}
+
+
+		// NOTE this leads to a different result type - why?
+		//val fieldType =
+		//	containerTypeRepr.select(caseField)
+		val fieldType:TypeRepr =
+			containerTypeRepr.memberType(caseFieldSymbol)
+
+		// TODO dotty check alternatives
+		// def getterTerm(container:Term):Term	= Typed(Select.unique(container, nameValue), fieldType)
+		// def getterTerm(container:Term):Term	= Select.unique(container, nameValue)
+		// NOTE TypeTree.of[T] would work, too
+		//def getterTerm(container:Term):Term	= Typed(Select.unique(container, nameValue), Inferred(fieldType))
+		// NOTE compiles, but doesn't help
+
+		def getterTerm(container:Term):Term	=
+			container.select(caseFieldSymbol)
+
+		def setterTerm(container:Term, value:Term):Term	=
+		 	Select.overloaded(container, "copy", containerGenericTypeArguments, List(NamedArg(caseFieldSymbol.name, value)))
+
+
+		// NOTE we can match on Type value and recover the type's type like this!
+		// @see https://softwaremill.com/scala-3-macros-tips-and-tricks/
+		(containerTypeRepr.asType, fieldType.asType) match { case ('[c], '[f]) =>
+			'{
+				Lens(
+					(s:c) => ${
+						getterTerm('{s}.asTerm).asExprOf[f]
+					},
+					(t:f) => (s:c) => ${
+						setterTerm('{s}.asTerm, '{t}.asTerm).asExprOf[c]
+					}
+				)
+			}
+		}
 	}
 }

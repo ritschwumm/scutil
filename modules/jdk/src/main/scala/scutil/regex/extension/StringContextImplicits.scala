@@ -7,7 +7,7 @@ import scala.util.matching.Regex
 object StringContextImplicits extends StringContextImplicits
 
 trait StringContextImplicits {
-	implicit final class RegexStringContextExt(peer:StringContext) {
-		def re():Regex	= macro RegexMacros.reImpl
+	extension (inline peer:StringContext) {
+		inline def re(inline parts:Any*):Regex	= ${ RegexMacros.re('peer) }
 	}
 }

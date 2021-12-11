@@ -2,7 +2,6 @@ package scutil.lang.extension
 
 import java.util.{ Optional => JOptional }
 
-import scala.annotation.nowarn
 import scala.collection.Factory
 import scala.collection.generic.IsIterable
 
@@ -58,15 +57,12 @@ trait OptionImplicits {
 				case None			=> (None,		None)
 			}
 
-		// TODO dotty use iter.A instead of the type member in these
-
 		@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
-		def flatMapMany[U,Repr](func:T=>Repr)(implicit iter:IsIterable[Repr] { type A = U }, factory:Factory[U,Repr]):Repr	=
+		def flatMapMany[Repr](func:T=>Repr)(implicit iter:IsIterable[Repr], factory:Factory[iter.A,Repr]):Repr	=
 			peer.map(func).flattenMany
 
 		@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
-		@nowarn("msg=parameter value iter in method flattenMany is never used")
-		def flattenMany[U](implicit iter:IsIterable[T] { type A = U }, factory:Factory[U,T]):T	=
+		def flattenMany(implicit iter:IsIterable[T], factory:Factory[iter.A,T]):T	=
 			peer.getOrElse(factory.newBuilder.result())
 
 		//------------------------------------------------------------------------------

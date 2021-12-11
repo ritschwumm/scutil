@@ -1,35 +1,36 @@
 package scutil.lang
 
-import scala.language.experimental.macros
-import scala.reflect.macros.blackbox.Context
-
 import java.io.File
+import java.nio.file.Path
 
-import scutil.lang.tc._
+import scala.quoted.*
 
 object SourceLocation {
-	implicit def sourceLocation:SourceLocation	= macro sourceLocationImpl
+	implicit inline def sourceLocation:SourceLocation	=  ${sourceLocationImpl}
 
-	def sourceLocationImpl(c:Context):c.Tree	= {
-		import c.universe._
-		val pos	= c.macroApplication.pos
-		// NOTE pos.column expands tab chars as 8 columns
-		// pos.source.file.path
-		// pos pointOrElse -1
-		val path	=
-			Option(pos.source.file.file) map { file =>
-				(new File(".").toURI relativize file.toURI).getPath
-			}
-		q"_root_.scutil.lang.SourceLocation($path, ${pos.source.file.name}, ${pos.line})"
+	private def sourceLocationImpl(using quotes:Quotes):Expr[SourceLocation]	= {
+		import quotes.reflect.*
+
+		val pos = Position.ofMacroExpansion
+
+		// @see https://scala-lang.org/api/3.x/scala/quoted/Quotes$reflectModule$PositionMethods.html
+		// path, start, end, startLine, endLine, startColumn, endColumn, sourceCode
+		val path	= Expr(pos.sourceFile.getJPath.map(relative))
+		val name	= Expr(pos.sourceFile.name)
+		val line	= Expr(pos.startLine + 1)
+
+		'{ SourceLocation($path, $name, $line) }
 	}
 
-	implicit val SourceLocationShow:Show[SourceLocation]	= Show.toStringInstance
+	// TODO dotty we should probably use Path.relativize here
+	private def relative(path:Path):String	=
+		new File(".").toURI.relativize(path.toUri).getPath
 }
 
 final case class SourceLocation(
 	path:Option[String],
 	name:String,
-	line:Int
+	line:Int,
 ) {
-	override def toString:String	= name + ":" + line.toString
+	override def toString:String	= name + ":" + line.toString + s" (${path})"
 }

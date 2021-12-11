@@ -123,3 +123,4 @@ object HexNumberMacrosTest extends SimpleTestSuite {
 	}
 	*/
 }
+

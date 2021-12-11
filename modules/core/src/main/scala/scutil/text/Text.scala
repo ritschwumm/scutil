@@ -19,11 +19,12 @@ object Text {
 					out append '\n'
 					col	= 0
 				case '\t'	=>
-					do {
+					while {
 						out append ' '
 						col	+= 1
+						col % width != 0
 					}
-					while (col % width != 0)
+					do ()
 				case x	=>
 					out append x
 					col	+= 1

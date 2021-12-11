@@ -88,7 +88,7 @@ object Converter {
 
 // Kleisli[Validated[E,_],S,T]
 abstract class Converter[E,S,T] {
-	@inline final def apply(s:S):Validated[E,T]	= convert(s)
+	inline final def apply(s:S):Validated[E,T]	= convert(s)
 
 	def convert(s:S):Validated[E,T]
 

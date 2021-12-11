@@ -53,3 +53,4 @@ object SourceLocationTest extends SimpleTestSuite {
 	private def xxx(implicit loc:SourceLocation, x:Check):SourceLocation	= { val _ = x; loc }
 	private def yyy(implicit x:Check, loc:SourceLocation):SourceLocation	= { val _ = x; loc }
 }
+

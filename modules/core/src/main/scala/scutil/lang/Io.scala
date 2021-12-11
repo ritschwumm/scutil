@@ -75,7 +75,6 @@ object Io extends IoInstancesLow {
 
 sealed trait Io[T] {
 	@tailrec
-	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 	final def unsafeRun():T	=
 		this match {
 			case Io.Pure(value)		=> value
@@ -86,16 +85,16 @@ sealed trait Io[T] {
 					case Io.Pure(value)				=> func2(value)
 					case Io.Raise(error)			=> throw error
 					case Io.Suspend(thunk)			=> func2(thunk())
-					case Io.Map(base1, func1)		=> Io.Map(base1, func1 andThen func2).asInstanceOf[Io[T]].unsafeRun()
-					case Io.FlatMap(base1, func1)	=> Io.FlatMap(base1, (it:Any) => Io.Map(func1(it), func2)).asInstanceOf[Io[T]].unsafeRun()
+					case Io.Map(base1, func1)		=> Io.Map(base1, func1 andThen func2).unsafeRun()
+					case Io.FlatMap(base1, func1)	=> Io.FlatMap(base1, it => Io.Map(func1(it), func2)).unsafeRun()
 				}
 			case Io.FlatMap(base2, func2)	=>
 				base2 match {
 					case Io.Pure(value)				=> func2(value).unsafeRun()
 					case Io.Raise(error)			=> throw error
 					case Io.Suspend(thunk)			=> func2(thunk()).unsafeRun()
-					case Io.Map(base1, func1)		=> Io.FlatMap(base1, func1 andThen func2).asInstanceOf[Io[T]].unsafeRun()
-					case Io.FlatMap(base1, func1)	=> Io.FlatMap(base1, (it:Any) => Io.FlatMap(func1(it), func2)).asInstanceOf[Io[T]].unsafeRun()
+					case Io.Map(base1, func1)		=> Io.FlatMap(base1, func1 andThen func2).unsafeRun()
+					case Io.FlatMap(base1, func1)	=> Io.FlatMap(base1, it => Io.FlatMap(func1(it), func2)).unsafeRun()
 				}
 		}
 

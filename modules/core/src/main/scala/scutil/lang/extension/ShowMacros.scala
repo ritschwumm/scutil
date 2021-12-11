@@ -1,38 +1,49 @@
 package scutil.lang.extension
 
-import scala.reflect.macros.blackbox.Context
+import scala.quoted.*
 
-private final class ShowMacros(val c:Context) {
-	import c.universe._
+import scutil.lang.tc.Show
 
-	def showImpl(args:c.Expr[Any]*):c.Expr[String]	=
-		c.prefix.tree match {
-			case Apply(_, List(Apply(_, literals)))	=>
-				// literals are a Seq of Literal(Constant(String))
-				val escapeds:Seq[c.Tree]	=
-						literals map {
-							case Literal(const@Constant(raw:String)) =>
-								val escaped	=
-										try {
-											StringContext processEscapes raw
-										}
-										catch { case e:Exception =>
-											// TODO have a better position here
-											c.abort(c.enclosingPosition, e.getMessage)
-										}
-								q"""$escaped"""
-							case x	=>
-								c.abort(c.enclosingPosition,  s"expected a string literal, found ${x.toString}")
-						}
+object ShowMacros {
+	def show(context:Expr[StringContext], args:Expr[Seq[Any]])(using Quotes):Expr[String]	= {
+		import quotes.reflect.*
 
-				val inserts:Seq[c.Tree]		= args	map { expr => q"""_root_.scutil.lang.tc.Show.doit($expr)""" }
+		/*
+		// NOTE probably not needed, we just use the standard s interpolator
+		val literals	=
+			context.valueOrAbort.parts map { raw =>
+				try {
+					StringContext processEscapes raw
+				}
+				catch { case e:Exception =>
+					// TODO have a better position here
+					report.errorAndAbort(s"failed to escape part: ${e.getMessage}")
+				}
+			}
+		*/
 
-				@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-				val parts:Seq[c.Tree]		= (escapeds zip inserts flatMap { case (lit, ins) => Seq(lit, ins) }) :+ q"""${escapeds.last}"""
-				@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-				val full:c.Tree				= parts reduce { (a, b) => q"""$a + $b""" }
-				c.Expr[String](full)
-			case x =>
-				c.abort(c.enclosingPosition, s"expected a string literal, found ${x.toString}")
+		val varArgs	=
+			args match {
+				case Varargs(x)	=> x
+				case _			=> report.errorAndAbort("expected varargs")
+			}
+
+		val shown	=
+			varArgs map { case '{ $arg: typ } =>
+				/*
+				// NOTE for an invariant show, this requires widening
+				val t = TypeRepr.of[typ].widen
+				println(s"### type ${t} dealias ${t.dealias} widen ${t.widen} simplified ${t.simplified}")
+				*/
+
+				val instance	=
+					Expr.summon[Show[typ]].getOrElse(report.errorAndAbort(s"cannot summon an instance of ${Type.show[Show[typ]]}", arg))
+
+				'{ $instance.show($arg) }
+			}
+
+		val varShown = Varargs(shown)
+
+		'{ $context.s($varShown: _*) }
 	}
 }

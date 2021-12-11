@@ -152,17 +152,14 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		if (items.nonEmpty)	Nes(this.head, this.tail ++ items)
 		else				this
 
-	@inline
-	def ++[U>:T](that:Nes[U]):Nes[U]	=
+	inline def ++[U>:T](that:Nes[U]):Nes[U]	=
 		this concat that
 
-	@inline
-	def :+[U>:T](item:U):Nes[U]	=
+	inline def :+[U>:T](item:U):Nes[U]	=
 		this append item
 
-	@inline
-	def +:[U>:T](item:U):Nes[U]	=
-			this prepend item
+	inline def +:[U>:T](item:U):Nes[U]	=
+		this prepend item
 
 	def updatedBy[U>:T](index:Int, func:U=>U):Option[Nes[U]]	=
 		if (containsIndex(index)) {

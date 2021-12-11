@@ -198,13 +198,13 @@ final class ByteString private (private val value:Array[Byte]) {
 			loop(0)
 		}
 
-	@inline def ++(that:ByteString):ByteString	=
+	inline def ++(that:ByteString):ByteString	=
 		this concat that
 
-	@inline def +:(that:Byte):ByteString	=
+	inline def +:(that:Byte):ByteString	=
 		this prepend that
 
-	@inline def :+(that:Byte):ByteString	=
+	inline def :+(that:Byte):ByteString	=
 		this append that
 
 	def concat(that:ByteString):ByteString	=

@@ -1,5 +1,7 @@
 package scutil.lang
 
+import scala.reflect.*
+
 import scutil.lang.tc._
 
 object Prism {
@@ -34,7 +36,8 @@ object Prism {
 
 	//------------------------------------------------------------------------------
 
-	val Gen	 = PrismGen
+	def Gen[S,T<:S](using tt:TypeTest[S,T]):Prism[S,T]	=
+		Prism(tt.unapply, Predef.identity)
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances

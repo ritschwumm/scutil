@@ -14,7 +14,7 @@ object Show {
 	def doit[T](value:T)(implicit S:Show[T]):String	= S show value
 }
 
-trait Show[T] {
+trait Show[-T] {
 	def show(it:T):String
 
 	def contraMap[S](func:S=>T):Show[S]	=

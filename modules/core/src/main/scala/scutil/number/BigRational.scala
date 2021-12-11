@@ -69,6 +69,12 @@ object BigRational {
 	//## typeclass instances
 
 	implicit val BigRationalShow:Show[BigRational]	= Show.toStringInstance
+
+	//------------------------------------------------------------------------------
+
+	// do not use this unless you are really really sure the denominator is non-zero
+	def unsafeCreate(numerator:JBigInteger, denominator:JBigInteger):BigRational =
+		new BigRational(numerator, denominator)
 }
 
 /** an immutable, auto-simplifying BigInteger fraction */

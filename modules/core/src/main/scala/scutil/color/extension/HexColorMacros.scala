@@ -1,35 +1,46 @@
 package scutil.color.extension
 
-import scala.reflect.macros.blackbox.Context
+import scala.quoted.*
 
 import scutil.color._
 
-private final class HexColorMacros(val c:Context) {
-	import c.universe._
+private object HexColorMacros {
+	def rgb(context:Expr[StringContext])(using Quotes):Expr[RGB]	= {
+		import quotes.reflect.*
 
-	def rgbImpl():c.Tree	=
-		c.prefix.tree match {
-			case Apply(_, List(Apply(_, List(Literal(Constant(str:String))))))	=>
-				RGB parseHex str match {
-					case Some(RGB(r, g, b))	=>
-						q"_root_.scutil.color.RGB($r, $g, $b)"
-					case None	=>
-						c.abort(c.enclosingPosition, s"invalid rgb literal ${str}")
-				}
-			case x =>
-				c.abort(c.enclosingPosition, s"invalid rgb literal ${x.toString}")
-		}
+		val literal	=
+			context.valueOrAbort.parts match {
+				case Seq(it)	=> it
+				case _			=> report.errorAndAbort("interpolation is not supported")
+			}
 
-	def rgbaImpl():c.Tree	=
-		c.prefix.tree match {
-			case Apply(_, List(Apply(_, List(Literal(Constant(str:String))))))	=>
-				RGBA parseHex str match {
-					case Some(RGBA(RGB(r, g, b),Alpha(a)))	=>
-						q"_root_.scutil.color.RGBA(_root_.scutil.color.RGB($r, $g, $b), _root_.scutil.color.Alpha($a))"
-					case None	=>
-						c.abort(c.enclosingPosition, s"invalid rgba literal ${str}")
-				}
-			case x =>
-				c.abort(c.enclosingPosition, s"invalid rgb literal ${x.toString}")
-		}
+		val decoded	=
+			RGB.parseHex(literal).getOrElse(report.errorAndAbort(s"cannot decode rgb value ${literal}"))
+
+		val r	= Expr(decoded.r)
+		val g	= Expr(decoded.g)
+		val b	= Expr(decoded.b)
+
+		'{ RGB($r, $g, $b) }
+	}
+
+	def rgba(context:Expr[StringContext])(using Quotes):Expr[RGBA]	= {
+		import quotes.reflect.*
+
+		val literal	=
+			context.valueOrAbort.parts match {
+				case Seq(it)	=> it
+				case _			=> report.errorAndAbort("interpolation is not supported")
+			}
+
+		val decoded	=
+			RGBA.parseHex(literal).getOrElse(report.errorAndAbort(s"cannot decode rgba value ${literal}"))
+
+		val r	= Expr(decoded.r)
+		val g	= Expr(decoded.g)
+		val b	= Expr(decoded.b)
+		val a	= Expr(decoded.a)
+
+		'{ RGBA(RGB($r, $g, $b), Alpha($a)) }
+	}
 }

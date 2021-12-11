@@ -6,6 +6,33 @@ final case class Foo(a:Int, b:String)
 final case class Bar[T](t:T)
 
 object LensGenTest extends SimpleTestSuite {
+	val  L1 = Lens.Gen[Foo]
+
+	test("LensGen should work as an object") {
+		val container	= Foo(4711, "hallo")
+		val lens		= L1.a
+		assertEquals(
+			lens get container,
+			4711
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
+	type X = Foo
+	val  L2 = Lens.Gen[X]
+
+	test("LensGen should work as an object constructed through a type parameter") {
+		val container	= Foo(4711, "hallo")
+		val lens		= L2.a
+		assertEquals(
+			lens get container,
+			4711
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
 	test("LensGen should work with simple case class getters") {
 		val container	= Foo(4711, "hallo")
 		val lens		= Lens.Gen[Foo].a

@@ -39,13 +39,11 @@ final class URIComponent(charset:Charset) {
 		out.toString
 	}
 
-	@inline
-	private def encodeNibble(nibble:Int):Char =
+	inline private def encodeNibble(nibble:Int):Char =
 		if (nibble < 10)	(nibble + '0'		).toChar
 		else				(nibble + 'A' - 10	).toChar
 
-	@inline
-	private def safe(byte:Int):Boolean =
+	inline private def safe(byte:Int):Boolean =
 		byte >= 'a' && byte <= 'z'	||
 		byte >= 'A' && byte <= 'Z'	||
 		byte >= '0' && byte <= '9'	||

@@ -1,24 +1,27 @@
 package scutil.lang.extension
 
-import scala.language.experimental.macros
-
 object StringContextImplicits extends StringContextImplicits
 
 trait StringContextImplicits {
 	implicit final class LangStringContextExt(peer:StringContext) {
-		/** provide string interpolator for hex bytes */
-		def byte():Byte		= macro HexNumberMacros.byteImpl
-		/** provide string interpolator for hex bytes */
-		def short():Short	= macro HexNumberMacros.shortImpl
-		/** provide string interpolator for hex bytes */
-		def int():Int		= macro HexNumberMacros.intImpl
-		/** provide string interpolator for hex bytes */
-		def long():Long		= macro HexNumberMacros.longImpl
-
 		/** provide a string interpolator "so" that allows nothing but String in $ escapes */
 		def so(args:String*):String		= peer.s(args:_*)
+	}
+
+	extension (inline peer:StringContext) {
+		/** provide string interpolator for hex bytes */
+		inline def byte(inline parts:Any*):Byte		= ${ HexNumberMacros.byte('peer) }
+
+		/** provide string interpolator for hex bytes */
+		inline def short(inline parts:Any*):Short	= ${ HexNumberMacros.short('peer) }
+
+		/** provide string interpolator for hex bytes */
+		inline def int(inline parts:Any*):Int		= ${ HexNumberMacros.int('peer) }
+
+		/** provide string interpolator for hex bytes */
+		inline def long(inline parts:Any*):Long		= ${ HexNumberMacros.long('peer) }
 
 		/** provide a string interpolator "show" that requires a Show instance for all arguments */
-		def show(args:Any*):String	= macro ShowMacros.showImpl
+		inline def show(inline parts:Any*):String	= ${ ShowMacros.show('peer, 'parts) }
 	}
 }
