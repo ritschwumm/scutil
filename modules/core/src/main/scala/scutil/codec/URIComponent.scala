@@ -1,12 +1,12 @@
 package scutil.codec
 
-import java.nio.charset._
+import java.nio.charset.*
 
 import scala.collection.mutable
 
-import scutil.lang._
-import scutil.lang.extension.CharsetImplicits._
-import scutil.lang.extension.EitherImplicits._
+import scutil.lang.*
+import scutil.lang.extension.CharsetExtensions.*
+import scutil.lang.extension.EitherExtensions.*
 
 object URIComponent {
 	val utf_8	= forCharset(Charsets.utf_8)

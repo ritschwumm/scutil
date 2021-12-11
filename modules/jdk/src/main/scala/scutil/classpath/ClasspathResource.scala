@@ -1,12 +1,12 @@
 package scutil.classpath
 
 import java.net.URL
-import java.io._
+import java.io.*
 import java.nio.charset.Charset
 
-import scutil.core.implicits._
-import scutil.io.implicits._
-import scutil.lang._
+import scutil.core.implicits.*
+import scutil.io.implicits.*
+import scutil.lang.*
 
 final case class ClasspathResource(url:URL) {
 	def utf8Lines:Seq[String]	=

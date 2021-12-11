@@ -1,7 +1,7 @@
 package scutil.color
 
-import scutil.lang._
-import scutil.codec._
+import scutil.lang.*
+import scutil.codec.*
 
 object RGBA {
 	val transparentBlack	= RGBA(RGB.black, Alpha.transparent)

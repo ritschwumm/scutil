@@ -1,7 +1,7 @@
 package scutil.text
 
-import scutil.text.extension._
+import scutil.text.extension.*
 
 object extensions {
-	export StringTokenizerImplicits.*
+	export StringTokenizerExtensions.*
 }

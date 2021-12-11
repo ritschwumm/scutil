@@ -3,7 +3,7 @@ package scutil.platform
 import java.io.File
 import java.nio.charset.Charset
 
-import scutil.lang._
+import scutil.lang.*
 
 object Platform {
 	def lineSeparator:String	=

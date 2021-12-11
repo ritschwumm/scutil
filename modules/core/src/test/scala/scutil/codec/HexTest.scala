@@ -1,8 +1,8 @@
 package scutil.codec
 
-import minitest._
+import minitest.*
 
-import scutil.lang._
+import scutil.lang.*
 
 @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
 object HexTest extends SimpleTestSuite {

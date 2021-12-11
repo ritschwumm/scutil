@@ -1,6 +1,6 @@
 package scutil.time
 
-import minitest._
+import minitest.*
 
 object GregorianDateComparisonTest extends SimpleTestSuite {
 	test("GregorianDate should compare equal days correctly") {

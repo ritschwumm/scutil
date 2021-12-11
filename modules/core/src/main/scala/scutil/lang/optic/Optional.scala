@@ -1,6 +1,6 @@
 package scutil.lang
 
-import scutil.lang.tc._
+import scutil.lang.tc.*
 
 object Optional {
 	def partial[S,T](get:PartialFunction[S,T], set:T=>S):Optional[S,T] =

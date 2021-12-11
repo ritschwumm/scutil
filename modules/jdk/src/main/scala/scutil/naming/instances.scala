@@ -1,7 +1,7 @@
 package scutil.naming
 
-import javax.naming._
-import javax.naming.directory._
+import javax.naming.*
+import javax.naming.directory.*
 
 import scala.util.Using.Releasable
 

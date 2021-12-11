@@ -3,7 +3,7 @@ package scutil.gui
 import java.awt.GridBagConstraints
 import java.awt.Insets
 
-import scutil.core.implicits._
+import scutil.core.implicits.*
 
 object GridBagDSL {
 	def GBC = new GridBagConstraints
@@ -76,7 +76,7 @@ object GridBagDSL {
 }
 
 final class GridBagDSL(peer:GridBagConstraints) {
-	import GridBagDSL._
+	import GridBagDSL.*
 
 	def pos(x:GridBagConstraintsPosition, y:GridBagConstraintsPosition):GridBagConstraints	= modified { c => c.gridx		= x.v;	c.gridy			= y.v	}
 	def size(x:GridBagConstraintsSize, y:GridBagConstraintsSize):GridBagConstraints			= modified { c => c.gridwidth	= x.v;	c.gridheight	= y.v	}

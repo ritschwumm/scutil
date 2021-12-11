@@ -1,6 +1,6 @@
 package scutil.lang
 
-import minitest._
+import minitest.*
 
 object IoDisposerTest extends SimpleTestSuite {
 	test("a combined Disposer should execute both actions in order") {

@@ -1,6 +1,6 @@
 package scutil.bit
 
-import minitest._
+import minitest.*
 
 object BitTest extends SimpleTestSuite {
 	test("unsigned should work for positive bytes") {

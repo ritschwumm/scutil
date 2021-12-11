@@ -1,7 +1,7 @@
 package scutil.time
 
-import scutil.lang.tc._
-import scutil.math.functions._
+import scutil.lang.tc.*
+import scutil.math.functions.*
 
 object GregorianDate {
 	val epoch	= GregorianDate(1, 1, 1970)

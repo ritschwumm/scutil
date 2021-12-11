@@ -2,7 +2,7 @@ package scutil.bit
 
 import java.lang.{ Double	=> JDouble }
 
-import minitest._
+import minitest.*
 
 object DoubleUtilTest extends SimpleTestSuite {
 	test("DoubleUtil should detect normal") {

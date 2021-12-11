@@ -3,10 +3,10 @@ package scutil.gui
 import javax.swing.SwingUtilities
 import javax.swing.Timer
 
-import scutil.core.implicits._
-import scutil.lang._
-import scutil.concurrent._
-import scutil.time._
+import scutil.core.implicits.*
+import scutil.lang.*
+import scutil.concurrent.*
+import scutil.time.*
 
 object SwingUtil {
 	def insideEdt:Boolean	= SwingUtilities.isEventDispatchThread

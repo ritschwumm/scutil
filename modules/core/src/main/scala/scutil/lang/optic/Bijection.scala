@@ -2,9 +2,9 @@ package scutil.lang
 
 import scala.deriving.Mirror
 
-import scutil.lang.tc._
+import scutil.lang.tc.*
 
-object Bijection extends BijectionLow {
+object Bijection {
 	def identity[T]:Bijection[T,T]	=
 		Bijection(Predef.identity, Predef.identity)
 
@@ -13,8 +13,6 @@ object Bijection extends BijectionLow {
 			it	=> it._1,
 			it	=> Tuple1(it)
 		)
-
-	//------------------------------------------------------------------------------
 
 	// special case for zero elements: convert to Unit instead of EmptyTuple
 	def zero[S<:Product](using m:Mirror.ProductOf[S] { type MirroredElemTypes = EmptyTuple }):Bijection[S,Unit]	=
@@ -35,56 +33,12 @@ object Bijection extends BijectionLow {
 			s => Tuple.fromProductTyped(s)(using m),
 			t => m.fromProduct(t)
 		)
-
-	//------------------------------------------------------------------------------
-
-	/** creates bijections for case classes and case objects */
-	def Gen[S<:Product]	= new BijectionGen[S]
-
-	final class BijectionGen[S<:Product] {
-		// TODO dotty requires () which sucks, but removing the parameter list does not help
-		def apply[T]()(using it:Summoned[Bijection[S,T]]):Bijection[S,T]	= it.value
-	}
-
-	//------------------------------------------------------------------------------
-
-	// special case for zero elements: convert to Unit instead of EmptyTuple
-	given Zero[S<:Product](using m:ProductAux[S,EmptyTuple]):Summoned[Bijection[S,Unit]]	=
-		Summoned(
-			Bijection(
-				s => Tuple.fromProductTyped(s)(using m),
-				_ => m.fromProduct(EmptyTuple)
-			)
-		)
-
-	// special case for single elements: return the value itself instead of a Tuple1
-	given One[S<:Product,T](using m:ProductAux[S,Tuple1[T]]):Summoned[Bijection[S,T]]	=
-		Summoned(
-			Bijection(
-				s => Tuple.fromProductTyped(s)(using m)(0),
-				t => m.fromProduct(t *: EmptyTuple)
-			)
-		)
-}
-
-trait BijectionLow {
-	protected type ProductAux[S<:Product,T]	= Mirror.ProductOf[S] { type MirroredElemTypes = T }
-
-	given More[S<:Product,T<:Tuple](using m:ProductAux[S,T]):Summoned[Bijection[S,T]]	=
-		Summoned(
-			Bijection(
-				s => Tuple.fromProductTyped(s)(using m),
-				t => m.fromProduct(t)
-			)
-		)
-
-	protected final case class Summoned[T](value:T)
 }
 
 final case class Bijection[S,T](get:S=>T, set:T=>S) {
 	// can be used as scala function and extractor
-	def apply(t:T):S			= set(t)
-	def unapply(s:S):Some[T]	= Some(get(s))
+	def apply(t:T):S	= set(t)
+	def unapply(s:S):T	= get(s)
 
 	//------------------------------------------------------------------------------
 

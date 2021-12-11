@@ -1,9 +1,9 @@
 package scutil.log
 
-import scutil.core.implicits._
-import scutil.jtime.implicits._
-import scutil.lang._
-import scutil.time._
+import scutil.core.implicits.*
+import scutil.jtime.implicits.*
+import scutil.lang.*
+import scutil.time.*
 
 object DefaultLogFormatter extends DefaultLogFormatter
 

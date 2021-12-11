@@ -1,6 +1,6 @@
 package scutil.lang
 
-import minitest._
+import minitest.*
 
 object ValidatedTest extends SimpleTestSuite {
 	type E = Nes[String]

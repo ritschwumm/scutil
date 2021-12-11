@@ -2,7 +2,7 @@ package scutil.bit
 
 import java.lang.{ Float	=> JFloat }
 
-import minitest._
+import minitest.*
 
 object FloatUtilTest extends SimpleTestSuite {
 	test("FloatUtil should detect normal") {

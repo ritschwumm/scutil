@@ -1,8 +1,8 @@
 package scutil.regex
 
-import minitest._
+import minitest.*
 
-import scutil.regex.implicits._
+import scutil.regex.implicits.*
 
 object RegexTest extends SimpleTestSuite {
 	test("regex macro should just work") {

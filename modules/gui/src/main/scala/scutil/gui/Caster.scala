@@ -1,6 +1,6 @@
 package scutil.gui
 
-import scutil.lang._
+import scutil.lang.*
 
 abstract class Caster[L,E] private[gui] (
 	addListener:Effect[L],

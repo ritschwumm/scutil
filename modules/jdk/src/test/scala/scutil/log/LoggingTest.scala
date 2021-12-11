@@ -1,6 +1,6 @@
 package scutil.log
 
-import minitest._
+import minitest.*
 
 trait TestLogging extends Logging {
 	override val logHandler:TestLogHandler	= new TestLogHandler

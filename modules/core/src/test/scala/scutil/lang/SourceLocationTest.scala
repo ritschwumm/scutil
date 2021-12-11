@@ -1,6 +1,6 @@
 package scutil.lang
 
-import minitest._
+import minitest.*
 
 @SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
 object SourceLocationTest extends SimpleTestSuite {

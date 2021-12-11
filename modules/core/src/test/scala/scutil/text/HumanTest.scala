@@ -1,6 +1,6 @@
 package scutil.text
 
-import minitest._
+import minitest.*
 
 object HumanTest extends SimpleTestSuite {
 	test("Human should full decode multiple binary units") {

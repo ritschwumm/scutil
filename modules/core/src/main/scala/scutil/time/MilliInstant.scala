@@ -2,8 +2,8 @@ package scutil.time
 
 import scala.math.Ordered
 
-import scutil.lang._
-import scutil.lang.tc._
+import scutil.lang.*
+import scutil.lang.tc.*
 
 object MilliInstant {
 	def zero:MilliInstant	= MilliInstant(0)

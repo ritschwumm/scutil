@@ -1,9 +1,9 @@
 package scutil.gui
 
-import java.awt._
-import java.awt.geom._
+import java.awt.*
+import java.awt.geom.*
 
-import scutil.geom._
+import scutil.geom.*
 
 object geomConversion {
 	def IntPoint_Point(it:IntPoint):Point			= new Point(it.x, it.y)

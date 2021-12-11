@@ -2,8 +2,8 @@ package scutil.guid
 
 import java.util.concurrent.atomic.AtomicInteger
 
-import scutil.lang._
-import scutil.codec._
+import scutil.lang.*
+import scutil.codec.*
 
 protected abstract class GuidBase {
 	def fresh[F[_]:Delay]:F[String]	=

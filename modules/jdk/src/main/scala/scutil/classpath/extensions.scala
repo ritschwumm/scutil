@@ -1,8 +1,8 @@
 package scutil.classpath
 
-import scutil.classpath.extension._
+import scutil.classpath.extension.*
 
 object extensions {
-	export ClassClasspathImplicits.*
-	export ClassLoaderClasspathImplicits.*
+	export ClassClasspathExtensions.*
+	export ClassLoaderClasspathExtensions.*
 }

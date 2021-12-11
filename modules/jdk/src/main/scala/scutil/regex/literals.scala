@@ -1,7 +1,7 @@
 package scutil.regex
 
-import scutil.regex.extension._
+import scutil.regex.extension.*
 
 object literals {
-	export StringContextImplicits.*
+	export RegexLiterals.*
 }

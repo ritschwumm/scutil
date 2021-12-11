@@ -2,7 +2,7 @@ package scutil.lang.tc
 
 import scutil.lang.Nes
 
-import scutil.lang.extension.PFunctionImplicits._
+import scutil.lang.extension.PFunctionExtensions.*
 
 object Semigroup extends SemigroupLow {
 	def apply[F](using ev:Semigroup[F]):Semigroup[F]	= ev

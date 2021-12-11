@@ -1,6 +1,6 @@
 package scutil.log
 
-import scutil.time._
+import scutil.time.*
 
 object LogTime {
 	/** measure how much time a calculation took */

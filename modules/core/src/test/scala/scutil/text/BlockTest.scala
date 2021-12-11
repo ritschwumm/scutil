@@ -1,8 +1,8 @@
 package scutil.text
 
-import minitest._
+import minitest.*
 
-import scutil.text.literals._
+import scutil.text.literals.*
 
 object BlockTest extends SimpleTestSuite {
 	test("cooked Block interpolator should apply escape codes") {

@@ -1,6 +1,6 @@
 package scutil.lang
 
-import minitest._
+import minitest.*
 
 final case class Foo(a:Int, b:String)
 final case class Bar[T](t:T)

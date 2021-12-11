@@ -1,8 +1,8 @@
 package scutil.codec
 
-import minitest._
+import minitest.*
 
-import scutil.lang._
+import scutil.lang.*
 
 object Base64Test extends SimpleTestSuite {
 	test("Base64 should handle roundtripping 0 bytes at all") {

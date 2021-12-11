@@ -1,6 +1,6 @@
 package scutil.lang.tc
 
-import scutil.lang.extension.OptionImplicits._
+import scutil.lang.extension.OptionExtensions.*
 
 object Monoid extends MonoidLow {
 	def apply[F](using ev:Monoid[F]):Monoid[F]	= ev

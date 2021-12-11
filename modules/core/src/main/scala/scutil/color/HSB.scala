@@ -1,6 +1,6 @@
 package scutil.color
 
-import scala.math._
+import scala.math.*
 
 object HSB {
 	val white	= HSB(0,0,1)

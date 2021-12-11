@@ -1,9 +1,9 @@
 package scutil.math
 
-import scutil.math.extension._
+import scutil.math.extension.*
 
 object extensions {
-	export OrderedImplicits.*
-	export OrderingImplicits.*
-	export OrderingSyntaxImplicits.*
+	export OrderedExtensions.*
+	export OrderingExtensions.*
+	export OrderingSyntaxExtensions.*
 }

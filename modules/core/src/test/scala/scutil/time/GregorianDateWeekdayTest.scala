@@ -1,6 +1,6 @@
 package scutil.time
 
-import minitest._
+import minitest.*
 
 object GregorianDateWeekdayTest extends SimpleTestSuite {
 	test("GregorianDate should have the correct week day") {

@@ -1,7 +1,7 @@
 package scutil.lang
 
-import scutil.core.implicits._
-import scutil.lang.tc._
+import scutil.core.implicits.*
+import scutil.lang.tc.*
 
 object WriterT {
 	def pure[F[_],L:Monoid,T](it:T)(using M:Applicative[F]):WriterT[F,L,T]	=

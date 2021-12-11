@@ -1,7 +1,7 @@
 package scutil.gui
 
-import java.awt.event._
-import javax.swing.event._
+import java.awt.event.*
+import javax.swing.event.*
 
 object AdapterInstances {
 	//------------------------------------------------------------------------------

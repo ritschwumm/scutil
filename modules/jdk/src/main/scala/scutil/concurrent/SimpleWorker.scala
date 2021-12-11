@@ -2,7 +2,7 @@ package scutil.concurrent
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import scutil.lang._
+import scutil.lang.*
 
 object SimpleWorker {
 	def create(name:String, priority:Int, action:Io[Boolean]):IoResource[Unit]	=

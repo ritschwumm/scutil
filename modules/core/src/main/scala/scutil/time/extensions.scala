@@ -1,7 +1,7 @@
 package scutil.time
 
-import scutil.time.extension._
+import scutil.time.extension.*
 
 object extensions {
-	export LongImplicits.*
+	export LongExtensions.*
 }

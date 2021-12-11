@@ -4,9 +4,9 @@ import java.lang.{ Integer => JInteger, Long => JLong }
 import java.lang.management.ManagementFactory
 import java.net.NetworkInterface
 
-import scutil.lang._
-import scutil.core.implicits._
-import scutil.jdk.implicits._
+import scutil.lang.*
+import scutil.core.implicits.*
+import scutil.jdk.implicits.*
 
 object MachineId {
 	lazy val integer:Int	=

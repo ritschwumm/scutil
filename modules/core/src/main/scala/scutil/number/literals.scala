@@ -1,7 +1,7 @@
 package scutil.number
 
-import scutil.number.extension._
+import scutil.number.extension.*
 
 object literals {
-	export StringContextImplicits.*
+	export BigRationalLiterals.*
 }

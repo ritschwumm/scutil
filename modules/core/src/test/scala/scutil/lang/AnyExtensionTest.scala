@@ -1,8 +1,8 @@
 package scutil.lang
 
-import minitest._
+import minitest.*
 
-import scutil.core.implicits._
+import scutil.core.implicits.*
 
 object AnyExtensionTest extends SimpleTestSuite {
 	test("one puts into a Vector") {

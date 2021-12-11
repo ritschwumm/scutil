@@ -1,6 +1,6 @@
 package scutil.lang
 
-import scutil.lang.tc._
+import scutil.lang.tc.*
 
 object Ior {
 	def left[A,B](a:A):Ior[A,B]			= Left(a)

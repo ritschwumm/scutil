@@ -1,9 +1,9 @@
 package scutil.gui
 
 import java.awt.{ AWTEvent, Toolkit }
-import java.awt.event._
+import java.awt.event.*
 
-import scutil.lang._
+import scutil.lang.*
 
 object GlobalAWTEvent {
 	// TODO using this is a Using

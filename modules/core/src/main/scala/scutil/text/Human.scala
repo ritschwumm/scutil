@@ -2,8 +2,8 @@ package scutil.text
 
 import java.util.Locale
 
-import scutil.lang._
-import scutil.core.implicits._
+import scutil.lang.*
+import scutil.core.implicits.*
 
 /** format (positive) numbers in a human readable way */
 object Human {

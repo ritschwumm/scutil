@@ -1,9 +1,9 @@
 package scutil.lang.tc
 
-import minitest._
+import minitest.*
 
-import scutil.core.implicits.{ given, _ }
-import scutil.lang._
+import scutil.core.implicits.{ given, * }
+import scutil.lang.*
 
 object ApplicativeTest extends SimpleTestSuite {
 	test("map2 in the zip order when zippy") {

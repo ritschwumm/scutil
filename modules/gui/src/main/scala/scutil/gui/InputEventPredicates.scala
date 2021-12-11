@@ -1,8 +1,8 @@
 package scutil.gui
 
-import java.awt.event._
+import java.awt.event.*
 
-import scutil.lang._
+import scutil.lang.*
 
 object InputEventPredicates {
 	//------------------------------------------------------------------------------

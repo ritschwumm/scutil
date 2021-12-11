@@ -1,12 +1,12 @@
 package scutil.jtime
 
-import java.util._
-import java.text._
+import java.util.*
+import java.text.*
 import java.time.Instant
-import java.time.format._
+import java.time.format.*
 
-import scutil.lang._
-import scutil.time._
+import scutil.lang.*
+import scutil.time.*
 
 object JTimeUtil {
 	def milliInstantToGregorianDate(instant:MilliInstant, tz:TimeZone):GregorianDate	= {

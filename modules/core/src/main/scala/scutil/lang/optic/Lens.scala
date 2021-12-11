@@ -1,6 +1,6 @@
 package scutil.lang
 
-import scutil.lang.tc._
+import scutil.lang.tc.*
 
 object Lens {
 	def identity[T]:Lens[T,T]	=

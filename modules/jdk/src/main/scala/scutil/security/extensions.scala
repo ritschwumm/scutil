@@ -1,7 +1,7 @@
 package scutil.security
 
-import scutil.io.extension._
+import scutil.io.extension.*
 
 object extensions {
-	export MessageDigestImplicits.*
+	export MessageDigestExtensions.*
 }

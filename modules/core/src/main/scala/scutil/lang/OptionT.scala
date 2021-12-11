@@ -1,6 +1,6 @@
 package scutil.lang
 
-import scutil.lang.tc._
+import scutil.lang.tc.*
 
 object OptionT {
 	def some[F[_]:Applicative,T](it:T):OptionT[F,T]					= fromOption(Some(it))

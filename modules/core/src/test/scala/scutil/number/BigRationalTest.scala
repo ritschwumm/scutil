@@ -1,14 +1,14 @@
 package scutil.number
 
-import minitest._
+import minitest.*
 
 import java.math.{
 	BigDecimal	=> JBigDecimal,
 	BigInteger	=> JBigInteger
 }
 
-import scutil.lang.implicits._
-import scutil.number.implicits._
+import scutil.lang.implicits.*
+import scutil.number.implicits.*
 
 object BigRationalTest extends SimpleTestSuite {
 	test("bigrational macros should compile") {

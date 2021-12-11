@@ -2,7 +2,7 @@ package scutil.lang
 
 import  scala.util.Using.Releasable
 
-import scutil.lang.tc._
+import scutil.lang.tc.*
 
 object IoResource {
 	def pure[T](value:T):IoResource[T]	=

@@ -1,7 +1,9 @@
 package scutil.lang
 
-import scutil.lang.extension._
+import scutil.lang.extension.*
 
 object literals {
-	export StringContextImplicits.*
+	export StringContextExtensions.*
+	export HexNumberLiterals.*
+	export ShowLiterals.*
 }

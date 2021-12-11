@@ -1,6 +1,6 @@
 package scutil.lang
 
-import scutil.lang.tc._
+import scutil.lang.tc.*
 
 // TODO 213 PartialFunction will have unapply there, do we still need this?
 object Extractor {

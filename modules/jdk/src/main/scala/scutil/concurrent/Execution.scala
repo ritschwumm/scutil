@@ -1,9 +1,9 @@
 package scutil.concurrent
 
-import java.util.concurrent._
+import java.util.concurrent.*
 
-import scutil.lang._
-import scutil.lang.implicits._
+import scutil.lang.*
+import scutil.lang.implicits.*
 
 object Execution {
 	val ignore:Execution	= Execution { task	=> ()		}
@@ -11,7 +11,7 @@ object Execution {
 	val thread:Execution	= Execution { task	=> new Thread(task.toRunnable).start()	}
 	val daemon:Execution	= Execution { task	=> new Thread(task.toRunnable).doto( _ setDaemon true).start() }
 
-	// BETTER move into JExecutorImplicits ?
+	// BETTER move into some JExecutorExtensions ?
 	def fromExecutor(executor:Executor):Execution	= Execution { task => executor execute task.toRunnable }
 }
 

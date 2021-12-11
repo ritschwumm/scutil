@@ -6,8 +6,8 @@ import java.net.URL
 import java.net.Proxy
 import java.util.Properties
 
-import scutil.core.implicits._
-import scutil.jdk.implicits._
+import scutil.core.implicits.*
+import scutil.jdk.implicits.*
 
 object PropertiesUtil {
 	def empty:Properties	= new Properties

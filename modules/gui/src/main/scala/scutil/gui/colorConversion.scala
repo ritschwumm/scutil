@@ -2,7 +2,7 @@ package scutil.gui
 
 import java.awt.Color
 
-import scutil.color._
+import scutil.color.*
 
 object colorConversion {
 	def RGB_Color(it:RGB):Color		= new Color(it.r, it.g, it.b)

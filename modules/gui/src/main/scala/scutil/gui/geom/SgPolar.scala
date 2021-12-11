@@ -1,6 +1,6 @@
 package scutil.gui.geom
 
-import scala.math._
+import scala.math.*
 
 object SgPolar {
 	//------------------------------------------------------------------------------

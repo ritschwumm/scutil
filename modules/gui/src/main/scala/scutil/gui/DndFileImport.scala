@@ -7,10 +7,10 @@ import java.awt.datatransfer.DataFlavor
 import javax.swing.{ JComponent, TransferHandler }
 import javax.swing.TransferHandler.TransferSupport
 
-import scutil.lang._
-import scutil.core.implicits._
-import scutil.jdk.implicits._
-import scutil.gui.implicits._
+import scutil.lang.*
+import scutil.core.implicits.*
+import scutil.jdk.implicits.*
+import scutil.gui.implicits.*
 import scutil.geom.IntPoint
 
 object DndFileImport {

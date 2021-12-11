@@ -1,6 +1,6 @@
 package scutil.lang
 
-import scutil.lang.tc._
+import scutil.lang.tc.*
 
 object State {
 	def pure[S,T](it:T):State[S,T]		= State { s => (s,			it)	}

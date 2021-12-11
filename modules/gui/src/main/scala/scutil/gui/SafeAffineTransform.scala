@@ -3,7 +3,7 @@ package scutil.gui
 import java.awt.{ Shape }
 import java.awt.geom.{ Point2D, AffineTransform, NoninvertibleTransformException }
 
-import scutil.geom._
+import scutil.geom.*
 
 object SafeAffineTransform {
 	//------------------------------------------------------------------------------

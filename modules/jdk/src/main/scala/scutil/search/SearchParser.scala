@@ -2,7 +2,7 @@ package scutil.search
 
 import java.util.Locale
 
-import scutil.core.implicits._
+import scutil.core.implicits.*
 
 /**
 selects String who match a pattern with the following syntax:

@@ -8,8 +8,8 @@ import java.nio.charset.Charset
 
 import scala.collection.mutable
 
-import scutil.lang.tc._
-import scutil.bit._
+import scutil.lang.tc.*
+import scutil.bit.*
 
 object ByteString {
 	val empty:ByteString			= new ByteString(Array.empty)
@@ -114,8 +114,8 @@ object ByteString {
 	def apply(its:Byte*):ByteString	=
 		fromSeq(its)
 
-	def unapplySeq(it:ByteString):Some[Seq[Byte]]	=
-		Some(it.toSeq)
+	def unapplySeq(it:ByteString):Seq[Byte]	=
+		it.toSeq
 
 	//------------------------------------------------------------------------------
 

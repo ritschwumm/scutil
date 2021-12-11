@@ -1,8 +1,8 @@
 package scutil.math
 
-import minitest._
+import minitest.*
 
-import scutil.math.implicits._
+import scutil.math.implicits.*
 
 object MathTest extends SimpleTestSuite {
 	test("Ordering should be contravariant") {

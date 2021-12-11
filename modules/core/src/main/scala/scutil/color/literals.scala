@@ -1,7 +1,7 @@
 package scutil.color
 
-import scutil.color.extension._
+import scutil.color.extension.*
 
 object literals {
-	export StringContextImplicits.*
+	export HexColorLiterals.*
 }

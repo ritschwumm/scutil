@@ -1,8 +1,8 @@
 package scutil.text
 
-import minitest._
+import minitest.*
 
-import scutil.text.extension.StringContextImplicits._
+import scutil.text.extension.StringContextExtensions.*
 
 object TextTest extends SimpleTestSuite {
 	test("stripMarginOnly should pass through blank input") {

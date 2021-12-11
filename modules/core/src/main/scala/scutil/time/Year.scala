@@ -1,7 +1,7 @@
 package scutil.time
 
-import scutil.lang.tc._
-import scutil.math.functions._
+import scutil.lang.tc.*
+import scutil.math.functions.*
 
 object Year {
 	private val longYears:Set[Int]	=

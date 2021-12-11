@@ -2,7 +2,7 @@ package scutil.platform
 
 import java.util.Locale
 import java.io.File
-import scutil.jdk.implicits._
+import scutil.jdk.implicits.*
 
 object OperatingSystem {
 	val	all:Set[OperatingSystem]	= Set(OSX, Windows, Linux)

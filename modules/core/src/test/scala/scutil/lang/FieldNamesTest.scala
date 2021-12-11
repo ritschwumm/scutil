@@ -1,6 +1,6 @@
 package scutil.lang
 
-import minitest._
+import minitest.*
 
 final case class Named1(a:Int)
 final case class Named2(a:Int, b:String)

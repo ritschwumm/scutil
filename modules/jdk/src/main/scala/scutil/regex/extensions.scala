@@ -1,8 +1,8 @@
 package scutil.regex
 
-import scutil.regex.extension._
+import scutil.regex.extension.*
 
 object extensions {
-	export MatcherImplicits.*
-	export RegexImplicits.*
+	export MatcherExtensions.*
+	export RegexExtensions.*
 }

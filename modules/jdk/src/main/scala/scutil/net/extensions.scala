@@ -1,9 +1,9 @@
 package scutil.net
 
-import scutil.net.extension._
+import scutil.net.extension.*
 
 object extensions {
-	export InetAddressImplicits.*
-	export ServerSocketImplicits.*
-	export SocketImplicits.*
+	export InetAddressExtensions.*
+	export ServerSocketExtensions.*
+	export SocketExtensions.*
 }

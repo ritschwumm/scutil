@@ -1,6 +1,6 @@
 package scutil.time
 
-import minitest._
+import minitest.*
 
 object MonthYearTest extends SimpleTestSuite {
 	test("MonthYear should roundtrip index") {

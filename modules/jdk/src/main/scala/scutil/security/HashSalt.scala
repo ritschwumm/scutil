@@ -1,17 +1,17 @@
 package scutil.security
 
-import java.security._
+import java.security.*
 import java.text.Normalizer
 import java.nio.charset.Charset
 
-import scutil.core.implicits._
-import scutil.lang._
+import scutil.core.implicits.*
+import scutil.lang.*
 import scutil.codec.Base64
 
 /*
 object HashSalt {
 	def main(args:Array[String]) {
-		import default._
+		import default.*
 
 		args match {
 			case Array(password)	=>

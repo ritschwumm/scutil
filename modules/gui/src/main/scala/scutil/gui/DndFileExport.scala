@@ -1,15 +1,15 @@
 package scutil.gui
 
-import java.io._
-import java.awt.dnd._
-import java.awt.datatransfer._
-import javax.swing._
+import java.io.*
+import java.awt.dnd.*
+import java.awt.datatransfer.*
+import javax.swing.*
 
-import scutil.lang._
-import scutil.jdk.implicits._
-import scutil.platform._
-import scutil.geom._
-import scutil.gui.implicits._
+import scutil.lang.*
+import scutil.jdk.implicits.*
+import scutil.platform.*
+import scutil.geom.*
+import scutil.gui.implicits.*
 
 object DndFileExport {
 	// TODO using this is a Using

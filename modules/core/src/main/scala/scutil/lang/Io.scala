@@ -2,7 +2,7 @@ package scutil.lang
 
 import scala.annotation.tailrec
 
-import scutil.lang.tc._
+import scutil.lang.tc.*
 
 object Io extends IoInstancesLow {
 	def pure[T](it:T):Io[T]				= Pure(it)

@@ -1,8 +1,8 @@
 package scutil.lang.tc
 
-import minitest._
+import minitest.*
 
-import scutil.lang.tc.MonoidSyntax._
+import scutil.lang.tc.MonoidSyntax.*
 
 object MonoidTest extends SimpleTestSuite {
 	test("monoid should support times 0 on string") {

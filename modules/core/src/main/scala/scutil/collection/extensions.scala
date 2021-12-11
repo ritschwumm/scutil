@@ -1,14 +1,14 @@
 package scutil.collection
 
-import scutil.collection.extension._
+import scutil.collection.extension.*
 
 object extensions {
-	export IteratorImplicits.*
-	export SeqImplicits.*
-	export ListImplicits.*
-	export MapImplicits.*
-	export QueueImplicits.*
-	export SetImplicits.*
-	export IterableImplicits.*
-	export IterableFactoryImplicits.*
+	export IteratorExtensions.*
+	export SeqExtensions.*
+	export ListExtensions.*
+	export MapExtensions.*
+	export QueueExtensions.*
+	export SetExtensions.*
+	export IterableExtensions.*
+	export IterableFactoryExtensions.*
 }

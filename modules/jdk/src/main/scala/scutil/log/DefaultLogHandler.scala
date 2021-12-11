@@ -1,6 +1,6 @@
 package scutil.log
 
-import java.io._
+import java.io.*
 
 object DefaultLogHandler extends DefaultLogHandler
 

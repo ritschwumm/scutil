@@ -2,7 +2,7 @@ package scutil.gui.geom
 
 import java.awt.geom.{ Point2D, Dimension2D }
 
-import scala.math._
+import scala.math.*
 
 import scutil.gui.Dimension2D_Double
 

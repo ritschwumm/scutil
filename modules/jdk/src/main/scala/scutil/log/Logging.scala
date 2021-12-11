@@ -1,6 +1,6 @@
 package scutil.log
 
-import scutil.lang._
+import scutil.lang.*
 import scutil.time.MilliInstant
 
 /** provides a LogHandler and syntax to turn LogLevels into logging methods */

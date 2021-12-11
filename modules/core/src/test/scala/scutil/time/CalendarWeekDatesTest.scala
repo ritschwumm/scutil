@@ -1,6 +1,6 @@
 package scutil.time
 
-import minitest._
+import minitest.*
 
 object CalendarWeekDatesTest extends SimpleTestSuite {
 	test("CalendarWeek should calculate the correct date") {

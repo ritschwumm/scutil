@@ -1,6 +1,6 @@
 package scutil.lang
 
-import scutil.collection.implicits._
+import scutil.collection.implicits.*
 
 object Lenses {
 	def set[T](t:T):Lens[Set[T],Boolean]	=

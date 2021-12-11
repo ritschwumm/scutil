@@ -9,10 +9,10 @@ import java.awt.IllegalComponentStateException
 
 import scala.collection.mutable
 
-import scutil.lang._
-import scutil.core.implicits._
-import scutil.time._
-import scutil.gui.SwingUtil._
+import scutil.lang.*
+import scutil.core.implicits.*
+import scutil.time.*
+import scutil.gui.SwingUtil.*
 
 object ComponentUnderMouse {
 	private type Callback	= Effect[Boolean]
@@ -28,7 +28,7 @@ in contrast to simple mouseEnter/mouseExit events this works when the mouse
 moves fast or something is dragged over the component.
 */
 final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Exception)=>Unit) {
-	import ComponentUnderMouse._
+	import ComponentUnderMouse.*
 
 	private var entries	= new mutable.WeakHashMap[Component,Entry]
 

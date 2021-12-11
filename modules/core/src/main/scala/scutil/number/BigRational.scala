@@ -10,7 +10,7 @@ import java.math.{
 }
 
 import scutil.lang.tc.Show
-import scutil.lang.implicits._
+import scutil.lang.implicits.*
 
 object BigRational {
 	/** additive neutral element */
@@ -51,8 +51,8 @@ object BigRational {
 			(JBigDecimal.ONE scaleByPowerOfTen numerator.scale).toBigInteger
 		)
 
-	def unapply(self:BigRational):Some[(JBigInteger,JBigInteger)] =
-		Some((self.numerator, self.denominator))
+	def unapply(self:BigRational):(JBigInteger,JBigInteger) =
+		(self.numerator, self.denominator)
 
 	//------------------------------------------------------------------------------
 

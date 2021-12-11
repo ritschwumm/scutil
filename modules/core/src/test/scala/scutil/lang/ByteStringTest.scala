@@ -1,8 +1,8 @@
 package scutil.lang
 
-import minitest._
+import minitest.*
 
-import scutil.lang.tc._
+import scutil.lang.tc.*
 
 object ByteStringTest extends SimpleTestSuite {
 	test("ByteString should have a working monoid") {

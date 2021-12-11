@@ -1,11 +1,11 @@
 package scutil.platform
 
-import java.io._
+import java.io.*
 
-import scutil.lang._
-import scutil.core.implicits._
-import scutil.jdk.implicits._
-import scutil.concurrent._
+import scutil.lang.*
+import scutil.core.implicits.*
+import scutil.jdk.implicits.*
+import scutil.concurrent.*
 
 object External {
 	/** execute an external process. */

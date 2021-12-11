@@ -1,6 +1,6 @@
 package scutil.xml
 
-import java.io._
+import java.io.*
 
 import javax.xml.parsers.SAXParserFactory
 
@@ -12,8 +12,8 @@ import scala.xml.dtd.DocType
 import scala.xml.factory.XMLLoader
 import javax.xml.parsers.SAXParser
 
-import scutil.core.implicits._
-import scutil.jdk.implicits._
+import scutil.core.implicits.*
+import scutil.jdk.implicits.*
 import scutil.lang.Charsets
 
 /*

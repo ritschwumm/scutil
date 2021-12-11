@@ -1,6 +1,6 @@
 package scutil.lang
 
-import scutil.lang.tc._
+import scutil.lang.tc.*
 
 object Validated {
 	def valid[E,T](value:T):Validated[E,T]		= Valid(value)

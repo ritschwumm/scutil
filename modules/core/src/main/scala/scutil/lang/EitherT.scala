@@ -1,7 +1,7 @@
 package scutil.lang
 
-import scutil.core.implicits._
-import scutil.lang.tc._
+import scutil.core.implicits.*
+import scutil.lang.tc.*
 
 object EitherT {
 	def right[F[_]:Applicative,L,R](it:R):EitherT[F,L,R]	= fromEither(Either right it)

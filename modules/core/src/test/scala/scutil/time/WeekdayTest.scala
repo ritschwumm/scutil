@@ -1,6 +1,6 @@
 package scutil.time
 
-import minitest._
+import minitest.*
 
 object WeekdayTest extends SimpleTestSuite {
 	test("Weekday should create useful orderings (1)") {

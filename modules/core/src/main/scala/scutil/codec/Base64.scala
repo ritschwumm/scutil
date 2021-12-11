@@ -1,6 +1,6 @@
 package scutil.codec
 
-import scutil.lang._
+import scutil.lang.*
 
 /**
 encodes and decodes byte arrays into strings using the base64 encoding method.

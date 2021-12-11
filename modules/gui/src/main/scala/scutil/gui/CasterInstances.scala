@@ -2,14 +2,14 @@ package scutil.gui
 
 import scala.reflect.Selectable.reflectiveSelectable
 
-import java.beans._
-import java.awt.event._
-import java.awt.dnd._
-import javax.swing.event._
+import java.beans.*
+import java.awt.event.*
+import java.awt.dnd.*
+import javax.swing.event.*
 
-import scutil.lang._
+import scutil.lang.*
 
-import ListenerInstances._
+import ListenerInstances.*
 
 object CasterInstances {
 	//==============================================================================

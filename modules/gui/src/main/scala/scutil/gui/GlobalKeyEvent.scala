@@ -1,9 +1,9 @@
 package scutil.gui
 
 import java.awt.{ KeyboardFocusManager, KeyEventDispatcher }
-import java.awt.event._
+import java.awt.event.*
 
-import scutil.lang._
+import scutil.lang.*
 
 object GlobalKeyEvent {
 	// TODO using this is a Using

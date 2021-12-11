@@ -1,6 +1,6 @@
 package scutil.lang
 
-import scutil.lang.syntaxes._
+import scutil.lang.syntaxes.*
 
 object syntax {
 	export ReleaseableSyntax.*

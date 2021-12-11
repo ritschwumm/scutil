@@ -1,6 +1,6 @@
 package scutil.lang
 
-import minitest._
+import minitest.*
 
 object OptionalTest extends SimpleTestSuite {
 	final case class A(x:String, b:B)

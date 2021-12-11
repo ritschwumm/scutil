@@ -1,7 +1,7 @@
 package scutil.lang
 
-import scutil.lang.implicits._
-import scutil.collection.implicits._
+import scutil.lang.implicits.*
+import scutil.collection.implicits.*
 
 object Optionals {
 	def seq[T](i:Int):Optional[Seq[T],T]	=

@@ -1,6 +1,6 @@
 package scutil.lang
 
-import scutil.lang.tc._
+import scutil.lang.tc.*
 
 object StateT { outer =>
 	def pure[F[_],S,T](it:T)(using F:Applicative[F]):StateT[F,S,T]	=

@@ -1,11 +1,11 @@
 package scutil.jtime
 
-import scutil.jtime.extension._
+import scutil.jtime.extension.*
 
 object extensions {
-	export CalendarImplicits.*
-	export DateImplicits.*
-	export DateFormatImplicits.*
-	export InstantImplicits.*
-	export MilliInstantImplicits.*
+	export CalendarExtensions.*
+	export DateExtensions.*
+	export DateFormatExtensions.*
+	export InstantExtensions.*
+	export MilliInstantExtensions.*
 }

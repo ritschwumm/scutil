@@ -1,9 +1,9 @@
 package scutil.guid
 
-import scala.scalajs.js.typedarray._
+import scala.scalajs.js.typedarray.*
 import org.scalajs.dom.{ ByteString => _, _ }
 
-import scutil.lang._
+import scutil.lang.*
 
 object Guid extends GuidBase {
 	protected def randomBytes(size:Int):ByteString	= {

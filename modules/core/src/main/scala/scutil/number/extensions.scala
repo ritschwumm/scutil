@@ -1,11 +1,11 @@
 package scutil.number
 
-import scutil.number.extension._
+import scutil.number.extension.*
 
 object extensions {
-	export RandomImplicits.*
-	export IntImplicits.*
-	export LongImplicits.*
-	export JBigIntegerImplicits.*
-	export JBigDecimalImplicits.*
+	export RandomExtensions.*
+	export IntExtensions.*
+	export LongExtensions.*
+	export JBigIntegerExtensions.*
+	export JBigDecimalExtensions.*
 }

@@ -1,6 +1,6 @@
 package scutil.codec
 
-import minitest._
+import minitest.*
 
 object URIComponentTest extends SimpleTestSuite {
 	test("URIComponent should roundtrip all usual chars (low)") {

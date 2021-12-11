@@ -5,7 +5,7 @@ object ApplicativeTupleNSyntax extends ApplicativeTupleNSyntax
 trait ApplicativeTupleNSyntax {
 	implicit final class ApplicativeTuple1Syntax[F[_],S1](items:Tuple1[F[S1]]) {
 		def zipN(implicit F:Applicative[F]):F[Tuple1[S1]]	=
-			mapN { (s1) => Tuple1(s1) }
+			mapN(Tuple1.apply)
 
 		def mapN[T](func:(S1)=>T)(implicit F:Applicative[F]):F[T]	=
 			F.map(items._1)(func)
@@ -13,11 +13,11 @@ trait ApplicativeTupleNSyntax {
 
 	[2..#implicit final class ApplicativeTuple1Syntax[F[_],[#S1#]](items:([#F[S1]#])) {
 		def zipN(implicit F:Applicative[F]):F[([#S1#])]	=
-			mapN { ([#s1#]) => ([#s1#]) }
+			mapN(Tuple1.apply)
 
 		def mapN[T](func:([#S1#])=>T)(implicit F:Applicative[F]):F[T]	= {
 			[1..1#val f0	= func.curried
-			val f1	= (F map	items._1)(f0)#]
+			val f1	= F.map(items._1)(f0)#]
 			[2..#val f1	= F.ap(f0)(items._1)#
 			]
 			f1

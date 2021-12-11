@@ -1,9 +1,9 @@
 package scutil.search
 
-import minitest._
+import minitest.*
 
-import scutil.lang._
-import scutil.lang.implicits._
+import scutil.lang.*
+import scutil.lang.implicits.*
 
 object SearchTest extends SimpleTestSuite {
 	def single(s:String):Predicate[String]			= s into SearchParser.parse into SearchCompiler.single

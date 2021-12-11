@@ -1,6 +1,6 @@
 package scutil.time
 
-import minitest._
+import minitest.*
 
 object DateConversionTest extends SimpleTestSuite {
 	test("convert JulianDay 2457700 to GregorianDate 7.11.2016") {

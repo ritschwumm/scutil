@@ -1,8 +1,8 @@
 package scutil.lang
 
-import minitest._
+import minitest.*
 
-import scutil.core.implicits._
+import scutil.core.implicits.*
 
 object StringTest extends SimpleTestSuite {
 	test("string extension should parse 'false' to Boolean") {

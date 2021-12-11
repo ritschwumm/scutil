@@ -1,6 +1,6 @@
 package scutil.lang
 
-import minitest._
+import minitest.*
 
 object DragData {
 	object P {
@@ -11,6 +11,10 @@ object DragData {
 sealed trait DragData
 final case class WorkMove(workId:Int)						extends DragData
 final case class WorkInject(workId:Int, projectId:String)	extends DragData
+
+sealed trait PrismSuper
+case object			PrismObject			extends PrismSuper
+final case class	PrismClass(a:Int)	extends PrismSuper
 
 object PrismTest extends SimpleTestSuite {
 	test("Prism should do write in partial") {
@@ -49,6 +53,47 @@ object PrismTest extends SimpleTestSuite {
 		assertEquals(
 			DragData.P.WorkInject.toOptional.set((1,""))(orig),
 			orig
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
+	test("Prism.subType should get a case object") {
+		val prism					= Prism.subType[PrismSuper,PrismObject.type]
+		val sub:PrismObject.type	= PrismObject
+		val sup:PrismSuper			= sub
+		assertEquals(
+			prism get sup,
+			Some(sub)
+		)
+	}
+
+	test("Prism.subType should put a case object") {
+		val prism					= Prism.subType[PrismSuper,PrismObject.type]
+		val sub:PrismObject.type	= PrismObject
+		val sup:PrismSuper			= sub
+		assertEquals(
+			prism set sub,
+			sup
+		)
+	}
+
+	test("Prism.subType should get a case class") {
+		val prism			= Prism.subType[PrismSuper,PrismClass]
+		val sub:PrismClass	= PrismClass(1)
+		val sup:PrismSuper	= sub
+		assertEquals(
+			prism get sup,
+			Some(sub)
+		)
+	}
+	test("Prism.subType should put a case class") {
+		val prism			= Prism.subType[PrismSuper,PrismClass]
+		val sub:PrismClass	= PrismClass(1)
+		val sup:PrismSuper	= sub
+		assertEquals(
+			prism set sub,
+			sup
 		)
 	}
 }

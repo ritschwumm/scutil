@@ -1,6 +1,6 @@
 package scutil.lang
 
-import minitest._
+import minitest.*
 
 object IoResourceTest extends SimpleTestSuite {
 	test("failing to open a second IoResource inside a first one should dispose the first") {

@@ -2,8 +2,8 @@ package scutil.time
 
 import scala.math.Ordered
 
-import scutil.lang._
-import scutil.lang.tc._
+import scutil.lang.*
+import scutil.lang.tc.*
 import scutil.text.Human
 
 object MilliDuration {

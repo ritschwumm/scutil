@@ -2,7 +2,7 @@ package scutil.lang
 
 import scala.reflect.*
 
-import scutil.lang.tc._
+import scutil.lang.tc.*
 
 object Prism {
 	def partial[S,T](get:PartialFunction[S,T], set:T=>S):Prism[S,T] =
@@ -36,7 +36,11 @@ object Prism {
 
 	//------------------------------------------------------------------------------
 
+	@deprecated("use Prism.subType", "0.217.0")
 	def Gen[S,T<:S](using tt:TypeTest[S,T]):Prism[S,T]	=
+		subType
+
+	def subType[S,T<:S](using tt:TypeTest[S,T]):Prism[S,T]	=
 		Prism(tt.unapply, Predef.identity)
 
 	//------------------------------------------------------------------------------

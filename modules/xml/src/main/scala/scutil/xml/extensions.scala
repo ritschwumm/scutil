@@ -1,8 +1,8 @@
 package scutil.xml
 
-import scutil.xml.extension._
+import scutil.xml.extension.*
 
 object extensions {
-	export ElemImplicits.*
-	export NodeImplicits.*
+	export ElemExtensions.*
+	export NodeExtensions.*
 }

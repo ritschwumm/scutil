@@ -2,7 +2,7 @@ package scutil.gui
 
 import java.awt.image.RGBImageFilter
 
-import scutil.color._
+import scutil.color.*
 
 object ImageFilters {
 	def rgba(func:RGBA=>RGBA):RGBImageFilter	=

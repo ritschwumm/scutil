@@ -1,6 +1,6 @@
 package scutil.lang
 
-import minitest._
+import minitest.*
 
 object IoTest extends SimpleTestSuite {
 	test("Io should flatMap long chains without stack overflow") {

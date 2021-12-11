@@ -1,6 +1,6 @@
 package scutil.log
 
-import scutil.lang._
+import scutil.lang.*
 import scutil.lang.tc.Show
 
 object LogValue {

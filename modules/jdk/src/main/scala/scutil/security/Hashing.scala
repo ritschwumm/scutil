@@ -1,8 +1,8 @@
 package scutil.security
 
-import java.security._
+import java.security.*
 
-import scutil.lang._
+import scutil.lang.*
 
 object Hashing {
 	@throws(classOf[NoSuchAlgorithmException])

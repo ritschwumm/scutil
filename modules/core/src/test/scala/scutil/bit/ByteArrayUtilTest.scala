@@ -1,6 +1,6 @@
 package scutil.bit
 
-import minitest._
+import minitest.*
 
 object ByteArrayUtilTest extends SimpleTestSuite {
 	test("reversing array") {

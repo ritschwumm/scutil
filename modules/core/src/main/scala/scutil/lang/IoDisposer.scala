@@ -1,6 +1,6 @@
 package scutil.lang
 
-import scutil.lang.tc._
+import scutil.lang.tc.*
 
 object IoDisposer {
 	def delay(block: =>Unit):IoDisposer	=

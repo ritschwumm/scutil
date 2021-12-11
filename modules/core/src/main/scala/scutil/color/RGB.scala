@@ -1,9 +1,9 @@
 package scutil.color
 
-import scala.math._
+import scala.math.*
 
-import scutil.lang._
-import scutil.codec._
+import scutil.lang.*
+import scutil.codec.*
 
 object RGB {
 	val white	= RGB(1,1,1)

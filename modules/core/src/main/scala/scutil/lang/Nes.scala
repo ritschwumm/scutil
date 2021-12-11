@@ -2,7 +2,7 @@ package scutil.lang
 
 import scala.collection.IterableFactory
 
-import scutil.lang.tc._
+import scutil.lang.tc.*
 
 object Nes {
 	def pure[T](head:T):Nes[T]	=
@@ -26,8 +26,8 @@ object Nes {
 		def apply[T](head:T, tail:T*):Nes[T]	=
 			Nes(head, tail.toVector)
 
-		def unapplySeq[T](nes:Nes[T]):Some[Seq[T]]	=
-			Some(nes.toVector)
+		def unapplySeq[T](nes:Nes[T]):Seq[T]	=
+			nes.toVector
 	}
 
 	//------------------------------------------------------------------------------

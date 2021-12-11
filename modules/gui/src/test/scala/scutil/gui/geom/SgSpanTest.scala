@@ -1,6 +1,6 @@
 package scutil.gui.geom
 
-import minitest._
+import minitest.*
 
 object SgSpanTest extends SimpleTestSuite {
 	test("SgSpan should intersect nothing when empty") {

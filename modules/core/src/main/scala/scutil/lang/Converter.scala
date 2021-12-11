@@ -1,7 +1,7 @@
 package scutil.lang
 
-import scutil.core.implicits._
-import scutil.lang.tc._
+import scutil.core.implicits.*
+import scutil.lang.tc.*
 
 object Converter {
 	def apply[E,S,T](func:S=>Validated[E,T]):Converter[E,S,T]	=

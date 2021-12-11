@@ -1,6 +1,6 @@
 package scutil.time
 
-import scutil.lang.tc._
+import scutil.lang.tc.*
 
 object CalendarWeek {
 	val days	= 7
