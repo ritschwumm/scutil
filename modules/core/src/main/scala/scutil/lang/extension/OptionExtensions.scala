@@ -1,6 +1,6 @@
 package scutil.lang.extension
 
-import java.util.{ Optional => JOptional }
+import java.util.{ Optional as JOptional }
 
 import scala.collection.Factory
 import scala.collection.generic.IsIterable

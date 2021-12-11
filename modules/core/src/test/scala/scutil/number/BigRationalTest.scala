@@ -3,8 +3,8 @@ package scutil.number
 import minitest.*
 
 import java.math.{
-	BigDecimal	=> JBigDecimal,
-	BigInteger	=> JBigInteger
+	BigDecimal	as JBigDecimal,
+	BigInteger	as JBigInteger
 }
 
 import scutil.lang.implicits.*

@@ -1,8 +1,8 @@
 package scutil.bit
 
 import java.lang.{
-	Math	=> JMath,
-	Double	=> JDouble
+	Math	as JMath,
+	Double	as JDouble
 }
 
 //import scala.annotation.strictfp

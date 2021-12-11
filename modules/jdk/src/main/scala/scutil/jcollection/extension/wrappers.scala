@@ -1,11 +1,11 @@
 package scutil.jcollection.extension
 
 import java.lang.{
-	Iterable	=> JIterable
+	Iterable	as JIterable
 }
 import java.util.{
-	Iterator	=> JIterator,
-	Enumeration	=> JEnumeration
+	Iterator	as JIterator,
+	Enumeration	as JEnumeration
 }
 
 import scala.collection.AbstractIterable

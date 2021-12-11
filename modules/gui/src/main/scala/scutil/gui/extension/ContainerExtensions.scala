@@ -1,6 +1,6 @@
 package scutil.gui.extension
 
-import java.awt.{ List => _, * }
+import java.awt.{ List as _, * }
 
 object ContainerExtensions {
 	implicit final class ContainerExt(peer:Container) {

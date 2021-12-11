@@ -1,6 +1,6 @@
 package scutil.platform
 
-import java.lang.{ Integer => JInteger, Long => JLong }
+import java.lang.{ Integer as JInteger, Long as JLong }
 import java.lang.management.ManagementFactory
 import java.net.NetworkInterface
 

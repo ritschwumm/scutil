@@ -5,7 +5,7 @@ import java.net.URL
 import java.net.URI
 import java.io.File
 import java.nio.file.Path
-import java.math.{ BigInteger => JBigInteger, BigDecimal => JBigDecimal}
+import java.math.{ BigInteger as JBigInteger, BigDecimal as JBigDecimal}
 
 object Show {
 	def apply[T](using ev:Show[T]):Show[T]	= ev

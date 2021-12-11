@@ -1,6 +1,6 @@
 package scutil.jcollection.extension
 
-import java.util.{ Optional => JOptional }
+import java.util.{ Optional as JOptional }
 
 object JOptionalExtensions {
 	implicit final class JOptionalExt[T](peer:JOptional[T]) {

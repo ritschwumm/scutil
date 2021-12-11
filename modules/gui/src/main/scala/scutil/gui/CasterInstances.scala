@@ -1,5 +1,6 @@
 package scutil.gui
 
+import scala.language.implicitConversions
 import scala.reflect.Selectable.reflectiveSelectable
 
 import java.beans.*

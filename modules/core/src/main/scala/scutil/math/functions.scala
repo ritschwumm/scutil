@@ -2,7 +2,7 @@ package scutil.math
 
 import scala.annotation.tailrec
 
-import scala.{ math => smath }
+import scala.{ math as smath }
 
 object functions {
 	val PiHalf		= smath.Pi / 2

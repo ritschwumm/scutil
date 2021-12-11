@@ -4,8 +4,8 @@ import java.lang.{
 	Number	=> JNumber
 }
 import java.math.{
-	BigDecimal	=> JBigDecimal,
-	BigInteger	=> JBigInteger,
+	BigDecimal	as JBigDecimal,
+	BigInteger	as JBigInteger,
 	MathContext
 }
 

@@ -1,6 +1,6 @@
 package scutil.jcollection.extension
 
-import java.util.{ Map => JMap }
+import java.util.{ Map as JMap }
 
 import scala.collection.immutable.HashMap
 

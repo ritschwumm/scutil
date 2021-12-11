@@ -1,9 +1,9 @@
 package scutil.jcollection.extension
 
 import java.util.{
-	List		=> JList,
-	ArrayList	=> JArrayList,
-	Collections	=> JCollections
+	List		as JList,
+	ArrayList	as JArrayList,
+	Collections	as JCollections
 }
 
 object SeqJCollectionExtensions {

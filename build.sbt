@@ -5,7 +5,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.217.0",
+	version			:= "0.218.0",
 
 	scalaVersion	:= "3.1.0",
 	scalacOptions	++= Seq(
@@ -106,14 +106,7 @@ lazy val `scutil-core`	=
 	)
 	.settings(
 		fixConsoleSettings,
-		scalacOptions	++= Seq(
-			// "-language:implicitConversions",
-			// "-language:existentials",
-			// "-language:reflectiveCalls",
-			// "-language:dynamics",
-			// "-language:experimental.macros",
-			// "-Ymacro-debug-lite",
-		),
+		scalacOptions	++= Seq(),
 		libraryDependencies	++= Seq(
 			"io.monix"			%%	"minitest"		% "2.9.6"				% "test"
 		),
@@ -131,14 +124,7 @@ lazy val `scutil-jdk`	=
 	(project	in	file("modules/jdk"))
 	.settings(
 		fixConsoleSettings,
-		scalacOptions	++= Seq(
-			"-language:implicitConversions"
-			// "-language:existentials",
-			// "-language:reflectiveCalls",
-			// "-language:dynamics",
-			// "-language:experimental.macros",
-			// "-Ymacro-debug-lite",
-		),
+		scalacOptions	++= Seq(),
 		libraryDependencies	++= Seq(
 			"io.monix"			%%	"minitest"		% "2.9.6"				% "test"
 		),
@@ -169,13 +155,7 @@ lazy val `scutil-gui`	=
 	(project	in	file("modules/gui"))
 	.settings(
 		fixConsoleSettings,
-		scalacOptions	++= Seq(
-			"-language:implicitConversions"
-			// "-language:existentials",
-			// "-language:reflectiveCalls",
-			// "-language:dynamics",
-			// "-language:experimental.macros",
-		),
+		scalacOptions	++= Seq(),
 		libraryDependencies	++= Seq(
 			"io.monix"			%%	"minitest"		% "2.9.6"				% "test"
 		),
@@ -189,13 +169,7 @@ lazy val `scutil-xml`	=
 	(project	in	file("modules/xml"))
 	.settings(
 		fixConsoleSettings,
-		scalacOptions	++= Seq(
-			// "-language:implicitConversions",
-			// "-language:existentials",
-			// "-language:reflectiveCalls",
-			// "-language:dynamics",
-			// "-language:experimental.macros",
-		),
+		scalacOptions	++= Seq(),
 		libraryDependencies	++= Seq(
 			"org.scala-lang.modules"	%% "scala-xml"	% "2.0.1"	% "compile"
 		)
@@ -208,13 +182,7 @@ lazy val `scutil-guid`	=
 	myCrossProject("scutil-guid", file("modules/guid"), CrossType.Full)
 	.settings(
 		fixConsoleSettings,
-		scalacOptions	++= Seq(
-			//"-language:implicitConversions",
-			// "-language:existentials",
-			// "-language:reflectiveCalls",
-			// "-language:dynamics",
-			// "-language:experimental.macros",
-		)
+		scalacOptions	++= Seq(),
 	)
 	.dependsOn(
 		`scutil-core`

@@ -1,8 +1,8 @@
 package scutil.jcollection.extension
 
 import java.util.{
-	Iterator	=> JIterator,
-	Enumeration	=> JEnumeration
+	Iterator	as JIterator,
+	Enumeration	as JEnumeration
 }
 
 object JIteratorExtensions {

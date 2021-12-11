@@ -1,6 +1,6 @@
 package scutil.number.extension
 
-import java.math.{ BigDecimal	=> JBigDecimal }
+import java.math.{ BigDecimal	as JBigDecimal }
 import scutil.number.BigRational
 
 object JBigDecimalExtensions {

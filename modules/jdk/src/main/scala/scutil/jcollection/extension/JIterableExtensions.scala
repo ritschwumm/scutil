@@ -1,7 +1,7 @@
 package scutil.jcollection.extension
 
 import java.lang.{
-	Iterable	=> JIterable
+	Iterable	as JIterable
 }
 
 object JIterableExtensions {

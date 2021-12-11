@@ -2,7 +2,7 @@ package scutil.lang
 
 import scala.annotation.tailrec
 
-import java.util.{ Arrays => JArrays }
+import java.util.{ Arrays as JArrays }
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
 

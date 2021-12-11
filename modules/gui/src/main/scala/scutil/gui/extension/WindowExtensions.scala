@@ -1,6 +1,6 @@
 package scutil.gui.extension
 
-import java.awt.{ List => _, * }
+import java.awt.{ List as _, * }
 
 import scutil.geom.*
 import scutil.gui.geomConversion

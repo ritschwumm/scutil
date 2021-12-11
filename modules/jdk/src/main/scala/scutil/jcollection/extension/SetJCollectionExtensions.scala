@@ -1,9 +1,9 @@
 package scutil.jcollection.extension
 
 import java.util.{
-	Set			=> JSet,
-	HashSet		=> JHashSet,
-	Collections	=> JCollections
+	Set			as JSet,
+	HashSet		as JHashSet,
+	Collections	as JCollections
 }
 
 object SetJCollectionExtensions {

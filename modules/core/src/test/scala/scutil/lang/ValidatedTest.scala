@@ -5,7 +5,7 @@ import minitest.*
 object ValidatedTest extends SimpleTestSuite {
 	type E = Nes[String]
 	def E(s:String):E				= Nes.one(s)
-	def EE(s:String, ss:String*):E	= Nes.of(s,ss:_*)
+	def EE(s:String, ss:String*):E	= Nes.of(s,ss*)
 
 	//------------------------------------------------------------------------------
 

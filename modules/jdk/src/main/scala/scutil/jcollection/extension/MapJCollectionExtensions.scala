@@ -1,9 +1,9 @@
 package scutil.jcollection.extension
 
 import java.util.{
-	Map			=> JMap,
-	HashMap		=> JHashMap,
-	Collections	=> JCollections,
+	Map			as JMap,
+	HashMap		as JHashMap,
+	Collections	as JCollections,
 	Properties
 }
 

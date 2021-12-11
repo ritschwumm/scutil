@@ -1,6 +1,6 @@
 package scutil.geom
 
-import scala.{ math => smath }
+import scala.{ math as smath }
 
 object DoublePoint {
 	val zero:DoublePoint	= DoublePoint(0, 0)

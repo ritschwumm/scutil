@@ -1,6 +1,6 @@
 package scutil.bit
 
-import java.lang.{ Float	=> JFloat }
+import java.lang.{ Float	as JFloat }
 
 import minitest.*
 

@@ -1,7 +1,7 @@
 package scutil.guid
 
 import scala.scalajs.js.typedarray.*
-import org.scalajs.dom.{ ByteString => _, _ }
+import org.scalajs.dom.{ ByteString as _, * }
 
 import scutil.lang.*
 

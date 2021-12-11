@@ -1,5 +1,7 @@
 package scutil.gui
 
+import scala.language.implicitConversions
+
 import java.awt.GridBagConstraints
 import java.awt.Insets
 

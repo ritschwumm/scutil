@@ -1,6 +1,6 @@
 package scutil.bit
 
-import java.lang.{ Double	=> JDouble }
+import java.lang.{ Double	as JDouble }
 
 import minitest.*
 

@@ -1,6 +1,6 @@
 package scutil.jcollection.extension
 
-import java.util.{ List => JList }
+import java.util.{ List as JList }
 
 object JListExtensions {
 	implicit final class JListExt[T](peer:JList[T]) {

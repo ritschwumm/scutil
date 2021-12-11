@@ -1,6 +1,6 @@
 package scutil.jcollection.extension
 
-import java.util.{ Set => JSet }
+import java.util.{ Set as JSet }
 
 import scala.collection.immutable.HashSet
 

@@ -93,7 +93,7 @@ object Diff {
 
 final case class Diff[T](deltas:Seq[Delta[T]]) {
 	def patch(iseq:Seq[T]):Seq[T]	= {
-		val out	= mutable.ArrayBuffer(iseq:_*)
+		val out	= mutable.ArrayBuffer(iseq*)
 		deltas foreach {
 			case Delta.Include(index, element)	=> out.insert(index, element)
 			case Delta.Remove(index, element)	=> out.remove(index)

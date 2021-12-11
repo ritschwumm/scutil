@@ -1,5 +1,7 @@
 package scutil.log
 
+import scala.language.implicitConversions
+
 import scutil.lang.*
 import scutil.lang.tc.Show
 

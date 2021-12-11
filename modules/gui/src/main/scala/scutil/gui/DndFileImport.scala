@@ -1,7 +1,7 @@
 package scutil.gui
 
 import java.io.{ File, IOException, FileNotFoundException }
-import java.util.{ List => JList }
+import java.util.{ List as JList }
 import java.net.{ URI, URL }
 import java.awt.datatransfer.DataFlavor
 import javax.swing.{ JComponent, TransferHandler }
