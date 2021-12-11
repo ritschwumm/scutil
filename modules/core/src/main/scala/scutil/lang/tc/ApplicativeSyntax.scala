@@ -1,8 +1,6 @@
 package scutil.lang.tc
 
-object ApplicativeSyntax extends ApplicativeSyntax
-
-trait ApplicativeSyntax {
+object ApplicativeSyntax {
 	implicit final class ApplicativePureSyntaxExt[T](peer:T) {
 		def pure[F[_]](using F:Applicative[F]):F[T]	= F pure peer
 	}

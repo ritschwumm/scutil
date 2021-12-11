@@ -2,9 +2,7 @@ package scutil.lang.tc
 
 import scutil.lang.Nes
 
-object SemigroupSyntax extends SemigroupSyntax
-
-trait SemigroupSyntax {
+object SemigroupSyntax {
 	implicit final class SemigroupSyntaxExt[T](peer:T)(using T:Semigroup[T]) {
 		def combine(that:T):T	= T.combine(peer, that)
 	}

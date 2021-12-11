@@ -1,8 +1,6 @@
 package scutil.lang.tc
 
-object MonoidSyntax extends MonoidSyntax
-
-trait MonoidSyntax {
+object MonoidSyntax {
 	implicit final class MonoidSyntaxExt[T](peer:T)(using T:Monoid[T]) {
 		def times(count:Int):T	= T.times(peer, count)
 	}

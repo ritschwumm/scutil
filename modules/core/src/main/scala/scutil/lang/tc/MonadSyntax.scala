@@ -1,8 +1,6 @@
 package scutil.lang.tc
 
-object MonadSyntax extends MonadSyntax
-
-trait MonadSyntax {
+object MonadSyntax {
 	implicit final class MonadValueSyntaxExt[F[_],T](peer:F[T])(using MF:Monad[F]) {
 		def flatMap[U](func:T=>F[U]):F[U]	= MF.flatMap(peer)(func)
 	}

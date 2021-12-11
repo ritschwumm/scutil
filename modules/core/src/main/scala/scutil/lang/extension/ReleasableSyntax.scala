@@ -2,9 +2,7 @@ package scutil.lang.syntaxes
 
 import scala.util.Using.Releasable
 
-object ReleaseableSyntax extends ReleaseableSyntax
-
-trait ReleaseableSyntax {
+object ReleaseableSyntax {
 	implicit final class ReleaseableSyntaxExt[T](peer:T)(using RS:Releasable[T]) {
 		/** do something to us, then dispose */
 		def use[U](consume:T=>U):U	= {

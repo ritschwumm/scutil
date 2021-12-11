@@ -1,8 +1,6 @@
 package scutil.lang.tc
 
-object FunctorSyntax extends FunctorSyntax
-
-trait FunctorSyntax {
+object FunctorSyntax {
 	implicit final class FunctorValueSyntaxExt[F[_],T](peer:F[T])(using FC:Functor[F]) {
 		def map[U](func:T=>U):F[U]			= FC.map(peer)(func)
 		def void:F[Unit]					= FC.void(peer)

@@ -26,13 +26,22 @@ object Monoid extends MonoidLow {
 	given VectorMonoid[T]:Monoid[Vector[T]]	=
 		Monoid.instance(Vector.empty, _ ++ _)
 
-	given Monoid[Unit]	=
+	given ListMonoid[T]:Monoid[List[T]]	=
+		Monoid.instance(Nil, _ ++ _)
+
+	given SetMonoid[T]:Monoid[Set[T]]	=
+		Monoid.instance(Set.empty, _ ++ _)
+
+	given MapMonoid[K,V]:Monoid[Map[K,V]]	=
+		Monoid.instance(Map.empty, _ ++ _)
+
+	given UnitMonoid:Monoid[Unit]	=
 		Monoid.instance((), (_,_)=>())
 
-	given Monoid[String]	=
+	given StringMonoid:Monoid[String]	=
 		Monoid.instance("", _ + _)
 
-	given [T1,T2](using T1:Monoid[T1], T2:Monoid[T2]):Monoid[(T1,T2)]	=
+	given PairMonoid[T1,T2](using T1:Monoid[T1], T2:Monoid[T2]):Monoid[(T1,T2)]	=
 		Monoid.instance(
 			(T1.empty, T2.empty),
 			(a, b) => (
@@ -41,14 +50,14 @@ object Monoid extends MonoidLow {
 			)
 		)
 
-	given[T](using S:Semigroup[T]):Monoid[Option[T]]	=
+	given Option[T](using S:Semigroup[T]):Monoid[Option[T]]	=
 		Monoid.instance(
 			None,
 			(a,b) => (a oneOrTwo b)(S.combine)
 		)
 
 	// TODO questionable
-	given [T]:Monoid[T=>T]	=
+	given EndoMonoid[T]:Monoid[T=>T]	=
 		Monoid.instance(identity, _ andThen _)
 }
 

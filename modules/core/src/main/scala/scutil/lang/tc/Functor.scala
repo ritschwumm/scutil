@@ -1,6 +1,6 @@
 package scutil.lang.tc
 
-object Functor {
+object Functor extends FunctorLow1 {
 	def apply[F[_]](using ev:Functor[F]):Functor[F]	= ev
 
 	//------------------------------------------------------------------------------
@@ -32,6 +32,16 @@ object Functor {
 			def map[A,B](it:S=>F[A])(func:A=>B):S=>F[B]	=
 					a => (Functor[F] map it(a))(func)
 		}
+}
+
+trait FunctorLow1 extends FunctorLow2 {
+	// TODO dotty is this really necessary? why doesn't inheritance provide us with an instance?
+	given[F[_]](using F:Applicative[F]):Functor[F]	= F
+}
+
+trait FunctorLow2 {
+	// TODO dotty is this really necessary? why doesn't inheritance provide us with an instance?
+	given[F[_]](using F:Traversed[F]):Functor[F]	= F
 }
 
 trait Functor[F[_]] {
