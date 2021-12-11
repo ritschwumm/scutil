@@ -4,9 +4,7 @@ import java.security._
 
 import scutil.lang.ByteString
 
-object MessageDigestImplicits extends MessageDigestImplicits
-
-trait MessageDigestImplicits {
+object MessageDigestImplicits {
 	/** utility methods for MessageDigest objects */
 	implicit final class MessageDigestExt(peer:MessageDigest) {
 		def updateByteString(it:ByteString):Unit	=

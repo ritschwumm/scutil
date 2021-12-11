@@ -1,8 +1,6 @@
 package scutil.lang.extension
 
-object ClassImplicits extends ClassImplicits
-
-trait ClassImplicits {
+object ClassImplicits {
 	implicit final class ClassExt[T](peer:Class[T]) {
 		def boxed:Class[?]	= peer match {
 			case java.lang.Boolean.TYPE		=> classOf[java.lang.Boolean]

@@ -2,9 +2,7 @@ package scutil.regex.extension
 
 import java.util.regex.Matcher
 
-object MatcherImplicits extends MatcherImplicits
-
-trait MatcherImplicits {
+object MatcherImplicits {
 	implicit final class MatcherExt(peer:Matcher) {
 		def matchedString:Option[String]	=
 			if (peer.matches)	Some(peer group 0)

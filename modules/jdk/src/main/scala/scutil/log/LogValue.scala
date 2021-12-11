@@ -10,9 +10,9 @@ object LogValue {
 
 	implicit def ShowAsLogValue[T:Show](it:T):LogValue				= LogValue string (Show doit it)
 
-	implicit def SeqShowAsLogValue[T](it:Seq[T])(implicit S:Show[T]):LogValue	= LogValue multiple (it map S.show map LogValue.string)
-	implicit def SetShowAsLogValue[T](it:Set[T])(implicit S:Show[T]):LogValue	= SeqShowAsLogValue(it.toVector)
-	implicit def NesShowAsLogValue[T](it:Nes[T])(implicit S:Show[T]):LogValue	= SeqShowAsLogValue(it.toSeq)
+	implicit def SeqShowAsLogValue[T](it:Seq[T])(using S:Show[T]):LogValue	= LogValue multiple (it map S.show map LogValue.string)
+	implicit def SetShowAsLogValue[T](it:Set[T])(using S:Show[T]):LogValue	= SeqShowAsLogValue(it.toVector)
+	implicit def NesShowAsLogValue[T](it:Nes[T])(using S:Show[T]):LogValue	= SeqShowAsLogValue(it.toSeq)
 
 	//------------------------------------------------------------------------------
 

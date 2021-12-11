@@ -5,9 +5,7 @@ import java.awt.{ List=>_, _ }
 import scutil.geom._
 import scutil.gui.geomConversion
 
-object WindowImplicits extends WindowImplicits
-
-trait WindowImplicits {
+object WindowImplicits {
 	implicit final class WindowExt(peer:Window) {
 		def restrictToScreen():Unit	= {
 			val frame	= geomConversion Rectangle_IntRect peer.getBounds

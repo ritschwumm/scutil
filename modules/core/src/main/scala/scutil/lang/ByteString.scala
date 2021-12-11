@@ -131,7 +131,7 @@ object ByteString {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit val ByteStringMonoid:Monoid[ByteString]	=
+	given Monoid[ByteString]	=
 		Monoid.instance(ByteString.empty, _ ++ _)
 }
 

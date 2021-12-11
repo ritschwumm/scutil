@@ -1,8 +1,6 @@
 package scutil.lang.extension
 
-object AnyRefImplicits extends AnyRefImplicits
-
-trait AnyRefImplicits {
+object AnyRefImplicits {
 	implicit final class AnyRefExt[T <: AnyRef](peer:T) {
 		/** Some if not null, None if null */
 		def optionNotNull:Option[T]	=

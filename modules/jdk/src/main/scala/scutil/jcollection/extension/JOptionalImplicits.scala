@@ -2,9 +2,7 @@ package scutil.jcollection.extension
 
 import java.util.{ Optional => JOptional }
 
-object JOptionalImplicits extends JOptionalImplicits
-
-trait JOptionalImplicits {
+object JOptionalImplicits {
 	implicit final class JOptionalExt[T](peer:JOptional[T]) {
 		def cata[X](none: => X, some:T => X):X =
 			if (peer.isPresent)	some(peer.get)

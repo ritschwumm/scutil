@@ -2,14 +2,15 @@ package scutil.collection.extension
 
 import scala.collection.Factory
 import scala.collection.IterableOps
+import scala.collection.BuildFrom
+import scala.collection.generic.IsIterable
+import scala.collection.mutable.Builder
 
 import scutil.lang._
 import scutil.lang.tc._
 
-object IterableImplicits extends IterableImplicits
-
-trait IterableImplicits {
-	implicit final class IterableExt[CC[T]<:Iterable[T], T](peer:CC[T]) {
+object IterableImplicits {
+	implicit final class SimpleIterableExt[T](peer:Iterable[T]) {
 		/** Some if the collection contains exactly one element, else None */
 		def singleOption:Option[T]	= {
 			val iter	= peer.iterator
@@ -28,20 +29,6 @@ trait IterableImplicits {
 			Right(out)
 		}
 
-		// NOTE these don't terminate for infinite collections!
-
-		// NOTE zipWith and map2 are different things for Iterables
-		/** combine elements of two collections using a function */
-		def zipWith[U,V](that:Iterable[U])(func:(T,U)=>V)(implicit factory:Factory[V,CC[V]]):CC[V]	= {
-			val builder	= factory.newBuilder
-			val	xi	= peer.iterator
-			val yi	= that.iterator
-			while (xi.hasNext && yi.hasNext) {
-				builder	+= func(xi.next(), yi.next())
-			}
-			builder.result()
-		}
-
 		/** create a set from all elements with a given function to generate the items */
 		def setBy[U](func:T=>U):Set[U]	=
 			peer.map(func).toSet
@@ -52,21 +39,6 @@ trait IterableImplicits {
 
 		def mapToMap[U,V](func:T=>(U,V)):Map[U,V]	=
 			(peer map func).toMap
-
-		/** like flatten, but avoiding the dubious Option=>Iterable implicit */
-		def flattenOption[U](implicit ev: T <:< Option[U], factory:Factory[U,CC[U]]):CC[U]	=
-			mapFilter(ev)
-
-		/** like flatMap, but avoiding the dubious Option=>Iterable implicit  */
-		def mapFilter[U](func:T=>Option[U])(implicit factory:Factory[U,CC[U]]):CC[U]	= {
-			val builder	= factory.newBuilder
-			peer foreach {
-				func(_) foreach {
-					builder	+= _
-				}
-			}
-			builder.result()
-		}
 
 		// NOTE this does not exist in cats
 		def flattenOptionFirst[U](implicit ev: T <:< Option[U]):Option[U]	=
@@ -95,24 +67,65 @@ trait IterableImplicits {
 			val seq = peer.scanRight(z)(op).to(Seq)
 			Nes.unsafeFromSeq(seq)
 		}
+	}
+
+	// TODO dotty use <:< instead of fixing the type member?
+	implicit final class IterableExt[Repr,T](peer:Repr)(using isIterable:IsIterable[Repr] { type A = T }) {
+		private val ops	= isIterable(peer)
+
+		// NOTE these don't terminate for infinite collections!
+
+		// NOTE zipWith and map2 are different things for Iterables
+		/** combine elements of two collections using a function */
+		def zipWith[That,U,V](that:Iterable[U])(func:(T,U)=>V)(using bf:BuildFrom[Repr,V,That]):That	= {
+			val builder	= bf.newBuilder(peer)
+			val	xi	= ops.iterator
+			val yi	= that.iterator
+			while (xi.hasNext && yi.hasNext) {
+				builder	+= func(xi.next(), yi.next())
+			}
+			builder.result()
+		}
+
+		/** like flatten, but avoiding the dubious Option=>Iterable implicit */
+		def flattenOption[That,U](using bf:BuildFrom[Repr,U,That])(implicit ev: T <:< Option[U]):That	=
+			mapFilter(ev)
+
+		/** like flatMap, but avoiding the dubious Option=>Iterable implicit  */
+		def mapFilter[That,U](func:T=>Option[U])(using bf:BuildFrom[Repr,U,That]):That	= {
+			val builder	= bf.newBuilder(peer)
+			ops foreach {
+				func(_) foreach {
+					builder	+= _
+				}
+			}
+			builder.result()
+		}
 
 		/** insert a separator between elements */
-		def intersperse[U>:T](separator: =>U)(implicit factory:Factory[U,CC[U]]):CC[U]	=
-			// TODO generify without factory - but we have to know drop, and that peer is a CC[U], too
-			(	if (peer.nonEmpty)	peer flatMap { Seq(separator, _) } drop 1
-				else				peer
-			)
-			.to(factory)
+		def intersperse[That,U>:T](separator: =>U)(using bf:BuildFrom[Repr,U,That]):That	= {
+			val bld:Builder[U,That]	= bf.newBuilder(peer)
+			if (ops.nonEmpty) {
+				val iter	= ops.iterator
+				var first	= true
+				while (iter.hasNext) {
+					if (first)	first = true
+					else		bld	+= separator
+					bld	+= iter.next()
+				}
+			}
+			bld.result()
+		}
 
 		// NOTE these should be generalized to other AFs, not just Option and Tried
 		// NOTE supplying pure and flatMap of a Monad would work, too!
 
-		def sequenceOption[U](implicit ev: T <:< Option[U], factory:Factory[U,CC[U]]):Option[CC[U]]	=
+		def sequenceOption[That,U](using bf:BuildFrom[Repr,U,That])(implicit ev: T <:< Option[U]):Option[That]	=
 			traverseOption(ev)
 
-		def traverseOption[U](func:T=>Option[U])(implicit factory:Factory[U,CC[U]]):Option[CC[U]]	= {
-			val builder	= factory.newBuilder
-			val iter	= peer.iterator
+		def traverseOption[That,U](func:T=>Option[U])(using bf:BuildFrom[Repr,U,That]):Option[That]	= {
+			val builder	= bf.newBuilder(peer)
+			val iter	= ops.iterator
 			while (iter.hasNext) {
 				func(iter.next()) match {
 					case None		=> return None
@@ -122,12 +135,12 @@ trait IterableImplicits {
 			Some(builder.result())
 		}
 
-		def sequenceEither[F,W](implicit ev: T <:< Either[F,W], factory:Factory[W,CC[W]]):Either[F,CC[W]]	=
+		def sequenceEither[That,L,R](using bf:BuildFrom[Repr,R,That])(implicit ev: T <:< Either[L,R]):Either[L,That]	=
 			traverseEither(ev)
 
-		def traverseEither[F,W](func:T=>Either[F,W])(implicit factory:Factory[W,CC[W]]):Either[F,CC[W]]	= {
-			val builder	= factory.newBuilder
-			val iter	= peer.iterator
+		def traverseEither[That,L,R](func:T=>Either[L,R])(using bf:BuildFrom[Repr,R,That]):Either[L,That]	= {
+			val builder	= bf.newBuilder(peer)
+			val iter	= ops.iterator
 			while (iter.hasNext) {
 				func(iter.next()) match {
 					case Left(x)	=> return Left(x)
@@ -138,14 +151,14 @@ trait IterableImplicits {
 		}
 
 		/** peer is traversable (in the haskell sense), Validated is an idiom. */
-		def sequenceValidated[F,W](implicit ev:T <:< Validated[F,W], factory:Factory[W,CC[W]], cc:Semigroup[F]):Validated[F,CC[W]]	=
+		def sequenceValidated[That,I,V](using bf:BuildFrom[Repr,V,That], cc:Semigroup[I])(implicit ev:T <:< Validated[I,V]):Validated[I,That]	=
 			traverseValidated(ev)
 
 		/** peer is traversable (in the haskell sense), Validated is an idiom. */
-		def traverseValidated[F,W](func:T=>Validated[F,W])(implicit factory:Factory[W,CC[W]], cc:Semigroup[F]):Validated[F,CC[W]]	= {
-			var problems:Option[F]	= None
-			val builder	= factory.newBuilder
-			peer foreach { it =>
+		def traverseValidated[That,I,V](func:T=>Validated[I,V])(using bf:BuildFrom[Repr,V,That], cc:Semigroup[I]):Validated[I,That]	= {
+			var problems:Option[I]	= None
+			val builder	= bf.newBuilder(peer)
+			ops foreach { it =>
 				func(it) match {
 					case Validated.Valid(x)	=>
 						if (problems.isEmpty) {
@@ -164,14 +177,14 @@ trait IterableImplicits {
 			}
 		}
 
-		def sequenceState[S,U](implicit ev: T <:< State[S,U], factory:Factory[U,CC[U]]):State[S,CC[U]]	=
+		def sequenceState[That,S,U](using bf:BuildFrom[Repr,U,That])(implicit ev: T <:< State[S,U]):State[S,That]	=
 			traverseState(ev)
 
-		def traverseState[S,U](func:T=>State[S,U])(implicit factory:Factory[U,CC[U]]):State[S,CC[U]]	=
+		def traverseState[That,S,U](func:T=>State[S,U])(using bf:BuildFrom[Repr,U,That]):State[S,That]	=
 			State { s =>
 				var temp	= s
-				val builder	= factory.newBuilder
-				peer foreach { it =>
+				val builder	= bf.newBuilder(peer)
+				ops foreach { it =>
 					val (next, part)	= func(it) run temp
 					temp	= next
 					builder += part
@@ -182,6 +195,7 @@ trait IterableImplicits {
 		// TODO state support StateT
 	}
 
+	// TODO dotty move these into the other extension
 	implicit final class IterableOpsExt[CC[_],T](peer:IterableOps[T,CC,CC[T]]) {
 		def partitionEither[U,V](implicit ev: T <:< Either[U,V]):(CC[U],CC[V])			= peer partitionMap ev
 		def partitionValidated[U,V](implicit ev: T <:< Validated[U,V]):(CC[U],CC[V])	= peer partitionMap { it => ev(it).toEither }
@@ -190,6 +204,7 @@ trait IterableImplicits {
 		def fproduct[U](func:T=>U):CC[(T,U)]	= peer map { it => (it, func(it)) }
 	}
 
+	// TODO dotty move these into the other extension
 	implicit final class IterableWithOpsExt[CC[_] <: Iterable[?],T](peer:IterableOps[T,CC,CC[T]]) {
 		/** all Lefts if there is at least one, else all Rights */
 		def validateEither[F,W](implicit ev:T <:< Either[F,W]):Either[CC[F],CC[W]]	= {

@@ -118,6 +118,45 @@ object SeqImplicitsTest extends SimpleTestSuite {
 
 	//------------------------------------------------------------------------------
 
+	test("insertBetween should work with 0 elements") {
+		assertEquals(
+			Seq.empty[Int].insertBetween(it => it.toString, (a,b) => Some("x")),
+			Seq.empty
+		)
+	}
+
+	test("insertBetween should work with 1 element") {
+		assertEquals(
+			Seq(1).insertBetween(it => it.toString, (a,b) => Some("x")),
+			Seq("1")
+		)
+	}
+
+	test("insertBetween should work with 2 elements") {
+		assertEquals(
+			Seq(1,2).insertBetween(it => it.toString, (a,b) => Some("x")),
+			Seq("1", "x", "2")
+		)
+	}
+
+	test("insertBetween should work with 3 elements") {
+		assertEquals(
+			Seq(1,2,3).insertBetween(it => it.toString, (a,b) => Some("x")),
+			Seq("1", "x", "2", "x", "3")
+		)
+	}
+
+	test("insertBetween should return the right type") {
+		val a	= Vector(1,2,3).insertBetween(it => it.toString, (a,b) => Some("x"))
+		typed[ Vector[String] ](a)
+		assertEquals(
+			a,
+			Vector("1", "x", "2", "x", "3")
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
 	private val splitWherePredicate:Int=>Boolean	= _ == 1
 
 	test("splitWhere should be empty for empty input") {
@@ -155,7 +194,7 @@ object SeqImplicitsTest extends SimpleTestSuite {
 		)
 	}
 
-	test("splitWhere should split  simple Seq correctly") {
+	test("splitWhere should split a simple Seq correctly") {
 		assertEquals(
 			Seq(0,1,2) splitWhere splitWherePredicate,
 			Seq(Right(Seq(0)),Left(1),Right(Seq(2)))
@@ -193,6 +232,7 @@ object SeqImplicitsTest extends SimpleTestSuite {
 	}
 
 	test("moveAt should not move to gap left") {
+		// TODO this would work as a no-op, why do we reject it?
 		assertEquals(
 			Seq(1,2,3,4).moveAt(1,1),
 			None
@@ -200,6 +240,7 @@ object SeqImplicitsTest extends SimpleTestSuite {
 	}
 
 	test("moveAt should not move to gap right") {
+		// TODO this would work as a no-op, why do we reject it?
 		assertEquals(
 			Seq(1,2,3,4).moveAt(1,2),
 			None
@@ -216,6 +257,60 @@ object SeqImplicitsTest extends SimpleTestSuite {
 	test("moveAt should move to gap further right") {
 		assertEquals(
 			Seq(1,2,3,4).moveAt(1,3),
+			Some(Seq(1,3,2,4))
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
+	// TODO dotty actually move more than 1
+	test("moveManyAt should fail without enough elements") {
+		assertEquals(
+			Seq().moveManyAt(0,1,0),
+			None
+		)
+	}
+
+	test("moveManyAt should move from start to end") {
+		assertEquals(
+			Seq(1,2,3).moveManyAt(0,1,3),
+			Some(Seq(2,3,1))
+		)
+	}
+
+	test("moveManyAt should move from end to start") {
+		assertEquals(
+			Seq(1,2,3).moveManyAt(2,1,0),
+			Some(Seq(3,1,2))
+		)
+	}
+
+	test("moveManyAt should not move to gap left") {
+		// TODO moveMany rejects this, probably without a good reason
+		assertEquals(
+			Seq(1,2,3,4).moveManyAt(1,1,1),
+			Some(Seq(1,2,3,4))
+		)
+	}
+
+	test("moveManyAt should not move to gap right") {
+		// TODO moveMany rejects this, probably without a good reason
+		assertEquals(
+			Seq(1,2,3,4).moveManyAt(1,1,2),
+			Some(Seq(1,2,3,4))
+		)
+	}
+
+	test("moveManyAt should move to gap further left") {
+		assertEquals(
+			Seq(1,2,3,4).moveManyAt(1,1,0),
+			Some(Seq(2,1,3,4))
+		)
+	}
+
+	test("moveManyAt should move to gap further right") {
+		assertEquals(
+			Seq(1,2,3,4).moveManyAt(1,1,3),
 			Some(Seq(1,3,2,4))
 		)
 	}

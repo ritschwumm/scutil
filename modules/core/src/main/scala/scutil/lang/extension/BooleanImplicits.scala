@@ -3,9 +3,7 @@ package scutil.lang.extension
 import scutil.lang._
 import scutil.lang.tc._
 
-object BooleanImplicits extends BooleanImplicits
-
-trait BooleanImplicits {
+object BooleanImplicits {
 	implicit final class BooleanExt(peer:Boolean) {
 		def cata[T](falseValue: =>T, trueValue: =>T):T =
 			if (peer)	trueValue

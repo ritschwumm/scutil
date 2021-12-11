@@ -6,9 +6,7 @@ import java.util.{
 	Collections	=> JCollections
 }
 
-object SetJCollectionSyntaxImplicits extends SetJCollectionSyntaxImplicits
-
-trait SetJCollectionSyntaxImplicits {
+object SetJCollectionSyntaxImplicits {
 	implicit final class SetJCollectionSyntaxExt[T](peer:Set[T]) {
 		def toJSet:JSet[T]	=  {
 			val out	= new JHashSet[T]

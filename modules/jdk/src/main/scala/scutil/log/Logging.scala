@@ -7,18 +7,18 @@ import scutil.time.MilliInstant
 trait Logging {
 	@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
 	implicit final class LogLevelAsLogger(level:LogLevel) {
-		def apply(elements:LogValue*)(implicit sl:SourceLocation):Unit = {
+		def apply(elements:LogValue*)(using sl:SourceLocation):Unit = {
 			log(elements.toVector)
 		}
 
-		def time[T](what:LogValue*)(block: =>T)(implicit sl:SourceLocation):T	= {
+		def time[T](what:LogValue*)(block: =>T)(using sl:SourceLocation):T	= {
 			val (out, dur)	= LogTime measure block
 			val elements	= what.toVector :+ (LogValue string dur.toHumanString)
-			log(elements)(sl)
+			log(elements)(using sl)
 			out
 		}
 
-		def log(elements:Seq[LogValue])(implicit sl:SourceLocation):Unit = {
+		def log(elements:Seq[LogValue])(using sl:SourceLocation):Unit = {
 			logHandler handle LogEvent(level, elements, MilliInstant.now(), sl)
 		}
 	}

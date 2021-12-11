@@ -7,9 +7,7 @@ import javax.swing._
 import scutil.lang._
 import scutil.gui.extension.RootPaneContainerImplicits._
 
-object JComponentImplicits extends JComponentImplicits
-
-trait JComponentImplicits {
+object JComponentImplicits {
 	implicit final class JComponentExt(peer:JComponent) {
 		def innerRectangle:Rectangle	= {
 			val insets	= peer.getInsets

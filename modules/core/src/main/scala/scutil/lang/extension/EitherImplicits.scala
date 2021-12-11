@@ -3,9 +3,7 @@ package scutil.lang.extension
 import scutil.lang._
 import scutil.lang.tc._
 
-object EitherImplicits extends EitherImplicits
-
-trait EitherImplicits {
+object EitherImplicits {
 	implicit final class EitherCompanionImplicits(peer:Either.type) {
 		def right[L,R](it:R):Either[L,R]	= Right(it)
 		def left[L,R](it:L):Either[L,R]		= Left(it)
@@ -255,7 +253,7 @@ trait EitherImplicits {
 
 		//------------------------------------------------------------------------------
 
-		def toEitherT[F[_]](implicit M:Applicative[F]):EitherT[F,L,R]	=
+		def toEitherT[F[_]](using M:Applicative[F]):EitherT[F,L,R]	=
 			EitherT fromEither peer
 	}
 }

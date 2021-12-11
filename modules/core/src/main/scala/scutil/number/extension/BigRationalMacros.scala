@@ -22,7 +22,7 @@ private object BigRationalMacros {
 		Expr(decoded)
 	}
 
-	private implicit val BigRationalToExpr:ToExpr[BigRational]	= new ToExpr[BigRational] {
+	private given BigRationalToExpr:ToExpr[BigRational]	= new ToExpr[BigRational] {
 		def apply(it:BigRational)(using Quotes):Expr[BigRational] = {
 			val num	= Expr(it.numerator)
 			val den	= Expr(it.denominator)
@@ -30,7 +30,7 @@ private object BigRationalMacros {
 		}
 	}
 
-	private implicit val JBigIntegerToExpr:ToExpr[JBigInteger] = new ToExpr[JBigInteger] {
+	private given JBigIntegerToExpr:ToExpr[JBigInteger] = new ToExpr[JBigInteger] {
 		def apply(it:JBigInteger)(using Quotes):Expr[JBigInteger] = {
 			val value	= Expr(it.toByteArray)
 			'{ new JBigInteger($value) }

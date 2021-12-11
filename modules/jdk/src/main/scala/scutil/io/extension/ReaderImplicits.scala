@@ -4,9 +4,7 @@ import java.io._
 
 import scala.collection.mutable
 
-object ReaderImplicits extends ReaderImplicits
-
-trait ReaderImplicits {
+object ReaderImplicits {
 	implicit final class ReaderExt(peer:Reader) {
 		val blockSize	= 16384
 

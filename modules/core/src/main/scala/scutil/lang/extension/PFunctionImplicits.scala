@@ -2,9 +2,7 @@ package scutil.lang.extension
 
 import scutil.lang._
 
-object PFunctionImplicits extends PFunctionImplicits
-
-trait PFunctionImplicits {
+object PFunctionImplicits {
 	implicit final class PFunctionExt[S,T](peer:S=>Option[T]) {
 		def applyOrElse(it:S, default:T):T	=
 			peer(it) getOrElse default

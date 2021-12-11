@@ -6,9 +6,7 @@ import scala.util.matching.Regex
 
 import scutil.lang._
 
-object RegexImplicits extends RegexImplicits
-
-trait RegexImplicits {
+object RegexImplicits {
 	implicit final class RegexCompanionExt(peer:Regex.type) {
 		val prism:Prism[String,Regex]	=
 			Prism(compile(_).toOption, _.pattern.toString)

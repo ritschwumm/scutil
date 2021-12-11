@@ -7,9 +7,7 @@ import scutil.core.implicits._
 import scutil.geom._
 import scutil.gui.geomConversion
 
-object ComponentImplicits extends ComponentImplicits
-
-trait ComponentImplicits {
+object ComponentImplicits {
 	implicit final class ComponentExt(peer:Component) {
 		/** the nearest Window in the ancestor chain, including this component itself */
 		def windowSelfOrAncestor:Option[Window]	=

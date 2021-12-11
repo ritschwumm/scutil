@@ -9,7 +9,7 @@ object JulianDay {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit val JulianDayShow:Show[JulianDay]	= Show.toStringInstance
+	given JulianDayShow:Show[JulianDay]	= Show.toStringInstance
 }
 
 final case class JulianDay(value:Int) extends Ordered[JulianDay] {

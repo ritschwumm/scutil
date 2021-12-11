@@ -3,9 +3,7 @@ package scutil.gui.geom
 import java.awt.{ Insets }
 import java.awt.geom.{ Point2D, Dimension2D, Rectangle2D, Line2D, Area, AffineTransform }
 
-object extensions extends extensions
-
-trait extensions {
+object extensions {
 	implicit class DoubleSgExt(delegate:Double) {
 		def pointWith(y:Double):SgPoint	= SgPoint(delegate, y)
 

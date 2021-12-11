@@ -18,7 +18,7 @@ object IoDisposer {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit val IoDisposerMonoid:Monoid[IoDisposer]	= Monoid.instance(empty, _ combine _)
+	given IoDisposerMonoid:Monoid[IoDisposer]	= Monoid.instance(empty, _ combine _)
 }
 
 final case class IoDisposer(toIo:Io[Unit]) {

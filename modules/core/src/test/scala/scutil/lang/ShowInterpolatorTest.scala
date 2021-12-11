@@ -56,7 +56,7 @@ object ShowInterpolatorTest extends SimpleTestSuite {
 	//------------------------------------------------------------------------------
 
 	import scutil.lang.tc._
-	implicit def OptionShow[T:Show]:Show[Option[T]]	=
+	given OptionShow[T:Show]:Show[Option[T]]	=
 		Show instance {
 			case Some(x)	=> "some: " + (Show doit x)
 			case None		=> "none"

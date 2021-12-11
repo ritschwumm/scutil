@@ -2,14 +2,14 @@ package scutil.io
 
 import scutil.io.extension._
 
-object extensions extends extensions
+object extensions {
+	export DataOutputImplicits.*
+	export FileImplicits.*
+	export PathImplicits.*
+	export InputStreamImplicits.*
+	export OutputStreamImplicits.*
+	export ReaderImplicits.*
+	export WriterImplicits.*
+	export URLImplicits.*
+}
 
-trait extensions
-	extends	DataOutputImplicits
-	with	FileImplicits
-	with	PathImplicits
-	with	InputStreamImplicits
-	with	OutputStreamImplicits
-	with	ReaderImplicits
-	with	WriterImplicits
-	with	URLImplicits

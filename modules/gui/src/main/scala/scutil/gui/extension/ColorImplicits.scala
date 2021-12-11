@@ -6,9 +6,7 @@ import java.awt.Color
 
 import scutil.gui.colorConversion
 
-object ColorImplicits extends ColorImplicits
-
-trait ColorImplicits {
+object ColorImplicits {
 	implicit final class ColorExt(peer:Color) {
 		def withAlpha(alpha:Float):Color	=
 			new Color(redF, greenF, blueF, alpha)

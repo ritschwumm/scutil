@@ -7,9 +7,7 @@ import java.util.{
 	Properties
 }
 
-object MapJCollectionSyntaxImplicits extends MapJCollectionSyntaxImplicits
-
-trait MapJCollectionSyntaxImplicits {
+object MapJCollectionSyntaxImplicits {
 	implicit final class MapJCollectionSyntaxExt[S,T](peer:Map[S,T]) {
 		def toJMap:JMap[S,T]	=  {
 			val out	= new JHashMap[S,T]

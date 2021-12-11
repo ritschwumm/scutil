@@ -7,11 +7,9 @@ import javax.imageio.ImageWriter
 
 import scala.util.Using.Releasable
 
-object instances extends instances
-
-trait instances {
-	implicit def GraphicsReleasable[T<:Graphics]:Releasable[T]			= _.dispose()
-	implicit def ImageReaderReleasable[T<:ImageReader]:Releasable[T]	= _.dispose()
-	implicit def ImageWriterReleasable[T<:ImageWriter]:Releasable[T]	= _.dispose()
-	implicit def WindowReleasable[T<:Window]:Releasable[T]				= _.dispose()
+object instances {
+	given GraphicsReleasable[T<:Graphics]:Releasable[T]			= _.dispose()
+	given ImageReaderReleasable[T<:ImageReader]:Releasable[T]	= _.dispose()
+	given ImageWriterReleasable[T<:ImageWriter]:Releasable[T]	= _.dispose()
+	given WindowReleasable[T<:Window]:Releasable[T]				= _.dispose()
 }

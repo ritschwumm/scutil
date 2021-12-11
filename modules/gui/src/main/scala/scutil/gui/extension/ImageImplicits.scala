@@ -5,9 +5,7 @@ import java.awt.Image
 import java.awt.image.ImageFilter
 import java.awt.image.FilteredImageSource
 
-object ImageImplicits extends ImageImplicits
-
-trait ImageImplicits {
+object ImageImplicits {
 	implicit final class ImageExt(peer:Image) {
 		def filter(imageFilter:ImageFilter):Image	=
 			Toolkit.getDefaultToolkit createImage (

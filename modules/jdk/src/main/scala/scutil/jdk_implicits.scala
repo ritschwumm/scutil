@@ -1,14 +1,13 @@
 package scutil.jdk
 
-object implicits extends implicits
-
-trait implicits
-	extends	scutil.classpath.implicits
-	with	scutil.concurrent.implicits
-	with	scutil.security.implicits
-	with	scutil.io.implicits
-	with	scutil.jcollection.implicits
-	with	scutil.naming.implicits
-	with	scutil.net.implicits
-	with	scutil.regex.implicits
-	with	scutil.jtime.implicits
+object implicits {
+	export scutil.classpath.implicits.{ given, *}
+	export scutil.concurrent.implicits.{ given, *}
+	export scutil.security.implicits.{ given, *}
+	export scutil.io.implicits.{ given, *}
+	export scutil.jcollection.implicits.{ given, *}
+	export scutil.naming.implicits.{ given, *}
+	export scutil.net.implicits.{ given, *}
+	export scutil.regex.implicits.{ given, *}
+	export scutil.jtime.implicits.{ given, *}
+}

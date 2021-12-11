@@ -4,9 +4,7 @@ import java.util.{ Set => JSet }
 
 import scala.collection.immutable.HashSet
 
-object JSetImplicits extends JSetImplicits
-
-trait JSetImplicits {
+object JSetImplicits {
 	implicit final class JSetExt[T](peer:JSet[T]) {
 		def toHashSet:HashSet[T]	= toIterable.to(HashSet)
 		def toSet:Set[T]			= toHashSet

@@ -62,7 +62,7 @@ object Month {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit val MonthShow:Show[Month]	= Show.toStringInstance
+	given MonthShow:Show[Month]	= Show.toStringInstance
 }
 
 sealed abstract class Month {

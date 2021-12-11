@@ -14,6 +14,7 @@ object Validated {
 		if (ok)	valid(value)
 		else	invalid(problems)
 
+	// TODO dotty use extension
 	implicit final class MergeableValidated[T](peer:Validated[T,T]) {
 		def merge:T	=
 			peer match {
@@ -25,13 +26,13 @@ object Validated {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def ValidatedApplicative[S:Semigroup]:Applicative[Validated[S,_]]	=
+	given [S:Semigroup]:Applicative[Validated[S,_]]	=
 		new Applicative[Validated[S,_]] {
 			override def pure[A](it:A):Validated[S,A]										= Validated valid it
 			override def ap[A,B](func:Validated[S,A=>B])(it:Validated[S,A]):Validated[S,B]	= func ap it
 		}
 
-	implicit def ValidatedSemigroup[S:Semigroup,T]:Semigroup[Validated[S,T]]	=
+	given [S:Semigroup,T]:Semigroup[Validated[S,T]]	=
 		Semigroup instance (_ or _)
 
 	//------------------------------------------------------------------------------
@@ -107,7 +108,7 @@ sealed trait Validated[+E,+T] {
 	def product[EE>:E:Semigroup,U](that:Validated[EE,U]):Validated[EE,(T,U)]	=
 		(this map2 that)((_,_))
 
-	def map2[EE>:E,U,V](that:Validated[EE,U])(func:(T,U)=>V)(implicit cc:Semigroup[EE]):Validated[EE,V]	=
+	def map2[EE>:E,U,V](that:Validated[EE,U])(func:(T,U)=>V)(using cc:Semigroup[EE]):Validated[EE,V]	=
 		(this, that) match {
 			case (Validated.Invalid(a),	Validated.Valid(_))		=> Validated.Invalid(a)
 			case (Validated.Valid(_),	Validated.Invalid(b))	=> Validated.Invalid(b)
@@ -158,7 +159,7 @@ sealed trait Validated[+E,+T] {
 	//------------------------------------------------------------------------------
 
 	// NOTE cats' orElse drops errors, this is like cats' <+>
-	def or[EE>:E,TT>:T](that:Validated[EE,TT])(implicit cc:Semigroup[EE]):Validated[EE,TT]	=
+	def or[EE>:E,TT>:T](that:Validated[EE,TT])(using cc:Semigroup[EE]):Validated[EE,TT]	=
 		(this, that) match {
 			case (Validated.Invalid(a),		Validated.Invalid(b))	=> Validated.invalid(cc.combine(a, b))
 			case (Validated.Valid(a),	_)							=> Validated.valid(a)
@@ -264,6 +265,6 @@ sealed trait Validated[+E,+T] {
 
 	//------------------------------------------------------------------------------
 
-	def toEitherT[F[_],EE>:E,TT>:T](implicit F:Applicative[F]):EitherT[F,EE,TT]	=
+	def toEitherT[F[_],EE>:E,TT>:T](using F:Applicative[F]):EitherT[F,EE,TT]	=
 		EitherT fromEither toEither
 }

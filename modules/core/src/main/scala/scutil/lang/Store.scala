@@ -12,7 +12,7 @@ object Store {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def StoreFunctor[S]:Functor[Store[S,_]]	=
+	given StoreFunctor[S]:Functor[Store[S,_]]	=
 		new Functor[Store[S,_]] {
 			def map[A,B](it:Store[S,A])(func:A=>B):Store[S,B]	= it map func
 		}
@@ -23,7 +23,7 @@ final case class Store[V,C](index:V, peek:V=>C) {
 
 	def modify(func:V=>V):C		= peek(func(index))
 
-	def modifyF[F[_]](func:V=>F[V])(implicit F:Functor[F]):F[C]	=
+	def modifyF[F[_]](func:V=>F[V])(using F:Functor[F]):F[C]	=
 		(F map func(index))(peek)
 
 	def modifyState[X](func:State[V,X]):(C,X)	= {
@@ -31,7 +31,7 @@ final case class Store[V,C](index:V, peek:V=>C) {
 		(peek(v2), side)
 	}
 
-	def modifyStateT[F[_],X](func:StateT[F,V,X])(implicit F:Functor[F]):F[(C,X)]	=
+	def modifyStateT[F[_],X](func:StateT[F,V,X])(using F:Functor[F]):F[(C,X)]	=
 		(F map (func run index)) { case (v, x) => (peek(v), x) }
 
 	//------------------------------------------------------------------------------

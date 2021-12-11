@@ -11,7 +11,7 @@ object CalendarWeek {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit val CalendarWeekShow:Show[CalendarWeek]	= Show.toStringInstance
+	given CalendarWeekShow:Show[CalendarWeek]	= Show.toStringInstance
 }
 
 /** ISO 8601 week, number is 1..53 */

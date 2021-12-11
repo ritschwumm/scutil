@@ -4,9 +4,7 @@ import scala.xml._
 
 import scutil.xml._
 
-object NodeImplicits extends NodeImplicits
-
-trait NodeImplicits {
+object NodeImplicits {
 	implicit final class NodeExt(peer:Node) {
 		// BETTER modify this?
 		def xmlNamespaces:Seq[XmlNs]	= {

@@ -7,19 +7,17 @@ import scala.collection.IterableFactory
 
 import scutil.lang._
 
-object AnyImplicits extends AnyImplicits
-
-trait AnyImplicits {
+object AnyImplicits {
 	implicit final class AnyExt[T](peer:T) {
 		/** ensure we get the java wrapper */
 		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 		def boxed:AnyRef	= peer.asInstanceOf[AnyRef]
 
 		/** type-invariant equality */
-		def ====[U](that:U)(implicit ev:T=:=U):Boolean	= ev(peer) == that
+		def ====[U](that:U)(using ev:T=:=U):Boolean	= ev(peer) == that
 
 		/** type-invariant inequality */
-		def !===[U](that:T)(implicit ev:T=:=U):Boolean	= ev(peer) != that
+		def !===[U](that:T)(using ev:T=:=U):Boolean	= ev(peer) != that
 
 		//------------------------------------------------------------------------------
 

@@ -5,9 +5,7 @@ import java.util.Date
 
 import scutil.lang._
 
-object DateFormatImplicits extends DateFormatImplicits
-
-trait DateFormatImplicits {
+object DateFormatImplicits {
 	implicit final class DateFormatExt(peer:DateFormat) {
 		def toPrism:Prism[String,Date]	=
 			Prism(

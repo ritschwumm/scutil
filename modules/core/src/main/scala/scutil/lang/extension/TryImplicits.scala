@@ -6,9 +6,7 @@ import scutil.core.implicits._
 import scutil.lang._
 import scutil.lang.tc._
 
-object TryImplicits extends TryImplicits
-
-trait TryImplicits {
+object TryImplicits {
 	implicit final class TryExt[T](peer:Try[T]) {
 		// 2.12 will have fold, see https://issues.scala-lang.org/browse/SI-8336
 		def cata[U](failure:Throwable=>U, success:T=>U):U	=

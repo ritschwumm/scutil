@@ -4,9 +4,7 @@ import java.io._
 
 import scutil.lang._
 
-object DataOutputImplicits extends DataOutputImplicits
-
-trait DataOutputImplicits {
+object DataOutputImplicits {
 	implicit final class DataOutputExt(peer:DataOutput) {
 		def writeByteString(it:ByteString):Unit	=
 			peer write it.unsafeValue

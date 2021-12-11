@@ -1,8 +1,6 @@
 package scutil.math.extension
 
-object OrderedImplicits extends OrderedImplicits
-
-trait OrderedImplicits {
+object OrderedImplicits {
 	// TODO shouldn't these just come from OrderingSyntaxImplicits?
 	implicit final class OrderedExt[T<:Ordered[T]](peer:T) {
 		def equiv(that:T):Boolean	= (peer compare that) == 0

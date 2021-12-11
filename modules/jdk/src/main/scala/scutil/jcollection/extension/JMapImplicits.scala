@@ -4,9 +4,7 @@ import java.util.{ Map => JMap }
 
 import scala.collection.immutable.HashMap
 
-object JMapImplicits extends JMapImplicits
-
-trait JMapImplicits {
+object JMapImplicits {
 	implicit final class JMapExt[K,V](peer:JMap[K,V]) {
 		def toHashMap:Map[K,V]	= {
 			var out		= HashMap.empty[K,V]

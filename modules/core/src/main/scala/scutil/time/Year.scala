@@ -15,7 +15,7 @@ object Year {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit val YearShow:Show[Year]	= Show.toStringInstance
+	given YearShow:Show[Year]	= Show.toStringInstance
 }
 
 final case class Year(value:Int) extends Ordered[Year] {

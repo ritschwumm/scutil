@@ -5,9 +5,7 @@ import java.awt.geom._
 import scutil.geom._
 import scutil.gui.geomConversion
 
-object Rectangle2DImplicits extends Rectangle2DImplicits
-
-trait Rectangle2DImplicits {
+object Rectangle2DImplicits {
 	implicit final class Rectangle2DExt(peer:Rectangle2D) {
 		/*
 		def inset(insets:Insets):Rectangle2D	=

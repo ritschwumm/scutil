@@ -43,7 +43,7 @@ object Prism {
 	//## typeclass instances
 
 	// TODO optics is this lawful?
-	implicit def PrismSemigroup[S,T]:Semigroup[Prism[S,T]]	=
+	given PrismSemigroup[S,T]:Semigroup[Prism[S,T]]	=
 		Semigroup instance (_ orElse _)
 }
 
@@ -60,8 +60,8 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 	def mod(func:T=>T):S=>S	= s => get(s) map (func andThen set) getOrElse s
 	def modThe(s:S, func:T=>T):S	= mod(func)(s)
 
-	def modF[F[_]](func:T=>F[T])(implicit F:Applicative[F]):S=>F[S]	= s	=> modOptF(func) apply s getOrElse (F pure s)
-	def modTheF[F[_]](s:S, func:T=>F[T])(implicit F:Applicative[F]):F[S]	= modF(func) apply s
+	def modF[F[_]](func:T=>F[T])(using F:Applicative[F]):S=>F[S]	= s	=> modOptF(func) apply s getOrElse (F pure s)
+	def modTheF[F[_]](s:S, func:T=>F[T])(using F:Applicative[F]):F[S]	= modF(func) apply s
 
 	// TODO optics this could be renamed to set, set is actually reverseGet in monocle (?)
 	def setMatching(value:T):S=>S	=
@@ -78,7 +78,7 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 	def modOpt(func:T=>T):S=>Option[S]		= s => get(s) map (func andThen set)
 	def modTheOpt(s:S, func:T=>T):Option[S]	= modOpt(func) apply s
 
-	def modOptF[F[_]](func:T=>F[T])(implicit F:Functor[F]):S=>Option[F[S]]	=
+	def modOptF[F[_]](func:T=>F[T])(using F:Functor[F]):S=>Option[F[S]]	=
 		s	=> {
 			get(s) map { t =>
 				(F map func(t)) { ss =>
@@ -86,7 +86,7 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 				}
 			}
 		}
-	def modTheOptF[F[_]](s:S, func:T=>F[T])(implicit F:Functor[F]):Option[F[S]]	=
+	def modTheOptF[F[_]](s:S, func:T=>F[T])(using F:Functor[F]):Option[F[S]]	=
 		modOptF(func) apply s
 
 	//------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 
 	//------------------------------------------------------------------------------
 
-	def embedStateT[F[_],U](state:StateT[F,T,U])(implicit F:Applicative[F]):StateT[F,S,Option[U]]	=
+	def embedStateT[F[_],U](state:StateT[F,T,U])(using F:Applicative[F]):StateT[F,S,Option[U]]	=
 		StateT { s =>
 			get(s)
 			.map { t1 =>

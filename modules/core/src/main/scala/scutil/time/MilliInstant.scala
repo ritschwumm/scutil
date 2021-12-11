@@ -14,7 +14,7 @@ object MilliInstant {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit val MilliInstantShow:Show[MilliInstant]	= Show.toStringInstance
+	given MilliInstantShow:Show[MilliInstant]	= Show.toStringInstance
 }
 
 final case class MilliInstant(millis:Long) extends Ordered[MilliInstant] {

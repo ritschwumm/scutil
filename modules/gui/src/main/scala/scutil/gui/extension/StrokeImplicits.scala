@@ -4,9 +4,7 @@ import java.awt.Stroke
 
 import scutil.gui.CompositeStroke
 
-object StrokeImplicits extends StrokeImplicits
-
-trait StrokeImplicits {
+object StrokeImplicits {
 	implicit final class StrokeExt(peer:Stroke) {
 		/** symbolic alias for andThen */
 		def >=>(that:Stroke):Stroke	=

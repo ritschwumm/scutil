@@ -2,9 +2,7 @@ package scutil.collection.extension
 
 import scala.annotation.tailrec
 
-object ListImplicits extends ListImplicits
-
-trait ListImplicits {
+object ListImplicits {
 	implicit final class ListExt[T](peer:List[T]) {
 		def cata[U](nil: =>U, cons:(T,List[T])=>U):U =
 			peer match {

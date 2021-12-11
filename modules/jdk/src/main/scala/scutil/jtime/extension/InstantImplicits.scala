@@ -7,9 +7,7 @@ import java.text.SimpleDateFormat
 import scutil.time._
 import scutil.jtime._
 
-object DateImplicits extends DateImplicits
-
-trait DateImplicits {
+object DateImplicits {
 	implicit final class DateExt(peer:Date) {
 		def format(fmt:String, tz:TimeZone = TimeZone.getDefault):String	= {
 			val df	= new SimpleDateFormat(fmt)

@@ -5,9 +5,7 @@ import java.util.{
 	Enumeration	=> JEnumeration
 }
 
-object IteratorJCollectionSyntaxImplicits extends IteratorJCollectionSyntaxImplicits
-
-trait IteratorJCollectionSyntaxImplicits {
+object IteratorJCollectionSyntaxImplicits {
 	implicit final class IteratorJCollectionSyntaxExt[T](peer:Iterator[T]) {
 		def toJIterator:JIterator[T]		= new IteratorAsJIterator(peer)
 		def toJEnumeration:JEnumeration[T]	= new IteratorAsJEnumeration(peer)

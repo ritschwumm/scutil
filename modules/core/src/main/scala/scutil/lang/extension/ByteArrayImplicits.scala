@@ -5,9 +5,7 @@ import java.nio.charset.StandardCharsets
 
 import scutil.lang.ByteString
 
-object ByteArrayImplicits extends ByteArrayImplicits
-
-trait ByteArrayImplicits {
+object ByteArrayImplicits {
 	implicit final class ByteArrayExt(peer:Array[Byte]) {
 		def asString(charset:Charset):String	= new String(peer, charset)
 		def asUtf8String:String					= asString(StandardCharsets.UTF_8)

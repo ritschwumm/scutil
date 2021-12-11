@@ -5,9 +5,7 @@ import java.awt.{ List=>_, _ }
 import scutil.geom._
 import scutil.gui.geomConversion
 
-object DimensionImplicits extends DimensionImplicits
-
-trait DimensionImplicits {
+object DimensionImplicits {
 	implicit final class DimensionExt(peer:Dimension) {
 		def toPoint:Point	=
 			new Point(

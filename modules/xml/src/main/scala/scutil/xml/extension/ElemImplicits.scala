@@ -4,9 +4,7 @@ import scala.xml._
 
 import scutil.xml._
 
-object ElemImplicits extends ElemImplicits
-
-trait ElemImplicits {
+object ElemImplicits {
 	implicit final class ElemExt(peer:Elem) {
 		def attributeValue(attr:XmlAttr):Option[String]	=
 			peer.attributes

@@ -3,9 +3,7 @@ package scutil.gui.extension
 import java.awt.{ List=>_, _ }
 import javax.swing._
 
-object RootPaneContainerImplicits extends RootPaneContainerImplicits
-
-trait RootPaneContainerImplicits {
+object RootPaneContainerImplicits {
 	implicit final class RootPaneContainerExt(peer:RootPaneContainer) {
 		def setCenterContent(child:Component):Unit	= {
 			val content	= peer.getContentPane

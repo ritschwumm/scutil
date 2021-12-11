@@ -2,9 +2,7 @@ package scutil.lang.extension
 
 import scutil.lang._
 
-object Function1Implicits extends Function1Implicits
-
-trait Function1Implicits {
+object Function1Implicits {
 	implicit final class Function1Ext[S,T](peer:Function1[S,T]) {
 		/** symbolic alias for apply */
 		def <|(value:S):T	= peer(value)

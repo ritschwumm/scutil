@@ -2,9 +2,7 @@ package scutil.collection.extension
 
 import scutil.lang._
 
-object MapImplicits extends MapImplicits
-
-trait MapImplicits {
+object MapImplicits {
 	implicit final class MapExt[S,T](peer:Map[S,T]) {
 		// aliases with low precendence
 

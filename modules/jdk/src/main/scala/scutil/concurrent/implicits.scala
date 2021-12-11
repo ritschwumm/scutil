@@ -1,6 +1,5 @@
 package scutil.concurrent
 
-object implicits extends implicits
-
-trait implicits
-	extends	instances
+object implicits {
+	export instances.{ given, *}
+}

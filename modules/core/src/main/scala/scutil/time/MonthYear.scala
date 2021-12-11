@@ -18,7 +18,7 @@ object MonthYear {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit val MonthYearShow:Show[MonthYear]	= Show.toStringInstance
+	given MonthYearShow:Show[MonthYear]	= Show.toStringInstance
 }
 
 /** month in 1..12 */

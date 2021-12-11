@@ -45,7 +45,7 @@ final case class Lens[S,T](get:S=>T, set:T=>S=>S) {
 	def modThe(s:S, func:T=>T):S	= mod(func)(s)
 
 	// van laarhoven form
-	def modF[F[_]](func:T=>F[T])(implicit F:Functor[F]):S=>F[S]	= s	=> (F map func(get(s))) { t => set(t) apply s }
+	def modF[F[_]](func:T=>F[T])(using F:Functor[F]):S=>F[S]	= s	=> (F map func(get(s))) { t => set(t) apply s }
 	def modTheF[F[_]:Functor](s:S, func:T=>F[T]):F[S]			= modF(func) apply s
 
 	//------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ final case class Lens[S,T](get:S=>T, set:T=>S=>S) {
 
 	//------------------------------------------------------------------------------
 
-	def embedStateT[F[_],U](state:StateT[F,T,U])(implicit F:Functor[F]):StateT[F,S,U]	=
+	def embedStateT[F[_],U](state:StateT[F,T,U])(using F:Functor[F]):StateT[F,S,U]	=
 		StateT { s =>
 			val ftu:F[(T,U)] = state run get(s)
 			(F map ftu) { case (t,u) =>

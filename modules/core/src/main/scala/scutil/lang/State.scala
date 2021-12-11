@@ -13,7 +13,7 @@ object State {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def StateMonad[S]:Monad[State[S,_]]	=
+	given StateMonad[S]:Monad[State[S,_]]	=
 		new Monad[State[S,_]] {
 			override def pure[T](it:T):State[S,T]										= State pure it
 			override def map[T,U](its:State[S,T])(func:T=>U):State[S,U]					= its map func
@@ -63,6 +63,6 @@ final case class State[S,+T](run:S=>(S,T)) {
 
 	//------------------------------------------------------------------------------
 
-	def toStateT[F[_],TT>:T](implicit M:Applicative[F]):StateT[F,S,TT]	=
+	def toStateT[F[_],TT>:T](using M:Applicative[F]):StateT[F,S,TT]	=
 		StateT fromState this
 }

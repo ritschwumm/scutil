@@ -20,9 +20,9 @@ object MilliDuration {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit val MilliDurationShow:Show[MilliDuration]	= Show.toStringInstance
+	given MilliDurationShow:Show[MilliDuration]	= Show.toStringInstance
 
-	implicit val MilliDuratioMonoid:Monoid[MilliDuration]	=
+	given MilliDuratioMonoid:Monoid[MilliDuration]	=
 		Monoid.instance (zero, _ + _)
 }
 

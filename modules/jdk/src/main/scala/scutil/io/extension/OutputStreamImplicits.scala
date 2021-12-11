@@ -5,9 +5,7 @@ import java.nio.charset.Charset
 
 import scutil.lang.ByteString
 
-object OutputStreamImplicits extends OutputStreamImplicits
-
-trait OutputStreamImplicits {
+object OutputStreamImplicits {
 	/** utility methods for OutputStream objects */
 	implicit final class OutputStreamExt(peer:OutputStream) {
 		def writeByteString(it:ByteString):Unit	=

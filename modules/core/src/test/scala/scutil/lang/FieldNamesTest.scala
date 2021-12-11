@@ -9,14 +9,14 @@ final case class Named3(a:Int, b:String, c:java.util.Date)
 object FieldNamesTest extends SimpleTestSuite {
 	test("FieldNames should with 1 field") {
 		assertEquals(
-			implicitly[FieldNames[Named1]],
+			summon[FieldNames[Named1]],
 			FieldNames(Vector("a"))
 		)
 	}
 
 	test("FieldNames should with 2 fields") {
 		assertEquals(
-			implicitly[FieldNames[Named2]],
+			summon[FieldNames[Named2]],
 			FieldNames(Vector("a", "b"))
 		)
 	}
@@ -24,7 +24,7 @@ object FieldNamesTest extends SimpleTestSuite {
 
 	test("FieldNames should with 3 fields") {
 		assertEquals(
-			implicitly[FieldNames[Named3]],
+			summon[FieldNames[Named3]],
 			FieldNames(Vector("a", "b", "c"))
 		)
 	}
@@ -40,5 +40,5 @@ object FieldNamesTest extends SimpleTestSuite {
 	}
 
 	private def getNames[T:FieldNames]:Seq[String]	=
-		implicitly[FieldNames[T]].names
+		summon[FieldNames[T]].names
 }

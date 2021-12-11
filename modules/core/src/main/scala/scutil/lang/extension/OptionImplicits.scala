@@ -8,9 +8,7 @@ import scala.collection.generic.IsIterable
 import scutil.lang._
 import scutil.lang.tc._
 
-object OptionImplicits extends OptionImplicits
-
-trait OptionImplicits {
+object OptionImplicits {
 	implicit final class OptionCompanionImplicits(peer:Option.type) {
 		def none[T]:Option[T]		= None
 		def some[T](it:T):Option[T]	= Some(it)
@@ -58,11 +56,11 @@ trait OptionImplicits {
 			}
 
 		@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
-		def flatMapMany[Repr](func:T=>Repr)(implicit iter:IsIterable[Repr], factory:Factory[iter.A,Repr]):Repr	=
+		def flatMapMany[Repr](func:T=>Repr)(using iter:IsIterable[Repr], factory:Factory[iter.A,Repr]):Repr	=
 			peer.map(func).flattenMany
 
 		@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
-		def flattenMany(implicit iter:IsIterable[T], factory:Factory[iter.A,T]):T	=
+		def flattenMany(using iter:IsIterable[T], factory:Factory[iter.A,T]):T	=
 			peer.getOrElse(factory.newBuilder.result())
 
 		//------------------------------------------------------------------------------
@@ -103,10 +101,10 @@ trait OptionImplicits {
 		/*
 		// TODO generify these - right now, they are not working
 
-		def sequenceIterable[CC[_]<:Iterable[U],U](implicit ev: T <:< CC[U], factory:Factory[Option[U],CC[Option[U]]]):CC[Option[U]]	=
+		def sequenceIterable[CC[_]<:Iterable[U],U](using factory:Factory[Option[U],CC[Option[U]]])(implicit ev: T <:< CC[U]):CC[Option[U]]	=
 				traverseIterable(ev)
 
-		def traverseIterable[CC[_]<:Iterable[U],U](func:T=>CC[U])(implicit factory:Factory[Option[U],CC[Option[U]]]):CC[Option[U]]	= {
+		def traverseIterable[CC[_]<:Iterable[U],U](func:T=>CC[U])(using factory:Factory[Option[U],CC[Option[U]]]):CC[Option[U]]	= {
 			val builder	= factory.newBuilder
 			peer map func match {
 				case None		=> builder += None; builder.result

@@ -2,9 +2,7 @@ package scutil.lang.extension
 
 import java.util.concurrent.Callable
 
-object Function0Implicits extends Function0Implicits
-
-trait Function0Implicits {
+object Function0Implicits {
 	implicit final class Function0Ext[T](peer:Function0[T]) {
 		def toRunnable:Runnable =
 			new Runnable {

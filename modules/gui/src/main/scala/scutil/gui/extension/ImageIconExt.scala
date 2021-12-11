@@ -6,9 +6,7 @@ import javax.swing.ImageIcon
 
 import scutil.gui.extension.ImageImplicits._
 
-object ImageIconImplicits extends ImageIconImplicits
-
-trait ImageIconImplicits {
+object ImageIconImplicits {
 	implicit final class ImageIconExt(peer:ImageIcon) {
 		def withImage(func:Image=>Image):ImageIcon	=
 			new ImageIcon(func(peer.getImage))

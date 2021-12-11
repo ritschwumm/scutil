@@ -1,7 +1,6 @@
 package scutil.regex
 
-object implicits extends implicits
-
-trait implicits
-	extends	extensions
-	with	literals
+object implicits {
+	export extensions.*
+	export literals.*
+}

@@ -6,9 +6,7 @@ import java.net._
 
 import scutil.core.implicits._
 
-object URLImplicits extends URLImplicits
-
-trait URLImplicits {
+object URLImplicits {
 	implicit final class URLExt(peer:URL) {
 		/** execute a closure with an InputStream reading from this URL */
 		def withInputStream[T](proxy:Option[Proxy])(code:InputStream=>T):T	=

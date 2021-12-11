@@ -2,7 +2,7 @@ package scutil.lang
 
 import minitest._
 
-import scutil.core.implicits._
+import scutil.core.implicits.{ given, _ }
 
 object EitherTest extends SimpleTestSuite {
 	test("Either should do successful ap") {

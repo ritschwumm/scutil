@@ -2,7 +2,7 @@ package scutil.lang.tc
 
 import minitest._
 
-import scutil.core.implicits._
+import scutil.core.implicits.{ given, _ }
 import scutil.lang._
 
 object ApplicativeTupleNSyntaxGeneratedTest extends SimpleTestSuite {

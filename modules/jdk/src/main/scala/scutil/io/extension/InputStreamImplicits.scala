@@ -5,9 +5,7 @@ import java.nio.charset.Charset
 
 import scutil.lang.ByteString
 
-object InputStreamImplicits extends InputStreamImplicits
-
-trait InputStreamImplicits {
+object InputStreamImplicits {
 	/** utility methods for InputStream objects */
 	implicit final class InputStreamExt(peer:InputStream) {
 		val blockSize	= 16384

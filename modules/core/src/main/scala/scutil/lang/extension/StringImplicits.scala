@@ -7,9 +7,7 @@ import scala.collection.mutable
 
 import scutil.lang._
 
-object StringImplicits extends StringImplicits
-
-trait StringImplicits {
+object StringImplicits {
 	implicit final class LangStringExt(peer:String) {
 		def toBigIntOption:Option[BigInt]	= parseBigInt.toOption
 

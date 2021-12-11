@@ -67,14 +67,14 @@ object Converter {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def ConverterApplicative[E,S](implicit E:Semigroup[E]):Applicative[Converter[E,S,_]]	=
+	given ConverterApplicative[E,S](using E:Semigroup[E]):Applicative[Converter[E,S,_]]	=
 		new Applicative[Converter[E,S,_]] {
 			override def pure[A](it:A):Converter[E,S,A]												= Converter pure it
 			override def ap[A,B](func:Converter[E,S,A=>B])(its:Converter[E,S,A]):Converter[E,S,B]	= func ap its
 		}
 
 	/*
-	implicit def ConverterMonad[E,S]:Monad[Converter[E,S,_]]	=
+	given ConverterMonad[E,S]:Monad[Converter[E,S,_]]	=
 		new Monad[Converter[E,S,_]] {
 			override def pure[A](it:A):Converter[E,S,A]													= Converter pure it
 			override def map[A,B](it:Converter[E,S,A])(func:A=>B):Converter[E,S,B]						= it map func
@@ -82,7 +82,7 @@ object Converter {
 		}
 	*/
 
-	implicit def ConverterSemigroup[E:Semigroup,S,T]:Semigroup[Converter[E,S,T]]	=
+	given ConverterSemigroup[E:Semigroup,S,T]:Semigroup[Converter[E,S,T]]	=
 		Semigroup instance (_ or _)
 }
 
@@ -127,13 +127,13 @@ abstract class Converter[E,S,T] {
 	def as[U](it:U):Converter[E,S,U]	=
 		map(constant(it))
 
-	def ap[U,V](that:Converter[E,S,U])(implicit ev: T <:< (U=>V), cc:Semigroup[E]):Converter[E,S,V]	=
+	def ap[U,V](that:Converter[E,S,U])(using cc:Semigroup[E])(implicit ev: T <:< (U=>V)):Converter[E,S,V]	=
 		it => (this convert it map ev) ap (that convert it)
 
-	def product[U](that:Converter[E,S,U])(implicit cc:Semigroup[E]):Converter[E,S,(T,U)] =
+	def product[U](that:Converter[E,S,U])(using cc:Semigroup[E]):Converter[E,S,(T,U)] =
 		it	=> (this convert it) product (that convert it)
 
-	def map2[U,V](that:Converter[E,S,U])(func:(T,U)=>V)(implicit cc:Semigroup[E]):Converter[E,S,V] =
+	def map2[U,V](that:Converter[E,S,U])(func:(T,U)=>V)(using cc:Semigroup[E]):Converter[E,S,V] =
 		it	=> ((this convert it) map2 (that convert it))(func)
 
 	def coZip[SS](that:Converter[E,SS,T]):Converter[E,Either[S,SS],T]	=
@@ -142,7 +142,7 @@ abstract class Converter[E,S,T] {
 			case Right(x)	=> that convert x
 		}
 
-	def or(that:Converter[E,S,T])(implicit cc:Semigroup[E]):Converter[E,S,T]	=
+	def or(that:Converter[E,S,T])(using cc:Semigroup[E]):Converter[E,S,T]	=
 		it => (this convert it) or (that convert it)
 
 	def either[SS,TT](that:Converter[E,SS,TT]):Converter[E,Either[S,SS],Either[T,TT]]	=
@@ -151,7 +151,7 @@ abstract class Converter[E,S,T] {
 			case Right(x)	=> that convert x map (Right(_))
 		}
 
-	def pair[SS,TT](that:Converter[E,SS,TT])(implicit E:Semigroup[E]):Converter[E,(S,SS),(T,TT)]	=
+	def pair[SS,TT](that:Converter[E,SS,TT])(using E:Semigroup[E]):Converter[E,(S,SS),(T,TT)]	=
 		{ case (s,ss) => (this convert s) product (that convert ss) }
 
 	//------------------------------------------------------------------------------
@@ -162,16 +162,16 @@ abstract class Converter[E,S,T] {
 	//------------------------------------------------------------------------------
 
 	// NOTE this uses the Traverse instance instead of a native implementation
-	def liftTraversed[F[_]](implicit F:Traversed[F], CC:Semigroup[E]):Converter[E,F[S],F[T]]	= _ traverse convert
+	def liftTraversed[F[_]](using F:Traversed[F], CC:Semigroup[E]):Converter[E,F[S],F[T]]	= _ traverse convert
 
-	def liftOption:Converter[E,Option[S],Option[T]]								= _ traverseValidated convert
-	def liftSeq(implicit cc:Semigroup[E]):Converter[E,Seq[S],Seq[T]]			= _ traverseValidated convert
-	def liftList(implicit cc:Semigroup[E]):Converter[E,List[S],List[T]]			= _ traverseValidated convert
-	def liftVector(implicit cc:Semigroup[E]):Converter[E,Vector[S],Vector[T]]	= _ traverseValidated convert
-	def liftSet(implicit cc:Semigroup[E]):Converter[E,Set[S],Set[T]]			= _ traverseValidated convert
+	def liftOption:Converter[E,Option[S],Option[T]]							= _ traverseValidated convert
+	def liftSeq(using cc:Semigroup[E]):Converter[E,Seq[S],Seq[T]]			= _ traverseValidated convert
+	def liftList(using cc:Semigroup[E]):Converter[E,List[S],List[T]]		= _ traverseValidated convert
+	def liftVector(using cc:Semigroup[E]):Converter[E,Vector[S],Vector[T]]	= _ traverseValidated convert
+	def liftSet(using cc:Semigroup[E]):Converter[E,Set[S],Set[T]]			= _ traverseValidated convert
 
 	// NOTE this uses the Traverse instance instead of a native implementation
-	def liftNes(implicit cc:Semigroup[E]):Converter[E,Nes[S],Nes[T]]			= _ traverse convert
+	def liftNes(using cc:Semigroup[E]):Converter[E,Nes[S],Nes[T]]			= _ traverse convert
 
 	//------------------------------------------------------------------------------
 

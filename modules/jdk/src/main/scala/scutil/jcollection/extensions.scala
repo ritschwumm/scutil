@@ -2,20 +2,19 @@ package scutil.jcollection
 
 import scutil.jcollection.extension._
 
-object extensions extends extensions
-
-trait extensions
-	extends	ConcurrentLinkedQueueImplicits
-	with	JEnumerationImplicits
-	with	JIteratorImplicits
-	with	JIterableImplicits
-	with	JListImplicits
-	with	JMapImplicits
-	with	JOptionalImplicits
-	with	JSetImplicits
-	with	PropertiesImplicits
-	with	SeqJCollectionSyntaxImplicits
-	with	IterableJCollectionSyntaxImplicits
-	with	IteratorJCollectionSyntaxImplicits
-	with	MapJCollectionSyntaxImplicits
-	with	SetJCollectionSyntaxImplicits
+object extensions {
+	export ConcurrentLinkedQueueImplicits.*
+	export JEnumerationImplicits.*
+	export JIteratorImplicits.*
+	export JIterableImplicits.*
+	export JListImplicits.*
+	export JMapImplicits.*
+	export JOptionalImplicits.*
+	export JSetImplicits.*
+	export PropertiesImplicits.*
+	export SeqJCollectionSyntaxImplicits.*
+	export IterableJCollectionSyntaxImplicits.*
+	export IteratorJCollectionSyntaxImplicits.*
+	export MapJCollectionSyntaxImplicits.*
+	export SetJCollectionSyntaxImplicits.*
+}

@@ -17,7 +17,7 @@ object IoResource {
 	def disposing[T](create:Io[T])(dispose:T=>Io[Unit]):IoResource[T]	=
 		IoResource(create map { t => t -> dispose(t) })
 
-	def releasable[T](create:Io[T])(implicit R:Releasable[T]):IoResource[T]	=
+	def releasable[T](create:Io[T])(using R:Releasable[T]):IoResource[T]	=
 		IoResource(create map { t => t -> Io.delay{ R.release(t) } })
 
 	def lifecycle(before:Io[Unit], after:Io[Unit]):IoResource[Unit]	=
@@ -35,7 +35,7 @@ object IoResource {
 		def disposing[T](create: =>T)(dispose:T=>Unit):IoResource[T]	=
 			IoResource.disposing(Io delay create)(t => Io delay dispose(t))
 
-		def releasable[T](create: =>T)(implicit R:Releasable[T]):IoResource[T]	=
+		def releasable[T](create: =>T)(using R:Releasable[T]):IoResource[T]	=
 			IoResource.releasable(Io delay create)
 
 		def lifecycle(before: =>Unit, after: =>Unit):IoResource[Unit]	=
@@ -48,13 +48,13 @@ object IoResource {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit val IoResourceMonad:Monad[IoResource]	=
+	given IoResourceMonad:Monad[IoResource]	=
 		new Monad[IoResource] {
 			def pure[T](value:T):IoResource[T]										= IoResource pure value
 			def flatMap[S,T](value:IoResource[S])(func:S=>IoResource[T]):IoResource[T]	= value flatMap func
 		}
 
-	implicit val IoResourceDelay:Delay[IoResource]	=
+	given IoResourceDelay:Delay[IoResource]	=
 		new Delay[IoResource] {
 			def delay[T](value: =>T):IoResource[T]	= IoResource delay value
 		}

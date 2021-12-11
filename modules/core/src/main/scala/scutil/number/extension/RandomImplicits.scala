@@ -4,9 +4,7 @@ import java.util.Random
 
 import scutil.lang._
 
-object RandomImplicits extends RandomImplicits
-
-trait RandomImplicits {
+object RandomImplicits {
 	implicit final class RandomExt(peer:Random) {
 		def string(alphabet:String, length:Int):String	= {
 			val	out	= new StringBuilder

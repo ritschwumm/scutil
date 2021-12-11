@@ -5,7 +5,7 @@ import minitest._
 @SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
 object SourceLocationTest extends SimpleTestSuite {
 	final case class Check(x:Int)
-	implicit val check:Check	= Check(1)
+	given check:Check	= Check(1)
 
 	//------------------------------------------------------------------------------
 
@@ -46,11 +46,11 @@ object SourceLocationTest extends SimpleTestSuite {
 
 	//------------------------------------------------------------------------------
 
-	private def foo(implicit loc:SourceLocation):SourceLocation	= loc
-	private def bar(x:Int)(implicit loc:SourceLocation):SourceLocation			= loc
-	private def quux(x:Int)(y:Int)(implicit loc:SourceLocation):SourceLocation	= loc
+	private def foo(using loc:SourceLocation):SourceLocation	= loc
+	private def bar(x:Int)(using loc:SourceLocation):SourceLocation			= loc
+	private def quux(x:Int)(y:Int)(using loc:SourceLocation):SourceLocation	= loc
 
-	private def xxx(implicit loc:SourceLocation, x:Check):SourceLocation	= { val _ = x; loc }
-	private def yyy(implicit x:Check, loc:SourceLocation):SourceLocation	= { val _ = x; loc }
+	private def xxx(using loc:SourceLocation, x:Check):SourceLocation	= { val _ = x; loc }
+	private def yyy(using x:Check, loc:SourceLocation):SourceLocation	= { val _ = x; loc }
 }
 

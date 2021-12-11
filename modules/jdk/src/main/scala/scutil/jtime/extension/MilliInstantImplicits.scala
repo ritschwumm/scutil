@@ -6,9 +6,7 @@ import java.time.Instant
 import scutil.time._
 import scutil.jtime._
 
-object MilliInstantImplicits extends MilliInstantImplicits
-
-trait MilliInstantImplicits {
+object MilliInstantImplicits {
 	implicit final class MilliInstantExt(peer:MilliInstant) {
 		def toGregorianDate(tz:TimeZone):GregorianDate	=
 			JTimeUtil.milliInstantToGregorianDate(peer, tz)

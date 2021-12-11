@@ -2,9 +2,7 @@ package scutil.lang.extension
 
 import java.io._
 
-object ThrowableImplicits extends ThrowableImplicits
-
-trait ThrowableImplicits {
+object ThrowableImplicits {
 	implicit final class ThrowableExt(peer:Throwable) {
 		def causeOption:Option[Throwable]	=
 			Option(peer.getCause)

@@ -2,9 +2,7 @@ package scutil.math.extension
 
 import scala.annotation.tailrec
 
-object OrderingImplicits extends OrderingImplicits
-
-trait OrderingImplicits {
+object OrderingImplicits {
 	implicit final class OrderingCompanionExt(peer:Ordering.type) {
 		/**
 		treats everything as equal,
@@ -25,7 +23,7 @@ trait OrderingImplicits {
 			})
 
 		/** orders lexicographically from left to right */
-		def sequence[T](missingFirst:Boolean)(implicit base:Ordering[T]):Ordering[Seq[T]]	=
+		def sequence[T](missingFirst:Boolean)(using base:Ordering[T]):Ordering[Seq[T]]	=
 			new Ordering[Seq[T]] {
 				def compare(a:Seq[T], b:Seq[T]):Int	= {
 					@tailrec

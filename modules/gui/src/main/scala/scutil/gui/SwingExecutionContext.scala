@@ -5,6 +5,6 @@ import javax.swing.SwingUtilities
 import scala.concurrent._
 
 object SwingExecutionContext {
-	implicit val self:ExecutionContext	=
+	given self:ExecutionContext	=
 		ExecutionContext fromExecutor (SwingUtilities invokeLater _)
 }

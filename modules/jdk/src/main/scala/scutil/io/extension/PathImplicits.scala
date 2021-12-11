@@ -2,9 +2,7 @@ package scutil.io.extension
 
 import java.nio.file.Path
 
-object PathImplicits extends PathImplicits
-
-trait PathImplicits {
+object PathImplicits {
 	/** utility methods for java Path objects */
 	implicit final class PathExt(peer:Path) {
 		/** add a component to this Paths's path */

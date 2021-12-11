@@ -47,7 +47,7 @@ object Weekday {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit val WeekdayShow:Show[Weekday]	= Show.toStringInstance
+	given WeekdayShow:Show[Weekday]	= Show.toStringInstance
 }
 
 sealed abstract class Weekday {

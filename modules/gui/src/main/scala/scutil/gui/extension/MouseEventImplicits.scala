@@ -4,9 +4,7 @@ import java.awt.event._
 
 import scutil.geom._
 
-object MouseEventImplicits extends MouseEventImplicits
-
-trait MouseEventImplicits {
+object MouseEventImplicits {
 	implicit final class MouseEventExt(peer:MouseEvent) {
 		def doublePoint:DoublePoint	=
 			DoublePoint(

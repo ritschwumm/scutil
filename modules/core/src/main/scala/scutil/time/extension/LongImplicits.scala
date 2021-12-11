@@ -2,9 +2,7 @@ package scutil.time.extension
 
 import scutil.time._
 
-object LongImplicits extends LongImplicits
-
-trait LongImplicits {
+object LongImplicits {
 	/** provide conversion from Long to MilliDuration */
 	implicit final class TimeLongExt(peer:Long) {
 		def weeks:MilliDuration		= MilliDuration.week	 *! peer

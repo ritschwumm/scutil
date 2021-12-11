@@ -10,9 +10,7 @@ import scutil.io.implicits._
 import scutil.time._
 import scutil.platform.SystemProperties
 
-object FileImplicits extends FileImplicits
-
-trait FileImplicits {
+object FileImplicits {
 	/** utility methods for java File objects */
 	implicit final class FileExt(peer:File) {
 		private implicit def mkFileFilter(predicate:File=>Boolean):FileFilter =

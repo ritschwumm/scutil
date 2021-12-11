@@ -35,14 +35,14 @@ object Responder {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit val ResponderMonad:Monad[Responder]	=
+	given ResponderMonad:Monad[Responder]	=
 		new Monad[Responder] {
 			override def pure[R](it:R):Responder[R]												= Responder pure it
 			override def map[R,RR](it:Responder[R])(func:R=>RR):Responder[RR]					= it map func
 			override def flatMap[R,RR](it:Responder[R])(func:R=>Responder[RR]):Responder[RR]	= it flatMap func
 		}
 
-	implicit val ResponderDelay:Delay[Responder]	=
+	given ResponderDelay:Delay[Responder]	=
 		new Delay[Responder] {
 			override def delay[R](it: =>R):Responder[R]	= Responder delay it
 		}

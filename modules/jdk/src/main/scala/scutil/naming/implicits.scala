@@ -1,6 +1,6 @@
 package scutil.naming
 
-object implicits extends implicits
+object implicits {
+	export instances.{ given, *}
 
-trait implicits
-	extends	instances
+}

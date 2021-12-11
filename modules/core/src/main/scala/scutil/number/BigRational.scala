@@ -68,7 +68,7 @@ object BigRational {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit val BigRationalShow:Show[BigRational]	= Show.toStringInstance
+	given BigRationalShow:Show[BigRational]	= Show.toStringInstance
 
 	//------------------------------------------------------------------------------
 

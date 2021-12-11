@@ -12,7 +12,7 @@ object EitherT {
 
 	//------------------------------------------------------------------------------
 
-	def fromEither[F[_],L,R](it:Either[L,R])(implicit M:Applicative[F]):EitherT[F,L,R]	=
+	def fromEither[F[_],L,R](it:Either[L,R])(using M:Applicative[F]):EitherT[F,L,R]	=
 		EitherT(M pure it)
 
 	def switch[F[_]:Applicative,L,R](condition:Boolean, falseLeft: =>L, trueRight: =>R):EitherT[F,L,R]	=
@@ -20,10 +20,10 @@ object EitherT {
 
 	//------------------------------------------------------------------------------
 
-	def delay[F[_],L,R](it: =>R)(implicit D:Delay[F]):EitherT[F,L,R]	=
+	def delay[F[_],L,R](it: =>R)(using D:Delay[F]):EitherT[F,L,R]	=
 		EitherT(D delay Right(it))
 
-	def delayFromEither[F[_],L,R](it: =>Either[L,R])(implicit D:Delay[F]):EitherT[F,L,R]	=
+	def delayFromEither[F[_],L,R](it: =>Either[L,R])(using D:Delay[F]):EitherT[F,L,R]	=
 		EitherT(D delay it)
 
 	def delayCatching[F[_]:Delay,T](it: =>T):EitherT[F,Exception,T]	=
@@ -32,18 +32,18 @@ object EitherT {
 	//------------------------------------------------------------------------------
 
 	implicit final class MergeableEitherT[F[_],T](peer:EitherT[F,T,T]) {
-		def merge(implicit F:Functor[F]):F[T]	= (F map peer.value)(_.merge)
+		def merge(using F:Functor[F]):F[T]	= (F map peer.value)(_.merge)
 	}
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def EitherTDelay[F[_]:Delay,L]:Delay[EitherT[F,L,_]]	=
+	given EitherTDelay[F[_]:Delay,L]:Delay[EitherT[F,L,_]]	=
 		new Delay[EitherT[F,L,_]] {
 			override def delay[R](it: =>R):EitherT[F,L,R]	= EitherT delay it
 		}
 
-	implicit def EitherTMonad[F[_]:Monad,L]:Monad[EitherT[F,L,_]]	=
+	given EitherTMonad[F[_]:Monad,L]:Monad[EitherT[F,L,_]]	=
 		new Monad[EitherT[F,L,_]] {
 			override def pure[R](it:R):EitherT[F,L,R]												= EitherT right it
 			override def map[R,RR](it:EitherT[F,L,R])(func:R=>RR):EitherT[F,L,RR]					= it map func
@@ -60,10 +60,10 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 
 	//------------------------------------------------------------------------------
 
-	def map[RR](func:R=>RR)(implicit M:Functor[F]):EitherT[F,L,RR]	=
+	def map[RR](func:R=>RR)(using M:Functor[F]):EitherT[F,L,RR]	=
 		transform(_ map func)
 
-	def flatMap[RR](func:R=>EitherT[F,L,RR])(implicit M:Monad[F]):EitherT[F,L,RR]	=
+	def flatMap[RR](func:R=>EitherT[F,L,RR])(using M:Monad[F]):EitherT[F,L,RR]	=
 		EitherT(
 			(M flatMap value) {
 				_.map(func).cata (
@@ -73,15 +73,15 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 			}
 		)
 
-	def flatten[RR](implicit ev: R <:< EitherT[F,L,RR], M:Monad[F]):EitherT[F,L,RR]	=
+	def flatten[RR](using M:Monad[F])(implicit ev: R <:< EitherT[F,L,RR]):EitherT[F,L,RR]	=
 		flatMap(ev)
 
 	//------------------------------------------------------------------------------
 
-	def leftMap[LL](func:L=>LL)(implicit M:Functor[F]):EitherT[F,LL,R]	=
+	def leftMap[LL](func:L=>LL)(using M:Functor[F]):EitherT[F,LL,R]	=
 		transform(_ leftMap func)
 
-	def leftFlatMap[LL](func:L=>EitherT[F,LL,R])(implicit M:Monad[F]):EitherT[F,LL,R]	=
+	def leftFlatMap[LL](func:L=>EitherT[F,LL,R])(using M:Monad[F]):EitherT[F,LL,R]	=
 		EitherT(
 			(M flatMap value) {
 				_.leftMap(func).cata (
@@ -91,24 +91,24 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 			}
 		)
 
-	def leftFlatten[LL](implicit ev: L <:< EitherT[F,LL,R], M:Monad[F]):EitherT[F,LL,R]	=
+	def leftFlatten[LL](using M:Monad[F])(implicit ev: L <:< EitherT[F,LL,R]):EitherT[F,LL,R]	=
 		leftFlatMap(ev)
 
 	//------------------------------------------------------------------------------
 
-	def bimap[LL,RR](leftFunc:L=>LL, rightFunc:R=>RR)(implicit M:Functor[F]):EitherT[F,LL,RR]	=
+	def bimap[LL,RR](leftFunc:L=>LL, rightFunc:R=>RR)(using M:Functor[F]):EitherT[F,LL,RR]	=
 		transform(_.bimap(leftFunc, rightFunc))
 
 
-	def transform[LL,RR](func:Either[L,R]=>Either[LL,RR])(implicit M:Functor[F]):EitherT[F,LL,RR]	=
+	def transform[LL,RR](func:Either[L,R]=>Either[LL,RR])(using M:Functor[F]):EitherT[F,LL,RR]	=
 		EitherT((M map value)(func))
 
-	def subflatMap[LL,RR](func:R=>Either[L,RR])(implicit M:Functor[F]):EitherT[F,L,RR]	=
+	def subflatMap[LL,RR](func:R=>Either[L,RR])(using M:Functor[F]):EitherT[F,L,RR]	=
 		transform(_ flatMap func)
 
 	//------------------------------------------------------------------------------
 
-	def orElse[LL>:L,RR>:R](that: =>EitherT[F,LL,RR])(implicit M:Monad[F]):EitherT[F,LL,RR]	=
+	def orElse[LL>:L,RR>:R](that: =>EitherT[F,LL,RR])(using M:Monad[F]):EitherT[F,LL,RR]	=
 		EitherT(
 			(M flatMap value) {
 				case Left(_)	=> that.value
@@ -116,7 +116,7 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 			}
 		)
 
-	def orElseT[LL>:L,RR>:R](that: =>Either[LL,RR])(implicit M:Functor[F]):EitherT[F,LL,RR]	=
+	def orElseT[LL>:L,RR>:R](that: =>Either[LL,RR])(using M:Functor[F]):EitherT[F,LL,RR]	=
 		EitherT(
 			(M map value) {
 				case Left(_)	=> that
@@ -126,14 +126,14 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 
 	//------------------------------------------------------------------------------
 
-	def toOption(implicit M:Functor[F]):OptionT[F,R]	=
+	def toOption(using M:Functor[F]):OptionT[F,R]	=
 		OptionT((M map value)(_.toOption))
 
 	//------------------------------------------------------------------------------
 
-	def swap(implicit M:Functor[F]):EitherT[F,R,L]	=
+	def swap(using M:Functor[F]):EitherT[F,R,L]	=
 		EitherT(M.map(value)(_.swap))
 
-	def getOrElse(default: =>R)(implicit M:Functor[F]):F[R]	=
+	def getOrElse(default: =>R)(using M:Functor[F]):F[R]	=
 		M.map(value)(_ getOrElse default)
 }

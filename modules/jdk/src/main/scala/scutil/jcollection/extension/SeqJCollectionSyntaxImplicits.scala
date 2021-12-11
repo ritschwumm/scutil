@@ -6,9 +6,7 @@ import java.util.{
 	Collections	=> JCollections
 }
 
-object SeqJCollectionSyntaxImplicits extends SeqJCollectionSyntaxImplicits
-
-trait SeqJCollectionSyntaxImplicits {
+object SeqJCollectionSyntaxImplicits {
 	implicit final class SeqJCollectionSyntaxExt[T](peer:Seq[T]) {
 		def toJList:JList[T]	=  {
 			val out	= new JArrayList[T]

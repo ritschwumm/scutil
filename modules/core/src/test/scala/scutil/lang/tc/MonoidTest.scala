@@ -2,7 +2,7 @@ package scutil.lang.tc
 
 import minitest._
 
-import scutil.core.implicits._
+import scutil.lang.tc.MonoidSyntax._
 
 object MonoidTest extends SimpleTestSuite {
 	test("monoid should support times 0 on string") {

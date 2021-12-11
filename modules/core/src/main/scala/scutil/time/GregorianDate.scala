@@ -11,7 +11,7 @@ object GregorianDate {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit val GregorianDateShow:Show[GregorianDate]	= Show.toStringInstance
+	given GregorianDateShow:Show[GregorianDate]	= Show.toStringInstance
 }
 
 /** day in 1..31, month in 1..12 */

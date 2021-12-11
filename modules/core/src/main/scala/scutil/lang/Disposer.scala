@@ -23,9 +23,9 @@ object Disposer {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def DisposerReleasable[T<:Disposer]:Releasable[T]	= _.dispose()
+	given DisposerReleasable[T<:Disposer]:Releasable[T]	= _.dispose()
 
-	implicit val DisposerMonoid:Monoid[Disposer]				= Monoid.instance(empty, _ combine _)
+	given Monoid[Disposer]	= Monoid.instance(empty, _ combine _)
 }
 
 final case class Disposer(dispose:()=>Unit) {

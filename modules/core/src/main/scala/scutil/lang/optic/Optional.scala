@@ -49,7 +49,7 @@ object Optional {
 	//## typeclass instances
 
 	// TODO optics is this lawful?
-	implicit def OptionalSemigroup[S,T]:Semigroup[Optional[S,T]]	=
+	given OptionalSemigroup[S,T]:Semigroup[Optional[S,T]]	=
 		Semigroup instance (_ orElse _)
 }
 
@@ -66,8 +66,8 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 		}
 	def modThe(s:S, func:T=>T):S	= mod(func) apply s
 
-	def modF[F[_]](func:T=>F[T])(implicit F:Applicative[F]):S=>F[S]	= s	=> modOptF(func) apply s getOrElse (F pure s)
-	def modTheF[F[_]](s:S, func:T=>F[T])(implicit F:Applicative[F]):F[S]	= modF(func) apply s
+	def modF[F[_]](func:T=>F[T])(using F:Applicative[F]):S=>F[S]	= s	=> modOptF(func) apply s getOrElse (F pure s)
+	def modTheF[F[_]](s:S, func:T=>F[T])(using F:Applicative[F]):F[S]	= modF(func) apply s
 
 	//------------------------------------------------------------------------------
 
@@ -89,14 +89,14 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 		}
 	def modTheOpt(s:S, func:T=>T):Option[S]	= modOpt(func) apply s
 
-	def modOptF[F[_]](func:T=>F[T])(implicit F:Functor[F]):S=>Option[F[S]]	=
+	def modOptF[F[_]](func:T=>F[T])(using F:Functor[F]):S=>Option[F[S]]	=
 		s	=> {
 			get(s) map { t =>
 				val ft:F[T] = func(t)
 				(F map ft) { t => set(t)(s) }
 			}
 		}
-	def modTheOptF[F[_]](s:S, func:T=>F[T])(implicit F:Functor[F]):Option[F[S]]	= modOptF(func) apply s
+	def modTheOptF[F[_]](s:S, func:T=>F[T])(using F:Functor[F]):Option[F[S]]	= modOptF(func) apply s
 
 	//------------------------------------------------------------------------------
 
@@ -135,7 +135,7 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 
 	//------------------------------------------------------------------------------
 
-	def embedStateT[F[_],U](state:StateT[F,T,U])(implicit F:Applicative[F]):StateT[F,S,Option[U]]	=
+	def embedStateT[F[_],U](state:StateT[F,T,U])(using F:Applicative[F]):StateT[F,S,Option[U]]	=
 		StateT { s =>
 			get(s)
 			.map { t1 =>

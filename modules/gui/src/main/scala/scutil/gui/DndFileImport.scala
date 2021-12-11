@@ -79,8 +79,7 @@ object DndFileImport {
 			.toVector
 			.filterNot			{ _.isEmpty			}
 			.filterNot			{ _ startsWith "#"	}
-			.map				(fileFromURI)
-			.sequenceValidated
+			.traverseValidated	(fileFromURI)
 			.flatMap			{ _.toNesOption toValid invalidMessage(s"empty uri list") }
 
 		// on el captain text/uri-list contains plain file path, but new File(URI) expects an absolute URI

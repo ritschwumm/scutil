@@ -30,7 +30,7 @@ object Ior {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	implicit def IorFunctor[A]:Functor[Ior[A,_]]	=
+	given IorFunctor[A]:Functor[Ior[A,_]]	=
 		new Functor[Ior[A,_]] {
 			override def map[B,BB](it:Ior[A,B])(func:B=>BB):Ior[A,BB]	= it mapRight func
 		}

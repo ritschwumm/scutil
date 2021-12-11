@@ -2,9 +2,7 @@ package scutil.jcollection.extension
 
 import java.util.{ List => JList }
 
-object JListImplicits extends JListImplicits
-
-trait JListImplicits {
+object JListImplicits {
 	implicit final class JListExt[T](peer:JList[T]) {
 		def toVector:Vector[T]		= toIterable.toVector
 		def toList:List[T]			= toIterable.toList

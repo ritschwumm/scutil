@@ -5,9 +5,7 @@ import java.util.{
 	Enumeration	=> JEnumeration
 }
 
-object JIteratorImplicits extends JIteratorImplicits
-
-trait JIteratorImplicits {
+object JIteratorImplicits {
 	implicit final class JIteratorExt[T](peer:JIterator[T]) {
 		def toIterator:Iterator[T] 			= new JIteratorAsIterator(peer)
 		def toJEnumeration:JEnumeration[T]	= new IteratorAsJEnumeration(toIterator)

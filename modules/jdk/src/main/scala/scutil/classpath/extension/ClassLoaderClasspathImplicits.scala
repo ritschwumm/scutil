@@ -2,9 +2,7 @@ package scutil.classpath.extension
 
 import scutil.classpath._
 
-object ClassLoaderClasspathImplicits extends ClassLoaderClasspathImplicits
-
-trait ClassLoaderClasspathImplicits {
+object ClassLoaderClasspathImplicits {
 	implicit final class ClassLoaderResourceExt(peer:ClassLoader) {
 		/** paths here do not require a leading slash */
 		def classpathResource(path:String):Option[ClasspathResource]	=
