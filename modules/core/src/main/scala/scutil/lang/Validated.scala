@@ -1,7 +1,5 @@
 package scutil.lang
 
-import scala.collection.Factory
-
 import scutil.lang.tc._
 
 object Validated {
@@ -115,14 +113,6 @@ sealed trait Validated[+E,+T] {
 			case (Validated.Valid(_),	Validated.Invalid(b))	=> Validated.Invalid(b)
 			case (Validated.Invalid(a),	Validated.Invalid(b))	=> Validated.Invalid(cc.combine(a, b))
 			case (Validated.Valid(a),	Validated.Valid(b))		=> Validated.Valid(func(a, b))
-		}
-
-	/** handy replacement for tried.toSeq.flatten abusing Factory as a Zero typeclass */
-	def flattenMany[U,CC[_]](implicit ev: T <:< CC[U], factory:Factory[U,CC[U]]):CC[U]	=
-		// toOption.flattenMany
-		this map ev match {
-			case Validated.Invalid(_)	=> factory.newBuilder.result()
-			case Validated.Valid(cc)	=> cc
 		}
 
 	//------------------------------------------------------------------------------

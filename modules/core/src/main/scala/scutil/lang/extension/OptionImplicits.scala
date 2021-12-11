@@ -58,20 +58,7 @@ trait OptionImplicits {
 				case None			=> (None,		None)
 			}
 
-		/*
-		// TODO dotty remove, these fail horribly, only here as a bad example
-
-		// handy replacement for opt.toSeq flatMap func abusing Factory as a Zero typeclass
-		def flatMapMany[U,CC[_]](func:T=>CC[U])(implicit factory:Factory[U,CC[U]]):CC[U]	=
-			peer map func match {
-				case Some(cc)	=> cc
-				case None		=> factory.newBuilder.result()
-			}
-
-		// handy replacement for opt.toSeq.flatten abusing Factory as a Zero typeclass
-		def flattenMany[U,CC[_]](implicit ev:T <:< CC[U], factory:Factory[U,CC[U]]):CC[U]	=
-			flatMapMany(ev)
-		*/
+		// TODO dotty use iter.A instead of the type member in these
 
 		@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
 		def flatMapMany[U,Repr](func:T=>Repr)(implicit iter:IsIterable[Repr] { type A = U }, factory:Factory[U,Repr]):Repr	=
@@ -79,7 +66,7 @@ trait OptionImplicits {
 
 		@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
 		@nowarn("msg=parameter value iter in method flattenMany is never used")
-		def flattenMany[U,Repr](implicit iter:IsIterable[T] { type A = U }, factory:Factory[U,T]):T	=
+		def flattenMany[U](implicit iter:IsIterable[T] { type A = U }, factory:Factory[U,T]):T	=
 			peer.getOrElse(factory.newBuilder.result())
 
 		//------------------------------------------------------------------------------

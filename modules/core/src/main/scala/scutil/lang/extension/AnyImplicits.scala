@@ -49,16 +49,6 @@ trait AnyImplicits {
 		def matchBoolean[U](pf:PartialFunction[T,Unit]):Boolean =
 			pf isDefinedAt peer
 
-		/*
-		// NOTE works only for covariant type parameters
-		// typesafe casting
-		def optionInstanceOf[U](implicit tm:Manifest[T], um:Manifest[U]):Option[U] = {
-			def sameArgs	= (um.typeArguments zip tm.typeArguments) forall { case (ua,ta) => ua >:> ta }
-			if (um >:> tm && sameArgs)	Some(peer.asInstanceOf[U])
-			else						None
-		}
-		*/
-
 		//------------------------------------------------------------------------------
 
 		def some:Option[T]			= Some(peer)

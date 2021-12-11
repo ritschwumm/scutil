@@ -1,7 +1,5 @@
 package scutil.lang.extension
 
-import scala.collection.Factory
-
 import scutil.lang._
 import scutil.lang.tc._
 
@@ -85,14 +83,6 @@ trait EitherImplicits {
 				case (Left(a),	Right(_))	=> Left(a)
 				case (Right(_),	Left(b))	=> Left(b)
 				case (Left(a),	Left(b))	=> Left(a)
-			}
-
-		/** handy replacement for tried.toSeq.flatten abusing Factory as a Zero typeclass */
-		def flattenMany[U,CC[_]](implicit ev: R <:< CC[U], factory:Factory[U,CC[U]]):CC[U]	=
-			// toOption.flattenMany
-			peer map ev match {
-				case Left(_)	=> factory.newBuilder.result()
-				case Right(cc)	=> cc
 			}
 
 		//------------------------------------------------------------------------------
