@@ -55,6 +55,9 @@ object StringExtensions {
 		def toUtf8ByteString:ByteString	=
 			ByteString fromUtf8String peer
 
+		def toIArray:IArray[Char]	=
+			IArray.unsafeFromArray(peer.toCharArray)
+
 		//------------------------------------------------------------------------------
 
 		def optionNonEmpty:Option[String]	=

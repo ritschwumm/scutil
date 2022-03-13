@@ -109,7 +109,7 @@ object IterableExtensions {
 				val iter	= ops.iterator
 				var first	= true
 				while (iter.hasNext) {
-					if (first)	first = true
+					if (first)	first = false
 					else		bld	+= separator
 					bld	+= iter.next()
 				}

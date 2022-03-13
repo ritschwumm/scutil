@@ -50,4 +50,33 @@ object IterableExtensionsTest extends SimpleTestSuite {
 			List((1,2L),(2,4L), (3,6L))
 		)
 	}
+
+	test("intersperse should work with 0 elements") {
+		assertEquals(
+			List().intersperse(0),
+			List()
+		)
+	}
+
+	test("intersperse should work with 1 element") {
+		assertEquals(
+			List(1).intersperse(0),
+			List(1)
+		)
+	}
+
+	test("intersperse should work with 2 elements") {
+		assertEquals(
+			List(1,2).intersperse(0),
+			List(1,0,2)
+		)
+	}
+
+	test("intersperse should work with 3 elements") {
+		assertEquals(
+			List(1,2,3).intersperse(0),
+			List(1,0,2,0,3)
+		)
+	}
+
 }

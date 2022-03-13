@@ -17,16 +17,16 @@ object Base64 {
 	private val padding:Char	= '='
 
 	// NOTE threre's an alternative encoding ending in "-_" for urls and filenames
-	private val alphabet:Array[Char]	= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray
+	private val alphabet:IArray[Char]	= IArray.unsafeFromArray("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray)
 
 	private val invalidFlag	= -1.toByte
 	private val paddingFlag	= -2.toByte
-	private val	table:Array[Byte]	= {
+	private val	table:IArray[Byte]	= {
 		val out	= new Array[Byte](256)
 		for (i <- 0 until 256)					out(i)	= invalidFlag
 		for ((i, v) <- alphabet.zipWithIndex)	out(i)	= v.toByte
 		out(padding)	= paddingFlag
-		out
+		IArray.unsafeFromArray(out)
 	}
 
 	private def validInput(s:String):Boolean	=
