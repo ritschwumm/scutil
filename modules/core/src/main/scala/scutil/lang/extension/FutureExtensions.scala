@@ -14,7 +14,7 @@ object FutureExtensions {
 			peer zip that
 
 		// TODO is this correct, or should we use flatMap?
-		def ap[U,V](that:Future[U])(using executor:ExecutionContext)(implicit ev: T <:< (U=>V)):Future[V]	=
+		def ap[U,V](that:Future[U])(using executor:ExecutionContext, ev:T <:< (U=>V)):Future[V]	=
 			peer zip that map { case (u2v, u) => u2v(u) }
 
 		//------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ object FutureExtensions {
 			peer transform { it => Try(it.toEither) }
 
 		/** succeeds for a Win, fails for a Fail */
-		def unwrapEither[X](using executor:ExecutionContext)(implicit ev: T <:< Either[Throwable,X]):Future[X]	=
+		def unwrapEither[X](using executor:ExecutionContext, ev:T <:< Either[Throwable,X]):Future[X]	=
 			peer transform { _ flatMap { ev(_).toTry } }
 
 		def mapEither[X](func:Either[Throwable,T]=>Either[Throwable,X])(using executor:ExecutionContext):Future[X]	=

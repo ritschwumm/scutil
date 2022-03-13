@@ -73,7 +73,7 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 			}
 		)
 
-	def flatten[RR](using M:Monad[F])(implicit ev: R <:< EitherT[F,L,RR]):EitherT[F,L,RR]	=
+	def flatten[RR](using M:Monad[F], ev:R <:< EitherT[F,L,RR]):EitherT[F,L,RR]	=
 		flatMap(ev)
 
 	//------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ final case class EitherT[F[_],L,R](value:F[Either[L,R]]) {
 			}
 		)
 
-	def leftFlatten[LL](using M:Monad[F])(implicit ev: L <:< EitherT[F,LL,R]):EitherT[F,LL,R]	=
+	def leftFlatten[LL](using M:Monad[F], ev:L <:< EitherT[F,LL,R]):EitherT[F,LL,R]	=
 		leftFlatMap(ev)
 
 	//------------------------------------------------------------------------------

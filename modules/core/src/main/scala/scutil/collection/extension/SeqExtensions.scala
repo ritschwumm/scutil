@@ -58,7 +58,7 @@ object SeqExtensions {
 			// behaves like peer.reverse collectFirst pf
 			collectLastSome(pf.lift)
 
-		def flattenOptionLast[U](implicit ev: T <:< Option[U]):Option[U]	=
+		def flattenOptionLast[U](using ev:T <:< Option[U]):Option[U]	=
 			collectLastSome(ev)
 
 		/** like collectLast but using a PFunction */

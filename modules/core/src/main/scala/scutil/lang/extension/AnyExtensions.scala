@@ -66,8 +66,8 @@ object AnyExtensions {
 		def inVector:Vector[T]			= Vector(peer)
 		def inList:List[T]				= List(peer)
 
-		def inSuccess:Try[T]									= Success(peer)
-		def inFailure[X](implicit ev: T <:< Throwable):Try[X]	= Failure(peer)
+		def inSuccess:Try[T]								= Success(peer)
+		def inFailure[X](using ev:T <:< Throwable):Try[X]	= Failure(peer)
 
 		def inFuture:Future[T]			= Future successful peer
 

@@ -127,7 +127,7 @@ abstract class Converter[E,S,T] {
 	def as[U](it:U):Converter[E,S,U]	=
 		map(constant(it))
 
-	def ap[U,V](that:Converter[E,S,U])(using cc:Semigroup[E])(implicit ev: T <:< (U=>V)):Converter[E,S,V]	=
+	def ap[U,V](that:Converter[E,S,U])(using cc:Semigroup[E], ev:T <:< (U=>V)):Converter[E,S,V]	=
 		it => (this convert it map ev) ap (that convert it)
 
 	def product[U](that:Converter[E,S,U])(using cc:Semigroup[E]):Converter[E,S,(T,U)] =

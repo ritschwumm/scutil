@@ -40,7 +40,7 @@ final case class State[S,+T](run:S=>(S,T)) {
 		}
 
 	/** function effect first */
-	def ap[A,B](that:State[S,A])(implicit ev: T <:< (A=>B)):State[S,B]	=
+	def ap[A,B](that:State[S,A])(using ev:T <:< (A=>B)):State[S,B]	=
 		that pa (this map ev)
 
 	/** function effect first */

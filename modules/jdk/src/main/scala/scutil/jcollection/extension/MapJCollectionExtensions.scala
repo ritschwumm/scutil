@@ -15,7 +15,7 @@ object MapJCollectionExtensions {
 			JCollections unmodifiableMap out
 		}
 
-		def toProperties(implicit sev: S <:< String, tev: T <:< String):Properties	= {
+		def toProperties(using sev:S <:< String, tev: T <:< String):Properties	= {
 			val out	= new Properties
 			peer foreach { case (k, v) => out.setProperty(k, v) }
 			out

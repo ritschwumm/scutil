@@ -102,13 +102,13 @@ sealed trait Io[T] {
 		Io.Map(this, func)
 
 	/** function effect first */
-	final def ap[U,V](that:Io[U])(implicit ev: T <:< (U=>V)):Io[V]	=
+	final def ap[U,V](that:Io[U])(using ev:T <:< (U=>V)):Io[V]	=
 		Io.FlatMap(this, (f:T) => Io.Map(that, (u:U) => f(u)))
 
 	final def flatMap[U](func:T=>Io[U]):Io[U]	=
 		Io.FlatMap(this, func)
 
-	final def flatten[U](implicit ev: T <:< Io[U]):Io[U]	=
+	final def flatten[U](using ev:T <:< Io[U]):Io[U]	=
 		Io.FlatMap(this, ev)
 
 	final def product[U](that:Io[U]):Io[(T,U)]	=
@@ -129,7 +129,7 @@ sealed trait Io[T] {
 			catch { case e:Exception => Left(e) }
 		}
 
-	final def rethrow[U](implicit ev: T <:< Either[Exception,U]):Io[U]	=
+	final def rethrow[U](using ev:T <:< Either[Exception,U]):Io[U]	=
 		Io.FlatMap(this, (it:T) => Io.fromEither(ev(it)))
 
 	def guarantee(cleanup:Io[Unit]):Io[T]	=

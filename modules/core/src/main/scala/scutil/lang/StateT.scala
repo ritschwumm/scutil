@@ -103,7 +103,7 @@ final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
 			}
 		}
 
-	def flatten[U](using F:Monad[F])(implicit ev: T <:< StateT[F,S,U]):StateT[F,S,U]	=
+	def flatten[U](using F:Monad[F], ev:T <:< StateT[F,S,U]):StateT[F,S,U]	=
 		flatMap(ev)
 
 	/** function effect first */
@@ -150,7 +150,7 @@ final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
 			}
 		}
 
-	def subFlatten[U](using F:Monad[F])(implicit ev: T <:< F[U]):StateT[F,S,U]	=
+	def subFlatten[U](using F:Monad[F], ev:T <:< F[U]):StateT[F,S,U]	=
 		subFlatMap(ev)
 
 	def innerFlatMap[U](func:F[T]=>StateT[F,S,U])(using F:Monad[F]):StateT[F,S,U]	=
@@ -160,6 +160,6 @@ final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
 			}
 		}
 
-	def innerFlatten[U](using F:Monad[F])(implicit ev: F[T] <:< StateT[F,S,U]):StateT[F,S,U]	=
+	def innerFlatten[U](using F:Monad[F], ev:F[T] <:< StateT[F,S,U]):StateT[F,S,U]	=
 		innerFlatMap(ev)
 }

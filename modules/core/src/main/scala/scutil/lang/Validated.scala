@@ -99,10 +99,10 @@ sealed trait Validated[+E,+T] {
 			case Validated.Valid(x)		=> func(x)
 		}
 
-	def flatten[EE>:E,U](implicit ev: T <:< Validated[EE,U]):Validated[EE,U]	=
+	def flatten[EE>:E,U](using ev:T <:< Validated[EE,U]):Validated[EE,U]	=
 		flatMap(ev)
 
-	def ap[EE>:E:Semigroup,U,V](that:Validated[EE,U])(implicit ev: T <:< (U=>V)):Validated[EE,V]	=
+	def ap[EE>:E:Semigroup,U,V](that:Validated[EE,U])(using ev:T <:< (U=>V)):Validated[EE,V]	=
 		(this map2 that)(_(_))
 
 	def product[EE>:E:Semigroup,U](that:Validated[EE,U]):Validated[EE,(T,U)]	=
@@ -147,7 +147,7 @@ sealed trait Validated[+E,+T] {
 			case Validated.Valid(x)		=> Validated.valid(x)
 		}
 
-	def invalidFlatten[EE,TT>:T](implicit ev: E <:< Validated[EE,TT]):Validated[EE,TT]	=
+	def invalidFlatten[EE,TT>:T](using ev:E <:< Validated[EE,TT]):Validated[EE,TT]	=
 		invalidFlatMap(ev)
 
 	def invalidToOption:Option[E]	=

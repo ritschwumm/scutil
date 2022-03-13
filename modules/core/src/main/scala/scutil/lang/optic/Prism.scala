@@ -36,10 +36,6 @@ object Prism {
 
 	//------------------------------------------------------------------------------
 
-	@deprecated("use Prism.subType", "0.217.0")
-	def Gen[S,T<:S](using tt:TypeTest[S,T]):Prism[S,T]	=
-		subType
-
 	def subType[S,T<:S](using tt:TypeTest[S,T]):Prism[S,T]	=
 		Prism(tt.unapply, Predef.identity)
 

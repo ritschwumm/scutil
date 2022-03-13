@@ -82,7 +82,7 @@ final case class Responder[T](unsafeRun:(T=>Unit)=>Unit) {
 			}
 		}
 
-	def flatten[U](implicit ev: T <:< Responder[U]):Responder[U]	=
+	def flatten[U](using ev:T <:< Responder[U]):Responder[U]	=
 		flatMap(ev)
 
 	def mapFilter[U](func:T=>Option[U]):Responder[U]	=
@@ -92,7 +92,7 @@ final case class Responder[T](unsafeRun:(T=>Unit)=>Unit) {
 			}
 		}
 
-	def flattenOption[U](implicit ev: T <:< Option[U]):Responder[U]	=
+	def flattenOption[U](using ev:T <:< Option[U]):Responder[U]	=
 		mapFilter(ev)
 
 	def collect[U](pf:PartialFunction[T,U]):Responder[U]	=

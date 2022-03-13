@@ -117,7 +117,7 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		Nes(h, t ++ tt)
 	}
 
-	def flatten[U](implicit ev: T <:< Nes[U]):Nes[U]	=
+	def flatten[U](using ev:T <:< Nes[U]):Nes[U]	=
 		flatMap(ev)
 
 	def filter(pred:Predicate[T]):Option[Nes[T]]	=

@@ -41,7 +41,7 @@ object IterableExtensions {
 			(peer map func).toMap
 
 		// NOTE this does not exist in cats
-		def flattenOptionFirst[U](implicit ev: T <:< Option[U]):Option[U]	=
+		def flattenOptionFirst[U](using ev: T <:< Option[U]):Option[U]	=
 			collectFirstSome(ev)
 
 		/**
@@ -88,7 +88,7 @@ object IterableExtensions {
 		}
 
 		/** like flatten, but avoiding the dubious Option=>Iterable implicit */
-		def flattenOption[That,U](using bf:BuildFrom[Repr,U,That])(implicit ev: T <:< Option[U]):That	=
+		def flattenOption[That,U](using bf:BuildFrom[Repr,U,That], ev: T <:< Option[U]):That	=
 			mapFilter(ev)
 
 		/** like flatMap, but avoiding the dubious Option=>Iterable implicit  */
@@ -120,7 +120,7 @@ object IterableExtensions {
 		// NOTE these should be generalized to other AFs, not just Option and Tried
 		// NOTE supplying pure and flatMap of a Monad would work, too!
 
-		def sequenceOption[That,U](using bf:BuildFrom[Repr,U,That])(implicit ev: T <:< Option[U]):Option[That]	=
+		def sequenceOption[That,U](using bf:BuildFrom[Repr,U,That], ev:T <:< Option[U]):Option[That]	=
 			traverseOption(ev)
 
 		def traverseOption[That,U](func:T=>Option[U])(using bf:BuildFrom[Repr,U,That]):Option[That]	= {
@@ -135,7 +135,7 @@ object IterableExtensions {
 			Some(builder.result())
 		}
 
-		def sequenceEither[That,L,R](using bf:BuildFrom[Repr,R,That])(implicit ev: T <:< Either[L,R]):Either[L,That]	=
+		def sequenceEither[That,L,R](using bf:BuildFrom[Repr,R,That], ev:T <:< Either[L,R]):Either[L,That]	=
 			traverseEither(ev)
 
 		def traverseEither[That,L,R](func:T=>Either[L,R])(using bf:BuildFrom[Repr,R,That]):Either[L,That]	= {
@@ -151,7 +151,7 @@ object IterableExtensions {
 		}
 
 		/** peer is traversable (in the haskell sense), Validated is an idiom. */
-		def sequenceValidated[That,I,V](using bf:BuildFrom[Repr,V,That], cc:Semigroup[I])(implicit ev:T <:< Validated[I,V]):Validated[I,That]	=
+		def sequenceValidated[That,I,V](using bf:BuildFrom[Repr,V,That], cc:Semigroup[I], ev:T <:< Validated[I,V]):Validated[I,That]	=
 			traverseValidated(ev)
 
 		/** peer is traversable (in the haskell sense), Validated is an idiom. */
@@ -177,7 +177,7 @@ object IterableExtensions {
 			}
 		}
 
-		def sequenceState[That,S,U](using bf:BuildFrom[Repr,U,That])(implicit ev: T <:< State[S,U]):State[S,That]	=
+		def sequenceState[That,S,U](using bf:BuildFrom[Repr,U,That], ev:T <:< State[S,U]):State[S,That]	=
 			traverseState(ev)
 
 		def traverseState[That,S,U](func:T=>State[S,U])(using bf:BuildFrom[Repr,U,That]):State[S,That]	=
@@ -197,8 +197,8 @@ object IterableExtensions {
 
 	// TODO dotty move these into the other extension
 	implicit final class IterableOpsExt[CC[_],T](peer:IterableOps[T,CC,CC[T]]) {
-		def partitionEither[U,V](implicit ev: T <:< Either[U,V]):(CC[U],CC[V])			= peer partitionMap ev
-		def partitionValidated[U,V](implicit ev: T <:< Validated[U,V]):(CC[U],CC[V])	= peer partitionMap { it => ev(it).toEither }
+		def partitionEither[U,V](using ev:T <:< Either[U,V]):(CC[U],CC[V])			= peer partitionMap ev
+		def partitionValidated[U,V](using ev:T <:< Validated[U,V]):(CC[U],CC[V])	= peer partitionMap { it => ev(it).toEither }
 
 		/** pair elements of a collection with a function applied to an element */
 		def fproduct[U](func:T=>U):CC[(T,U)]	= peer map { it => (it, func(it)) }
@@ -207,14 +207,14 @@ object IterableExtensions {
 	// TODO dotty move these into the other extension
 	implicit final class IterableWithOpsExt[CC[_] <: Iterable[?],T](peer:IterableOps[T,CC,CC[T]]) {
 		/** all Lefts if there is at least one, else all Rights */
-		def validateEither[F,W](implicit ev:T <:< Either[F,W]):Either[CC[F],CC[W]]	= {
+		def validateEither[F,W](using ev:T <:< Either[F,W]):Either[CC[F],CC[W]]	= {
 			val (lefts, rights)	= peer.partitionEither
 			if (lefts.isEmpty)	Right(rights)
 			else				Left(lefts)
 		}
 
 		/** all Invalids if there is at least one, else all Valids */
-		def validateValidated[F,W](implicit ev: T <:< Validated[F,W]):Validated[CC[F],CC[W]]	= {
+		def validateValidated[F,W](using ev: T <:< Validated[F,W]):Validated[CC[F],CC[W]]	= {
 			val (invalids, valids)	= peer.partitionValidated
 			if (invalids.isEmpty)	Validated.valid(valids)
 			else					Validated.invalid(invalids)

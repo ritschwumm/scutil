@@ -62,7 +62,7 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 			)
 		)
 
-	def flatten[U](using M:Monad[F])(implicit ev: T <:< OptionT[F,U]):OptionT[F,U]	=
+	def flatten[U](using M:Monad[F], ev:T <:< OptionT[F,U]):OptionT[F,U]	=
 		flatMap(ev)
 
 	//------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 			)
 		)
 
-	def flattenOption[U](using M:Monad[F])(implicit ev: T <:< Option[U]):OptionT[F,U]	=
+	def flattenOption[U](using M:Monad[F], ev:T <:< Option[U]):OptionT[F,U]	=
 		flatMapOption(ev)
 
 	//------------------------------------------------------------------------------
