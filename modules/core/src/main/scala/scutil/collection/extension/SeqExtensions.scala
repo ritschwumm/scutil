@@ -237,7 +237,7 @@ object SeqExtensions {
 					if (fromIndex < toGap) {
 						// move right
 						val bld:Builder[T,Repr]	= factory.newBuilder
-						val items	= ops.toIterable
+						val items	= ops.toSeq
 						bld	++= items.slice(0,					fromIndex)
 						bld	++= items.slice(fromIndex + count,	toGap)
 						bld	++= items.slice(fromIndex,			fromIndex + count)
@@ -247,7 +247,7 @@ object SeqExtensions {
 					else if (fromIndex > toGap) {
 						// move left
 						val bld:Builder[T,Repr]	= factory.newBuilder
-						val items	= ops.toIterable
+						val items	= ops.toSeq
 						bld	++= items.slice(0,					toGap)
 						bld	++= items.slice(fromIndex,			fromIndex + count)
 						bld	++= items.slice(toGap,				fromIndex)
