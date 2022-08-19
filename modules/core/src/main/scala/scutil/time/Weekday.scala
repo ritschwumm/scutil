@@ -4,29 +4,12 @@ import scutil.lang.tc.*
 import scutil.math.functions.*
 
 object Weekday {
-	val all:Vector[Weekday]	=
-		Vector[Weekday](
-			Monday,
-			Tuesday,
-			Wednesday,
-			Thursday,
-			Friday,
-			Saturday,
-			Sunday
-		)
+	val all:Vector[Weekday]	= values.toVector
 
 	val count	= all.size
 
 	def fromIndex(index:Int):Weekday	=
-		moduloInt(index, count) match {
-			case 0	=> Monday
-			case 1	=> Tuesday
-			case 2	=> Wednesday
-			case 3	=> Thursday
-			case 4	=> Friday
-			case 5	=> Saturday
-			case 6	=> Sunday
-		}
+		values(moduloInt(index, count))
 
 	def ordering(first:Weekday):Ordering[Weekday]	=
 		Ordering[Int] on { weekday =>
@@ -36,13 +19,6 @@ object Weekday {
 
 	//------------------------------------------------------------------------------
 
-	case object Monday		extends Weekday
-	case object Tuesday		extends Weekday
-	case object Wednesday	extends Weekday
-	case object Thursday	extends Weekday
-	case object Friday		extends Weekday
-	case object Saturday	extends Weekday
-	case object Sunday		extends Weekday
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances
@@ -50,18 +26,12 @@ object Weekday {
 	given WeekdayShow:Show[Weekday]	= Show.toStringInstance
 }
 
-sealed abstract class Weekday {
+enum Weekday {
+	// NOTE the order is important here
+	case Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+
 	/** starting at monday with 0 */
-	def index:Int	=
-		this match {
-			case Weekday.Monday		=> 0
-			case Weekday.Tuesday	=> 1
-			case Weekday.Wednesday	=> 2
-			case Weekday.Thursday	=> 3
-			case Weekday.Friday		=> 4
-			case Weekday.Saturday	=> 5
-			case Weekday.Sunday		=> 6
-		}
+	def index:Int	= this.ordinal
 
 	override def toString:String	=
 		this match {

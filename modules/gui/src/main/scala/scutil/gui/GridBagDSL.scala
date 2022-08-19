@@ -7,6 +7,7 @@ import java.awt.Insets
 
 import scutil.core.implicits.*
 
+// TODO scala 3 rewrite this based on enums
 object GridBagDSL {
 	def GBC = new GridBagConstraints
 

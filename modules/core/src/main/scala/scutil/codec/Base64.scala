@@ -46,15 +46,15 @@ object Base64 {
 			true
 		}
 
-	private val emptyOutput	= Array.empty[Byte]
+	private val emptyOutput	= IArray.empty[Byte]
 
 	//------------------------------------------------------------------------------
 
 	/** standard alphabet, no line feeds, adds padding */
 	def encodeByteString(data:ByteString):String =
-		encodeImpl(data.unsafeValue)
+		encodeImpl(data.value)
 
-	private def encodeImpl(data:Array[Byte]):String = {
+	private def encodeImpl(data:IArray[Byte]):String = {
 		val	packetsSize		= data.length / 3
 		val extraSize		= data.length % 3
 		val	output			= new StringBuilder
@@ -87,9 +87,9 @@ object Base64 {
 
 	/** standard alphabet, whitespace is ignored, padding is required */
 	def decodeByteString(text:String):Option[ByteString] =
-		decodeImpl(text) map ByteString.unsafeFromArray
+		decodeImpl(text) map ByteString.fromIArray
 
-	private def decodeImpl(text:String):Option[Array[Byte]] = {
+	private def decodeImpl(text:String):Option[IArray[Byte]] = {
 		// TODO ignoring all whitespace input might be stupid
 		val cleanText	= text.replaceAll(whitespaceRE, "")
 		if (cleanText.length == 0)	return Some(emptyOutput)
@@ -122,7 +122,7 @@ object Base64 {
 			}
 			inputIndex	+= 1
 		}
-		Some(output)
+		Some(IArray.unsafeFromArray(output))
 	}
 
 	//------------------------------------------------------------------------------

@@ -8,9 +8,9 @@ object Hex {
 	//------------------------------------------------------------------------------
 
 	def encodeByteString(bytes:ByteString):String	=
-		encodeImpl(bytes.unsafeValue)
+		encodeImpl(bytes.value)
 
-	private def encodeImpl(bytes:Array[Byte]):String	=
+	private def encodeImpl(bytes:IArray[Byte]):String	=
 		bytes map nibbles mkString ""
 
 	def nibbles(it:Byte):String	=
@@ -24,9 +24,9 @@ object Hex {
 	private val invalid	= -1
 
 	def decodeByteString(s:String):Option[ByteString]	=
-		decodeImpl(s) map ByteString.unsafeFromArray
+		decodeImpl(s) map ByteString.fromIArray
 
-	private def decodeImpl(s:String):Option[Array[Byte]]	= {
+	private def decodeImpl(s:String):Option[IArray[Byte]]	= {
 		val count	= s.length / 2
 		if (s.length != count*2)	return None
 		val out	= new Array[Byte](count)
@@ -39,7 +39,7 @@ object Hex {
 			out(i)	= b.toByte
 			i	+= 1
 		}
-		Some(out)
+		Some(IArray.unsafeFromArray(out))
 	}
 
 	private def byte(ch:Char, cl:Char):Int	= {

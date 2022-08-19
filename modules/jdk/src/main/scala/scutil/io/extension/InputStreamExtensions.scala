@@ -25,17 +25,19 @@ object InputStreamExtensions {
 
 		/** read as much as possible, up to a given length */
 		def readExactlyByteString(length:Int):ByteString	= {
+			// NOTE this is copied due the the length-dependent slicing necerssary
 			val buffer:Array[Byte]	= new Array[Byte](length)
 			val found	= readExactly(buffer)
-			ByteString.unsafeSliceFromArray(buffer, 0, found)
+			ByteString.unboundedSliceFromArray(buffer, 0, found)
 		}
 
 		def readLimitedByteString(length:Int):Option[ByteString]	= {
+			// NOTE this is copied due the the length-dependent slicing necerssary
 			val buffer	= new Array[Byte](length)
 			val found	= peer read buffer
 				 if (found == -1)	None
 			else if (found == 0)	Some(ByteString.empty)
-			else 					Some(ByteString.unsafeSliceFromArray(buffer, 0, found))
+			else 					Some(ByteString.unboundedSliceFromArray(buffer, 0, found))
 		}
 
 		/** read the complete content */
