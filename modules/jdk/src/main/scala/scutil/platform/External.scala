@@ -1,6 +1,7 @@
 package scutil.platform
 
 import java.io.*
+import java.nio.file.Path
 
 import scutil.lang.*
 import scutil.core.implicits.*
@@ -9,10 +10,10 @@ import scutil.concurrent.*
 
 object External {
 	/** execute an external process. */
-	def exec(command:Seq[String], env:Map[String,String]=Map.empty, pwd:Option[File]=None, input:Seq[String]=Seq.empty):External = {
+	def exec(command:Seq[String], env:Map[String,String]=Map.empty, pwd:Option[Path]=None, input:Seq[String]=Seq.empty):External = {
 		val	builder	= new ProcessBuilder(command.toJList)
 		builder.environment() putAll env.toJMap
-		pwd foreach { builder directory _ }
+		pwd foreach { path => builder.directory(path.toFile) }
 		val proc	= builder.start()
 
 		/* val in = */ spawn { spewLines(proc.getOutputStream, input) }

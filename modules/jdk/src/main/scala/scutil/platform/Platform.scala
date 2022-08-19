@@ -1,6 +1,7 @@
 package scutil.platform
 
 import java.io.File
+import java.nio.file.Path
 import java.nio.charset.Charset
 
 import scutil.lang.*
@@ -14,11 +15,20 @@ object Platform {
 
 	//------------------------------------------------------------------------------
 
-	def unixRoot:File	= new File("/")
-	def currentDir:File	= new File(SystemProperties.user.dir)
-	def homeDir:File	= new File(SystemProperties.user.home)
-	def tmpDir:File		= new File(SystemProperties.java.io.tmpdir)
-	def javaHome:File	= new File(SystemProperties.java.home)
+	def unixRoot:Path	= Path.of("/")
+	def currentDir:Path	= Path.of(SystemProperties.user.dir)
+	def homeDir:Path	= Path.of(SystemProperties.user.home)
+	def tmpDir:Path		= Path.of(SystemProperties.java.io.tmpdir)
+	def javaHome:Path	= Path.of(SystemProperties.java.home)
+
+	// TODO path deprecate and remove
+	object file {
+		def unixRoot:File	= Platform.unixRoot.toFile
+		def currentDir:File	= Platform.currentDir.toFile
+		def homeDir:File	= Platform.homeDir.toFile
+		def tmpDir:File		= Platform.tmpDir.toFile
+		def javaHome:File	= Platform.javaHome.toFile
+	}
 
 	//------------------------------------------------------------------------------
 

@@ -6,7 +6,6 @@ object extensions {
 	export ColorExtensions.*
 	export ComponentExtensions.*
 	export ContainerExtensions.*
-	export GraphicsExtensions.*
 	export ImageExtensions.*
 	export ImageIconExtensions.*
 	export JComponentExtensions.*

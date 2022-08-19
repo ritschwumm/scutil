@@ -1,7 +1,6 @@
 package scutil.platform
 
 import java.util.Locale
-import java.io.File
 import scutil.jdk.implicits.*
 
 object OperatingSystem {

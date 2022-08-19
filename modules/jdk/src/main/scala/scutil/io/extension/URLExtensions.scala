@@ -1,6 +1,7 @@
 package scutil.io.extension
 
 import java.io.*
+import java.nio.file.Path
 import java.nio.charset.Charset
 import java.net.*
 
@@ -35,5 +36,8 @@ object URLExtensions {
 				catch { case _:Exception => new File(peer.getPath) }
 			)
 			else None
+
+		def toPath:Option[Path]	=
+			toFile.map(_.toPath)
 	}
 }

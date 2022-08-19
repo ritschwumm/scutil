@@ -6,26 +6,19 @@ import java.nio.charset.Charset
 
 import scutil.lang.*
 import scutil.core.implicits.*
-import scutil.io.implicits.*
 import scutil.time.*
 import scutil.platform.SystemProperties
+
+import InputStreamExtensions.*
+import OutputStreamExtensions.*
+import ReaderExtensions.*
+import WriterExtensions.*
 
 object FileExtensions {
 	/** utility methods for java File objects */
 	implicit final class FileExt(peer:File) {
 		//------------------------------------------------------------------------------
-		//## file and directory
-
-		/** time of last modification as an MilliInstant, returns MilliInstant.zero for non-existing files */
-		def lastModifiedMilliInstant():MilliInstant	=
-			MilliInstant(peer.lastModified)
-
-		def setLastModifiedMilliInstant(it:MilliInstant):Boolean	=
-			peer setLastModified it.millis
-
-		/** whether the peer is newer than another file. if the other file does not exist it counts as newer */
-		def newerThan(that:File):Boolean	=
-			peer.exists && (!that.exists || peer.lastModified > that.lastModified)
+		//## pure path manipulation
 
 		/** add a component to this Files's path */
 		def /(name:String):File 		= new File(peer, name)
@@ -45,10 +38,14 @@ object FileExtensions {
 		def selfAndParentChain:List[File]	=
 			peer :: parentChain
 
-		/** Some existing file, or None */
-		def optionExists:Option[File] =
-			if (peer.exists)	Some(peer)
-			else				None
+		/** the path upwards from another File to this File */
+		def containsRecursive(that:File):Option[Seq[String]]	= {
+			def loop(test:File, path:Seq[String]):Option[Seq[String]]	=
+				if		(test == null)	None
+				else if	(test == peer)	Some(path)
+				else					loop(test.getParentFile, test.getName +: path)
+			loop(that, Vector.empty)
+		}
 
 		/** another file in the same parent directory */
 		def sibling(name:String):File =
@@ -57,6 +54,25 @@ object FileExtensions {
 		/** map only the name of this File */
 		def siblingBy(func:String=>String):File =
 			sibling(func(peer.getName))
+
+		//------------------------------------------------------------------------------
+		//## file and directory
+
+		/** Some existing file, or None */
+		def optionExists:Option[File] =
+			if (peer.exists)	Some(peer)
+			else				None
+
+		/** time of last modification as an MilliInstant, returns MilliInstant.zero for non-existing files */
+		def lastModifiedMilliInstant():MilliInstant	=
+			MilliInstant(peer.lastModified)
+
+		def setLastModifiedMilliInstant(it:MilliInstant):Boolean	=
+			peer setLastModified it.millis
+
+		/** whether the peer is newer than another file. if the other file does not exist it counts as newer */
+		def newerThan(that:File):Boolean	=
+			peer.exists && (!that.exists || peer.lastModified > that.lastModified)
 
 		//------------------------------------------------------------------------------
 		//## directory only
@@ -68,15 +84,6 @@ object FileExtensions {
 		/** list files in this directory matching a predicate */
 		def childrenWhere(predicate:File=>Boolean):Option[Seq[File]] =
 			Option(peer.listFiles(predicate(_))).map(_.toVector)
-
-		/** the path upwards from another File to this File */
-		def containsRecursive(that:File):Option[Seq[String]]	= {
-			def loop(test:File, path:Seq[String]):Option[Seq[String]]	=
-				if		(test == null)	None
-				else if	(test == peer)	Some(path)
-				else					loop(test.getParentFile, test.getName +: path)
-			loop(that, Vector.empty)
-		}
 
 		//------------------------------------------------------------------------------
 		//## file only: streams

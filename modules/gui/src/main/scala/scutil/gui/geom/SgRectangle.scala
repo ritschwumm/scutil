@@ -12,15 +12,8 @@ object SgRectangle {
 	//------------------------------------------------------------------------------
 	//## component factory
 
-	@deprecated("use horizontalWithVertical", "0.207.0")
-	def xy(x:SgSpan, y:SgSpan):SgRectangle	= horizontalWithVertical(x, y)
-
 	def horizontalWithVertical(horizontal:SgSpan, vertical:SgSpan):SgRectangle	=
 		new SgRectangle(horizontal, vertical)
-
-	@deprecated("use zeroSized", "0.207.0")
-	def topLeftZeroBy(size:SgPoint):SgRectangle	=
-		zeroSized(size)
 
 	def zeroSized(size:SgPoint):SgRectangle	=
 		horizontalWithVertical(
@@ -28,21 +21,10 @@ object SgRectangle {
 			SgSpan startZeroBy size.y
 		)
 
-	@deprecated("use topLeftWithSize", "0.207.0")
-	def topLeftBy(pos:SgPoint, size:SgPoint):SgRectangle	=
-		topLeftWithSize(pos, size)
-
 	def topLeftWithSize(topLeft:SgPoint, size:SgPoint):SgRectangle	=
 		horizontalWithVertical(
 			SgSpan.startEnd(topLeft.x, topLeft.x+size.x),
 			SgSpan.startEnd(topLeft.y, topLeft.y+size.y)
-		)
-
-	@deprecated("use topLeftToBottomRight", "0.207.0")
-	def topLeftTo(pos:SgPoint, other:SgPoint):SgRectangle	=
-		horizontalWithVertical(
-			SgSpan.startEnd(pos.x, other.x),
-			SgSpan.startEnd(pos.y, other.y)
 		)
 
 	def topLeftToBottomRight(topLeft:SgPoint, bottomRight:SgPoint):SgRectangle	=
