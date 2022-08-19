@@ -21,15 +21,6 @@ object Platform {
 	def tmpDir:Path		= Path.of(SystemProperties.java.io.tmpdir)
 	def javaHome:Path	= Path.of(SystemProperties.java.home)
 
-	// TODO path deprecate and remove
-	object file {
-		def unixRoot:File	= Platform.unixRoot.toFile
-		def currentDir:File	= Platform.currentDir.toFile
-		def homeDir:File	= Platform.homeDir.toFile
-		def tmpDir:File		= Platform.tmpDir.toFile
-		def javaHome:File	= Platform.javaHome.toFile
-	}
-
 	//------------------------------------------------------------------------------
 
 	def property(name:String):Option[String]	=

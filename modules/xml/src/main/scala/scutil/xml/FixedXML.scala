@@ -14,8 +14,8 @@ import scala.xml.factory.XMLLoader
 import javax.xml.parsers.SAXParser
 
 import scutil.core.implicits.*
-import scutil.jdk.implicits.*
 import scutil.lang.Charsets
+import scutil.io.*
 
 /*
 NOTE
@@ -39,10 +39,10 @@ object FixedXML extends XMLLoader[Elem] {
 
 	/*
 	def loadXML(file:File):Node =
-			loadXML(Source fromFile file)
+		loadXML(Source fromFile file)
 
 	def loadXML(string:String):Node	=
-			loadXML(Source fromString string)
+		loadXML(Source fromString string)
 
 	def loadXML(source:Source):Node = {
 		val prs	= ConstructingParser fromSource (source, true)
@@ -56,12 +56,14 @@ object FixedXML extends XMLLoader[Elem] {
 	}
 	*/
 
-	def saveFilePath(path:Path, node:Node, xmlDecl:Boolean=true, docType:Option[DocType]=None, minimizeTags:MinimizeMode.Value=MinimizeMode.Default):Unit =
-		path.withWriter(encoding) { write(node, xmlDecl, docType, minimizeTags) }
+	def loadFilePath(path:Path):Elem	=
+		loadFile(path.toFile)
 
-	// TODO path get rid of this
+	def saveFilePath(path:Path, node:Node, xmlDecl:Boolean=true, docType:Option[DocType]=None, minimizeTags:MinimizeMode.Value=MinimizeMode.Default):Unit =
+		MoreFiles.withWriter(path, encoding) { write(node, xmlDecl, docType, minimizeTags) }
+
 	def saveFile(file:File, node:Node, xmlDecl:Boolean=true, docType:Option[DocType]=None, minimizeTags:MinimizeMode.Value=MinimizeMode.Default):Unit =
-		file.withWriter(encoding) { write(node, xmlDecl, docType, minimizeTags) }
+		saveFilePath(file.toPath, node, xmlDecl, docType, minimizeTags)
 
 	private def write(node:Node, xmlDecl:Boolean, docType:Option[DocType], minimizeTags:MinimizeMode.Value)(writer:Writer):Unit = {
 		xmlDecl option s"<?xml version='1.0' encoding='${encoding.name}'?>\n" foreach writer.write

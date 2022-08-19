@@ -1,6 +1,7 @@
 package scutil.gui
 
 import java.io.*
+import java.nio.file.Files
 import java.awt.dnd.*
 import java.awt.datatransfer.*
 import javax.swing.*
@@ -78,7 +79,7 @@ object DndFileExport {
 				case DndFlavors.binary	=>
 					// NOTE doesn't give a file name
 					// NOTE does not work on windows
-					files.head.newInputStream()
+					Files.newInputStream(files.head.toPath)
 				case x	=>
 					sys error s"unexpected DataFlavor ${x.toString}"
 			}

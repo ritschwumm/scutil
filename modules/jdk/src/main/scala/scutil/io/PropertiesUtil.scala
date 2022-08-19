@@ -32,33 +32,16 @@ object PropertiesUtil {
 		}
 
 	def loadRawFile(path:Path):Properties	=
-		path.toFile.withInputStream { st =>
+		MoreFiles.withInputStream(path) { st =>
 			new Properties doto {
 				_ load st
 			}
 		}
 
 	def saveRawFile(path:Path, it:Properties):Unit	=
-		path.toFile.withOutputStream { st =>
+		MoreFiles.withOutputStream(path) { st =>
 			it.store(st, null)
 		}
-
-	//------------------------------------------------------------------------------
-
-	// TODO path deprecate and remove
-	object file {
-		def loadFile(file:File):Map[String,String]	=
-			PropertiesUtil.loadFile(file.toPath)
-
-		def saveFile(file:File, it:Map[String,String]):Unit	=
-			PropertiesUtil.saveFile(file.toPath, it)
-
-		def loadRawFile(file:File):Properties	=
-			PropertiesUtil.loadRawFile(file.toPath)
-
-		def saveRawFile(file:File, it:Properties):Unit	=
-			PropertiesUtil.saveRawFile(file.toPath, it)
-	}
 
 	//------------------------------------------------------------------------------
 

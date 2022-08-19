@@ -4,7 +4,7 @@ import java.awt.{ Insets }
 import java.awt.geom.{ Point2D, Dimension2D, Rectangle2D, Line2D, Area, AffineTransform }
 
 object extensions {
-	implicit class DoubleSgExt(delegate:Double) {
+	implicit final class DoubleSgExt(delegate:Double) {
 		def pointWith(y:Double):SgPoint	= SgPoint(delegate, y)
 
 		def spanTo(end:Double):SgSpan			= SgSpan .startEnd	(delegate, end)
@@ -16,7 +16,7 @@ object extensions {
 	}
 
 	/*
-	implicit class BooleanSgExt(delegate:Boolean) {
+	implicit final class BooleanSgExt(delegate:Boolean) {
 		def trueHorizontal:SgOrientation	= SgOrientation trueHorizontal	delegate
 		def trueVertical:SgOrientation		= SgOrientation trueVertical	delegate
 	}
@@ -24,31 +24,31 @@ object extensions {
 
 	//------------------------------------------------------------------------------
 
-	implicit class InsetsSgExt(delegate:Insets) {
+	implicit final class InsetsSgExt(delegate:Insets) {
 		def toSgRectangleInsets:SgRectangleInsets	= SgRectangleInsets fromAwtInsets delegate
 	}
 
-	implicit class AreaSgExt(delegate:Area) {
+	implicit final class AreaSgExt(delegate:Area) {
 		def toSgArea:SgArea	= SgArea fromAwtArea delegate
 	}
 
-	implicit class Point2DSgExt(delegate:Point2D) {
+	implicit final class Point2DSgExt(delegate:Point2D) {
 		def toSgPoint:SgPoint	= SgPoint fromAwtPoint2D delegate
 	}
 
-	implicit class Dimension2DSgExt(delegate:Dimension2D) {
+	implicit final class Dimension2DSgExt(delegate:Dimension2D) {
 		def toSgPoint:SgPoint	= SgPoint fromAwtDimension2D delegate
 	}
 
-	implicit class Rectangle2DSgExt(delegate:Rectangle2D) {
+	implicit final class Rectangle2DSgExt(delegate:Rectangle2D) {
 		def toSgRectangle:SgRectangle	= SgRectangle fromAwtRectangle2D delegate
 	}
 
-	implicit class Line2DSgExt(delegate:Line2D) {
+	implicit final class Line2DSgExt(delegate:Line2D) {
 		def toSgLine:SgLine	= SgLine fromAwtLine2D delegate
 	}
 
-	implicit class AffineTransformSgExt(delegate:AffineTransform) {
+	implicit final class AffineTransformSgExt(delegate:AffineTransform) {
 		def toSgAffineTransform:SgAffineTransform	= SgAffineTransform fromAwtAffineTransform delegate
 	}
 }

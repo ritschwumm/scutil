@@ -6,16 +6,8 @@ import java.nio.file.attribute.FileTime
 import java.nio.charset.Charset
 
 import scutil.core.implicits.*
-import scutil.io.implicits.*
 import scutil.io.MoreFiles
-import scutil.lang.*
-import scutil.time.*
-import scutil.platform.SystemProperties
-
-import InputStreamExtensions.*
-import OutputStreamExtensions.*
-import ReaderExtensions.*
-import WriterExtensions.*
+import scutil.lang.ByteString
 
 object PathExtensions {
 	/** utility methods for java Path objects */
@@ -70,44 +62,41 @@ object PathExtensions {
 
 		// BETTER handle IOException
 
-		/** execute a closure with an InputStream reading from this File */
+		@deprecated("use MoreFiles.withInputStream", "0.229.0")
 		def withInputStream[T](code:(InputStream=>T)):T	=
-			Files.newInputStream(peer) use code
+			MoreFiles.withInputStream(peer)(code)
 
-		/** execute a closure with an OutputStream writing into this File */
+		@deprecated("use MoreFiles.withOutputStream", "0.229.0")
 		def withOutputStream[T](code:(OutputStream=>T)):T	=
-			Files.newOutputStream(peer) use code
+			MoreFiles.withOutputStream(peer)(code)
 
-		/** execute a closure with a Reader reading from this File */
-		def withReader[T](charset:Charset)(code:(InputStreamReader=>T)):T	=
-			new InputStreamReader(Files.newInputStream(peer), charset) use code
+		@deprecated("use MoreFiles.withReader", "0.229.0")
+		def withReader[T](charset:Charset)(code:(Reader=>T)):T	=
+			MoreFiles.withReader(peer, charset)(code)
 
-		/** execute a closure with a Writer writing into this File */
-		def withWriter[T](charset:Charset)(code:(OutputStreamWriter=>T)):T	=
-			new OutputStreamWriter(Files.newOutputStream(peer), charset) use code
+		@deprecated("use MoreFiles.withWriter", "0.229.0")
+		def withWriter[T](charset:Charset)(code:(Writer=>T)):T	=
+			MoreFiles.withWriter(peer, charset)(code)
 
 		//------------------------------------------------------------------------------
 		//## file only: complete read
 
-		// BETTER use this?
-		//def readByteString():ByteString				= ByteString unsafeFromArray (Files readAllBytes peer.toPath)
-		//def writeByteString(bytes:ByteString):Unit	= Files write (peer.toPath, bytes.unsafeValue)
+		@deprecated("use MoreFiles.readByteString", "0.229.0")
+		def readByteString():ByteString							= MoreFiles.readByteString(peer)
 
-		def readByteString():ByteString				= withInputStream	{ _.readFullyByteString()	}
-		def writeByteString(bytes:ByteString):Unit	= withOutputStream	{ _ writeByteString bytes	}
+		@deprecated("use MoreFiles.writeByteString", "0.229.0")
+		def writeByteString(bytes:ByteString):Unit				= MoreFiles.writeByteString(peer, bytes)
 
-		def readString(charset:Charset):String					= withReader(charset) { _.readFully() }
-		def writeString(charset:Charset, string:String):Unit	= withWriter(charset) { _ write string }
+		@deprecated("use MoreFiles.readString", "0.229.0")
+		def readString(charset:Charset):String					= MoreFiles.readString(peer, charset)
 
-		// BETTER use a specific line separator
-		def readLines(charset:Charset):Seq[String]	=
-			withReader(charset) { _.readLines() }
-		def writeLines(charset:Charset, lines:Seq[String]):Unit	=
-			withWriter(charset) { writer =>
-				lines foreach { line =>
-					writer write line
-					writer write SystemProperties.line.separator
-				}
-			}
+		@deprecated("use MoreFiles.writeString", "0.229.0")
+		def writeString(charset:Charset, string:String):Unit	= MoreFiles.writeString(peer, charset, string)
+
+		@deprecated("use MoreFiles.readLines", "0.229.0")
+		def readLines(charset:Charset):Seq[String]				= MoreFiles.readLines(peer, charset)
+
+		@deprecated("use MoreFiles.writeLines", "0.229.0")
+		def writeLines(charset:Charset, lines:Seq[String]):Unit	= MoreFiles.writeLines(peer, charset, lines)
 	}
 }

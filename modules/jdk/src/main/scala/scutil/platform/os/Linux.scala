@@ -11,12 +11,4 @@ object Linux {
 	val dotLocal:Path				= Platform.homeDir / ".local"
 	val dotLocalShare:Path			= dotLocal / "share"
 	val dotCache:Path				= Platform.homeDir / ".cache"
-
-	// TODO path deprecate and remove
-	object file {
-		def dotFile(name:String):File	= Linux.dotFile(name).toFile
-		val dotLocal:File				= Linux.dotLocal.toFile
-		val dotLocalShare:File			= Linux.dotLocalShare.toFile
-		val dotCache:File				= Linux.dotCache.toFile
-	}
 }

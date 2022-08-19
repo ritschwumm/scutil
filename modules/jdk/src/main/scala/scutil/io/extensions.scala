@@ -4,7 +4,6 @@ import scutil.io.extension.*
 
 object extensions {
 	export DataOutputExtensions.*
-	export FileExtensions.*
 	export PathExtensions.*
 	export InputStreamExtensions.*
 	export OutputStreamExtensions.*
