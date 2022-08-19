@@ -66,51 +66,6 @@ object PathExtensions {
 			sibling(func(peer.getFileName.toString))
 
 		//------------------------------------------------------------------------------
-		//## file and directory
-
-		@deprecated("use MoreFiles.optionExists", "0.226.0")
-		def optionExists:Option[Path] =
-			MoreFiles.optionExists(peer)
-
-		/** time of last modification as an MilliInstant, returns MilliInstant.zero for non-existing files */
-		@deprecated("use MoreFiles.lastModified", "0.226.0")
-		def lastModifiedMilliInstant():MilliInstant	=
-			MoreFiles.lastModified(peer)
-
-		@deprecated("use MoreFiles.setLastModified", "0.226.0")
-		def setLastModifiedMilliInstant(it:MilliInstant):Unit	=
-			MoreFiles.setLastModified(peer, it)
-
-		/** whether the peer is newer than another file. if the other file does not exist it counts as newer */
-		@deprecated("use MoreFiles.newerThan", "0.226.0")
-		def newerThan(that:Path):Boolean	=
-			MoreFiles.newerThan(peer, that)
-
-		//------------------------------------------------------------------------------
-		//## directory only
-
-		/** list files in this directory */
-		@deprecated("use MoreFiles.listFiles", "0.226.0")
-		def children:Option[Seq[Path]] =
-			MoreFiles.listFiles(peer)
-
-		/** list files in this directory matching a predicate */
-		@deprecated("use MoreFiles.listFilesWhere", "0.226.0")
-		def childrenWhere(predicate:Path=>Boolean):Option[Seq[Path]] =
-			MoreFiles.listFilesWhere(peer, predicate)
-
-		//------------------------------------------------------------------------------
-		//## file only: streams
-
-		@deprecated("use Files.newInputStream", "0.226.0")
-		def newInputStream():InputStream	=
-			Files newInputStream peer
-
-		@deprecated("use Files.newOutputStream", "0.226.0")
-		def newOutputStream():OutputStream	=
-			Files newOutputStream peer
-
-				//------------------------------------------------------------------------------
 		//## file only: resource closure
 
 		// BETTER handle IOException
@@ -154,19 +109,5 @@ object PathExtensions {
 					writer write SystemProperties.line.separator
 				}
 			}
-
-	//------------------------------------------------------------------------------
-		//## manipulation
-
-		/** copy this File over another */
-		@deprecated("use Files.copy", "0.226.0")
-		def copyTo(to:Path, force:Boolean=false):Unit =
-			if (force)	Files.copy(peer, to,  StandardCopyOption.REPLACE_EXISTING)
-			else		Files.copy(peer, to)
-
-		/** delete all children and the file itself */
-		@deprecated("use MoreFiles.deleteRecursive", "0.226.0")
-		def deleteRecursive():Unit =
-			MoreFiles.deleteRecursive(peer)
 	}
 }

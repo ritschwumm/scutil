@@ -2,9 +2,13 @@ package scutil.io
 
 import java.util.EnumSet
 import java.io.IOException
+import java.io.RandomAccessFile
+import java.nio.MappedByteBuffer
+import java.nio.channels.FileChannel
 import java.nio.file.*
 import java.nio.file.attribute.*
 
+import scutil.core.implicits.*
 import scutil.time.*
 
 object MoreFiles {
@@ -12,15 +16,15 @@ object MoreFiles {
 		if (Files.exists(file))	Some(file)
 		else					None
 
-	// TODO path provide an Ordering for FileTime
-	// TODO path provide conversion from and toi MilliInstant for FileTime
-
 	/** time of last modification as an MilliInstant, returns MilliInstant.zero for non-existing files */
 	def lastModified(file:Path):MilliInstant	=
-		MilliInstant(Files.getLastModifiedTime(file).toMillis)
+		fileTimeToMilliInstant(Files.getLastModifiedTime(file))
 
 	def setLastModified(file:Path, time:MilliInstant):Unit	=
-		Files.setLastModifiedTime(file, FileTime.fromMillis(time.millis))
+		Files.setLastModifiedTime(file, milliInstantToFileTime(time))
+
+	def fileTimeToMilliInstant(it:FileTime):MilliInstant	= MilliInstant(it.toMillis)
+	def milliInstantToFileTime(it:MilliInstant):FileTime	= FileTime.fromMillis(it.millis)
 
 	/** whether the candidate is newer than another file. if the other file does not exist it counts as newer */
 	def newerThan(candidate:Path, against:Path):Boolean	=
@@ -31,7 +35,8 @@ object MoreFiles {
 			Files.createDirectories(parent)
 		}
 
-	def deleteRecursive(directory:Path):Unit	=
+	/** does not follow symlinks */
+	def deleteRecursive(directory:Path, followSymLinks:Boolean):Unit	=
 		Files.walkFileTree(
 			directory,
 			new SimpleFileVisitor[Path] {
@@ -62,7 +67,7 @@ object MoreFiles {
 				1,
 				new SimpleFileVisitor[Path] {
 					override def preVisitDirectory(selectedPath:Path, attrs:BasicFileAttributes)	= {
-						if (predicate(selectedPath)) {
+						if (selectedPath != directory && predicate(selectedPath)) {
 							out	= out :+ selectedPath
 						}
 						FileVisitResult.CONTINUE
@@ -80,4 +85,9 @@ object MoreFiles {
 			Some(out)
 		}
 		else None
+
+	def mapReadOnly(file:Path):MappedByteBuffer	=
+		new RandomAccessFile(file.toFile, "r").getChannel use { fc =>
+			fc.map(FileChannel.MapMode.READ_ONLY, 0, Files.size(file))
+		}
 }
