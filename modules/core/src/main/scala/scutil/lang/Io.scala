@@ -3,12 +3,16 @@ package scutil.lang
 import scala.annotation.tailrec
 
 import scutil.lang.tc.*
+import scutil.time.MilliDuration
 
 object Io extends IoInstancesLow {
 	def pure[T](it:T):Io[T]				= Pure(it)
 	def raise[T](error:Exception):Io[T]	= Raise(error)
 	def delay[T](it: =>T):Io[T]			= Suspend(() => it)
 	def thunk[T](it:()=>T):Io[T]		= Suspend(it)
+
+	def sleep(duration:MilliDuration):Io[Unit]	=
+		delay { Thread.sleep(duration.millis) }
 
 	//------------------------------------------------------------------------------
 

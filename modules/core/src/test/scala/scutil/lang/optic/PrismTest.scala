@@ -59,6 +59,7 @@ object PrismTest extends SimpleTestSuite {
 	//------------------------------------------------------------------------------
 
 	test("Prism.subType should get a case object") {
+		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 		val prism					= Prism.subType[PrismSuper,PrismObject.type]
 		val sub:PrismObject.type	= PrismObject
 		val sup:PrismSuper			= sub
@@ -69,6 +70,7 @@ object PrismTest extends SimpleTestSuite {
 	}
 
 	test("Prism.subType should put a case object") {
+		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 		val prism					= Prism.subType[PrismSuper,PrismObject.type]
 		val sub:PrismObject.type	= PrismObject
 		val sup:PrismSuper			= sub
@@ -79,6 +81,7 @@ object PrismTest extends SimpleTestSuite {
 	}
 
 	test("Prism.subType should get a case class") {
+		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 		val prism			= Prism.subType[PrismSuper,PrismClass]
 		val sub:PrismClass	= PrismClass(1)
 		val sup:PrismSuper	= sub
@@ -88,6 +91,7 @@ object PrismTest extends SimpleTestSuite {
 		)
 	}
 	test("Prism.subType should put a case class") {
+		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 		val prism			= Prism.subType[PrismSuper,PrismClass]
 		val sub:PrismClass	= PrismClass(1)
 		val sup:PrismSuper	= sub

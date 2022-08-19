@@ -25,6 +25,18 @@ final case class Execution(submit:(()=>Unit)=>Unit) {
 		thunk { out.take().throwException }
 	}
 
+	def submitIo(action:Io[Unit]):Io[Unit]	=
+		Io delay {
+			submit(action.unsafeRun)
+		}
+
+	def withResultIo[T](action:Io[T]):Io[Io[T]]	=
+		Io delay {
+			val running	= withResult(action.unsafeRun)
+			Io delay { running() }
+		}
+
+
 	def wrapIoResource[T](resource:IoResource[T]):IoResource[T]	=
 		IoResource(
 			Io delay {
@@ -32,6 +44,14 @@ final case class Execution(submit:(()=>Unit)=>Unit) {
 				val disposer2			= Io delay { withResult{ () => disposer.unsafeRun() }() }
 				value -> disposer2
 			}
+		)
+
+	// TODO thread test this
+	def wrapIoResource2[T](resource:IoResource[T]):IoResource[T]	=
+		IoResource(
+			withResultIo(resource.open).flatten.map((value, disposer) =>
+				value	-> withResultIo(disposer).flatten
+			)
 		)
 
 	def toExecutor:Executor	=

@@ -86,7 +86,7 @@ object HexNumberLiteralsTest extends SimpleTestSuite {
 	test("HexNumberLiterals should decode 0000000000000000") {
 		val it	= long"0000000000000000"
 		typed[Long](it)
-		assertEquals(it, 0.toInt)
+		assertEquals(it, 0L)
 	}
 
 	test("HexNumberLiterals should decode 7fffffffffffffff") {

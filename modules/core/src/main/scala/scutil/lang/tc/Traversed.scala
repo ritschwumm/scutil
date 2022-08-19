@@ -24,4 +24,7 @@ trait Traversed[F[_]] extends Functor[F] {
 
 	def flatTraverse[G[_],S,T](items:F[S])(func:S=>G[F[T]])(using AP:Applicative[G], M:Monad[F]):G[F[T]]	=
 		AP.map(traverse(items)(func))(M.flatten)
+
+	def traverseVoid[G[_],S,T](items:F[S])(func:S=>G[T])(using AP:Applicative[G])	=
+		AP.void(traverse(items)(func))
 }

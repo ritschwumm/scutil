@@ -5,7 +5,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.221.0",
+	version			:= "0.222.0",
 
 	scalaVersion	:= "3.1.2",
 	scalacOptions	++= Seq(
@@ -38,13 +38,14 @@ inThisBuild(Seq(
 		Wart.AnyVal,
 		//Wart.Nothing,
 		Wart.ArrayEquals,
-		Wart.ImplicitParameter,
+		// TODO get this back - for some reason, it cannot be disabled
+		//Wart.ImplicitParameter,
 		Wart.ExplicitImplicitTypes,
 		Wart.LeakingSealed,
 		//Wart.DefaultArguments,
 		//Wart.Overloading,
 		//Wart.PublicInference,
-		Wart.TraversableOps,
+		//Wart.TraversableOps,
 		Wart.ListUnapply,
 		Wart.ListAppend,
 		Wart.GlobalExecutionContext,
@@ -191,7 +192,7 @@ lazy val `scutil-guid`	=
 	.jsSettings(
 		noTestSettings,
 		libraryDependencies	++= Seq(
-			"org.scala-js"	%%%	"scalajs-dom"	% "2.1.0"	% "compile"
+			"org.scala-js"	%%%	"scalajs-dom"	% "2.2.0"	% "compile"
 		)
 	)
 lazy val `scutil-guid-jvm`	= `scutil-guid`.jvm

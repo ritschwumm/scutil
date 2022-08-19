@@ -10,5 +10,8 @@ object TraversedSyntax {
 
 		def flatTraverse[G[_],U](func:T=>G[F[U]])(using TR:Traversed[F], M:Monad[F], AP:Applicative[G]):G[F[U]]	=
 			TR.flatTraverse(peer)(func)
+
+		def traverseVoid[G[_],U](func:T=>G[U])(using TR:Traversed[F], AP:Applicative[G]):G[Unit]	=
+			TR.traverseVoid(peer)(func)
 	}
 }

@@ -17,6 +17,7 @@ final class LensGen[T] extends Dynamic {
 
 object LensGenImpl {
 	// NOTE needs a transparent call to make the return type flexible
+	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 	def selectImpl(self:Expr[Any], name:Expr[String])(using quotes:Quotes):Expr[Any] = {
 		import quotes.reflect.*
 

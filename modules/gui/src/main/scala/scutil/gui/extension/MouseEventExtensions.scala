@@ -11,5 +11,11 @@ object MouseEventExtensions {
 				peer.getX,
 				peer.getY
 			)
+
+		def intPoint:IntPoint	=
+			IntPoint(
+				peer.getX,
+				peer.getY
+			)
 	}
 }

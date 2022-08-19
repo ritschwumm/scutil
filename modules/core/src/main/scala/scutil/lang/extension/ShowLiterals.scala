@@ -32,6 +32,7 @@ object ShowLiterals {
 				case _			=> report.errorAndAbort("expected varargs")
 			}
 
+		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 		val shown	=
 			varArgs map { case '{ $arg: typ } =>
 				/*
