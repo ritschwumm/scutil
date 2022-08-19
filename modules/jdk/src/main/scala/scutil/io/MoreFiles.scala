@@ -36,7 +36,7 @@ object MoreFiles {
 		}
 
 	/** does not follow symlinks */
-	def deleteRecursive(directory:Path, followSymLinks:Boolean):Unit	=
+	def deleteRecursive(directory:Path):Unit	=
 		Files.walkFileTree(
 			directory,
 			new SimpleFileVisitor[Path] {
@@ -63,7 +63,7 @@ object MoreFiles {
 
 			Files.walkFileTree(
 				directory,
-				EnumSet noneOf classOf[FileVisitOption],
+				EnumSet.of(FileVisitOption.FOLLOW_LINKS),
 				1,
 				new SimpleFileVisitor[Path] {
 					override def preVisitDirectory(selectedPath:Path, attrs:BasicFileAttributes)	= {
