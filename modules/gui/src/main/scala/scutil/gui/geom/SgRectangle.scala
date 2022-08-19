@@ -6,34 +6,55 @@ object SgRectangle {
 	//------------------------------------------------------------------------------
 	//## simple values
 
-	val zero	= xy(SgSpan.zero,	SgSpan.zero)
-	val one		= xy(SgSpan.one,	SgSpan.one)
+	val zero	= horizontalWithVertical(SgSpan.zero,	SgSpan.zero)
+	val one		= horizontalWithVertical(SgSpan.one,	SgSpan.one)
 
 	//------------------------------------------------------------------------------
 	//## component factory
 
-	def xy(x:SgSpan, y:SgSpan):SgRectangle	= new SgRectangle(x, y)
+	@deprecated("use horizontalWithVertical", "0.207.0")
+	def xy(x:SgSpan, y:SgSpan):SgRectangle	= horizontalWithVertical(x, y)
 
+	def horizontalWithVertical(horizontal:SgSpan, vertical:SgSpan):SgRectangle	=
+		new SgRectangle(horizontal, vertical)
+
+	@deprecated("use zeroSized", "0.207.0")
 	def topLeftZeroBy(size:SgPoint):SgRectangle	=
-		xy(
+		zeroSized(size)
+
+	def zeroSized(size:SgPoint):SgRectangle	=
+		horizontalWithVertical(
 			SgSpan startZeroBy size.x,
 			SgSpan startZeroBy size.y
 		)
 
+	@deprecated("use topLeftWithSize", "0.207.0")
 	def topLeftBy(pos:SgPoint, size:SgPoint):SgRectangle	=
-		xy(
-			SgSpan.startEnd(pos.x, pos.x+size.x),
-			SgSpan.startEnd(pos.y, pos.y+size.y)
+		topLeftWithSize(pos, size)
+
+	def topLeftWithSize(topLeft:SgPoint, size:SgPoint):SgRectangle	=
+		horizontalWithVertical(
+			SgSpan.startEnd(topLeft.x, topLeft.x+size.x),
+			SgSpan.startEnd(topLeft.y, topLeft.y+size.y)
 		)
 
+	@deprecated("use topLeftToBottomRight", "0.207.0")
 	def topLeftTo(pos:SgPoint, other:SgPoint):SgRectangle	=
-		xy(
+		horizontalWithVertical(
 			SgSpan.startEnd(pos.x, other.x),
 			SgSpan.startEnd(pos.y, other.y)
 		)
 
+	def topLeftToBottomRight(topLeft:SgPoint, bottomRight:SgPoint):SgRectangle	=
+		horizontalWithVertical(
+			SgSpan.startEnd(topLeft.x, bottomRight.x),
+			SgSpan.startEnd(topLeft.y, bottomRight.y)
+		)
+
+
+	// TODO geom add to DoubleRect
 	def centerBy(center:SgPoint, size:SgPoint):SgRectangle	=
-		xy(
+		horizontalWithVertical(
 			SgSpan.startEnd(center.x-size.x/2, center.x+size.x/2),
 			SgSpan.startEnd(center.y-size.y/2, center.y+size.y/2)
 		)
@@ -43,15 +64,15 @@ object SgRectangle {
 
 	def orientationWith(orientation:SgOrientation, master:SgSpan, slave:SgSpan):SgRectangle	=
 		orientation match {
-			case SgOrientation.Horizontal	=> xy(master,	slave)
-			case SgOrientation.Vertical		=> xy(slave,	master)
+			case SgOrientation.Horizontal	=> horizontalWithVertical(master,	slave)
+			case SgOrientation.Vertical		=> horizontalWithVertical(slave,	master)
 		}
 
 	//------------------------------------------------------------------------------
 	//## awt conversion
 
 	def fromAwtRectangle2D(it:Rectangle2D):SgRectangle	=
-		xy(
+		horizontalWithVertical(
 			SgSpan.startEnd(it.getX, it.getX+it.getWidth),
 			SgSpan.startEnd(it.getY, it.getY+it.getHeight)
 		)
@@ -89,23 +110,23 @@ final case class SgRectangle private (x:SgSpan, y:SgSpan) {
 	def normal:Boolean		= x.normal && y.normal
 	def size:SgPoint		= SgPoint(x.size, y.size)
 
-	def swap:SgRectangle	= SgRectangle.xy(x,y)
+	def swap:SgRectangle	= SgRectangle.horizontalWithVertical(x,y)
 
 	def normalize:SgRectangle	=
-		SgRectangle.xy(
+		SgRectangle.horizontalWithVertical(
 			x.normalize,
 			y.normalize
 		)
 
 	def union(that:SgRectangle):SgRectangle	=
-		SgRectangle.xy(
+		SgRectangle.horizontalWithVertical(
 			this.x union that.x,
 			this.y union that.y
 		)
 
 	def intersect(that:SgRectangle):Option[SgRectangle]	=
 		(this.x intersect that.x, this.y intersect that.y) match {
-			case (Some(x), Some(y))	=> Some(SgRectangle.xy(x,y))
+			case (Some(x), Some(y))	=> Some(SgRectangle.horizontalWithVertical(x,y))
 			case _					=> None
 		}
 
@@ -122,13 +143,13 @@ final case class SgRectangle private (x:SgSpan, y:SgSpan) {
 		(this.y contains that.y)
 
 	def move(offset:SgPoint):SgRectangle	=
-		SgRectangle.xy(
+		SgRectangle.horizontalWithVertical(
 			x move offset.x,
 			y move offset.y
 		)
 
 	def inset(insets:SgRectangleInsets):SgRectangle	=
-		SgRectangle.xy(
+		SgRectangle.horizontalWithVertical(
 			x inset insets.x,
 			y inset insets.y
 		)
@@ -136,16 +157,16 @@ final case class SgRectangle private (x:SgSpan, y:SgSpan) {
 	def splitAtX(position:Double):(SgRectangle, SgRectangle)	= {
 		val (a, b)	= x splitAt position
 		(
-			SgRectangle.xy(a, y),
-			SgRectangle.xy(b, y)
+			SgRectangle.horizontalWithVertical(a, y),
+			SgRectangle.horizontalWithVertical(b, y)
 		)
 	}
 
 	def splitAtY(position:Double):(SgRectangle, SgRectangle)	= {
 		val (a, b)	= y splitAt position
 		(
-			SgRectangle.xy(x, a),
-			SgRectangle.xy(x, b)
+			SgRectangle.horizontalWithVertical(x, a),
+			SgRectangle.horizontalWithVertical(x, b)
 		)
 	}
 
@@ -159,10 +180,10 @@ final case class SgRectangle private (x:SgSpan, y:SgSpan) {
 		val (ax, bx)	= x splitAt position.x
 		val (ay, by)	= y splitAt position.y
 		(
-			SgRectangle.xy(ax, ay),
-			SgRectangle.xy(bx, ay),
-			SgRectangle.xy(ax, by),
-			SgRectangle.xy(bx, by)
+			SgRectangle.horizontalWithVertical(ax, ay),
+			SgRectangle.horizontalWithVertical(bx, ay),
+			SgRectangle.horizontalWithVertical(ax, by),
+			SgRectangle.horizontalWithVertical(bx, by)
 		)
 	}
 
@@ -186,14 +207,14 @@ final case class SgRectangle private (x:SgSpan, y:SgSpan) {
 
 	def set(orientation:SgOrientation, it:SgSpan):SgRectangle	=
 		orientation match {
-			case SgOrientation.Horizontal	=> SgRectangle.xy(it, y)
-			case SgOrientation.Vertical		=> SgRectangle.xy(x, it)
+			case SgOrientation.Horizontal	=> SgRectangle.horizontalWithVertical(it, y)
+			case SgOrientation.Vertical		=> SgRectangle.horizontalWithVertical(x, it)
 		}
 
 	def modify(orientation:SgOrientation, it:SgSpan=>SgSpan):SgRectangle	=
 		orientation match {
-			case SgOrientation.Horizontal	=> SgRectangle.xy(it(x), y)
-			case SgOrientation.Vertical		=> SgRectangle.xy(x, it(y))
+			case SgOrientation.Horizontal	=> SgRectangle.horizontalWithVertical(it(x), y)
+			case SgOrientation.Vertical		=> SgRectangle.horizontalWithVertical(x, it(y))
 		}
 
 	//------------------------------------------------------------------------------

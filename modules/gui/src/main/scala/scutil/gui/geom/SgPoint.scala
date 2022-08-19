@@ -113,10 +113,10 @@ final case class SgPoint(x:Double, y:Double) {
 	//------------------------------------------------------------------------------
 	//## factory dsl
 
-	def lineTo(that:SgPoint):SgLine				= SgLine		.startEnd	(this, that)
-	def lineBy(size:SgPoint):SgLine				= SgLine		.startBy	(this, size)
-	def rectangleTo(that:SgPoint):SgRectangle	= SgRectangle	.topLeftTo	(this, that)
-	def rectangleBy(size:SgPoint):SgRectangle	= SgRectangle	.topLeftBy	(this, size)
+	def lineTo(that:SgPoint):SgLine				= SgLine		.startEnd				(this, that)
+	def lineBy(size:SgPoint):SgLine				= SgLine		.startBy				(this, size)
+	def rectangleTo(that:SgPoint):SgRectangle	= SgRectangle	.topLeftToBottomRight	(this, that)
+	def rectangleBy(size:SgPoint):SgRectangle	= SgRectangle	.topLeftWithSize		(this, size)
 
 	//------------------------------------------------------------------------------
 	//## orientation lens

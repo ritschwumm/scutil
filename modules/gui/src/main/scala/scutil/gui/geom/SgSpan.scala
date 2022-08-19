@@ -126,7 +126,7 @@ final case class SgSpan private (start:Double, end:Double) {
 		)
 
 	def rectangleWith(that:SgSpan):SgRectangle	=
-		SgRectangle.xy(this, that)
+		SgRectangle.horizontalWithVertical(this, that)
 
 	def linearTransformTo(that:SgSpan):SgLinearTransform1D	=
 		SgLinearTransform1D.fromTo(this, that)

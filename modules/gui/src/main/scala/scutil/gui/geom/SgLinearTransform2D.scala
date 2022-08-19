@@ -52,7 +52,7 @@ final case class SgLinearTransform2D private (factor:SgPoint, summand:SgPoint) {
 		)
 
 	def transformRectangle(value:SgRectangle):SgRectangle	=
-		SgRectangle.xy(
+		SgRectangle.horizontalWithVertical(
 			x transformSpan value.x,
 			y transformSpan value.y
 		)

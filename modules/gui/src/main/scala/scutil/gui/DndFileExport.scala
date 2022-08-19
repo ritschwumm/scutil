@@ -42,11 +42,11 @@ object DndFileExport {
 
 	private val exportable:Seq[DataFlavor]	=
 		OperatingSystem.current match {
-			case Some(OSX)		=>
+			case Some(OperatingSystem.OSX)		=>
 				Seq(DndFlavors.javaFileList)
-			case Some(Windows)	=>
+			case Some(OperatingSystem.Windows)	=>
 				Seq(DndFlavors.javaFileList)
-			case Some(Linux)	=>
+			case Some(OperatingSystem.Linux)	=>
 				Seq(
 					DndFlavors.javaFileList,
 					DndFlavors.uriList,

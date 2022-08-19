@@ -64,7 +64,7 @@ final case class SgAffineTransform private (delegate:AffineTransform) {
 					rect.y.end
 				)
 			delegate.transform(coords, 0, coords, 0, 2)
-			SgRectangle.xy(
+			SgRectangle.horizontalWithVertical(
 				SgSpan.startEnd(coords(0), coords(2)),
 				SgSpan.startEnd(coords(1), coords(3))
 			)

@@ -7,6 +7,14 @@ object AtomicRef {
 	// NOTE initial could be lazy here
 	def apply[F[_]:Delay,G[_]:Delay,T](initial:T):F[AtomicRef[G,T]]	=
 		Delay[F] delay new AtomicRef(initial)
+
+	// TODO isn't this just a polymorphic contextual function?
+
+	def builder[G[_]:Delay,T](initial:T)	= new Builder(initial)
+
+	final class Builder[G[_]:Delay,T](initial:T) {
+		def build[F[_]:Delay]	= apply[F,G,T](initial)
+	}
 }
 
 final class AtomicRef[F[_]:Delay,T](initial:T) {

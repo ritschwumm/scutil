@@ -11,9 +11,6 @@ object Io extends IoInstancesLow {
 	def delay[T](it: =>T):Io[T]			= Suspend(() => it)
 	def thunk[T](it:()=>T):Io[T]		= Suspend(it)
 
-	def sleep(duration:MilliDuration):Io[Unit]	=
-		delay { Thread.sleep(duration.millis) }
-
 	//------------------------------------------------------------------------------
 
 	def unit:Io[Unit]	= Pure(())
@@ -28,7 +25,37 @@ object Io extends IoInstancesLow {
 	def suspend[T](it: =>Io[T]):Io[T]	= delay(it).flatten
 
 	def raiseWithSecondary[T](primary:Exception, secondary:Exception):Io[T]	=
-		Io.delay{ primary.addSuppressed(secondary) } productR Io.raise(primary)
+		delay { primary.addSuppressed(secondary) } productR raise(primary)
+
+	//------------------------------------------------------------------------------
+
+	def forever(action:Io[Unit]):Io[Unit]	=
+		delay {
+			while (true) {
+				action.unsafeRun()
+			}
+		}
+
+	def loopWhile(action:Io[Boolean]):Io[Unit]	=
+		delay {
+			while (action.unsafeRun()) {}
+		}
+
+	def loopTo[T](action:Io[Option[T]]):Io[T]	= {
+		delay {
+			@tailrec
+			def loop():T	= {
+				action.unsafeRun() match {
+					case Some(x)	=> x
+					case None		=> loop()
+				}
+			}
+			loop()
+		}
+	}
+
+	def sleep(duration:MilliDuration):Io[Unit]	=
+		delay { Thread.sleep(duration.millis) }
 
 	//------------------------------------------------------------------------------
 

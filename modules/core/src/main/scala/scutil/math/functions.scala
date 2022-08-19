@@ -10,17 +10,17 @@ object functions {
 
 	//------------------------------------------------------------------------------
 
-	val Log2			= smath log 2
+	val Log2			= smath.log(2)
 	val Log2Reciprocal	= 1.0 / Log2
 
-	def log2(value:Double):Double	= (smath log value) * Log2Reciprocal
-	def exp2(value:Double):Double	= smath exp (value * Log2)
+	def log2(value:Double):Double	= smath.log(value) * Log2Reciprocal
+	def exp2(value:Double):Double	= smath.exp(value * Log2)
 
 	def exp10(value:Double):Double	= smath.pow(10, value)
 	// def log10(value:Double):Double	= smath log10 value
 
-	def logB(base:Double, value:Double):Double	= (smath log value) / (smath log base)
-	// def expB(base:Double, value:Double):Double	= smath pow (base, value)
+	def logB(base:Double, value:Double):Double	= smath.log(value) / smath.log(base)
+	// def expB(base:Double, value:Double):Double	= smath.pow(base, value)
 
 	//------------------------------------------------------------------------------
 

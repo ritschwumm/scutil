@@ -9,6 +9,6 @@ object PathExtensions {
 		def /(name:String):Path 		= peer resolve name
 
 		/** add multiple components to this Paths's path */
-		def /+(path:Seq[String]):Path	= (path foldLeft peer) { _ resolve _ }
+		def /+(path:Seq[String]):Path	= path.foldLeft(peer)(_ resolve _)
 	}
 }

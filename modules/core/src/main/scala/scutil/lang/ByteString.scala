@@ -16,7 +16,7 @@ object ByteString {
 
 	def one(it:Byte):ByteString		= apply(it)
 
-	def of(its:Byte*):ByteString	= fromCollectionSeq(its)
+	def of(its:Byte*):ByteString	= fromIterable(its)
 
 	//------------------------------------------------------------------------------
 
@@ -25,11 +25,15 @@ object ByteString {
 			System.arraycopy(it, 0, tmp, 0, it.length)
 		}
 
+	@deprecated("use fromIterable", "0.223.0")
 	def fromSeq(it:Seq[Byte]):ByteString	=
-		fromCollectionSeq(it)
+		fromIterable(it)
 
-	/** works even with mutable collections */
+	@deprecated("use fromIterable", "0.223.0")
 	def fromCollectionSeq(it:scala.collection.Seq[Byte]):ByteString	=
+		fromIterable(it)
+
+	def fromIterable(it:Iterable[Byte]):ByteString	=
 		makeWithArray(it.size) { tmp =>
 			val iter = it.iterator
 			var i = 0
@@ -112,7 +116,7 @@ object ByteString {
 	//------------------------------------------------------------------------------
 
 	def apply(its:Byte*):ByteString	=
-		fromSeq(its)
+		fromIterable(its)
 
 	def unapplySeq(it:ByteString):Seq[Byte]	=
 		it.toSeq

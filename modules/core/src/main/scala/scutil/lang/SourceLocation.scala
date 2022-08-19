@@ -32,5 +32,5 @@ final case class SourceLocation(
 	name:String,
 	line:Int,
 ) {
-	override def toString:String	= name + ":" + line.toString + s" (${path})"
+	override def toString:String	= name + ":" + line.toString + path.map(path => s" (${path})").getOrElse("")
 }

@@ -31,7 +31,7 @@ object FileExtensions {
 		def /(name:String):File 		= new File(peer, name)
 
 		/** add multiple components to this Files's path */
-		def /+(path:Seq[String]):File	= (path foldLeft peer) { new File(_,_) }
+		def /+(path:Seq[String]):File	= path.foldLeft(peer) { new File(_,_) }
 
 		/** get the parent File the scala way */
 		def parentOption:Option[File]	=
@@ -67,7 +67,7 @@ object FileExtensions {
 
 		/** list files in this directory matching a predicate */
 		def childrenWhere(predicate:File=>Boolean):Option[Seq[File]] =
-			Option(peer.listFiles(new PredicateFileFilter(predicate))).map(_.toVector)
+			Option(peer.listFiles(predicate(_))).map(_.toVector)
 
 		/** the path upwards from another File to this File */
 		def containsRecursive(that:File):Option[Seq[String]]	= {
