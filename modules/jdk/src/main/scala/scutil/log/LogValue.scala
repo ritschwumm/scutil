@@ -22,15 +22,13 @@ object LogValue {
 	def throwable(it:Throwable):LogValue	= LogThrowable(it)
 	def multiple(it:Seq[LogValue]):LogValue	= LogMultiple(it)
 	def variable(it:LogValue*):LogValue		= LogMultiple(it)
-
-	//------------------------------------------------------------------------------
-
-	final case class LogString(value:String)			extends LogValue
-	final case class LogThrowable(value:Throwable)		extends LogValue
-	final case class LogMultiple(values:Seq[LogValue])	extends LogValue
 }
 
-sealed trait LogValue {
+enum LogValue {
+	case LogString(value:String)
+	case LogThrowable(value:Throwable)
+	case LogMultiple(values:Seq[LogValue])
+
 	def atoms:Seq[LogAtom]	=
 		this match {
 			case LogValue.LogString(x)		=> Vector(LogAtom.LogString(x))

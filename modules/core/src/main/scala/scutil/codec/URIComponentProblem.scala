@@ -2,9 +2,7 @@ package scutil.codec
 
 import java.nio.charset.CharacterCodingException
 
-object URIComponentProblem {
-	final case class Invalid(position:Int)							extends URIComponentProblem
-	final case class Exception(underlying:CharacterCodingException)	extends URIComponentProblem
+enum URIComponentProblem {
+	case Invalid(position:Int)
+	case Exception(underlying:CharacterCodingException)
 }
-
-sealed trait URIComponentProblem

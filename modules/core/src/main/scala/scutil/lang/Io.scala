@@ -75,14 +75,6 @@ object Io extends IoInstancesLow {
 		}
 
 	//------------------------------------------------------------------------------
-
-	final case class Pure[T](value:T) 							extends Io[T]
-	final case class Raise[T](error:Exception)					extends Io[T]
-	final case class Suspend[T](thunk:()=>T) 					extends Io[T]
-	final case class Map[S,T](base:Io[S], func:S=>T) 			extends Io[T]
-	final case class FlatMap[S,T](base:Io[S], func:S=>Io[T]) 	extends Io[T]
-
-	//------------------------------------------------------------------------------
 	//## typeclass instances
 
 	given IoMonoid[T](using F:Monoid[T]):Monoid[Io[T]]	=
@@ -104,7 +96,13 @@ object Io extends IoInstancesLow {
 		}
 }
 
-sealed trait Io[T] {
+enum Io[T] {
+	case Pure[T](value:T) 							extends Io[T]
+	case Raise[T](error:Exception)					extends Io[T]
+	case Suspend[T](thunk:()=>T) 					extends Io[T]
+	case Map[S,T](base:Io[S], func:S=>T) 			extends Io[T]
+	case FlatMap[S,T](base:Io[S], func:S=>Io[T]) 	extends Io[T]
+
 	@tailrec
 	final def unsafeRun():T	=
 		this match {

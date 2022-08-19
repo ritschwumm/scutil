@@ -8,7 +8,7 @@ import java.nio.file.*
 import java.nio.file.attribute.*
 import java.nio.charset.Charset
 
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 
 import scutil.core.implicits.*
 import scutil.lang.ByteString

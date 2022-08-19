@@ -34,14 +34,12 @@ object Validated {
 
 	given [S:Semigroup,T]:Semigroup[Validated[S,T]]	=
 		Semigroup instance (_ or _)
-
-	//------------------------------------------------------------------------------
-
-	final case class Invalid[E](problems:E)	extends Validated[E,Nothing]
-	final case class Valid[T](value:T)		extends Validated[Nothing,T]
 }
 
-sealed trait Validated[+E,+T] {
+enum Validated[+E,+T] {
+	case Invalid[E](problems:E)	extends Validated[E,Nothing]
+	case Valid[T](value:T)		extends Validated[Nothing,T]
+
 	def cata[X](invalid:E=>X, valid:T=>X):X	=
 		this match {
 			case Validated.Invalid(x)	=> invalid(x)

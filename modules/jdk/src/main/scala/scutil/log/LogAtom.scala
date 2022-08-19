@@ -1,8 +1,6 @@
 package scutil.log
 
-object LogAtom {
-	final case class LogString(value:String)			extends LogAtom
-	final case class LogThrowable(value:Throwable)		extends LogAtom
+enum LogAtom {
+	case LogString(value:String)
+	case LogThrowable(value:Throwable)
 }
-
-sealed trait LogAtom

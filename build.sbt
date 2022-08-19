@@ -5,7 +5,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.229.0",
+	version			:= "0.230.0",
 
 	scalaVersion	:= "3.1.3",
 	scalacOptions	++= Seq(
@@ -19,7 +19,8 @@ inThisBuild(Seq(
 
 	versionScheme	:= Some("early-semver"),
 	conflictManager	:= ConflictManager.strict withOrganization "^(?!(org\\.scala-lang|org\\.scala-js)(\\..*)?)$",
-	resolvers 		+= Resolver sonatypeRepo "releases",
+
+	resolvers 		++= Resolver sonatypeOssRepos "releases",
 
 	wartremoverErrors	++= Seq(
 		Wart.AsInstanceOf,
@@ -134,8 +135,9 @@ lazy val `scutil-jdk`	=
 		//------------------------------------------------------------------------------
 
 		console / initialCommands	:= """
-			import scala.language.postfixOps
 			import java.io.File
+			import java.nio.file.Path
+			import java.nio.file.Files
 			import scutil.lang._
 			import scutil.lang.Charsets.{ us_ascii, iso_8859_1, utf_8 }
 			import scutil.core.implicits._
@@ -148,6 +150,7 @@ lazy val `scutil-jdk`	=
 			import scutil.number._
 			import scutil.platform._
 			import scutil.platform.Platform._
+			import scutil.io.MoreFiles
 		"""
 	)
 	.dependsOn	(`scutil-core-jvm`)

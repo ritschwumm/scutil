@@ -8,14 +8,12 @@ object SgOrientation {
 	def trueVertical(vertical:Boolean):SgOrientation	=
 		if (vertical)	SgOrientation.Vertical
 		else			SgOrientation.Horizontal
-
-	//------------------------------------------------------------------------------
-
-	case object Horizontal	extends SgOrientation
-	case object Vertical	extends SgOrientation
 }
 
-sealed trait SgOrientation {
+enum SgOrientation {
+	case Horizontal
+	case Vertical
+
 	def cata[T](horizontal: =>T, vertical: =>T):T	=
 		this match {
 			case SgOrientation.Horizontal	=> horizontal

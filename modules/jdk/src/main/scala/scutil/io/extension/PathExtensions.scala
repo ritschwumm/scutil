@@ -12,24 +12,44 @@ import scutil.lang.ByteString
 object PathExtensions {
 	/** utility methods for java Path objects */
 	implicit final class PathExt(peer:Path) {
-		//------------------------------------------------------------------------------
-		//## pure path manipulation
-
-		/** add a component to this Paths's path */
+		/** add a component to this Path */
 		def /(name:String):Path 		= peer resolve name
 
-		/** add multiple components to this Paths's path */
+		/** add multiple components to this Paths */
 		def /+(path:Seq[String]):Path	= path.foldLeft(peer)(_ resolve _)
 
 		/** prefer this over toString */
 		def getPathString:String	= peer.toString
 
 		/** the unix root has no file name */
-		def getFileNameString:Option[String]	= Option(peer.getFileName).map(_.toString)
+		def getFileNameString:Option[String]	=
+			fileNameOption.map(_.toString)
 
-		/** get the parent Path the scala way */
+		/** the unix root has no file name */
+		def fileNameOption:Option[Path]	=
+			Option(peer.getFileName)
+
+		def rootOption:Option[Path]	=
+			Option(peer.getRoot)
+
+		/** get the parent Path of None if nt possible */
 		def parentOption:Option[Path]	=
 			Option(peer.getParent)
+
+		def nameOption(index:Int):Option[Path]	=
+			if (index >= 0 && index < peer.getNameCount)	Some(peer.getName(index))
+			else											None
+
+		/** get a sub path or None if not possible */
+		def subpathOption(beginIndex:Int, endIndex:Int):Option[Path]	=
+			if (
+				beginIndex >= 0 && beginIndex < peer.getNameCount &&
+				endIndex > beginIndex &&
+				endIndex <= peer.getNameCount
+			) {
+				Some(peer.subpath(beginIndex, endIndex))
+			}
+			else None
 
 		/** get all parent Files starting with the immediate parent and ending with the directory root */
 		def parentChain:List[Path]	=
@@ -39,7 +59,7 @@ object PathExtensions {
 		def selfAndParentChain:List[Path]	=
 			peer :: parentChain
 
-		/** the path upwards from another File to this File */
+		/** the path upwards from another Path to this Path */
 		def containsRecursive(that:Path):Option[Seq[String]]	= {
 			def loop(test:Path, path:Seq[String]):Option[Seq[String]]	=
 				if		(test == null)	None
@@ -50,53 +70,13 @@ object PathExtensions {
 		}
 
 		/** another path in the same parent directory */
+		@deprecated("use Path.resolveSibling")
 		def sibling(name:String):Path	=
-			peer.getParent.resolve(name)
+			peer.resolveSibling(name)
 
 		/** map only the name of this Path */
 		def siblingBy(func:String=>String):Path =
-			sibling(func(peer.getFileName.toString))
-
-		//------------------------------------------------------------------------------
-		//## file only: resource closure
-
-		// BETTER handle IOException
-
-		@deprecated("use MoreFiles.withInputStream", "0.229.0")
-		def withInputStream[T](code:(InputStream=>T)):T	=
-			MoreFiles.withInputStream(peer)(code)
-
-		@deprecated("use MoreFiles.withOutputStream", "0.229.0")
-		def withOutputStream[T](code:(OutputStream=>T)):T	=
-			MoreFiles.withOutputStream(peer)(code)
-
-		@deprecated("use MoreFiles.withReader", "0.229.0")
-		def withReader[T](charset:Charset)(code:(Reader=>T)):T	=
-			MoreFiles.withReader(peer, charset)(code)
-
-		@deprecated("use MoreFiles.withWriter", "0.229.0")
-		def withWriter[T](charset:Charset)(code:(Writer=>T)):T	=
-			MoreFiles.withWriter(peer, charset)(code)
-
-		//------------------------------------------------------------------------------
-		//## file only: complete read
-
-		@deprecated("use MoreFiles.readByteString", "0.229.0")
-		def readByteString():ByteString							= MoreFiles.readByteString(peer)
-
-		@deprecated("use MoreFiles.writeByteString", "0.229.0")
-		def writeByteString(bytes:ByteString):Unit				= MoreFiles.writeByteString(peer, bytes)
-
-		@deprecated("use MoreFiles.readString", "0.229.0")
-		def readString(charset:Charset):String					= MoreFiles.readString(peer, charset)
-
-		@deprecated("use MoreFiles.writeString", "0.229.0")
-		def writeString(charset:Charset, string:String):Unit	= MoreFiles.writeString(peer, charset, string)
-
-		@deprecated("use MoreFiles.readLines", "0.229.0")
-		def readLines(charset:Charset):Seq[String]				= MoreFiles.readLines(peer, charset)
-
-		@deprecated("use MoreFiles.writeLines", "0.229.0")
-		def writeLines(charset:Charset, lines:Seq[String]):Unit	= MoreFiles.writeLines(peer, charset, lines)
+			// TODO path throw an NPE if getFileName returns null
+			peer.resolveSibling(func(peer.getFileName.toString))
 	}
 }

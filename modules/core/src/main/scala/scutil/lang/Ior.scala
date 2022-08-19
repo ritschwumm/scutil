@@ -34,15 +34,13 @@ object Ior {
 		new Functor[Ior[A,_]] {
 			override def map[B,BB](it:Ior[A,B])(func:B=>BB):Ior[A,BB]	= it mapRight func
 		}
-
-	//------------------------------------------------------------------------------
-
-	final case class Left[A,B](value:A)			extends Ior[A,B]
-	final case class Right[A,B](value:B)		extends Ior[A,B]
-	final case class Both[A,B](left:A, right:B)	extends Ior[A,B]
 }
 
-sealed trait Ior[+A,+B] {
+enum Ior[+A,+B] {
+	case Left[A,B](value:A)			extends Ior[A,B]
+	case Right[A,B](value:B)		extends Ior[A,B]
+	case Both[A,B](left:A, right:B)	extends Ior[A,B]
+
 	def cata[X](left:A=>X, right:B=>X, both:(A,B)=>X):X	=
 		this match {
 			case Ior.Left(a)	=> left(a)
