@@ -1,12 +1,13 @@
 package scutil.io.extension
 
 import java.io.*
-import java.nio.file.Path
-import java.nio.file.Files
+import java.nio.file.*
+import java.nio.file.attribute.FileTime
 import java.nio.charset.Charset
 
 import scutil.core.implicits.*
 import scutil.io.implicits.*
+import scutil.io.MoreFiles
 import scutil.lang.*
 import scutil.time.*
 import scutil.platform.SystemProperties
@@ -15,10 +16,6 @@ import InputStreamExtensions.*
 import OutputStreamExtensions.*
 import ReaderExtensions.*
 import WriterExtensions.*
-
-import FileExtensions.*
-
-// TODO everything outside "pure path manipulation" should go elsewhere and is only here while we transition from File to Path
 
 object PathExtensions {
 	/** utility methods for java Path objects */
@@ -31,6 +28,12 @@ object PathExtensions {
 
 		/** add multiple components to this Paths's path */
 		def /+(path:Seq[String]):Path	= path.foldLeft(peer)(_ resolve _)
+
+		/** prefer this over toString */
+		def getPathString:String	= peer.toString
+
+		/** the unix root has no file name */
+		def getFileNameString:Option[String]	= Option(peer.getFileName).map(_.toString)
 
 		/** get the parent Path the scala way */
 		def parentOption:Option[Path]	=
@@ -49,7 +52,8 @@ object PathExtensions {
 			def loop(test:Path, path:Seq[String]):Option[Seq[String]]	=
 				if		(test == null)	None
 				else if	(test == peer)	Some(path)
-				else					loop(test.getParent, test.getFileName.toString +: path)
+				// TODO path check using an empty string here makes sense
+				else					loop(test.getParent, Option(test.getFileName).map(_.toString).getOrElse("") +: path)
 			loop(that, Vector.empty)
 		}
 
@@ -64,39 +68,45 @@ object PathExtensions {
 		//------------------------------------------------------------------------------
 		//## file and directory
 
-		def getName:String	= peer.getFileName.toString
-
+		@deprecated("use MoreFiles.optionExists", "0.226.0")
 		def optionExists:Option[Path] =
-			peer.toFile.optionExists.map(_.toPath)
+			MoreFiles.optionExists(peer)
 
 		/** time of last modification as an MilliInstant, returns MilliInstant.zero for non-existing files */
+		@deprecated("use MoreFiles.lastModified", "0.226.0")
 		def lastModifiedMilliInstant():MilliInstant	=
-			peer.toFile.lastModifiedMilliInstant()
+			MoreFiles.lastModified(peer)
 
-		def setLastModifiedMilliInstant(it:MilliInstant):Boolean	=
-			peer.toFile.setLastModifiedMilliInstant(it)
+		@deprecated("use MoreFiles.setLastModified", "0.226.0")
+		def setLastModifiedMilliInstant(it:MilliInstant):Unit	=
+			MoreFiles.setLastModified(peer, it)
 
 		/** whether the peer is newer than another file. if the other file does not exist it counts as newer */
+		@deprecated("use MoreFiles.newerThan", "0.226.0")
 		def newerThan(that:Path):Boolean	=
-			peer.toFile.newerThan(that.toFile)
+			MoreFiles.newerThan(peer, that)
 
 		//------------------------------------------------------------------------------
 		//## directory only
 
 		/** list files in this directory */
+		@deprecated("use MoreFiles.listFiles", "0.226.0")
 		def children:Option[Seq[Path]] =
-			peer.toFile.children.map(_.map(_.toPath))
+			MoreFiles.listFiles(peer)
 
 		/** list files in this directory matching a predicate */
+		@deprecated("use MoreFiles.listFilesWhere", "0.226.0")
 		def childrenWhere(predicate:Path=>Boolean):Option[Seq[Path]] =
-			peer.toFile.childrenWhere(file => predicate(file.toPath)).map(_.map(_.toPath))
+			MoreFiles.listFilesWhere(peer, predicate)
 
 		//------------------------------------------------------------------------------
 		//## file only: streams
 
+		@deprecated("use Files.newInputStream", "0.226.0")
 		def newInputStream():InputStream	=
 			Files newInputStream peer
 
+		@deprecated("use Files.newOutputStream", "0.226.0")
 		def newOutputStream():OutputStream	=
 			Files newOutputStream peer
 
@@ -107,19 +117,19 @@ object PathExtensions {
 
 		/** execute a closure with an InputStream reading from this File */
 		def withInputStream[T](code:(InputStream=>T)):T	=
-			newInputStream() use code
+			Files.newInputStream(peer) use code
 
 		/** execute a closure with an OutputStream writing into this File */
 		def withOutputStream[T](code:(OutputStream=>T)):T	=
-			newOutputStream() use code
+			Files.newOutputStream(peer) use code
 
 		/** execute a closure with a Reader reading from this File */
 		def withReader[T](charset:Charset)(code:(InputStreamReader=>T)):T	=
-			new InputStreamReader(newInputStream(), charset) use code
+			new InputStreamReader(Files.newInputStream(peer), charset) use code
 
 		/** execute a closure with a Writer writing into this File */
 		def withWriter[T](charset:Charset)(code:(OutputStreamWriter=>T)):T	=
-			new OutputStreamWriter(newOutputStream(), charset) use code
+			new OutputStreamWriter(Files.newOutputStream(peer), charset) use code
 
 		//------------------------------------------------------------------------------
 		//## file only: complete read
@@ -149,11 +159,14 @@ object PathExtensions {
 		//## manipulation
 
 		/** copy this File over another */
+		@deprecated("use Files.copy", "0.226.0")
 		def copyTo(to:Path, force:Boolean=false):Unit =
-			peer.toFile.copyTo(to.toFile, force)
+			if (force)	Files.copy(peer, to,  StandardCopyOption.REPLACE_EXISTING)
+			else		Files.copy(peer, to)
 
 		/** delete all children and the file itself */
+		@deprecated("use MoreFiles.deleteRecursive", "0.226.0")
 		def deleteRecursive():Unit =
-			peer.toFile.deleteRecursive()
+			MoreFiles.deleteRecursive(peer)
 	}
 }
