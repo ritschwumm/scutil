@@ -89,9 +89,6 @@ final case class Bijection[S,T](get:S=>T, set:T=>S) {
 	def toPrism:Prism[S,T]	=
 		Prism.total(get, set)
 
-	def toPBijection:PBijection[S,T]	=
-		PBijection.total(get, set)
-
 	def toOptional:Optional[S,T]	=
 		Optional.total(get, set)
 

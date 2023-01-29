@@ -69,8 +69,6 @@ object IterableExtensions {
 		}
 	}
 
-	// TODO dotty use <:< instead of fixing the type member?
-	@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
 	implicit final class IterableExt[Repr,T](peer:Repr)(using isIterable:IsIterable[Repr] { type A = T }) {
 		private val ops	= isIterable(peer)
 

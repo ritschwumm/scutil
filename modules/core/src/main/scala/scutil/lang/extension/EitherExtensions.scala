@@ -5,6 +5,8 @@ import scutil.lang.tc.*
 
 object EitherExtensions {
 	implicit final class EitherCompanionExt(peer:Either.type) {
+		def unit[L]:Either[L,Unit]			= Right(())
+
 		def right[L,R](it:R):Either[L,R]	= Right(it)
 		def left[L,R](it:L):Either[L,R]		= Left(it)
 

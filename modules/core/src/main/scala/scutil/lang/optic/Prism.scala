@@ -213,12 +213,6 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 
 	//------------------------------------------------------------------------------
 
-	def toPBijection:PBijection[S,T]	=
-		PBijection(
-			get	= get,
-			set	= t => Some(set(t))
-		)
-
 	def toOptional:Optional[S,T]	=
 		Optional(
 			get	= get,

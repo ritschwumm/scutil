@@ -10,6 +10,8 @@ import scutil.lang.tc.*
 
 object OptionExtensions {
 	implicit final class OptionCompanionExt(peer:Option.type) {
+		def unit[L]:Option[Unit]	= Some(())
+
 		def none[T]:Option[T]		= None
 		def some[T](it:T):Option[T]	= Some(it)
 
@@ -55,11 +57,9 @@ object OptionExtensions {
 				case None			=> (None,		None)
 			}
 
-		@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
 		def flatMapMany[Repr](func:T=>Repr)(using iter:IsIterable[Repr], factory:Factory[iter.A,Repr]):Repr	=
 			peer.map(func).flattenMany
 
-		@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
 		def flattenMany(using iter:IsIterable[T], factory:Factory[iter.A,T]):T	=
 			peer.getOrElse(factory.newBuilder.result())
 
@@ -204,6 +204,7 @@ object OptionExtensions {
 				case None		=> Vector.empty
 			}
 
+		// NOTE scala.jdk.javaapi.OptionConverters can to this
 		def toJOptional:JOptional[T]	=
 			peer match {
 				case Some(x)	=> JOptional of x
