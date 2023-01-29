@@ -94,6 +94,32 @@ object Io extends IoInstancesLow {
 		new Delay[Io] {
 			override def delay[T](it: =>T):Io[T]	= Io delay it
 		}
+
+	//------------------------------------------------------------------------------
+
+	@tailrec
+	private def unsafeRun[T](self:Io[T]):T	=
+		self match {
+			case Io.Pure(value)		=> value
+			case Io.Raise(error)	=> throw error
+			case Io.Suspend(thunk)	=> thunk()
+			case Io.Map(base2, func2)		=>
+				base2 match {
+					case Io.Pure(value)				=> func2(value)
+					case Io.Raise(error)			=> throw error
+					case Io.Suspend(thunk)			=> func2(thunk())
+					case Io.Map(base1, func1)		=> unsafeRun(Io.Map(base1, func1 andThen func2))
+					case Io.FlatMap(base1, func1)	=> unsafeRun(Io.FlatMap(base1, it => Io.Map(func1(it), func2)))
+				}
+			case Io.FlatMap(base2, func2)	=>
+				base2 match {
+					case Io.Pure(value)				=> unsafeRun(func2(value))
+					case Io.Raise(error)			=> throw error
+					case Io.Suspend(thunk)			=> unsafeRun(func2(thunk()))
+					case Io.Map(base1, func1)		=> unsafeRun(Io.FlatMap(base1, func1 andThen func2))
+					case Io.FlatMap(base1, func1)	=> unsafeRun(Io.FlatMap(base1, it => Io.FlatMap(func1(it), func2)))
+				}
+		}
 }
 
 enum Io[T] {
@@ -103,29 +129,7 @@ enum Io[T] {
 	case Map[S,T](base:Io[S], func:S=>T) 			extends Io[T]
 	case FlatMap[S,T](base:Io[S], func:S=>Io[T]) 	extends Io[T]
 
-	@tailrec
-	final def unsafeRun():T	=
-		this match {
-			case Io.Pure(value)		=> value
-			case Io.Raise(error)	=> throw error
-			case Io.Suspend(thunk)	=> thunk()
-			case Io.Map(base2, func2)	=>
-				base2 match {
-					case Io.Pure(value)				=> func2(value)
-					case Io.Raise(error)			=> throw error
-					case Io.Suspend(thunk)			=> func2(thunk())
-					case Io.Map(base1, func1)		=> Io.Map(base1, func1 andThen func2).unsafeRun()
-					case Io.FlatMap(base1, func1)	=> Io.FlatMap(base1, it => Io.Map(func1(it), func2)).unsafeRun()
-				}
-			case Io.FlatMap(base2, func2)	=>
-				base2 match {
-					case Io.Pure(value)				=> func2(value).unsafeRun()
-					case Io.Raise(error)			=> throw error
-					case Io.Suspend(thunk)			=> func2(thunk()).unsafeRun()
-					case Io.Map(base1, func1)		=> Io.FlatMap(base1, func1 andThen func2).unsafeRun()
-					case Io.FlatMap(base1, func1)	=> Io.FlatMap(base1, it => Io.FlatMap(func1(it), func2)).unsafeRun()
-				}
-		}
+	final def unsafeRun():T	= Io.unsafeRun(this)
 
 	final def map[U](func:T=>U):Io[U]	=
 		Io.Map(this, func)
