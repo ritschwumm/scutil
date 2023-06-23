@@ -90,7 +90,7 @@ object Base64 {
 		decodeImpl(text) map ByteString.fromIArray
 
 	private def decodeImpl(text:String):Option[IArray[Byte]] = {
-		// TODO ignoring all whitespace input might be stupid
+		// TODO codec ignoring all whitespace input might be stupid
 		val cleanText	= text.replaceAll(whitespaceRE, "")
 		if (cleanText.length == 0)	return Some(emptyOutput)
 		if (!validInput(cleanText))	return None
@@ -98,9 +98,9 @@ object Base64 {
 		val	input		= cleanText.toCharArray
 		val	inputSize	= input.length
 		val	outputSize	=
-				((inputSize + 3 ) / 4 ) * 3 -
-				(if (input(inputSize-1) == padding) 1 else 0)	-
-				(if (input(inputSize-2) == padding) 1 else 0)
+			((inputSize + 3 ) / 4 ) * 3 -
+			(if (input(inputSize-1) == padding) 1 else 0)	-
+			(if (input(inputSize-2) == padding) 1 else 0)
 		val	output		= new Array[Byte](outputSize)
 
 		var inputIndex	= 0

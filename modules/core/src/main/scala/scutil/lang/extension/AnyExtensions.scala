@@ -104,8 +104,6 @@ object AnyExtensions {
 
 		//------------------------------------------------------------------------------
 
-		// TODO clean these up
-
 		/** pair with function applied */
 		def firstBy[U](func:T=>U):(T,U)	=
 			(peer, func(peer))

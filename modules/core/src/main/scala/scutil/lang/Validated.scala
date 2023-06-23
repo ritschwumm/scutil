@@ -14,8 +14,7 @@ object Validated {
 		if (ok)	valid(value)
 		else	invalid(problems)
 
-	// TODO dotty use extension
-	implicit final class MergeableValidated[T](peer:Validated[T,T]) {
+	extension [T](peer:Validated[T,T]) {
 		def merge:T	=
 			peer match {
 				case Invalid(x)		=> x

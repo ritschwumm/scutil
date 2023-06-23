@@ -1,12 +1,12 @@
 package scutil.lang
 
-import java.io.File
 import java.nio.file.Path
+import java.nio.file.Paths
 
 import scala.quoted.*
 
 object SourceLocation {
-	implicit inline def sourceLocation:SourceLocation	=  ${sourceLocationImpl}
+	inline given SourceLocation	=  ${sourceLocationImpl}
 
 	private def sourceLocationImpl(using quotes:Quotes):Expr[SourceLocation]	= {
 		import quotes.reflect.*
@@ -22,9 +22,11 @@ object SourceLocation {
 		'{ SourceLocation($path, $name, $line) }
 	}
 
-	// TODO dotty we should probably use Path.relativize here
 	private def relative(path:Path):String	=
-		new File(".").toURI.relativize(path.toUri).getPath
+		currentDir.toAbsolutePath.relativize(path).toString
+
+	private def currentDir:Path	=
+		Paths.get("")
 }
 
 final case class SourceLocation(

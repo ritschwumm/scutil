@@ -64,11 +64,6 @@ object PathExtensions {
 			loop(that, Vector.empty)
 		}
 
-		/** another path in the same parent directory */
-		@deprecated("use Path.resolveSibling")
-		def sibling(name:String):Path	=
-			peer.resolveSibling(name)
-
 		/** map only the name of this Path */
 		def siblingBy(func:String=>String):Path =
 			// TODO path throw an NPE if getFileName returns null

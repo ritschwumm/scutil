@@ -12,12 +12,12 @@ object MilliInstantExtensions {
 			JTimeUtil.milliInstantToGregorianDate(peer, tz)
 
 		def toDate:Date	=
-			JTimeUtil milliInstantToDate peer
+			JTimeUtil.milliInstantToDate(peer)
 
 		def toInstant:Instant	=
-			JTimeUtil milliInstantToInstant peer
+			JTimeUtil.milliInstantToInstant(peer)
 
 		def toIso8601:String	=
-			JTimeUtil instantToIso8601 toInstant
+			JTimeUtil.instantToIso8601(toInstant)
 	}
 }

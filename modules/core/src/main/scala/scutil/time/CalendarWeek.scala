@@ -25,11 +25,11 @@ final case class CalendarWeek(number:Int, year:Int) extends Ordered[CalendarWeek
 
 	// TODO time ugly
 	def move(offset:Int):CalendarWeek	=
-		(firstDay.toJulianDay move offset*CalendarWeek.days).calendarWeek
+		firstDay.toJulianDay.move(offset*CalendarWeek.days).calendarWeek
 
 	// TODO time ugly
 	def until(that:CalendarWeek):Int	=
-		(this.firstDay.toJulianDay until that.firstDay.toJulianDay) / CalendarWeek.days
+		this.firstDay.toJulianDay.until(that.firstDay.toJulianDay) / CalendarWeek.days
 
 	def compare(that:CalendarWeek):Int		= {
 		val	y	= this.year		compare that.year;		if (y != 0)	return y

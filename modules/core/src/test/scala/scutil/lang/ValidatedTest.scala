@@ -26,4 +26,16 @@ object ValidatedTest extends SimpleTestSuite {
 			Validated.invalid(EE("bug", "error"))
 		)
 	}
+
+	test("Validated.merge should work for valid") {
+		val out	= Validated.valid[String,String]("test").merge
+		typed[String](out)
+		assertEquals(out, "test")
+	}
+
+	test("Validated.merge should work for invalid") {
+		val out	= Validated.invalid[String,String]("test").merge
+		typed[String](out)
+		assertEquals(out, "test")
+	}
 }

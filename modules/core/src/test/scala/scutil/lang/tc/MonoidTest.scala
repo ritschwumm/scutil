@@ -21,7 +21,6 @@ object MonoidTest extends SimpleTestSuite {
 
 	//------------------------------------------------------------------------------
 
-	// TODO tc times() exists as a pimped method on Seq, too
 	test("monoid should support times 0 on vector") {
 		assertEquals(
 			Vector(1,2,3).times(0),

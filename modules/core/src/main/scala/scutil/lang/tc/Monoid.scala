@@ -56,7 +56,6 @@ object Monoid extends MonoidLow {
 			(a,b) => (a oneOrTwo b)(S.combine)
 		)
 
-	// TODO questionable
 	given EndoMonoid[T]:Monoid[T=>T]	=
 		Monoid.instance(identity, _ andThen _)
 }

@@ -14,8 +14,8 @@ object Hex {
 		bytes map nibbles mkString ""
 
 	def nibbles(it:Byte):String	=
-		(nibble charAt ((it >> 4) & 0xf)).toString	+
-		(nibble charAt ((it >> 0) & 0xf)).toString
+		nibble.charAt((it >> 4) & 0xf).toString	+
+		nibble.charAt((it >> 0) & 0xf).toString
 
 	private val nibble	= "0123456789abcdef"
 
@@ -27,6 +27,7 @@ object Hex {
 		decodeImpl(s) map ByteString.fromIArray
 
 	private def decodeImpl(s:String):Option[IArray[Byte]]	= {
+		// TODO codec Base64 ignores all whitespace here: slow, but would sometimes be useful here, too
 		val count	= s.length / 2
 		if (s.length != count*2)	return None
 		val out	= new Array[Byte](count)
@@ -53,5 +54,5 @@ object Hex {
 		if		(c >= '0' && c <= '9')	c - '0'
 		else if	(c >= 'a' && c <= 'f')	c - 'a' + 10
 		else if	(c >= 'A' && c <= 'F')	c - 'A' + 10
-		else invalid
+		else							invalid
 }
