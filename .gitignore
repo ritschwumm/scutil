@@ -1,12 +1,18 @@
 target/
 project/boot/
-
-private.sbt
-/doc/
-/versatz/
+/.bsp/
 
 metals.sbt
 .metals/
 .bloop/
 
 /.vscode/
+
+/override.sbt
+
+###
+
+private.sbt
+/doc/
+/versatz/
+
