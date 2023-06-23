@@ -1,5 +1,7 @@
 package scutil.lang
 
+import scala.annotation.nowarn
+
 import minitest.*
 
 final case class Foo(a:Int, b:String)
@@ -35,7 +37,7 @@ object LensGenTest extends SimpleTestSuite {
 
 	test("LensGen should work with simple case class getters") {
 		val container	= Foo(4711, "hallo")
-		val lens		= Lens.Gen[Foo].a
+		val lens		= (Lens.Gen[Foo].a) : @nowarn
 		assertEquals(
 			lens get container,
 			4711
@@ -44,7 +46,7 @@ object LensGenTest extends SimpleTestSuite {
 
 	test("LensGen should work with simple case class setters") {
 		val container	= Foo(4711, "hallo")
-		val lens		= Lens.Gen[Foo].a
+		val lens		= (Lens.Gen[Foo].a) : @nowarn
 		assertEquals(
 			lens set 1337 apply container,
 			Foo(1337, "hallo")
@@ -53,7 +55,7 @@ object LensGenTest extends SimpleTestSuite {
 
 	test("LensGen should work with type parameterized case class getters") {
 		val container	= Bar("test")
-		val lens		= Lens.Gen[Bar[String]].t
+		val lens		= (Lens.Gen[Bar[String]].t) : @nowarn
 		assertEquals(
 			lens get container,
 			"test"
@@ -62,7 +64,7 @@ object LensGenTest extends SimpleTestSuite {
 
 	test("LensGen should work with type parameterized case class setters") {
 		val container	= Bar("test")
-		val lens		= Lens.Gen[Bar[String]].t
+		val lens		= (Lens.Gen[Bar[String]].t) : @nowarn
 		assertEquals(
 			lens set "haha" apply container,
 			Bar("haha")
@@ -81,7 +83,7 @@ object LensGenTest extends SimpleTestSuite {
 
 	test("LensGen should work as Lens.Gen") {
 		val container	= Foo(4711, "hallo")
-		val lens		= Lens.Gen[Foo].a
+		val lens		= (Lens.Gen[Foo].a) : @nowarn
 		assertEquals(
 			lens set 1337 apply container,
 			Foo(1337, "hallo")

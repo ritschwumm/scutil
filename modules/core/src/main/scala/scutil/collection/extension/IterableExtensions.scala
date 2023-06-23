@@ -1,6 +1,5 @@
 package scutil.collection.extension
 
-import scala.collection.IterableOps
 import scala.collection.BuildFrom
 import scala.collection.generic.IsIterable
 import scala.collection.mutable.Builder

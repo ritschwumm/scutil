@@ -1,6 +1,6 @@
 package scutil.lang.extension
 
-import scala.util.{ Try, Success, Failure }
+import scala.util.Try
 
 import scutil.core.implicits.*
 import scutil.lang.*

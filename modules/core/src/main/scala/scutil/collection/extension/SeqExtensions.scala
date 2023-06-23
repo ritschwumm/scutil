@@ -1,7 +1,6 @@
 package scutil.collection.extension
 
 import scala.collection.Factory
-import scala.collection.SeqOps
 import scala.collection.BuildFrom
 import scala.collection.generic.IsSeq
 import scala.collection.mutable.Builder
