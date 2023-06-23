@@ -33,14 +33,5 @@ object SetExtensions {
 		/** create a map from all elements with a given function to generate the values */
 		def mapTo[U](value:T=>U):Map[T,U]	=
 			(peer map { it => (it, value(it)) }).toMap
-
-		/** group values by keys, both from a function */
-		def groupMapPaired[K,V](func:T=>(K,V)):Map[K,Set[V]]	=
-			peer
-			.map		(func)
-			.groupBy	{ _._1 }
-			.map { case (k, kvs) =>
-				(k, kvs map { _._2 })
-			}
 	}
 }

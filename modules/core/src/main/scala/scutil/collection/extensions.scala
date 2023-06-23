@@ -7,7 +7,6 @@ object extensions {
 	export SeqExtensions.*
 	export ListExtensions.*
 	export MapExtensions.*
-	export QueueExtensions.*
 	export SetExtensions.*
 	export IterableExtensions.*
 	export IterableFactoryExtensions.*

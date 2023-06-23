@@ -9,11 +9,12 @@ import scutil.lang.*
 import scutil.lang.tc.*
 
 object IterableExtensions {
-	// TODO dotty move these into IterableExt to support pseudo-iterables, too
-	implicit final class SimpleIterableExt[T](peer:Iterable[T]) {
+	implicit final class IterableExt[Repr,T,Self](peer:Repr)(using isIterable:IsIterable[Repr] { type A = T; type C = Self  }) {
+		private val ops	= isIterable(peer)
+
 		/** Some if the collection contains exactly one element, else None */
 		def singleOption:Option[T]	= {
-			val iter	= peer.iterator
+			val iter	= ops.iterator
 			if (!iter.hasNext)	return None
 			val out		= iter.next()
 			if (iter.hasNext)	return None
@@ -22,7 +23,7 @@ object IterableExtensions {
 
 		/** Left(false) for zero elements, Right(x) for one element, Left(true) for more */
 		def singleEither:Either[Boolean,T] = {
-			val iter	= peer.iterator
+			val iter	= ops.iterator
 			if (!iter.hasNext)	return Left(false)
 			val out		= iter.next()
 			if (iter.hasNext)	return Left(true)
@@ -31,14 +32,24 @@ object IterableExtensions {
 
 		/** create a set from all elements with a given function to generate the items */
 		def setBy[U](func:T=>U):Set[U]	=
-			peer.map(func).toSet
+			ops.map(func).toSet
 
 		/** create a map from all elements with a given function to generate the keys */
 		def mapBy[S](key:T=>S):Map[S,T]	=
 			mapToMap(it => (key(it), it))
 
 		def mapToMap[U,V](func:T=>(U,V)):Map[U,V]	=
-			(peer map func).toMap
+			ops.map(func).toMap
+
+		def scanLeftNes[U](z: U)(op: (U, T) => U):Nes[U]	= {
+			val seq = ops.scanLeft(z)(op).to(Seq)
+			Nes.unsafeFromSeq(seq)
+		}
+
+		def scanRightNes[U](z: U)(op: (T, U) => U):Nes[U]	= {
+			val seq = ops.scanRight(z)(op).to(Seq)
+			Nes.unsafeFromSeq(seq)
+		}
 
 		// NOTE this does not exist in cats
 		def flattenOptionFirst[U](using ev: T <:< Option[U]):Option[U]	=
@@ -50,27 +61,13 @@ object IterableExtensions {
 		*/
 		// TODO cats mapFilterFirst would be better
 		def collectFirstSome[U](find:T=>Option[U]):Option[U]	= {
-			val iter	= peer.iterator
+			val iter	= ops.iterator
 			while (iter.hasNext) {
 				val opt	= find(iter.next())
 				if (opt.isDefined)	return opt
 			}
 			None
 		}
-
-		def scanLeftNes[U](z: U)(op: (U, T) => U):Nes[U]	= {
-			val seq = peer.scanLeft(z)(op).to(Seq)
-			Nes.unsafeFromSeq(seq)
-		}
-
-		def scanRightNes[U](z: U)(op: (T, U) => U):Nes[U]	= {
-			val seq = peer.scanRight(z)(op).to(Seq)
-			Nes.unsafeFromSeq(seq)
-		}
-	}
-
-	implicit final class IterableExt[Repr,T,Self](peer:Repr)(using isIterable:IsIterable[Repr] { type A = T; type C = Self  }) {
-		private val ops	= isIterable(peer)
 
 		// NOTE these don't terminate for infinite collections!
 
@@ -162,6 +159,19 @@ object IterableExtensions {
 			}
 			bld.result()
 		}
+
+			/**
+		* group values by keys, both from a function.
+		* functionally this is the same as the builtin groupMap,
+		* but might trade some calculation for object allocations
+		*/
+		def groupMapPaired[That,K,V](func:T=>(K,V))(using bf:BuildFrom[Repr,V,That]):Map[K,That]	=
+			ops
+			.map		(func)
+			.groupBy	{ _._1 }
+			.map { case (k, kvs) =>
+				(k, bf.fromSpecific(peer)(kvs map { _._2 }))
+			}
 
 		// NOTE these should be generalized to other AFs, not just Option and Tried
 		// NOTE supplying pure and flatMap of a Monad would work, too!

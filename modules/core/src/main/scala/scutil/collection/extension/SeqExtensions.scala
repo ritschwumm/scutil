@@ -9,15 +9,11 @@ import scala.collection.mutable.Builder
 import scutil.lang.*
 
 object SeqExtensions {
-	// TODO dotty move these into SeqExt to support pseudo-iterables, too
-	implicit final class SimpleSeqExt[T](peer:Seq[T]) {
-		def toNesOption:Option[Nes[T]]	=
-			Nes fromSeq peer
-	}
-
-	// TODO dotty use <:< instead of fixing the type member?
 	implicit final class SeqExt[Repr,T,Self](peer:Repr)(using isSeq:IsSeq[Repr] { type A = T; type C = Self }) {
 		private val ops	= isSeq(peer)
+
+		def toNesOption:Option[Nes[T]]	=
+			Nes.fromSeq(ops.toSeq)
 
 		def tailOption:Option[Self]	=
 			if (ops.nonEmpty)	Some(ops.tail)
@@ -112,19 +108,6 @@ object SeqExtensions {
 			}
 			None
 		}
-
-		/**
-		* group values by keys, both from a function.
-		* functionally this is the same as the builtin groupMap,
-		* but might trade some calculation for object allocations
-		*/
-		def groupMapPaired[That,K,V](func:T=>(K,V))(using bf:BuildFrom[Repr,V,That]):Map[K,That]	=
-			ops
-			.map		(func)
-			.groupBy	{ _._1 }
-			.map { case (k, kvs) =>
-				(k, bf.fromSpecific(peer)(kvs map { _._2 }))
-			}
 
 		/** get item at index and the Seq without that element if possible */
 		def extractAt(index:Int)(using factory:Factory[T,Repr]):Option[(T,Repr)]	=

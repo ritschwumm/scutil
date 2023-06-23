@@ -1,5 +1,7 @@
 package scutil.collection
 
+import scala.collection.immutable
+
 import minitest.*
 
 import scutil.lang.*
@@ -317,16 +319,6 @@ object SeqExtensionsTest extends SimpleTestSuite {
 
 	//------------------------------------------------------------------------------
 
-	test("groupMapPaired") {
-		val input		= Vector("a" -> 1, "b" -> 2, "a" -> 3)
-		val grouped		= input.groupMapPaired(it => (it._1, it._2))
-		typed[Map[String,Vector[Int]]](grouped)
-		val expected	= Map("a" -> Vector(1,3), "b" -> Vector(2))
-		assertEquals(grouped, expected)
-	}
-
-	//------------------------------------------------------------------------------
-
 	test("tailOption should compile and work") {
 		val input:Vector[Int]			= Vector(1,2,3)
 		val output:Option[Vector[Int]]	= input.tailOption
@@ -342,6 +334,22 @@ object SeqExtensionsTest extends SimpleTestSuite {
 		assertEquals(
 			output,
 			Some(Vector(1,4,3))
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
+	test("extractHead works for Vector") {
+		assertEquals(
+			Vector(1,2,3).extractHead,
+			Some((1, Vector(2,3)))
+		)
+	}
+
+	test("extractHead works for Queue") {
+		assertEquals(
+			immutable.Queue(1,2,3).extractHead,
+			Some((1, immutable.Queue(2,3)))
 		)
 	}
 }
