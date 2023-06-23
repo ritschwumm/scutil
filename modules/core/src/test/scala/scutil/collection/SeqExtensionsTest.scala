@@ -323,4 +323,12 @@ object SeqExtensionsTest extends SimpleTestSuite {
 			Vector((1,2),(2,3))
 		)
 	}
+
+	test("groupMapPaired") {
+		val input		= Vector("a" -> 1, "b" -> 2, "a" -> 3)
+		val grouped		= input.groupMapPaired(it => (it._1, it._2))
+		typed[Map[String,Vector[Int]]](grouped)
+		val expected	= Map("a" -> Vector(1,3), "b" -> Vector(2))
+		assertEquals(grouped, expected)
+	}
 }

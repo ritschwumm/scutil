@@ -10,28 +10,17 @@ object LensGen {
 
 // NOTE dotty Selectable is not good enough for this
 final class LensGen[T] extends Dynamic {
-	// NOTE passing T as a type parameter leads to a compiler error:
-	// Cyclic macro dependencies in .../LensGenTest.scala.
-	inline transparent def selectDynamic(inline name:String):Any	= ${ LensGenImpl.selectImpl('this, 'name) }
+	inline transparent def selectDynamic(inline name:String):Any	= ${ LensGenImpl.selectImpl[T]('name) }
 }
 
 object LensGenImpl {
 	// NOTE needs a transparent call to make the return type flexible
 	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
-	def selectImpl(self:Expr[Any], name:Expr[String])(using quotes:Quotes):Expr[Any] = {
+	def selectImpl[T:Type](name:Expr[String])(using quotes:Quotes):Expr[Any] = {
 		import quotes.reflect.*
 
-		// NOTE this would get us the container type parameter, but that doesn't work, see above
-		//val containerTypeRepr	= TypeRepr.of[T]
+		val containerTypeRepr	= TypeRepr.of[T].dealias
 
-		val containerTypeRepr:TypeRepr	=
-			self.asTerm match {
-				case Inlined(_, _, ident) =>
-					ident.tpe.widenTermRefByName match {
-						case AppliedType(_, List(next))	=>
-							next.dealias
-					}
-			}
 		val containerTypeSymbol:Symbol	=
 			containerTypeRepr.typeSymbol
 

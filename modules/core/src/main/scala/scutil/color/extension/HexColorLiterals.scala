@@ -14,18 +14,12 @@ object HexColorLiterals {
 
 	private def rgbImpl(context:Expr[StringContext])(using Quotes):Expr[RGB]	=
 		GenericLiteral.build(context) { literal =>
-			RGB.parseHex(literal) match {
-				case Some(x)	=> Right(x)
-				case None		=> Left("not a valid RBG literal")
-			}
+			RGB.parseHex(literal).toRight("not a valid RBG literal")
 		}
 
 	private def rgbaImpl(context:Expr[StringContext])(using Quotes):Expr[RGBA]	=
 		GenericLiteral.build(context) { literal =>
-			RGBA.parseHex(literal) match {
-				case Some(x)	=> Right(x)
-				case None		=> Left("not a valid RGBA literal")
-			}
+			RGBA.parseHex(literal).toRight("not a valid RGBA literal")
 		}
 
 	private given ToExpr[RGBA]	with {

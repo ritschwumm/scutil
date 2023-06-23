@@ -5,7 +5,7 @@ import minitest.*
 import scutil.core.implicits.{ given, * }
 
 object OptionTest extends SimpleTestSuite {
-	test("Option.procuts works") {
+	test("Option.product works") {
 		assertEquals(
 			Option(1) product Option(2),
 			Option((1,2))

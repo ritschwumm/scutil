@@ -31,7 +31,7 @@ object SeqExtensions {
 			index >= 0 && index < ops.size
 
 		/*
-		// NOTE this exists in momoid syntax already
+		// NOTE this exists in monoid syntax already
 		concatenate the Seq with itself n times
 		def times(count:Int)(using factory:Factory[T,Repr]):Repr	=
 			(0 until count).flatMap { _ => peer }.to(factory)
@@ -77,12 +77,12 @@ object SeqExtensions {
 		 * functionally this is the same as the builtin groupMap,
 		 * but might trade some calculation for object allocations
 		 */
-		def groupMapPaired[K,V](func:T=>(K,V))(using factory:Factory[V,Repr]):Map[K,Repr]	=
+		def groupMapPaired[That,K,V](func:T=>(K,V))(using bf:BuildFrom[Repr,V,That]):Map[K,That]	=
 			ops
 			.map		(func)
 			.groupBy	{ _._1 }
 			.map { case (k, kvs) =>
-				(k, kvs map { _._2 } to factory)
+				(k, bf.fromSpecific(peer)(kvs map { _._2 }))
 			}
 
 		/** get item at index and the Seq without that element if possible */
@@ -116,7 +116,6 @@ object SeqExtensions {
 		}
 
 		/** optionally insert something between two items */
-		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def insertBetween[That,U](mod:T=>U, func:(T,T)=>Option[U])(using bf:BuildFrom[Repr,U,That]):That	=
 			if (ops.size > 1) {
 				val	out		= bf.newBuilder(peer)
@@ -332,10 +331,6 @@ object SeqExtensions {
 
 	// TODO dotty move these into the other extension
 	implicit final class SeqWithOpsExt[CC[T] <: Seq[T],T](peer:SeqOps[T,CC,CC[T]]) {
-		def withReverse(func:CC[T]=>CC[T])(using factory:Factory[T,CC[T]]):CC[T]	=
-			// TODO generify without factory - but the reverse returns the wrong type
-			func(peer.reverse).reverse.to(factory)
-
 		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 		def zipTail(using factory:Factory[(T,T),CC[(T,T)]]):CC[(T,T)]	=
 			(	if (peer.nonEmpty)	peer zip peer.tail

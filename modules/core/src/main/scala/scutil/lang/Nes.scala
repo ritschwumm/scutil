@@ -131,9 +131,6 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		if (tail.nonEmpty)	Nes(tail.last, tail.init.reverse :+ head)
 		else				this
 
-	def withReverse[U>:T](func:Nes[U]=>Nes[U]):Nes[U]	=
-		func(reverse).reverse
-
 	def concat[U>:T](that:Nes[U]):Nes[U]	=
 		Nes(this.head, (this.tail :+ that.head) ++ that.tail)
 

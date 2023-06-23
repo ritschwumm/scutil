@@ -210,6 +210,20 @@ final class ByteString private (val value:IArray[Byte]) {
 			tmp(size)	= value
 		}
 
+	// returns an empty ByteStrign for negative factors
+	def times(count:Int)	=
+		if (count >=0 ) {
+			val outSize	= size * count
+			ByteString.makeWithArray(outSize) { tmp =>
+				var i = 0
+				while (i < outSize) {
+					copyIntoArray(tmp, i)
+					i += size
+				}
+			}
+		}
+		else ByteString.empty
+
 	def constantTimeEquals(that:ByteString):Boolean	= {
 		val length	= this.size min that.size
 		var diff	= this.size ^ that.size

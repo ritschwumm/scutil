@@ -5,12 +5,25 @@ import scala.annotation.tailrec
 import java.util.concurrent.atomic.AtomicReference
 
 object RefUtil {
-	/** works in scala-js where AtomicReference.getAndUpdate is not supported */
+	/*
+	// worked in scala-js before AtomicReference.getAndUpdate was supported
 	@tailrec
 	def modify[T,U](ref:AtomicReference[T], func:T=>(T,U)):U	= {
 		val cur			= ref.get()
 		val (next, out)	= func(cur)
 		if (ref.compareAndSet(cur, next))	out
 		else								modify(ref, func)
+	}
+	*/
+
+	def modify[T,U](ref:AtomicReference[T], func:T=>(T,U)):U	= {
+		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
+		var out:U	= null.asInstanceOf[U]
+		ref getAndUpdate { old =>
+			val (next, res)	= func apply old
+			out	= res
+			next
+		}
+		out
 	}
 }

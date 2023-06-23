@@ -62,4 +62,27 @@ object ByteStringTest extends SimpleTestSuite {
 			b
 		)
 	}
+
+	//------------------------------------------------------------------------------
+
+	test("ByteString should multiple by 0") {
+		assertEquals(
+			ByteString.of(0x12, 0x34).times(0),
+			ByteString.empty
+		)
+	}
+
+	test("ByteString should multiple by 1") {
+		assertEquals(
+			ByteString.of(0x12, 0x34).times(1),
+			ByteString.of(0x12, 0x34)
+		)
+	}
+
+	test("ByteString should multiple by 2") {
+		assertEquals(
+			ByteString.of(0x12, 0x34).times(2),
+			ByteString.of(0x12, 0x34, 0x12, 0x34)
+		)
+	}
 }

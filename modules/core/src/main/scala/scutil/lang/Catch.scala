@@ -1,6 +1,6 @@
 package scutil.lang
 
-import scala.reflect.ClassTag
+import scala.reflect.TypeTest
 
 /** similar to scala.util.control.Exception.Catch but much simpler and specialised to Either */
 object Catch {
@@ -18,8 +18,9 @@ object Catch {
 	def exception:Catch[Exception]	=
 		partial { case e:Exception => e }
 
-	def byType[E<:Throwable:ClassTag]:Catch[E]	=
-		partial { case e:E	=> e }
+	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
+	def byType[E<:Throwable](using tt:TypeTest[Throwable,E]):Catch[E]	=
+		Catch(tt.unapply)
 
 	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 	def byClass[E<:Throwable](clazz:Class[E]):Catch[E]	=

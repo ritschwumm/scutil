@@ -50,21 +50,6 @@ final class AtomicRef[F[_]:Delay,T](initial:T) {
 	def modifyState[U](state:State[T,U]):F[U] =
 		modify(state.run)
 
-	/*
-	// NOTE this does not work in scala-js because getAndUpdate is not implemented
-	def modify[U](func:T=>(T,U)):F[U]	=
-		D delay {
-			@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
-			var out:U	= null.asInstanceOf[U]
-			ref getAndUpdate { old =>
-				val (next, res)	= func apply old
-				out	= res
-				next
-			}
-			out
-		}
-	*/
-
 	// TODO bullshit
 	override def toString:String	=
 		"AtomicRef(...)"

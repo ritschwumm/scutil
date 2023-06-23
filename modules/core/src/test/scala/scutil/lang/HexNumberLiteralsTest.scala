@@ -116,11 +116,10 @@ object HexNumberLiteralsTest extends SimpleTestSuite {
 	}
 
 	/*
-	test("HexNumberLiterals should fail compiling an invalid color") {
+	test("HexNumberLiterals should fail compiling an invalid hex number") {
 		assertDoesNotCompile {
 			hex"xx" == 0
 		}
 	}
 	*/
 }
-
