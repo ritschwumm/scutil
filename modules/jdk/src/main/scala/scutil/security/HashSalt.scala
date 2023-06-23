@@ -83,13 +83,13 @@ final class HashSalt(
 
 	@throws(classOf[NoSuchAlgorithmException])
 	private def prepare(raw:String, salt:ByteString, rounds:Int):ByteString	=
-		raw 										|>
-		(Normalizer.normalize(_, normalizerForm)) 	|>
-		(_ toByteString encoding) 					|>
-		(salt ++ _) 								|>
+		raw											|>
+		(Normalizer.normalize(_, normalizerForm))	|>
+		(_ toByteString encoding)					|>
+		(salt ++ _)									|>
 		hash(rounds)
 
 	@throws(classOf[NoSuchAlgorithmException])
 	private def hash(rounds:Int)(bytes:ByteString):ByteString	=
-		Hashing.hash(hashAlgorithm, roundCount, bytes)
+		Hashing.hash(hashAlgorithm, rounds, bytes)
 }

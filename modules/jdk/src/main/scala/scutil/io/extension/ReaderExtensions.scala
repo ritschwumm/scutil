@@ -23,9 +23,9 @@ object ReaderExtensions {
 		def readLimited(length:Int):Option[String]	= {
 			val	buffer	= new Array[Char](length)
 			val found	= peer read buffer
-				 if (found == -1)	None
-			else if (found == 0)	Some("")
-			else 					Some(new String(buffer, 0, found))
+			if		(found == -1)	None
+			else if	(found == 0)	Some("")
+			else					Some(new String(buffer, 0, found))
 		}
 
 		/** read the complete content */

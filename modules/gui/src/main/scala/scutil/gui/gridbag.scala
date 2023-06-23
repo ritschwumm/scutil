@@ -13,7 +13,7 @@ extension(peer:GridBagConstraints) {
 	def pos(x:Position, y:Position):GridBagConstraints	= modified { c => c.gridx		= Position(x);	c.gridy			= Position(y)	}
 	def size(x:Size, y:Size):GridBagConstraints			= modified { c => c.gridwidth	= Size(x);		c.gridheight	= Size(y)		}
 	def weight(x:Double, y:Double):GridBagConstraints	= modified { c => c.weightx		= x;			c.weighty		= y				}
-	def ipad(x:Int, y:Int):GridBagConstraints			= modified { c => c.ipadx		= x; 			c.ipady			= y 			}
+	def ipad(x:Int, y:Int):GridBagConstraints			= modified { c => c.ipadx		= x;			c.ipady			= y				}
 
 	def anchor(v:Anchor):GridBagConstraints				= modified { c => c.anchor	= Anchor(v)	}
 	def fill(v:Fill):GridBagConstraints					= modified { c => c.fill	= Fill(v)	}

@@ -78,7 +78,7 @@ final case class IoResource[T](open:Io[(T,Io[Unit])]) {
 			xdt		<-	dt.attempt
 			out		<-	(xu, xdt) match {
 							case (Right(u),		Right(_))	=> Io.pure(u)
-							case (Left(eu), 	Right(_))	=> Io.raise(eu)
+							case (Left(eu),		Right(_))	=> Io.raise(eu)
 							case (Right(_),		Left(edt))	=> Io.raise(edt)
 							case (Left(eu),		Left(edt))	=> Io.raiseWithSecondary(eu, edt)
 						}
@@ -103,7 +103,7 @@ final case class IoResource[T](open:Io[(T,Io[Unit])]) {
 			for {
 				tmp		<-	open
 				(t, dt)	= tmp
-				xudu	<- 	func(t).open.attempt
+				xudu	<-	func(t).open.attempt
 				out		<-	xudu match {
 								case Left(eu)		=>
 									// second open failed, close first resource and fail now

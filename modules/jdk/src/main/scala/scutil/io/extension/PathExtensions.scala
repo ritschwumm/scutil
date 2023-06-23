@@ -1,19 +1,14 @@
 package scutil.io.extension
 
-import java.io.*
 import java.nio.file.*
-import java.nio.file.attribute.FileTime
-import java.nio.charset.Charset
 
 import scutil.core.implicits.*
-import scutil.io.MoreFiles
-import scutil.lang.ByteString
 
 object PathExtensions {
 	/** utility methods for java Path objects */
 	implicit final class PathExt(peer:Path) {
 		/** add a component to this Path */
-		def /(name:String):Path 		= peer resolve name
+		def /(name:String):Path		= peer resolve name
 
 		/** add multiple components to this Paths */
 		def /+(path:Seq[String]):Path	= path.foldLeft(peer)(_ resolve _)

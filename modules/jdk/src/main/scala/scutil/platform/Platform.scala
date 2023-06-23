@@ -1,6 +1,5 @@
 package scutil.platform
 
-import java.io.File
 import java.nio.file.Path
 import java.nio.charset.Charset
 

@@ -19,7 +19,7 @@ object DndFileExport {
 			new DragGestureListener {
 				def dragGestureRecognized(ev:DragGestureEvent):Unit	= {
 					provider(ev.getDragOrigin.toIntPoint)
-					.map 		{ new FileTransferable(_) }
+					.map		{ new FileTransferable(_) }
 					.foreach	{ it =>
 						ev.startDrag(DragSource.DefaultCopyDrop, it)
 					}

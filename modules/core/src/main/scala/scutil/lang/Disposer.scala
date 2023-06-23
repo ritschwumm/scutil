@@ -30,9 +30,9 @@ object Disposer {
 
 final case class Disposer(dispose:()=>Unit) {
 	/**
-	 * forms a monoid with empty
-	 * in case of exceptions, the first occuring one is thrown, if a second occurs it's addSuppressed to the first
-	 */
+	* forms a monoid with empty
+	* in case of exceptions, the first occuring one is thrown, if a second occurs it's addSuppressed to the first
+	*/
 	final def combine(that:Disposer):Disposer	=
 		if		(this == Disposer.empty)	that
 		else if	(that == Disposer.empty)	this
@@ -40,9 +40,9 @@ final case class Disposer(dispose:()=>Unit) {
 			Disposer delay {
 				var thisError:Throwable	= null;	try { this.dispose() } catch { case t:Throwable	=> thisError	= t }
 				var thatError:Throwable	= null;	try { that.dispose() } catch { case t:Throwable	=> thatError	= t }
-					 if ((thisError ne null) && (thatError ne null))	{ thisError.addSuppressed(thatError);	throw thisError }
-				else if (thisError ne null) 																	throw thisError
-				else if (thatError ne null) 																	throw thatError
+				if		((thisError ne null) && (thatError ne null))	{ thisError.addSuppressed(thatError);	throw thisError }
+				else if	(thisError ne null)																		throw thisError
+				else if	(thatError ne null)																		throw thatError
 			}
 		}
 

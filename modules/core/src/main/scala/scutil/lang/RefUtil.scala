@@ -1,7 +1,5 @@
 package scutil.lang
 
-import scala.annotation.tailrec
-
 import java.util.concurrent.atomic.AtomicReference
 
 object RefUtil {

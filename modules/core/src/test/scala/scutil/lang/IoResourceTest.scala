@@ -8,7 +8,7 @@ object IoResourceTest extends SimpleTestSuite {
 		val u	=
 			for {
 				a	<-	IoResource.unsafe.disposing{								1 }{ _ => tmp = tmp + "a closed" }
-				b	<-	IoResource.unsafe.disposing{ sys error "create b failed";	2 }{ _ => tmp = tmp + "b closed" }
+				_	<-	IoResource.unsafe.disposing{ sys error "create b failed";	2 }{ _ => tmp = tmp + "b closed" }
 			}
 			yield ()
 
@@ -28,8 +28,8 @@ object IoResourceTest extends SimpleTestSuite {
 		var tmp	= ""
 		val u	=
 			for {
-				a	<-	IoResource.unsafe.disposing{ 								1 }{ _ => sys error "close a failed" }
-				b	<-	IoResource.unsafe.disposing{ sys error "create b failed";	2 }{ _ => tmp = tmp + "b closed" }
+				a	<-	IoResource.unsafe.disposing{								1 }{ _ => sys error "close a failed" }
+				_	<-	IoResource.unsafe.disposing{ sys error "create b failed";	2 }{ _ => tmp = tmp + "b closed" }
 			}
 			yield ()
 
@@ -67,7 +67,7 @@ object IoResourceTest extends SimpleTestSuite {
 
 		try {
 			IoResource.unsafe.disposing(1){ it => tmp	= it }
-			.useDelay{ it => sys error "consume failed"; "" }
+			.useDelay{ _ => sys error "consume failed"; "" }
 			.unsafeRun()
 		}
 		catch { case e:Exception =>
@@ -82,7 +82,7 @@ object IoResourceTest extends SimpleTestSuite {
 		var err	= null:Exception
 
 		try {
-			IoResource.unsafe.disposing(1){ it => sys error "dispose failed" }
+			IoResource.unsafe.disposing(1){ _ => sys error "dispose failed" }
 			.useDelay{ it => it.toString }
 			.unsafeRun()
 		}
@@ -97,8 +97,8 @@ object IoResourceTest extends SimpleTestSuite {
 		var err	= null:Exception
 
 		try {
-			IoResource.unsafe.disposing(1){ it => sys error "dispose failed" }
-			.useDelay{ it => sys error "consume failed"; "" }
+			IoResource.unsafe.disposing(1){ _ => sys error "dispose failed" }
+			.useDelay{ _ => sys error "consume failed"; "" }
 			.unsafeRun()
 		}
 		catch { case e:Exception =>

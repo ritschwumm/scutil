@@ -17,13 +17,13 @@ object Optional {
 
 	def trivial[T]:Optional[T,Unit]	=
 		Optional(
-			get	= t 		=> Some(()),
+			get	= t			=> Some(()),
 			set	= _ => t	=> t
 		)
 
 	def void[S,T]:Optional[S,T]	=
 		Optional(
-			get	= t 		=> None,
+			get	= _			=> None,
 			set	= _ => s	=> s
 		)
 

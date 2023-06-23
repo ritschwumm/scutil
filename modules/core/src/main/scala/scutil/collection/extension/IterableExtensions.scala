@@ -1,6 +1,5 @@
 package scutil.collection.extension
 
-import scala.collection.Factory
 import scala.collection.IterableOps
 import scala.collection.BuildFrom
 import scala.collection.generic.IsIterable
@@ -10,6 +9,7 @@ import scutil.lang.*
 import scutil.lang.tc.*
 
 object IterableExtensions {
+	// TODO dotty move these into IterableExt to support pseudo-iterables, too
 	implicit final class SimpleIterableExt[T](peer:Iterable[T]) {
 		/** Some if the collection contains exactly one element, else None */
 		def singleOption:Option[T]	= {
@@ -63,16 +63,48 @@ object IterableExtensions {
 			Nes.unsafeFromSeq(seq)
 		}
 
-		def scanRightNes[U](z: U)(op: (T, U) => U): Nes[U]	= {
+		def scanRightNes[U](z: U)(op: (T, U) => U):Nes[U]	= {
 			val seq = peer.scanRight(z)(op).to(Seq)
 			Nes.unsafeFromSeq(seq)
 		}
 	}
 
-	implicit final class IterableExt[Repr,T](peer:Repr)(using isIterable:IsIterable[Repr] { type A = T }) {
+	implicit final class IterableExt[Repr,T,Self](peer:Repr)(using isIterable:IsIterable[Repr] { type A = T; type C = Self  }) {
 		private val ops	= isIterable(peer)
 
 		// NOTE these don't terminate for infinite collections!
+
+		/** pair elements of a collection with a function applied to an element */
+		def fproduct[That,U](func:T=>U)(using bf:BuildFrom[Repr,(T,U),That]):That	=
+			bf.fromSpecific(peer)(
+				ops.map(it => (it, func(it)))
+			)
+
+		def partitionEither[L,R,CL,CR](using ev:T <:< Either[L,R], bfl:BuildFrom[Repr,L,CL], bfr:BuildFrom[Repr,R,CR]):(CL, CR)	= {
+			val (ls, rs)	= ops.partitionMap(ev)
+			val cl	= bfl.fromSpecific(peer)(ls)
+			val cr	= bfr.fromSpecific(peer)(rs)
+			(cl, cr)
+		}
+
+		def partitionValidated[B,G,CB,CG](using ev:T <:< Validated[B,G], bfb:BuildFrom[Repr,B,CB], bfg:BuildFrom[Repr,G,CG]):(CB, CG)	= {
+			val (bs, gs)	= ops.partitionMap(it => ev(it).toEither)
+			val cb	= bfb.fromSpecific(peer)(bs)
+			val cg	= bfg.fromSpecific(peer)(gs)
+			(cb, cg)
+		}
+
+		def validateEither[L,R,CL,CR](using ev:T <:< Either[L,R], bfl:BuildFrom[Repr,L,CL], bfr:BuildFrom[Repr,R,CR]):Either[CL,CR]	= {
+			val (ls, rs)	= ops.partitionMap(ev)
+			if (ls.isEmpty)	Right(bfr.fromSpecific(peer)(rs))
+			else			Left(bfl.fromSpecific(peer)(ls))
+		}
+
+		def validateValidated[B,G,CB,CG](using ev:T <:< Validated[B,G], bfb:BuildFrom[Repr,B,CB], bfg:BuildFrom[Repr,G,CG]):Validated[CB,CG]	= {
+			val (bs, gs)	= ops.partitionMap(it => ev(it).toEither)
+			if (bs.isEmpty)	Validated.valid(bfg.fromSpecific(peer)(gs))
+			else			Validated.invalid(bfb.fromSpecific(peer)(bs))
+		}
 
 		// NOTE zipWith and map2 are different things for Iterables
 		/** combine elements of two collections using a function */
@@ -82,6 +114,21 @@ object IterableExtensions {
 			val yi	= that.iterator
 			while (xi.hasNext && yi.hasNext) {
 				builder	+= func(xi.next(), yi.next())
+			}
+			builder.result()
+		}
+
+		def zipTail[That](using bf:BuildFrom[Repr,(T,T),That]):That	= {
+			val builder	=  bf.newBuilder(peer)
+			if (ops.nonEmpty) {
+				val now		= ops.iterator
+				val later	= ops.iterator
+				later.next()
+				while {
+					builder += ((now.next(), later.next()))
+					later.hasNext
+				}
+				do ()
 			}
 			builder.result()
 		}
@@ -192,31 +239,5 @@ object IterableExtensions {
 			}
 
 		// TODO state support StateT
-	}
-
-	// TODO dotty move these into the other extension
-	implicit final class IterableOpsExt[CC[_],T](peer:IterableOps[T,CC,CC[T]]) {
-		def partitionEither[U,V](using ev:T <:< Either[U,V]):(CC[U],CC[V])			= peer partitionMap ev
-		def partitionValidated[U,V](using ev:T <:< Validated[U,V]):(CC[U],CC[V])	= peer partitionMap { it => ev(it).toEither }
-
-		/** pair elements of a collection with a function applied to an element */
-		def fproduct[U](func:T=>U):CC[(T,U)]	= peer map { it => (it, func(it)) }
-	}
-
-	// TODO dotty move these into the other extension
-	implicit final class IterableWithOpsExt[CC[_] <: Iterable[?],T](peer:IterableOps[T,CC,CC[T]]) {
-		/** all Lefts if there is at least one, else all Rights */
-		def validateEither[F,W](using ev:T <:< Either[F,W]):Either[CC[F],CC[W]]	= {
-			val (lefts, rights)	= peer.partitionEither
-			if (lefts.isEmpty)	Right(rights)
-			else				Left(lefts)
-		}
-
-		/** all Invalids if there is at least one, else all Valids */
-		def validateValidated[F,W](using ev: T <:< Validated[F,W]):Validated[CC[F],CC[W]]	= {
-			val (invalids, valids)	= peer.partitionValidated
-			if (invalids.isEmpty)	Validated.valid(valids)
-			else					Validated.invalid(invalids)
-		}
 	}
 }

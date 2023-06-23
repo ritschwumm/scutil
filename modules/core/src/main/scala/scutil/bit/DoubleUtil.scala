@@ -11,8 +11,8 @@ object DoubleUtil {
 	/*
 	@strictfp
 	def denormal(it:Double):Boolean	=
-			 if (it == 0)												false
-		else if (it > -JDouble.MIN_NORMAL && it < JDouble.MIN_NORMAL)	true
+		if		(it == 0)												false
+		else if	(it > -JDouble.MIN_NORMAL && it < JDouble.MIN_NORMAL)	true
 		else															false
 	*/
 

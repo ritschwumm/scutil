@@ -165,7 +165,7 @@ object ListenerInstances {
 	//------------------------------------------------------------------------------
 
 	def mkKeyListener(callback:KeyEvent=>Unit):KeyListener = new KeyListener {
-		def keyTyped(ev:KeyEvent):Unit	= 	callback(ev)
+		def keyTyped(ev:KeyEvent):Unit		= callback(ev)
 		def keyPressed(ev:KeyEvent):Unit	= callback(ev)
 		def keyReleased(ev:KeyEvent):Unit	= callback(ev)
 	}

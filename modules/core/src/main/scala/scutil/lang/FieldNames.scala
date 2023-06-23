@@ -1,6 +1,5 @@
 package scutil.lang
 
-import scala.quoted.*
 import scala.deriving.*
 import scala.compiletime.*
 

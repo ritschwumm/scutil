@@ -44,7 +44,7 @@ object IterableExtensionsTest extends SimpleTestSuite {
 
 	test("iterable extension should return the correct type and values for fproduct") {
 		val in:List[Int]			= List(1,2,3)
-		val out:List[(Int,Long)]	= in fproduct (_ * 2)
+		val out:List[(Int,Long)]	= in fproduct (_ * 2L)
 		assertEquals(
 			out,
 			List((1,2L),(2,4L), (3,6L))
@@ -79,4 +79,52 @@ object IterableExtensionsTest extends SimpleTestSuite {
 		)
 	}
 
+	test("zipTail should just work") {
+		assertEquals(
+			Vector(1,2,3).zipTail,
+			Vector((1,2),(2,3))
+		)
+	}
+
+	test("partitionEither should just work") {
+		assertEquals(
+			Vector(Left(1),Right("1"),Left(2),Right("3")).partitionEither,
+			(Vector(1,2), Vector("1","3"))
+		)
+	}
+
+	test("partitionValidated should just work") {
+		assertEquals(
+			Vector(Validated.invalid(1),Validated.valid("1"),Validated.invalid(2),Validated.valid("3")).partitionValidated,
+			(Vector(1,2), Vector("1","3"))
+		)
+	}
+
+	test("validateEither should reject errors") {
+		assertEquals(
+			Vector(Left(1),Right("1"),Left(2),Right("3")).validateEither,
+			Left(Vector(1,2))
+		)
+	}
+
+	test("validateEither accept all rights") {
+		assertEquals(
+			Vector(Right("1"),Right("3")).validateEither,
+			Right(Vector("1","3"))
+		)
+	}
+
+	test("validateValidated should reject errors") {
+		assertEquals(
+			Vector(Validated.invalid(1),Validated.valid("1"),Validated.invalid(2),Validated.valid("3")).validateValidated,
+			Validated.Invalid(Vector(1,2))
+		)
+	}
+
+	test("validateValidated accept all valids") {
+		assertEquals(
+			Vector(Validated.valid("1"),Validated.valid("3")).validateValidated,
+			Validated.Valid(Vector("1","3"))
+		)
+	}
 }

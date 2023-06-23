@@ -9,14 +9,53 @@ import scala.collection.mutable.Builder
 import scutil.lang.*
 
 object SeqExtensions {
+	// TODO dotty move these into SeqExt to support pseudo-iterables, too
 	implicit final class SimpleSeqExt[T](peer:Seq[T]) {
 		def toNesOption:Option[Nes[T]]	=
 			Nes fromSeq peer
 	}
 
 	// TODO dotty use <:< instead of fixing the type member?
-	implicit final class SeqExt[Repr,T](peer:Repr)(using isSeq:IsSeq[Repr] { type A = T }) {
+	implicit final class SeqExt[Repr,T,Self](peer:Repr)(using isSeq:IsSeq[Repr] { type A = T; type C = Self }) {
 		private val ops	= isSeq(peer)
+
+		def tailOption:Option[Self]	=
+			if (ops.nonEmpty)	Some(ops.tail)
+			else				None
+
+		def initOption:Option[Self]	=
+			if (ops.nonEmpty)	Some(ops.init)
+			else				None
+
+		/** get first item and rest of the Seq if possible */
+		def extractHead:Option[(T,Self)]	=
+			if (ops.nonEmpty)	Some((ops.head, ops.tail))
+			else				None
+
+		/** get last item and rest of the Seq if possible */
+		def extractLast:Option[(T,Self)]	=
+			if (ops.nonEmpty)	Some((ops.last, ops.init))
+			else				None
+
+		/** map the value for a single index */
+		def updatedBy(index:Int, func:T=>T)(using factory:Factory[T,Self]):Option[Self]	=
+			if (containsIndex(index))	Some(factory.fromSpecific(ops.updated(index, func(ops(index)))))
+			else						None
+
+		/** None when the index is outside our bounds */
+		def updatedAt(index:Int, item:T)(using factory:Factory[T,Self]):Option[Self]	=
+			if (containsIndex(index))	Some(factory.fromSpecific(ops.updated(index, item)))
+			else						None
+
+		/** insert an item at a given index if possible */
+		def insertAt(gap:Int, item:T)(using factory:Factory[T,Self]):Option[Self]	=
+			if (containsGap(gap))	Some(factory.fromSpecific(ops.patch(gap, Seq(item), 0)))
+			else					None
+
+		/** remove the item at a given index if possible */
+		def removeAt(index:Int)(using factory:Factory[T,Self]):Option[Self]	=
+			if (containsIndex(index))	Some(factory.fromSpecific(ops.patch(index, Seq.empty, 1)))
+			else						None
 
 		// aliases with low precendence
 
@@ -34,8 +73,10 @@ object SeqExtensions {
 		// NOTE this exists in monoid syntax already
 		concatenate the Seq with itself n times
 		def times(count:Int)(using factory:Factory[T,Repr]):Repr	=
-			(0 until count).flatMap { _ => peer }.to(factory)
-		 */
+			factory.fromSpecific(
+				(0 until count).flatMap { _ => peer }
+			)
+		*/
 
 		def indexOfOption(item:T):Option[Int]	=
 			indexOption(ops indexOf item)
@@ -73,10 +114,10 @@ object SeqExtensions {
 		}
 
 		/**
-		 * group values by keys, both from a function.
-		 * functionally this is the same as the builtin groupMap,
-		 * but might trade some calculation for object allocations
-		 */
+		* group values by keys, both from a function.
+		* functionally this is the same as the builtin groupMap,
+		* but might trade some calculation for object allocations
+		*/
 		def groupMapPaired[That,K,V](func:T=>(K,V))(using bf:BuildFrom[Repr,V,That]):Map[K,That]	=
 			ops
 			.map		(func)
@@ -88,17 +129,23 @@ object SeqExtensions {
 		/** get item at index and the Seq without that element if possible */
 		def extractAt(index:Int)(using factory:Factory[T,Repr]):Option[(T,Repr)]	=
 			lift(index) map { it =>
-				(it, ops.patch (index, Seq.empty, 1).to(factory))
+				(
+					it,
+					factory.fromSpecific(ops.patch(index, Seq.empty, 1))
+				)
 			}
 
 		/** distinct with a custom equality check */
 		def distinctWith(same:(T,T)=>Boolean)(using factory:Factory[T,Repr]):Repr =
-			((ops foldLeft Seq.empty[T]) { (retained:Seq[T], candidate:T) =>
-				retained find { same(_,candidate) } match {
-					case Some(_)	=> retained
-					case None		=> candidate +: retained
+			factory.fromSpecific(
+				ops.foldLeft(Seq.empty[T]) { (retained:Seq[T], candidate:T) =>
+					retained find { same(_,candidate) } match {
+						case Some(_)	=> retained
+						case None		=> candidate +: retained
+					}
 				}
-			}).reverse.to(factory)
+				.reverse
+			)
 
 		/** triple every item with its previous and next item */
 		def adjacents[That](using bf:BuildFrom[Repr, (Option[T],T,Option[T]), That]):That	= {
@@ -262,7 +309,7 @@ object SeqExtensions {
 			lift(index) map { item =>
 				Store[T,Repr](
 					item,
-					ops.updated(index, _).to(factory)
+					it => factory.fromSpecific(ops.updated(index, it))
 				)
 			}
 
@@ -274,67 +321,5 @@ object SeqExtensions {
 
 		private def lift(index:Int):Option[T]	=
 			if (containsIndex(index)) Some(ops.apply(index)) else None
-	}
-
-	// TODO dotty move these into the other extension
-	implicit final class SeqOpsExt[CC[_],T](peer:SeqOps[T,CC,CC[T]]) {
-		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def tailOption:Option[CC[T]]	=
-			if (peer.nonEmpty)	Some(peer.tail)
-			else				None
-
-		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def initOption:Option[CC[T]]	=
-			if (peer.nonEmpty)	Some(peer.init)
-			else				None
-
-		/** get first item and rest of the Seq if possible */
-		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def extractHead:Option[(T,CC[T])]	=
-			if (peer.nonEmpty)	Some((peer.head, peer.tail))
-			else				None
-
-		/** get last item and rest of the Seq if possible */
-		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def extractLast:Option[(T,CC[T])]	=
-			if (peer.nonEmpty)	Some((peer.last, peer.init))
-			else				None
-
-		/** map the value for a single index */
-		def updatedBy(index:Int, func:T=>T):Option[CC[T]]	=
-			if (containsIndex1(index))	Some(peer.updated(index, func(peer(index))))
-			else						None
-
-		/** None when the index is outside our bounds */
-		def updatedAt(index:Int, item:T):Option[CC[T]]	=
-			if (containsIndex1(index))	Some(peer.updated(index, item))
-			else						None
-
-		/** insert an item at a given index if possible */
-		def insertAt(gap:Int, item:T):Option[CC[T]]	=
-			if (containsGap1(gap))	Some(peer.patch(gap, Seq(item), 0))
-			else 					None
-
-		/** remove the item at a given index if possible */
-		def removeAt(index:Int):Option[CC[T]]	=
-			if (containsIndex1(index))	Some(peer.patch(index, Seq.empty, 1))
-			else						None
-
-		// TODO generify this exists in Seq implicits
-		private def containsIndex1(index:Int):Boolean	=
-			index >= 0 && index < peer.size
-
-		// TODO generify this exists in Seq implicits
-		private def containsGap1(index:Int):Boolean	=
-			index >= 0 && index <= peer.size
-	}
-
-	// TODO dotty move these into the other extension
-	implicit final class SeqWithOpsExt[CC[T] <: Seq[T],T](peer:SeqOps[T,CC,CC[T]]) {
-		@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
-		def zipTail(using factory:Factory[(T,T),CC[(T,T)]]):CC[(T,T)]	=
-			(	if (peer.nonEmpty)	peer zip peer.tail
-				else				factory.newBuilder.result()
-			)
 	}
 }

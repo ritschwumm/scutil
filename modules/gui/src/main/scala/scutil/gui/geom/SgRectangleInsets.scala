@@ -56,7 +56,7 @@ final case class SgRectangleInsets private (x:SgSpanInsets, y:SgSpanInsets) {
 	def size:SgPoint	= SgPoint(x.size, y.size)
 
 	def swap:SgRectangleInsets		= SgRectangleInsets.xy(y, x)
-	def inverse:SgRectangleInsets	= SgRectangleInsets.xy(x.inverse, 	y.inverse)
+	def inverse:SgRectangleInsets	= SgRectangleInsets.xy(x.inverse, y.inverse)
 
 	def +(that:SgRectangleInsets):SgRectangleInsets	=
 		SgRectangleInsets.xy(

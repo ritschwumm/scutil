@@ -96,7 +96,7 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 			get(s)
 			.map { t1 =>
 				val (t2,u)	= state run t1
-				 set(t2) -> (Some(u):Option[U])
+				set(t2) -> (Some(u):Option[U])
 			}
 			.getOrElse	(s -> None)
 		}
@@ -207,7 +207,7 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 	// ***
 	def product[SS,TT](that:Prism[SS,TT]):Prism[(S,SS),(T,TT)]	=
 		Prism(
-			get	= sss 	=> (this get sss._1) zip (that get sss._2),
+			get	= sss	=> (this get sss._1) zip (that get sss._2),
 			set	= ttt	=> (this set ttt._1, that set ttt._2)
 		)
 

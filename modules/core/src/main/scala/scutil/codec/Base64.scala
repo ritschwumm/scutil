@@ -38,9 +38,9 @@ object Base64 {
 				if (c < 0)				return false
 				if (c > table.length)	return false
 				val x	= table(c)
-					 if (x == invalidFlag)			return false
-				else if (x == paddingFlag && !pad)	pad = true
-				else if (x != paddingFlag &&  pad)	return false
+				if		(x == invalidFlag)			return false
+				else if	(x == paddingFlag && !pad)	pad = true
+				else if	(x != paddingFlag &&  pad)	return false
 				i = i + 1
 			}
 			true

@@ -158,7 +158,7 @@ final class ByteString private (val value:IArray[Byte]) {
 		if		(!containsSlice(begin, end))	None
 		else if	(begin == end)					Some(ByteString.empty)
 		else if	(begin == 0 && end == size)		Some(this)
-		else 									Some(unboundedSlice(begin, end))
+		else									Some(unboundedSlice(begin, end))
 
 	def splitFirst:Option[(ByteString,Byte)]	=
 		if (size > 0)	Some((unboundedSlice(1, size), unboundedGet(0)))
@@ -172,12 +172,12 @@ final class ByteString private (val value:IArray[Byte]) {
 		if		(!containsGap(index))	None
 		else if	(index == 0)			Some((ByteString.empty, this))
 		else if	(index == size)			Some((this, ByteString.empty))
-		else 							Some((unboundedSlice(0, index), unboundedSlice(index, size)))
+		else							Some((unboundedSlice(0, index), unboundedSlice(index, size)))
 
 	def containsAt(index:Int, that:ByteString):Boolean	=
 		containsSlice(index, index+that.size) && {
 			@tailrec def loop(i:Int):Boolean	=
-				(i == that.size) 						||
+				(i == that.size)						||
 				(this value index+i) == (that value i)	&&
 				loop(i+1)
 			loop(0)

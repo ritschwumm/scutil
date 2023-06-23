@@ -35,9 +35,9 @@ object InputStreamExtensions {
 			// NOTE this is copied due the the length-dependent slicing necerssary
 			val buffer	= new Array[Byte](length)
 			val found	= peer read buffer
-				 if (found == -1)	None
-			else if (found == 0)	Some(ByteString.empty)
-			else 					Some(ByteString.unboundedSliceFromArray(buffer, 0, found))
+			if		(found == -1)	None
+			else if	(found == 0)	Some(ByteString.empty)
+			else					Some(ByteString.unboundedSliceFromArray(buffer, 0, found))
 		}
 
 		/** read the complete content */

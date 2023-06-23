@@ -29,7 +29,7 @@ object RegexExtensions {
 				val c	= str charAt i
 				c match {
 					case '\\' | '-' | '^' | '[' | ']'	=> b append '\\'
-					case _ 								=>
+					case _								=>
 				}
 				b append c
 				i	+= 1

@@ -47,7 +47,7 @@ final class IntRect private (val horizontal:IntSpan, val vertical:IntSpan) {
 
 	def size:IntPoint	= IntPoint(horizontal.size,	vertical.size)
 
-	def topLeft:IntPoint		= IntPoint(left, 	top)
+	def topLeft:IntPoint		= IntPoint(left,	top)
 	def topRight:IntPoint		= IntPoint(right,	top )
 	def bottomLeft:IntPoint		= IntPoint(left,	bottom)
 	def bottomRight:IntPoint	= IntPoint(right,	bottom)

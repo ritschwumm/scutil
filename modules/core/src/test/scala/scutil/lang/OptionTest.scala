@@ -2,7 +2,7 @@ package scutil.lang
 
 import minitest.*
 
-import scutil.core.implicits.{ given, * }
+import scutil.core.implicits.*
 
 object OptionTest extends SimpleTestSuite {
 	test("Option.product works") {

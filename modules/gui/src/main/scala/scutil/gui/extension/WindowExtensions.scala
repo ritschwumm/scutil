@@ -19,8 +19,8 @@ object WindowExtensions {
 
 			val bounds	=
 				IntRect.horizontalWithVertical(
-					horizontal	= restrict(frame.horizontal, screen.horizontal),
-					vertical	= restrict(frame.vertical,	 screen.vertical)
+					horizontal	= restrict(frame.horizontal,	screen.horizontal),
+					vertical	= restrict(frame.vertical,		screen.vertical)
 				)
 
 			peer setBounds (geomConversion IntRect_Rectangle bounds)

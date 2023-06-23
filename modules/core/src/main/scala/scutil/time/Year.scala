@@ -47,7 +47,7 @@ final case class Year(value:Int) extends Ordered[Year] {
 		Year.longYears contains moduloInt(value, 2000)
 
 	lazy val gregorianLeap:Boolean	=
-		(value % 4 == 0) 	&&
+		(value % 4 == 0)	&&
 		!(value % 100 == 0) ||
 		(value % 400 == 0)
 

@@ -44,7 +44,7 @@ final case class DoublePoint(x:Double, y:Double) {
 	//------------------------------------------------------------------------------
 
 	def rectTo(that:DoublePoint):DoubleRect		= DoubleRect.topLeftToBottomRight	(this, that)
-	def rectSize(that:DoublePoint):DoubleRect	= DoubleRect.topLeftWithSize 		(this, that)
+	def rectSize(that:DoublePoint):DoubleRect	= DoubleRect.topLeftWithSize		(this, that)
 
 	//------------------------------------------------------------------------------
 

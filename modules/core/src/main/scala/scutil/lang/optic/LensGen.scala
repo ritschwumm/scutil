@@ -59,7 +59,7 @@ object LensGenImpl {
 			container.select(caseFieldSymbol)
 
 		def setterTerm(container:Term, value:Term):Term	=
-		 	Select.overloaded(container, "copy", containerGenericTypeArguments, List(NamedArg(caseFieldSymbol.name, value)))
+			Select.overloaded(container, "copy", containerGenericTypeArguments, List(NamedArg(caseFieldSymbol.name, value)))
 
 
 		// NOTE we can match on Type value and recover the type's type like this!

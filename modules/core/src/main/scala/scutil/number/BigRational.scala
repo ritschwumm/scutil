@@ -83,8 +83,8 @@ final class BigRational private (_numerator:JBigInteger, _denominator:JBigIntege
 
 	// simplify
 	val (numerator, denominator) = {
-		 val gcd	= _numerator gcd _denominator
-		 (
+		val gcd	= _numerator gcd _denominator
+		(
 			(	if (_denominator.signum == -1)	_numerator.negate
 				else							_numerator
 			) divide gcd,
@@ -174,7 +174,7 @@ final class BigRational private (_numerator:JBigInteger, _denominator:JBigIntege
 
 	def compare(that:BigRational):Int =
 		if (this == that)	0
-		else 				(this.numerator multiply that.denominator) compareTo (that.numerator multiply this.denominator)
+		else				(this.numerator multiply that.denominator) compareTo (that.numerator multiply this.denominator)
 
 	override def equals(that:Any)	=
 		that match {
@@ -186,7 +186,7 @@ final class BigRational private (_numerator:JBigInteger, _denominator:JBigIntege
 		this.numerator		== that.numerator	&&
 		this.denominator	== that.denominator
 
-	override def hashCode: Int 	=
+	override def hashCode: Int	=
 		numerator.hashCode ^ denominator.hashCode
 
 	//------------------------------------------------------------------------------

@@ -1,10 +1,6 @@
 package scutil.gui.extension
 
-import scutil.color.*
-
 import java.awt.Color
-
-import scutil.gui.colorConversion
 
 object ColorExtensions {
 	implicit final class ColorExt(peer:Color) {

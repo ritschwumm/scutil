@@ -11,8 +11,8 @@ object FloatUtil {
 	/*
 	@strictfp
 	def denormal(it:Float):Boolean	=
-			 if (it == 0)											false
-		else if (it > -JFloat.MIN_NORMAL && it < JFloat.MIN_NORMAL)	true
+		if		(it == 0)											false
+		else if	(it > -JFloat.MIN_NORMAL && it < JFloat.MIN_NORMAL)	true
 		else														false
 	*/
 

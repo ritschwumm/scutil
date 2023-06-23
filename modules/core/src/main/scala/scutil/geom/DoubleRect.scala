@@ -49,9 +49,9 @@ final class DoubleRect private (val horizontal:DoubleSpan, val vertical:DoubleSp
 
 	def size:DoublePoint	= DoublePoint(horizontal.size,	vertical.size)
 
-	def topLeft:DoublePoint		= DoublePoint(left, 	top)
+	def topLeft:DoublePoint		= DoublePoint(left,		top)
 	def topRight:DoublePoint	= DoublePoint(right,	top )
-	def bottomLeft:DoublePoint	= DoublePoint(left,	bottom)
+	def bottomLeft:DoublePoint	= DoublePoint(left,		bottom)
 	def bottomRight:DoublePoint	= DoublePoint(right,	bottom)
 
 	def contains(pt:DoublePoint):Boolean	=

@@ -19,7 +19,7 @@ object ElemExtensions {
 		def xmlAttrs:Seq[(XmlAttr, String)]	=
 			peer.attributes.toVector collect {
 				case it:PrefixedAttribute	=> XmlAttr(Some(it.pre),	it.key)	-> it.value.text
-				case it:UnprefixedAttribute	=> XmlAttr(None, 			it.key)	-> it.value.text
+				case it:UnprefixedAttribute	=> XmlAttr(None,			it.key)	-> it.value.text
 			}
 
 		def updateXmlAttrs(attrs:Seq[(XmlAttr, String)]):Elem	=

@@ -1,6 +1,5 @@
 package scutil.platform.os
 
-import java.io.File
 import java.nio.file.Path
 
 import scutil.jdk.implicits.*

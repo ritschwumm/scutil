@@ -6,7 +6,7 @@ object functions {
 	def nextPow2(it:Long):Long	=
 		if		(it == 0)	0
 		else if	(it == 1)	1
-		else 				JLong.highestOneBit(it-1) << 1
+		else				JLong.highestOneBit(it-1) << 1
 
 	//------------------------------------------------------------------------------
 

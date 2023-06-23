@@ -87,11 +87,11 @@ trait Monoid[F] extends Semigroup[F] {
 
 	// TODO foldable add a Foldable typeclass
 	def combineAll(items:Iterable[F]):F	=
-		 items.foldLeft(empty)(combine)
+		items.foldLeft(empty)(combine)
 
 	// TODO foldable add a Foldable typeclass
 	def foldMap[S](items:Iterable[S])(func:S=>F):F	=
-		 items.foldLeft(empty) { (f, s) =>
-		 	combine(f, func(s))
-		 }
+		items.foldLeft(empty) { (f, s) =>
+			combine(f, func(s))
+		}
 }

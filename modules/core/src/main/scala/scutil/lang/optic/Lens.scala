@@ -123,7 +123,7 @@ final case class Lens[S,T](get:S=>T, set:T=>S=>S) {
 
 	def andThen[U](that:Lens[T,U]):Lens[S,U]	=
 		Lens(
-			get	= s 		=> that get (this get s),
+			get	= s			=> that get (this get s),
 			set	= u => s	=> this set (that set u apply (this get s)) apply s
 		)
 
@@ -152,7 +152,7 @@ final case class Lens[S,T](get:S=>T, set:T=>S=>S) {
 	// ***
 	def product[SS,TT](that:Lens[SS,TT]):Lens[(S,SS),(T,TT)]	=
 		Lens(
-			get	= sss 			=> (this get sss._1, that get sss._2),
+			get	= sss			=> (this get sss._1, that get sss._2),
 			set	= ttt => sss	=> (this set ttt._1 apply sss._1, that set ttt._2 apply sss._2)
 		)
 

@@ -4,7 +4,7 @@ import scala.util.Try
 
 import minitest.*
 
-import scutil.core.implicits.{ given, * }
+import scutil.core.implicits.*
 
 object TryTest extends SimpleTestSuite {
 	test("Try should convert to Either") {

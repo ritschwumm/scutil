@@ -11,7 +11,7 @@ class DefaultLogFormatter extends LogFormatter {
 	// TODO scala-js in the browser it might make more sense to call console.log with individual elements
 	def format(event:LogEvent):String	= {
 		val atoms		= event.values flatMap (_.atoms)
-		val messages	= atoms collect { case LogAtom.LogString(x) 	=> x }
+		val messages	= atoms collect { case LogAtom.LogString(x)		=> x }
 		val throwables	= atoms collect { case LogAtom.LogThrowable(x)	=> x }
 
 		val headerItems	=

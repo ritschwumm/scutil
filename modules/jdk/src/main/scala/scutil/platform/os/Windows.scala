@@ -1,9 +1,7 @@
 package scutil.platform.os
 
-import java.io.File
 import java.nio.file.Path
 
-import scutil.jdk.implicits.*
 import scutil.platform.Platform
 
 object Windows {

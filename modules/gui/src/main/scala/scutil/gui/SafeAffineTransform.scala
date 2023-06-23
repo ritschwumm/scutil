@@ -51,8 +51,8 @@ final case class SafeAffineTransform private (delegate:AffineTransform) {
 
 	/** fast bounds calculation for a transformed rectangle, as long as the transform is orthogonal */
 	def transformBounds(rect:DoubleRect):DoubleRect	= {
-			 if (isIdentity)	rect
-		else if (!isOrthogonal)	geomConversion Rectangle2D_DoubleRect (delegate createTransformedShape (geomConversion DoubleRect_Rectangle2D rect)).getBounds2D
+		if		(isIdentity)	rect
+		else if	(!isOrthogonal)	geomConversion Rectangle2D_DoubleRect (delegate createTransformedShape (geomConversion DoubleRect_Rectangle2D rect)).getBounds2D
 		else {
 			val coords:Array[Double]	=
 					Array(

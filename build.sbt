@@ -5,7 +5,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.234.0",
+	version			:= "0.235.0",
 
 	scalaVersion	:= "3.2.2",
 	scalacOptions	++= Seq(
@@ -194,7 +194,7 @@ lazy val `scutil-guid`	=
 	.jsSettings(
 		noTestSettings,
 		libraryDependencies	++= Seq(
-			"org.scala-js"	%%%	"scalajs-dom"	% "2.5.0"	% "compile"
+			"org.scala-js"	%%%	"scalajs-dom"	% "2.6.0"	% "compile"
 		)
 	)
 lazy val `scutil-guid-jvm`	= `scutil-guid`.jvm

@@ -55,8 +55,8 @@ final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[Gre
 		val rawNumber	= (dayOfYear - weekday.index + Weekday.count + Weekday.Thursday.index) / Weekday.count
 		val lastNumber	= yearValue.lastCalendarWeek.number
 
-			 if (rawNumber < 1)				(yearValue move -1).lastCalendarWeek
-		else if (rawNumber > lastNumber)	(yearValue move +1).firstCalendarWeek
+		if		(rawNumber < 1)				(yearValue move -1).lastCalendarWeek
+		else if	(rawNumber > lastNumber)	(yearValue move +1).firstCalendarWeek
 		else								yearValue calendarWeekAt rawNumber
 	}
 
@@ -69,7 +69,7 @@ final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[Gre
 		val x	=
 			day								+
 			floorDivLong(153 * m + 2, 5)	+
-			365 * y 						+
+			365 * y							+
 			floorDivLong(y, 4)				-
 			floorDivLong(y, 100)			+
 			floorDivLong(y, 400)			-

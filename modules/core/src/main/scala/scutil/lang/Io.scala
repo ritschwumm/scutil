@@ -123,11 +123,11 @@ object Io extends IoInstancesLow {
 }
 
 enum Io[T] {
-	case Pure[T](value:T) 							extends Io[T]
+	case Pure[T](value:T)							extends Io[T]
 	case Raise[T](error:Exception)					extends Io[T]
-	case Suspend[T](thunk:()=>T) 					extends Io[T]
-	case Map[S,T](base:Io[S], func:S=>T) 			extends Io[T]
-	case FlatMap[S,T](base:Io[S], func:S=>Io[T]) 	extends Io[T]
+	case Suspend[T](thunk:()=>T)					extends Io[T]
+	case Map[S,T](base:Io[S], func:S=>T)			extends Io[T]
+	case FlatMap[S,T](base:Io[S], func:S=>Io[T])	extends Io[T]
 
 	final def unsafeRun():T	= Io.unsafeRun(this)
 
