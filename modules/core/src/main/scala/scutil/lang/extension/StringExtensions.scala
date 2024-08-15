@@ -181,7 +181,7 @@ object StringExtensions {
 				}
 				i	+= 1
 			}
-			b.toString
+			b.result
 		}
 	}
 }

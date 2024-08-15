@@ -20,7 +20,7 @@ object ListExtensions {
 		*/
 		def unprefix[U>:T](other:List[U]):(List[U],List[U],List[U])	= {
 			@tailrec
-			def loop[V](prefix:List[V], list1:List[V], list2:List[V]):(List[V],List[V],List[V])	= {
+			def loop(prefix:List[U], list1:List[U], list2:List[U]):(List[U],List[U],List[U])	= {
 				(list1, list2) match {
 					case (h1 :: t1, h2 :: t2) if h1 == h2	=> loop(h1 :: prefix, t1, t2)
 					case _									=> (prefix.reverse, list1, list2)

@@ -7,10 +7,8 @@ based on Scala	code by nafg		at https://github.com/nafg/reactive/blob/master/rea
 based on Java	code by Neil Jones	at http://bix.ucsd.edu/bioalgorithms/downloads/code/LCS.java
 */
 object Diff {
-	private def equalsMethod[T](a:T, b:T):Boolean	= a == b
-
 	// BETTER only compare from the first different element to the last different element
-	def compile[T](a:Seq[T], b:Seq[T], equal:(T,T)=>Boolean = equalsMethod[T](_,_)):Diff[T] = {
+	def compile[T](a:Seq[T], b:Seq[T], equal:(T,T)=>Boolean):Diff[T] = {
 		val n	= a.length
 		val m	= b.length
 

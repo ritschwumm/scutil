@@ -5,9 +5,9 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.239.0",
+	version			:= "0.240.0",
 
-	scalaVersion	:= "3.3.0",
+	scalaVersion	:= "3.3.1",
 	scalacOptions	++= Seq(
 		"-feature",
 		"-deprecation",
@@ -21,7 +21,7 @@ inThisBuild(Seq(
 
 	versionScheme	:= Some("early-semver"),
 
-	resolvers 		++= Resolver sonatypeOssRepos "releases",
+	resolvers	++= Resolver sonatypeOssRepos "releases",
 
 	wartremoverErrors	++= Seq(
 		Wart.AsInstanceOf,
@@ -86,7 +86,7 @@ def myCrossProject(id:String, base:File, crossType:CrossType):CrossProject	=
 	.configurePlatform(JSPlatform)	(_ withId (id + "-js"))
 
 lazy val `scutil`	=
-	(project	in	file("."))
+	project.in(file("."))
 	.aggregate(
 		`scutil-core-jvm`,
 		`scutil-core-js`,
@@ -124,7 +124,7 @@ lazy val `scutil-core-jvm`	= `scutil-core`.jvm
 lazy val `scutil-core-js`	= `scutil-core`.js
 
 lazy val `scutil-jdk`	=
-	(project	in	file("modules/jdk"))
+	project.in(file("modules/jdk"))
 	.settings(
 		fixConsoleSettings,
 		scalacOptions	++= Seq(),
@@ -157,7 +157,7 @@ lazy val `scutil-jdk`	=
 	.dependsOn	(`scutil-core-jvm`)
 
 lazy val `scutil-gui`	=
-	(project	in	file("modules/gui"))
+	project.in(file("modules/gui"))
 	.settings(
 		fixConsoleSettings,
 		scalacOptions	++= Seq(),
@@ -171,7 +171,7 @@ lazy val `scutil-gui`	=
 	)
 
 lazy val `scutil-xml`	=
-	(project	in	file("modules/xml"))
+	project.in(file("modules/xml"))
 	.settings(
 		fixConsoleSettings,
 		scalacOptions	++= Seq(),

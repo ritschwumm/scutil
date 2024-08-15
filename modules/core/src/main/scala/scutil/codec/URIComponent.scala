@@ -36,7 +36,7 @@ final class URIComponent(charset:Charset) {
 			}
 			i	+= 1
 		}
-		out.toString
+		out.result
 	}
 
 	inline private def encodeNibble(nibble:Int):Char =

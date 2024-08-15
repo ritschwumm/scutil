@@ -80,7 +80,7 @@ object Base64 {
 			output append (alphabet(((data(inputIndex+1) << 2) & 0x3c)))
 			output append padding
 		}
-		output.toString
+		output.result
 	}
 
 	//------------------------------------------------------------------------------

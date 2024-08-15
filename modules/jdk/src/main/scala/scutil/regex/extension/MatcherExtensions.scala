@@ -9,7 +9,7 @@ object MatcherExtensions {
 			else				None
 
 		def matchedGroups:Option[Seq[Option[String]]]	=
-			if (peer.matches)	Some(1.to(peer.groupCount).map(peer.group).map(Option.apply).toVector)
+			if (peer.matches)	Some(Vector.range(1, peer.groupCount).map(peer.group).map(Option.apply))
 			else				None
 	}
 }
