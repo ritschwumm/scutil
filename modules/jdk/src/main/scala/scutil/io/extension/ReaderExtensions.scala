@@ -62,18 +62,6 @@ object ReaderExtensions {
 			}
 		}
 
-		/** copy everything */
-		// TODO kept only for compatibility with java 9, this exists in java 10 as transferTo
-		def transferToPre10(out:Writer):Unit = {
-			val	buffer	= new Array[Char](blockSize)
-			var running	= true
-			while (running) {
-				val	len	= peer.read(buffer)
-				if (len != -1)	out.write(buffer, 0, len)
-				else			running	= false
-			}
-		}
-
 		//------------------------------------------------------------------------------
 
 		// BETTER  use a specific line separator

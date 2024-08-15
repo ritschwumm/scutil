@@ -105,7 +105,7 @@ final case class Lens[S,T](get:S=>T, set:T=>S=>S) {
 	def transformStateT[F[_]:Functor]:StateT[F,T,_] ~> StateT[F,S,_]	=
 		new (StateT[F,T,_] ~> StateT[F,S,_]) {
 			def apply[X](it:StateT[F,T,X]):StateT[F,S,X]	=
-					embedStateT(it)
+				embedStateT(it)
 		}
 
 	//------------------------------------------------------------------------------

@@ -5,7 +5,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.240.0",
+	version			:= "0.241.0",
 
 	scalaVersion	:= "3.3.1",
 	scalacOptions	++= Seq(
@@ -55,6 +55,7 @@ inThisBuild(Seq(
 	)
 ))
 
+// TODO add this here? Compile / console / scalacOptions := (console / scalacOptions).value.filterNot(_.contains("wartremover"))
 lazy val fixConsoleSettings	=
 	Seq(
 		Compile / console / scalacOptions ~= (opts => opts filterNot Set(
@@ -196,7 +197,7 @@ lazy val `scutil-guid`	=
 	.jsSettings(
 		noTestSettings,
 		libraryDependencies	++= Seq(
-			"org.scala-js"	%%%	"scalajs-dom"	% "2.6.0"	% "compile"
+			"org.scala-js"	%%%	"scalajs-dom"	% "2.8.0"	% "compile"
 		)
 	)
 lazy val `scutil-guid-jvm`	= `scutil-guid`.jvm

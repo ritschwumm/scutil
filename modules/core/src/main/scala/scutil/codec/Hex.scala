@@ -2,6 +2,7 @@ package scutil.codec
 
 import scutil.lang.*
 
+// TODO java 17 has java.util.HexFormat
 object Hex {
 	val byteStringPrism	= Prism(decodeByteString,	encodeByteString)
 

@@ -3,6 +3,7 @@ package scutil.text
 object Text {
 	/** indent every line with a single tab */
 	def indent(prefix:String, str:String):String =
+		// TODO java 17 has String.indent
 		str.replaceAll("(?m)^", prefix)
 
 	/** treats all combinations of CR and LF as line endings */

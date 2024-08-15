@@ -23,6 +23,8 @@ object Monoid extends MonoidLow {
 
 	//------------------------------------------------------------------------------
 
+	// TODO tc generalize to any iterable and remove SeqMonoid
+
 	given VectorMonoid[T]:Monoid[Vector[T]]	=
 		Monoid.instance(Vector.empty, _ ++ _)
 
@@ -31,10 +33,6 @@ object Monoid extends MonoidLow {
 
 	given SetMonoid[T]:Monoid[Set[T]]	=
 		Monoid.instance(Set.empty, _ ++ _)
-
-	// TODO tc this behaves quite differently from the Monoid instance, as this uses the Last value
-	given MapMonoid[K,V]:Monoid[Map[K,V]]	=
-		Monoid.instance(Map.empty, _ ++ _)
 
 	given UnitMonoid:Monoid[Unit]	=
 		Monoid.instance((), (_,_)=>())
@@ -51,16 +49,53 @@ object Monoid extends MonoidLow {
 			)
 		)
 
-	// TODO tc this is the same as in haskell, but we could have others:
-	// use the first Some, use the last Some, or return Some semigroup-combined value when both values are Some or None when any od them is None
-	given OptionMonoid[T](using S:Semigroup[T]):Monoid[Option[T]]	=
+	//-----------------------------------------------------------------------------
+
+	// TODO tc add more alternatives here
+
+	def MapLastMonoid[K,V]:Monoid[Map[K,V]]	=
+		Monoid.instance(Map.empty, _ ++ _)
+
+	//-----------------------------------------------------------------------------
+
+	// this is the one used in haskell
+	def OptionMergeMonoid[T](using S:Semigroup[T]):Monoid[Option[T]]	=
 		Monoid.instance(
 			None,
 			(a,b) => a.oneOrTwo(b)(S.combine)
 		)
 
-	given EndoMonoid[T]:Monoid[T=>T]	=
+	def OptionBothMonoid[T](using S:Semigroup[T]):Monoid[Option[T]]	=
+		Monoid.instance(
+			None,
+			(a,b) => (a,b) match {
+				case (Some(a), Some(b))	=> Some(S.combine(a, b))
+				case _					=> None
+			}
+		)
+
+	def OptionFirstMonoid[T]:Monoid[Option[T]]	=
+		Monoid.instance(
+			None,
+			(a,b) => a `orElse` b
+		)
+
+	def OptionLastMonoid[T]:Monoid[Option[T]]	=
+		Monoid.instance(
+			None,
+			(a,b) => b `orElse` a
+		)
+
+	//-----------------------------------------------------------------------------
+
+	def EndoMonoid[T]:Monoid[T=>T]	=
 		Monoid.instance(identity, _ `andThen` _)
+
+	def KleisliMonoid[S,T](using M:Monoid[T]):Monoid[S=>T]	=
+		Monoid.instance(
+						(s) => Monoid.empty[T],
+			(a,b) =>	(s) => M.combine(a(s), b(s)),
+		)
 }
 
 trait MonoidLow {

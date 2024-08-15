@@ -274,7 +274,7 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 		this.on(store.index).map { _.compose(store) }
 
 	/*
-	// TODO optics does this make sense?
+	// NOTE optics this does note make sense as a get after a set would not return the same value
 	def toLens(default: =>Store[T,S]):Lens[S,T]	=
 		Lens fromStoreAt { on(_).getOrElse(default) }
 	*/
