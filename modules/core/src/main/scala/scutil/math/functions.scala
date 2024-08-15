@@ -2,32 +2,20 @@ package scutil.math
 
 import scala.annotation.tailrec
 
-import java.lang.Math.*
 import java.lang.{ Math as JMath }
+import java.lang.Math.{ min, max, abs }
+
+import scutil.math.constants.*
 
 object functions {
-	val Pi			= JMath.PI
-	val PiHalf		= Pi / 2
-	val PiDouble	= Pi * 2
+	def log2(value:Double):Double	= JMath.log(value) * Log2Reciprocal
+	def exp2(value:Double):Double	= JMath.exp(value * Log2)
 
-	val E			= JMath.E
-
-	//------------------------------------------------------------------------------
-
-	val Log2			= log(2)
-	val Log2Reciprocal	= 1.0 / Log2
-
-	def log2(value:Double):Double	= log(value) * Log2Reciprocal
-	def exp2(value:Double):Double	= exp(value * Log2)
-
-	val Log10			= log(10)
-	val Log10Reciprocal	= 1.0 / Log10
-
-	def exp10(value:Double):Double	= pow(10, value)
+	def exp10(value:Double):Double	= JMath.pow(10, value)
 	def log10(value:Double):Double	= JMath.log10(value)
 
-	def logB(base:Double, value:Double):Double	= log(value) / log(base)
-	def expB(base:Double, value:Double):Double	= pow(base, value)
+	def logB(base:Double, value:Double):Double	= JMath.log(value) / JMath.log(base)
+	def expB(base:Double, value:Double):Double	= JMath.pow(base, value)
 
 	//------------------------------------------------------------------------------
 

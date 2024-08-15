@@ -137,28 +137,32 @@ object StringExtensions {
 		//------------------------------------------------------------------------------
 
 		/** like indexOf, but None if not found */
-		def indexOfString(part:String, fromIndex:Int=0):Option[Int]	=
+		def indexOfString(part:String):Option[Int]	= indexOfStringFrom(part, 0)
+		def indexOfStringFrom(part:String, fromIndex:Int):Option[Int]	=
 			peer.indexOf(part, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)
 			}
 
 		/** like lastIndexOf, but None if not found */
-		def lastIndexOfStringOption(part:String, fromIndex:Int=peer.length-1):Option[Int]	=
+		def lastIndexOfStringOption(part:String):Option[Int]	= lastIndexOfStringOptionFrom(part, peer.length-1)
+		def lastIndexOfStringOptionFrom(part:String, fromIndex:Int):Option[Int]	=
 			peer.lastIndexOf(part, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)
 			}
 
 		/** like indexOf, but None if not found */
-		def indexOfChar(ch:Int, fromIndex:Int=0):Option[Int]	=
+		def indexOfChar(ch:Int):Option[Int]	= indexOfCharFrom(ch, 0)
+		def indexOfCharFrom(ch:Int, fromIndex:Int):Option[Int]	=
 			peer.indexOf(ch, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)
 			}
 
 		/** like lastIndexOf, but None if not found */
-		def lastIndexOfChar(ch:Int, fromIndex:Int=peer.length-1):Option[Int]	=
+		def lastIndexOfChar(ch:Int):Option[Int]	= lastIndexOfCharFrom(ch, peer.length-1)
+		def lastIndexOfCharFrom(ch:Int, fromIndex:Int):Option[Int]	=
 			peer.lastIndexOf(ch, fromIndex) match {
 				case -1		=> None
 				case index	=> Some(index)
