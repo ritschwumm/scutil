@@ -22,6 +22,13 @@ object Nes {
 	def unsafeFromSeq[T](it:Seq[T]):Nes[T]	=
 		Nes(it.head, it.tail)
 
+	def unsafeFromIArray[T](it:IArray[T]):Nes[T]	=
+		Nes(it.head, it.tail)
+
+	// TODO collection improve performance
+	def unsafeFromArray[T](it:Array[T]):Nes[T]	=
+		unsafeFromSeq(it.toIndexedSeq)
+
 	object Var {
 		def apply[T](head:T, tail:T*):Nes[T]	=
 			Nes(head, tail.toVector)

@@ -42,7 +42,9 @@ object ShowLiterals {
 				*/
 
 				val instance	=
-					Expr.summon[Show[typ]].getOrElse(report.errorAndAbort(s"cannot summon an instance of ${Type.show[Show[typ]]}", arg))
+					Expr.summon[Show[typ]].getOrElse(
+						report.errorAndAbort(s"cannot summon an instance of ${Type.show[Show[typ]]}", arg)
+					)
 
 				'{ $instance.show($arg) }
 			}

@@ -115,11 +115,9 @@ object HexNumberLiteralsTest extends SimpleTestSuite {
 		assertEquals(it, 234.toByte)
 	}
 
-	/*
 	test("HexNumberLiterals should fail compiling an invalid hex number") {
-		assertDoesNotCompile {
-			hex"xx" == 0
-		}
+		assertDoesNotCompile("""
+			hex"xx"
+		""")
 	}
-	*/
 }

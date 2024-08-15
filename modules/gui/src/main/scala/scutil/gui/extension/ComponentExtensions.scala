@@ -87,10 +87,22 @@ object ComponentExtensions {
 				Nil
 		*/
 
+		def getIntLocation:IntPoint	=
+			geomConversion.Point_IntPoint(peer.getLocation)
+
+		def setIntLocation(location:IntPoint):Unit	=
+			peer.setLocation(geomConversion.IntPoint_Point(location))
+
+		def getIntSize:IntPoint	=
+			geomConversion.Dimension_IntPoint(peer.getSize)
+
+		def setIntSize(size:IntPoint):Unit	=
+			peer.setSize(geomConversion.IntPoint_Dimension(size))
+
 		def getIntBounds:IntRect	=
 			geomConversion.Rectangle_IntRect(peer.getBounds)
 
-		def setIntBounds(rect:IntRect):Unit	=
-			peer.setBounds(geomConversion.IntRect_Rectangle(rect))
+		def setIntBounds(bounds:IntRect):Unit	=
+			peer.setBounds(geomConversion.IntRect_Rectangle(bounds))
 	}
 }

@@ -2,22 +2,24 @@ package scutil.lang
 
 import minitest.*
 
-object DragData {
-	object P {
-		val WorkMove:Prism[DragData,Int]			= Prism.partial({ case scutil.lang.DragData.WorkMove(workId)				=> workId				},	scutil.lang.DragData.WorkMove.apply)
-		val WorkInject:Prism[DragData,(Int,String)]	= Prism.partial({ case scutil.lang.DragData.WorkInject(workId, projectId)	=> (workId, projectId)	},	scutil.lang.DragData.WorkInject.apply.tupled)
-	}
-}
-enum DragData {
-	case WorkMove(workId:Int)
-	case WorkInject(workId:Int, projectId:String)
-}
-
-sealed trait PrismSuper
-case object			PrismObject			extends PrismSuper
-final case class	PrismClass(a:Int)	extends PrismSuper
-
 object PrismTest extends SimpleTestSuite {
+	object DragData {
+		object P {
+			val WorkMove:Prism[DragData,Int]			= Prism.partial({ case PrismTest.DragData.WorkMove(workId)				=> workId				},	PrismTest.DragData.WorkMove.apply)
+			val WorkInject:Prism[DragData,(Int,String)]	= Prism.partial({ case PrismTest.DragData.WorkInject(workId, projectId)	=> (workId, projectId)	},	PrismTest.DragData.WorkInject.apply.tupled)
+		}
+	}
+	enum DragData {
+		case WorkMove(workId:Int)
+		case WorkInject(workId:Int, projectId:String)
+	}
+
+	sealed trait PrismSuper
+	case object			PrismObject			extends PrismSuper
+	final case class	PrismClass(a:Int)	extends PrismSuper
+
+	//-----------------------------------------------------------------------------
+
 	test("Prism should do write in partial") {
 		val data:DragData	= DragData.WorkMove(1)
 		val opt:Option[Int]	= DragData.P.WorkMove.get(data)

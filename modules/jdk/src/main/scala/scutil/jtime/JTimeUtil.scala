@@ -57,6 +57,7 @@ object JTimeUtil {
 
 	//------------------------------------------------------------------------------
 
+	// NOTE this leaves out the milliseconds when they are 0
 	def instantToIso8601(instant:Instant):String	=
 		instant.toString
 

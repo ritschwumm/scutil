@@ -4,10 +4,12 @@ import scala.annotation.nowarn
 
 import minitest.*
 
-final case class Foo(a:Int, b:String)
-final case class Bar[T](t:T)
-
 object LensGenTest extends SimpleTestSuite {
+	final case class Foo(a:Int, b:String)
+	final case class Bar[T](t:T)
+
+	//-----------------------------------------------------------------------------
+
 	val  L1 = Lens.Gen[Foo]
 
 	test("LensGen should work as an object") {

@@ -101,6 +101,10 @@ object ShowLiterals extends SimpleTestSuite {
 	/*
 	// fails at compile time, as it should
 	test("show interpolator should disallow unknown escapes") {
+		// TODO make this work
+		assertDoesNotCompile("""
+			show"\\x"
+		""")
 		assertEquals(
 			show"""\x""",
 			s"\t"

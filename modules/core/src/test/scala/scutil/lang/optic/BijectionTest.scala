@@ -2,25 +2,25 @@ package scutil.lang
 
 import minitest.*
 
-case object CaseObj
-final case class Unary(a:Int)
-final case class Binary(a:Int, b:Short)
-final case class Container(x:Unary)
-final case class UnaryOption(a:Option[Int])
-
-trait Fooz[T]
-final case class Parametrized1[A](x:Fooz[A])
-final case class Parametrized2[A,B](x:Fooz[A], y:Fooz[B])
-
-@SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
-object Wrapper {
-	final case class Inner(t:Int)
-}
-
-//------------------------------------------------------------------------------
-
 @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
 object BijectionTest extends SimpleTestSuite {
+	case object CaseObj
+	final case class Unary(a:Int)
+	final case class Binary(a:Int, b:Short)
+	final case class Container(x:Unary)
+	final case class UnaryOption(a:Option[Int])
+
+	trait Fooz[T]
+	final case class Parametrized1[A](x:Fooz[A])
+	final case class Parametrized2[A,B](x:Fooz[A], y:Fooz[B])
+
+	@SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
+	object Wrapper {
+		final case class Inner(t:Int)
+	}
+
+	//-----------------------------------------------------------------------------
+
 	test("Bijection should work with case objects") {
 		val value		= CaseObj
 		val	bijection	= Bijection.zero[CaseObj.type]

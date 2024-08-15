@@ -92,17 +92,15 @@ object ByteStringLiteralTest extends SimpleTestSuite {
 		assertEquals(it, ByteString.of(0x12.toByte, 0x34.toByte, 0x56.toByte))
 	}
 
-	/*
 	test("ByteStringLiteral prevent blanks in the wrong place") {
-		assertDoesNotCompile {
+		assertDoesNotCompile("""
 			bytes"1 23 4"
-		}
+		""")
 	}
 
 	test("ByteStringLiteral should fail compiling an invalid string") {
-		assertDoesNotCompile {
-			bytes"xx" == 0
-		}
+		assertDoesNotCompile("""
+			bytes"xx"
+		""")
 	}
-	*/
 }

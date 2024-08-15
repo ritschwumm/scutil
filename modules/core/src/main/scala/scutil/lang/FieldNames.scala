@@ -5,6 +5,15 @@ import scala.compiletime.*
 
 object FieldNames {
 	inline given of[T](using m:Mirror.ProductOf[T]):FieldNames[T]	=
+		FieldNames(
+			constValueTuple[m.MirroredElemLabels]
+			.productIterator
+			.map(_.toString)
+			.toVector
+		)
+
+	/*
+	inline given of[T](using m:Mirror.ProductOf[T]):FieldNames[T]	=
 		FieldNames(showCase(m).toVector)
 
 	private inline def showCase[T](m:Mirror.ProductOf[T]):List[String] =
@@ -14,7 +23,7 @@ object FieldNames {
 		inline erasedValue[T] match {
 			case _: (h *: t)	=> constValue[h & String] :: showElems[t]
 			case _: EmptyTuple	=> Nil
-		}
+	*/
 }
 
 final case class FieldNames[T](names:Vector[String])

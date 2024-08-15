@@ -6,6 +6,8 @@ object LensTest extends SimpleTestSuite {
 	final case class A(x:String, b:B)
 	final case class B(y:String, c:Int)
 
+	//-----------------------------------------------------------------------------
+
 	test("Lens Should just work") {
 		val a	= A("a", B("b", 1))
 
