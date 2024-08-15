@@ -29,21 +29,21 @@ object ApplicativeTupleNSyntaxTest extends SimpleTestSuite {
 
 	test("applicative tuple syntax should map 1 element") {
 		assertEquals(
-			Tuple1(Vector(1)) mapN ((a) => Tuple1(a)),
+			Tuple1(Vector(1)).mapN((a) => Tuple1(a)),
 			Vector(Tuple1(1))
 		)
 	}
 
 	test("applicative tuple syntax should map 2 elements") {
 		assertEquals(
-			(Vector(1), Vector(2)) mapN ((a,b) => (a,b)),
+			(Vector(1), Vector(2)).mapN((a,b) => (a,b)),
 			Vector((1,2))
 		)
 	}
 
 	test("applicative tuple syntax should map 3 elements") {
 		assertEquals(
-			(Vector(1), Vector(2), Vector(3)) mapN ((a,b,c) => (a,b,c)),
+			(Vector(1), Vector(2), Vector(3)).mapN((a,b,c) => (a,b,c)),
 			Vector((1,2,3))
 		)
 	}

@@ -10,9 +10,9 @@ object DefaultLogFormatter extends DefaultLogFormatter
 class DefaultLogFormatter extends LogFormatter {
 	// TODO scala-js in the browser it might make more sense to call console.log with individual elements
 	def format(event:LogEvent):String	= {
-		val atoms		= event.values flatMap (_.atoms)
-		val messages	= atoms collect { case LogAtom.LogString(x)		=> x }
-		val throwables	= atoms collect { case LogAtom.LogThrowable(x)	=> x }
+		val atoms		= event.values.flatMap(_.atoms)
+		val messages	= atoms.collect { case LogAtom.LogString(x)		=> x }
+		val throwables	= atoms.collect { case LogAtom.LogThrowable(x)	=> x }
 
 		val headerItems	=
 			Vector(
@@ -20,8 +20,8 @@ class DefaultLogFormatter extends LogFormatter {
 				formatInstant(event.timestamp),
 				formatLocation(event.location)
 			)
-		val messageItems	= messages		map formatMessage
-		val throwableItems	= throwables	map formatThrowable
+		val messageItems	= messages.map(formatMessage)
+		val throwableItems	= throwables.map(formatThrowable)
 
 		((headerItems ++ messageItems) mkString "\t")	+
 		(if (throwableItems.nonEmpty) "\n" else "")		+

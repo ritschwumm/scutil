@@ -14,7 +14,7 @@ object Store {
 
 	given StoreFunctor[S]:Functor[Store[S,_]]	=
 		new Functor[Store[S,_]] {
-			def map[A,B](it:Store[S,A])(func:A=>B):Store[S,B]	= it map func
+			def map[A,B](it:Store[S,A])(func:A=>B):Store[S,B]	= it.map(func)
 		}
 }
 
@@ -24,15 +24,15 @@ final case class Store[V,C](index:V, peek:V=>C) {
 	def modify(func:V=>V):C		= peek(func(index))
 
 	def modifyF[F[_]](func:V=>F[V])(using F:Functor[F]):F[C]	=
-		(F map func(index))(peek)
+		F.map(func(index))(peek)
 
 	def modifyState[X](func:State[V,X]):(C,X)	= {
-		val (v2, side)	= func run index
+		val (v2, side)	= func.run(index)
 		(peek(v2), side)
 	}
 
 	def modifyStateT[F[_],X](func:StateT[F,V,X])(using F:Functor[F]):F[(C,X)]	=
-		(F map (func run index)) { case (v, x) => (peek(v), x) }
+		F.map(func.run(index)) { (v, x) => (peek(v), x) }
 
 	//------------------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ final case class Store[V,C](index:V, peek:V=>C) {
 	def map[CC](func:C=>CC):Store[V,CC]	=
 		Store[V,CC](
 			index,
-			peek andThen func
+			peek.andThen(func)
 		)
 
 	// TODO does this have a better name?
@@ -55,25 +55,25 @@ final case class Store[V,C](index:V, peek:V=>C) {
 
 	/** symbolic alias for andThen */
 	def >=>[VV](that:Store[VV,V]):Store[VV,C]	=
-		this andThen that
+		this.andThen(that)
 
 	/** symbolic alias for compose */
 	def <=<[CC](that:Store[C,CC]):Store[V,CC]	=
-		this compose that
+		this.compose(that)
 
 	def andThen[VV](that:Store[VV,V]):Store[VV,C]	=
 		Store(
 			that.index,
-			that.peek andThen this.peek
+			that.peek.andThen(this.peek)
 		)
 
 	def compose[CC](that:Store[C,CC]):Store[V,CC]	=
-		that andThen this
+		that.andThen(this)
 
 	// TODO optics cleanup
 	def andThenBijection[U](that:Bijection[V,U]):Store[U,C]	=
 		Store(
-			that get index,
-			that.set andThen peek
+			that.get(index),
+			that.set.andThen(peek)
 		)
 }

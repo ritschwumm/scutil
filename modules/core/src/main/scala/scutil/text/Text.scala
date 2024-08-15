@@ -11,7 +11,7 @@ object Text {
 		var col	= 0
 		var i	= 0
 		while (i < text.length) {
-			text charAt i match {
+			text.charAt(i) match {
 				case '\r'	=>
 					out append '\r'
 					col	= 0
@@ -41,30 +41,32 @@ object Text {
 	differently from stripMargin it ignores lines where stripping cannot be applied.
 	*/
 	def stripMarginOnly(s:String):String	=
-		s.linesIterator collect { case Strip(it) => it } mkString "\n"
+		s.linesIterator.collect { case Strip(it) => it }.mkString("\n")
 
 	def table(rows:Seq[Seq[String]]):Seq[String]	= {
 		val widths	=
-				(rows foldLeft Vector.empty[Int]) { (widths, row) =>
-					widths.zipAll(row map (_.length), 0, 0) map { case (a,b) => a max b }
-				}
+			rows.foldLeft(Vector.empty[Int]) { (widths, row) =>
+				widths
+				.zipAll(row.map(_.length), 0, 0)
+				.map((a,b) => a.max(b))
+			}
 
-		val lines	= rows map { cells =>
+		val lines	= rows.map { cells =>
 			cells
 			.zipAll (widths, "", 0)
-			.map { case (cell, width) =>
+			.map { (cell, width) =>
 				cell + " " * ((width - cell.length max 0))
 			}
 			.mkString ("│", "│", "│")
 		}
 
-		val topRuler	= widths .map { width => "─" * width } .mkString ("┌", "┬", "┐")
-		val midRuler	= widths .map { width => "─" * width } .mkString ("├", "┼", "┤")
-		val bottomRuler	= widths .map { width => "─" * width } .mkString ("└", "┴", "┘")
+		val topRuler	= widths.map { width => "─" * width }.mkString ("┌", "┬", "┐")
+		val midRuler	= widths.map { width => "─" * width }.mkString ("├", "┼", "┤")
+		val bottomRuler	= widths.map { width => "─" * width }.mkString ("└", "┴", "┘")
 
 		val spersed	=
 			if (lines.isEmpty)	Vector.empty[String]
-			else				lines flatMap { it => Vector(it, midRuler) } dropRight 1
+			else				lines.flatMap{ it => Vector(it, midRuler) }.dropRight(1)
 
 		Vector(topRuler) ++ spersed ++ Vector(bottomRuler)
 	}

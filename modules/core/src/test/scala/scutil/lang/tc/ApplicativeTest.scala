@@ -19,8 +19,8 @@ object ApplicativeTest extends SimpleTestSuite {
 
 		// 3,4,6,8
 		val x	=
-			as flatMap { a =>
-				bs map { b =>
+			as.flatMap { a =>
+				bs.map { b =>
 					a*b
 				}
 			}
@@ -29,7 +29,7 @@ object ApplicativeTest extends SimpleTestSuite {
 			Vector(3,4,6,8)
 		)
 
-		val y	= (as map2 bs)(_*_)
+		val y	= as.map2(bs)(_*_)
 		assertEquals(y, x)
 	}
 
@@ -39,8 +39,8 @@ object ApplicativeTest extends SimpleTestSuite {
 
 		// 3,4,6,8
 		val x	=
-			as flatMap { a =>
-				bs map { b =>
+			as.flatMap { a =>
+				bs.map { b =>
 					a*b
 				}
 			}
@@ -49,7 +49,7 @@ object ApplicativeTest extends SimpleTestSuite {
 			Nes.of(3,4,6,8)
 		)
 
-		val y	= (as map2 bs)(_*_)
+		val y	= as.map2(bs)(_*_)
 		assertEquals(y, x)
 	}
 
@@ -61,7 +61,7 @@ object ApplicativeTest extends SimpleTestSuite {
 		val bs	= Vector(f1, f2)
 
 		// function effect first
-		val x	= bs ap as
+		val x	= bs.ap(as)
 		assertEquals(
 			x,
 			Vector(2,3,4,5)

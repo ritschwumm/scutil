@@ -25,7 +25,7 @@ object Io extends IoInstancesLow {
 	def suspend[T](it: =>Io[T]):Io[T]	= delay(it).flatten
 
 	def raiseWithSecondary[T](primary:Exception, secondary:Exception):Io[T]	=
-		delay { primary.addSuppressed(secondary) } productR raise(primary)
+		delay{ primary.addSuppressed(secondary) }.productR(raise(primary))
 
 	//------------------------------------------------------------------------------
 
@@ -79,20 +79,20 @@ object Io extends IoInstancesLow {
 
 	given IoMonoid[T](using F:Monoid[T]):Monoid[Io[T]]	=
 		new Monoid[Io[T]] {
-			def empty:Io[T]						= Io pure F.empty
-			def combine(a:Io[T], b:Io[T]):Io[T]	= (a map2 b)(F.combine)
+			def empty:Io[T]						= Io.pure(F.empty)
+			def combine(a:Io[T], b:Io[T]):Io[T]	= a.map2(b)(F.combine)
 		}
 
 	given IoMonad:Monad[Io]	=
 		new Monad[Io] {
-			override def pure[A](it:A):Io[A]							= Io pure it
-			override def map[A,B](it:Io[A])(func:A=>B):Io[B]			= it map func
-			override def flatMap[A,B](it:Io[A])(func:A=>Io[B]):Io[B]	= it flatMap func
+			override def pure[A](it:A):Io[A]							= Io.pure(it)
+			override def map[A,B](it:Io[A])(func:A=>B):Io[B]			= it.map(func)
+			override def flatMap[A,B](it:Io[A])(func:A=>Io[B]):Io[B]	= it.flatMap(func)
 		}
 
 	given IoDelay:Delay[Io]	=
 		new Delay[Io] {
-			override def delay[T](it: =>T):Io[T]	= Io delay it
+			override def delay[T](it: =>T):Io[T]	= Io.delay(it)
 		}
 
 	//------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ object Io extends IoInstancesLow {
 					case Io.Pure(value)				=> func2(value)
 					case Io.Raise(error)			=> throw error
 					case Io.Suspend(thunk)			=> func2(thunk())
-					case Io.Map(base1, func1)		=> unsafeRun(Io.Map(base1, func1 andThen func2))
+					case Io.Map(base1, func1)		=> unsafeRun(Io.Map(base1, func1.andThen(func2)))
 					case Io.FlatMap(base1, func1)	=> unsafeRun(Io.FlatMap(base1, it => Io.Map(func1(it), func2)))
 				}
 			case Io.FlatMap(base2, func2)	=>
@@ -116,7 +116,7 @@ object Io extends IoInstancesLow {
 					case Io.Pure(value)				=> unsafeRun(func2(value))
 					case Io.Raise(error)			=> throw error
 					case Io.Suspend(thunk)			=> unsafeRun(func2(thunk()))
-					case Io.Map(base1, func1)		=> unsafeRun(Io.FlatMap(base1, func1 andThen func2))
+					case Io.Map(base1, func1)		=> unsafeRun(Io.FlatMap(base1, func1.andThen(func2)))
 					case Io.FlatMap(base1, func1)	=> unsafeRun(Io.FlatMap(base1, it => Io.FlatMap(func1(it), func2)))
 				}
 		}
@@ -188,6 +188,6 @@ trait IoInstancesLow {
 	/** this exists for cases where we only have a Semigroup for T and not a full Monoid */
 	given IoSemigroup[T](using F:Semigroup[T]):Semigroup[Io[T]]	=
 		new Semigroup[Io[T]] {
-			def combine(a:Io[T], b:Io[T]):Io[T]	= (a map2 b)(F.combine)
+			def combine(a:Io[T], b:Io[T]):Io[T]	= a.map2(b)(F.combine)
 		}
 }

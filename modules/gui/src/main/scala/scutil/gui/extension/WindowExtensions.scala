@@ -8,8 +8,8 @@ import scutil.gui.geomConversion
 object WindowExtensions {
 	implicit final class WindowExt(peer:Window) {
 		def restrictToScreen():Unit	= {
-			val frame	= geomConversion Rectangle_IntRect peer.getBounds
-			val screen	= geomConversion Rectangle_IntRect peer.getGraphicsConfiguration.getBounds
+			val frame	= geomConversion.Rectangle_IntRect(peer.getBounds)
+			val screen	= geomConversion.Rectangle_IntRect(peer.getGraphicsConfiguration.getBounds)
 
 			def restrict(frame:IntSpan, screen:IntSpan):IntSpan	=
 				if		(frame.size		> screen.size)	screen
@@ -23,7 +23,7 @@ object WindowExtensions {
 					vertical	= restrict(frame.vertical,		screen.vertical)
 				)
 
-			peer setBounds (geomConversion IntRect_Rectangle bounds)
+			peer.setBounds(geomConversion.IntRect_Rectangle(bounds))
 		}
 	}
 }

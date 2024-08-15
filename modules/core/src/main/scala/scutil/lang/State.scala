@@ -15,9 +15,9 @@ object State {
 
 	given StateMonad[S]:Monad[State[S,_]]	=
 		new Monad[State[S,_]] {
-			override def pure[T](it:T):State[S,T]										= State pure it
-			override def map[T,U](its:State[S,T])(func:T=>U):State[S,U]					= its map func
-			override def flatMap[T,U](its:State[S,T])(func:T=>State[S,U]):State[S,U]	= its flatMap func
+			override def pure[T](it:T):State[S,T]										= State.pure(it)
+			override def map[T,U](its:State[S,T])(func:T=>U):State[S,U]					= its.map(func)
+			override def flatMap[T,U](its:State[S,T])(func:T=>State[S,U]):State[S,U]	= its.flatMap(func)
 		}
 }
 
@@ -41,28 +41,28 @@ final case class State[S,+T](run:S=>(S,T)) {
 
 	/** function effect first */
 	def ap[A,B](that:State[S,A])(using ev:T <:< (A=>B)):State[S,B]	=
-		that pa (this map ev)
+		that.pa(this.map(ev))
 
 	/** function effect first */
 	def pa[U](that:State[S,T=>U]):State[S,U]	=
 		State { s =>
-			val (s1, tu)	= that run s
-			val (s2, t)		= this run s1
+			val (s1, tu)	= that.run(s)
+			val (s2, t)		= this.run(s1)
 			(s2, tu(t))
 		}
 
 	def product[U](that:State[S,U]):State[S,(T,U)]	=
-		(this map2 that)(_ -> _)
+		this.map2(that)(_ -> _)
 
 	def map2[U,X](that:State[S,U])(func:(T,U)=>X):State[S,X]	=
 		State { s =>
-			val (s1, t)	= this run s
-			val (s2, u)	= that run s1
+			val (s1, t)	= this.run(s)
+			val (s2, u)	= that.run(s1)
 			(s2, func(t, u))
 		}
 
 	//------------------------------------------------------------------------------
 
 	def toStateT[F[_],TT>:T](using M:Applicative[F]):StateT[F,S,TT]	=
-		StateT fromState this
+		StateT.fromState(this)
 }

@@ -13,11 +13,11 @@ object DateFormatExtensions {
 						Catch.byType[ParseException]
 						.in {
 							val	clone	= cloned
-							clone setLenient false
-							clone parse it
+							clone.setLenient(false)
+							clone.parse(it)
 						}
 						.toOption,
-				it => cloned format it
+				it => cloned.format(it)
 			)
 
 		// cloning should be generalized, but @see https://issues.scala-lang.org/browse/SI-3197

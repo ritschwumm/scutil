@@ -5,7 +5,7 @@ import minitest.*
 object ByteArrayUtilTest extends SimpleTestSuite {
 	test("reversing array") {
 		assertArrayEquals(
-			ByteArrayUtil reverse Array[Byte](1,2,3,4,5),
+			ByteArrayUtil.reverse(Array[Byte](1,2,3,4,5)),
 			Array[Byte](5,4,3,2,1)
 		)
 	}
@@ -14,42 +14,42 @@ object ByteArrayUtilTest extends SimpleTestSuite {
 
 	test("creating arrays should work for little endian shorts") {
 		assertArrayEquals(
-			ByteArrayUtil fromLittleEndianShort 0x1234.toShort,
+			ByteArrayUtil.fromLittleEndianShort(0x1234.toShort),
 			Array[Byte](0x34, 0x12)
 		)
 	}
 
 	test("creating arrays should work for little endian ints") {
 		assertArrayEquals(
-			ByteArrayUtil fromLittleEndianInt 0x12345678,
+			ByteArrayUtil.fromLittleEndianInt(0x12345678),
 			Array[Byte](0x78, 0x56, 0x34, 0x12)
 		)
 	}
 
 	test("creating arrays should work for little endian longs") {
 		assertArrayEquals(
-			ByteArrayUtil fromLittleEndianLong 0x0112233445566778L,
+			ByteArrayUtil.fromLittleEndianLong(0x0112233445566778L),
 			Array[Byte](0x78, 0x67, 0x56, 0x45, 0x34, 0x23, 0x12, 0x01)
 		)
 	}
 
 	test("creating arrays should work big endian for shorts") {
 		assertArrayEquals(
-			ByteArrayUtil fromBigEndianShort 0x1234.toShort,
+			ByteArrayUtil.fromBigEndianShort(0x1234.toShort),
 			Array[Byte](0x12, 0x34)
 		)
 	}
 
 	test("creating arrays should work for big endian ints") {
 		assertArrayEquals(
-			ByteArrayUtil fromBigEndianInt 0x12345678,
+			ByteArrayUtil.fromBigEndianInt(0x12345678),
 			Array[Byte](0x12, 0x34, 0x56, 0x78)
 		)
 	}
 
 	test("creating arrays should work for big endian longs") {
 		assertArrayEquals(
-			ByteArrayUtil fromBigEndianLong 0x0112233445566778L,
+			ByteArrayUtil.fromBigEndianLong(0x0112233445566778L),
 			Array[Byte](0x01, 0x12, 0x23, 0x34, 0x45, 0x56, 0x67, 0x78)
 		)
 	}

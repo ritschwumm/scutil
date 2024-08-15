@@ -11,6 +11,6 @@ object MessageDigestExtensions {
 			peer.update(it.unsafeValue)
 
 		def digestByteString():ByteString	=
-			ByteString unsafeFromArray peer.digest()
+			ByteString.unsafeFromArray(peer.digest())
 	}
 }

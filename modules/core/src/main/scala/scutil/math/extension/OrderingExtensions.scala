@@ -19,7 +19,7 @@ object OrderingExtensions {
 				def compare(a:Seq[T], b:Seq[T]):Int	= {
 					@tailrec
 					def loop(index:Int):Int	=
-							(a lift index, b lift index) match {
+							(a.lift(index), b.lift(index)) match {
 								case (Some(aa), Some(bb))	=>
 									val tmp	= base.compare(aa, bb)
 									if (tmp != 0)	tmp
@@ -36,7 +36,7 @@ object OrderingExtensions {
 			}
 
 		def many[T](orderings:Seq[Ordering[T]]):Ordering[T]	=
-			(orderings foldLeft Ordering.trivial[T])(_ orElse _)
+			orderings.foldLeft(Ordering.trivial[T])(_ `orElse` _)
 
 		def manyVar[T](orderings:Ordering[T]*):Ordering[T]	=
 			many(orderings.toVector)

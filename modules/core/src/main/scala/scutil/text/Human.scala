@@ -82,36 +82,36 @@ object Human {
 	val full	= HumanConfig(smallUnits = 0, decimalPlaces = 0)
 	val rounded	= HumanConfig(smallUnits = 0, maxUnits = 1, decimalPlaces = 2)
 
-	val fullBinary:BigDecimal=>String		= binary	renderer full
-	val fullDecimal:BigDecimal=>String		= decimal	renderer full
-	val fullTime:BigDecimal=>String			= time		renderer full
+	val fullBinary:BigDecimal=>String		= binary	.renderer (full)
+	val fullDecimal:BigDecimal=>String		= decimal	.renderer (full)
+	val fullTime:BigDecimal=>String			= time		.renderer (full)
 
-	val roundedBinary:BigDecimal=>String	= binary	renderer rounded
-	val roundedDecimal:BigDecimal=>String	= decimal	renderer rounded
-	val roundedTime:BigDecimal=>String		= time		renderer rounded
+	val roundedBinary:BigDecimal=>String	= binary	.renderer (rounded)
+	val roundedDecimal:BigDecimal=>String	= decimal	.renderer (rounded)
+	val roundedTime:BigDecimal=>String		= time		.renderer (rounded)
 
 	//------------------------------------------------------------------------------
 	//## more convenience functions
 
 	val roundedDms:BigDecimal=>String	=
-		degrees renderer HumanConfig(decimalPlaces=3)
+		degrees.renderer(HumanConfig(decimalPlaces=3))
 
 	private val millisToSeconds:BigDecimal=>BigDecimal	=
-		_ * (time divisor 1)
+		_ * time.divisor(1)
 
 	val fullMilliDuration:BigDecimal=>String	=
-		millisToSeconds andThen (time renderer HumanConfig(smallUnits = 1, decimalPlaces = 0))
+		millisToSeconds.andThen(time.renderer(HumanConfig(smallUnits = 1, decimalPlaces = 0)))
 
 	val roundedMilliDuration:BigDecimal=>String	=
-		millisToSeconds andThen (time renderer HumanConfig(smallUnits = 1, maxUnits = 1, decimalPlaces = 2))
+		millisToSeconds.andThen(time.renderer(HumanConfig(smallUnits = 1, maxUnits = 1, decimalPlaces = 2)))
 }
 
 // BETTER ensure table is sorted by construction
 final case class Human(table:Nes[HumanUnit]) {
-	private val smallCount	= table count { _.divisor < Human.one }
+	private val smallCount	= table.count(_.divisor < Human.one)
 
 	private def smallCut(smallUnits:Int):Nes[HumanUnit]	=
-		table.reverse.drop(smallCount - smallUnits).cata(Nes one table.head, _.reverse)
+		table.reverse.drop(smallCount - smallUnits).cata(Nes.one(table.head), _.reverse)
 
 	//------------------------------------------------------------------------------
 
@@ -124,8 +124,8 @@ final case class Human(table:Nes[HumanUnit]) {
 		value => {
 			require(value >= Human.zero, "value must be positive or zero")
 
-			val limit2	= limit1 dropWhile	{ _.divisor > value }	getOrElse (Nes one limit1.last)
-			val limit3	= limit2 take		config.maxUnits			getOrElse (Nes one limit2.head)
+			val limit2	= limit1 .dropWhile	(_.divisor > value)	.getOrElse (Nes.one(limit1.last))
+			val limit3	= limit2 .take		(config.maxUnits)	.getOrElse (Nes.one(limit2.head))
 
 			renderRaw(limit3, config.decimalPlaces, value)
 		}

@@ -8,9 +8,9 @@ object OperatingSystem {
 
 	def current:Option[OperatingSystem]	= {
 		val	osName	= SystemProperties.os.name.toLowerCase(Locale.US)
-		if		(osName contains "linux")		Some(Linux)
-		else if	(osName contains "windows")		Some(Windows)
-		else if	(osName contains "mac os x")	Some(OSX)
+		if		(osName.contains("linux"))		Some(Linux)
+		else if	(osName.contains("windows"))	Some(Windows)
+		else if	(osName.contains("mac os x"))	Some(OSX)
 		else									None
 	}
 }

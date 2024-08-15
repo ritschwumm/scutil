@@ -1,5 +1,7 @@
 package scutil.geom
 
+import scala.compiletime.asMatchable
+
 object DoubleRect {
 	val zero	= new DoubleRect(DoubleSpan.zero, DoubleSpan.zero)
 
@@ -55,27 +57,27 @@ final class DoubleRect private (val horizontal:DoubleSpan, val vertical:DoubleSp
 	def bottomRight:DoublePoint	= DoublePoint(right,	bottom)
 
 	def contains(pt:DoublePoint):Boolean	=
-		(horizontal	contains pt.x) &&
-		(vertical	contains pt.y)
+		horizontal	.contains(pt.x) &&
+		vertical	.contains(pt.y)
 
 	def swap:DoubleRect			= new DoubleRect(vertical, horizontal)
 	def negate:DoubleRect		= new DoubleRect(horizontal.negate,		vertical.negate)
 	def normalize:DoubleRect	= new DoubleRect(horizontal.normalize,	vertical.normalize)
 
-	def move(d:DoublePoint):DoubleRect		= new DoubleRect(horizontal move	d.x,	vertical move		d.y)
-	def unmove(d:DoublePoint):DoubleRect	= new DoubleRect(horizontal unmove	d.x,	vertical unmove		d.y)
+	def move(d:DoublePoint):DoubleRect		= new DoubleRect(horizontal.move(d.x),		vertical.move(d.y))
+	def unmove(d:DoublePoint):DoubleRect	= new DoubleRect(horizontal.unmove(d.x),	vertical.unmove(d.y))
 
-	def scale(f:DoublePoint):DoubleRect		= new DoubleRect(horizontal scale	f.x,	vertical scale		f.y)
-	def unscale(f:DoublePoint):DoubleRect	= new DoubleRect(horizontal unscale	f.x,	vertical unscale	f.y)
+	def scale(f:DoublePoint):DoubleRect		= new DoubleRect(horizontal.scale(f.x),		vertical.scale(f.y))
+	def unscale(f:DoublePoint):DoubleRect	= new DoubleRect(horizontal.unscale(f.x),	vertical.unscale(f.y))
 
 	def union(that:DoubleRect):DoubleRect	=
 		new DoubleRect(
-			this.horizontal union that.horizontal,
-			this.vertical	union that.vertical
+			this.horizontal .union (that.horizontal),
+			this.vertical	.union (that.vertical)
 		)
 
 	def intersect(that:DoubleRect):Option[DoubleRect]	=
-		(this.horizontal intersect that.horizontal, this.vertical intersect that.vertical) match {
+		(this.horizontal.intersect(that.horizontal), this.vertical.intersect(that.vertical)) match {
 			case (Some(horizontal), Some(vertical))	=> Some(new DoubleRect(horizontal, vertical))
 			case _									=> None
 		}
@@ -91,8 +93,9 @@ final class DoubleRect private (val horizontal:DoubleSpan, val vertical:DoubleSp
 
 	//------------------------------------------------------------------------------
 
+	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 	override def equals(that:Any):Boolean	=
-		that match {
+		that.asMatchable match {
 			case that:DoubleRect	=> this.horizontal == that.horizontal && this.vertical == that.vertical
 			case _					=> false
 		}

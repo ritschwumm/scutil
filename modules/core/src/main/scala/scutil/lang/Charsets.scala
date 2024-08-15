@@ -14,5 +14,5 @@ object Charsets {
 
 	/** Fail when then name is illegal or the Charset is not supported */
 	def byName(name:String):Either[IllegalArgumentException,Charset]	=
-		Catch.byType[IllegalArgumentException] in { Charset forName name }
+		Catch.byType[IllegalArgumentException] in { Charset.forName(name) }
 }

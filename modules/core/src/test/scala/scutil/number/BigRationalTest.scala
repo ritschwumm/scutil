@@ -14,7 +14,7 @@ object BigRationalTest extends SimpleTestSuite {
 	test("bigrational macros should compile") {
 		assertEquals(
 			br"7/11",
-			BigRational.fromLongs (7,11) getOrError "oops"
+			BigRational.fromLongs (7,11).getOrError("oops")
 		)
 	}
 

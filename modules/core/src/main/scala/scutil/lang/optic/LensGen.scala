@@ -2,6 +2,7 @@ package scutil.lang
 
 import scala.language.dynamics
 import scala.quoted.*
+import scala.compiletime.asMatchable
 
 /** creates lens instances for a case classes' fields */
 object LensGen {
@@ -25,7 +26,7 @@ object LensGenImpl {
 			containerTypeRepr.typeSymbol
 
 		val containerGenericTypeArguments	=
-			containerTypeRepr match {
+			containerTypeRepr.asMatchable match {
 				case AppliedType(_, argTypeReprs)	=> argTypeReprs
 				case _								=> Nil
 			}

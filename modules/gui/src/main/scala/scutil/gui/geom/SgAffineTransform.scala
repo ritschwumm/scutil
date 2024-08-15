@@ -19,7 +19,7 @@ object SgAffineTransform {
 		unsafeFromAwtAffineTransform(AffineTransform.getShearInstance(factor.x,	factor.y))
 
 	def rotate(theta:Double):SgAffineTransform		=
-		unsafeFromAwtAffineTransform(AffineTransform getRotateInstance	theta)
+		unsafeFromAwtAffineTransform(AffineTransform.getRotateInstance(theta))
 
 	def rotateAround(theta:Double, center:SgPoint):SgAffineTransform	=
 		unsafeFromAwtAffineTransform(AffineTransform.getRotateInstance(theta, center.x, center.y))
@@ -43,18 +43,18 @@ final case class SgAffineTransform private (delegate:AffineTransform) {
 		transform(point)
 
 	def transform(point:SgPoint):SgPoint	=
-		SgPoint fromAwtPoint2D delegate.transform(point.toAwtPoint2D, null)
+		SgPoint.fromAwtPoint2D(delegate.transform(point.toAwtPoint2D, null))
 
 	def transformAwtPoint2D(point:Point2D):Point2D	=
 		delegate.transform(point, null)
 
 	def transformAwtShape(shape:Shape):Shape	=
-		delegate createTransformedShape shape
+		delegate.createTransformedShape(shape)
 
 	/** fast bounds calculation for a transformed rectangle, as long as the transform is orthogonal */
 	def transformBounds(rect:SgRectangle):SgRectangle	=
 		if		(isIdentity)	rect
-		else if (!isOrthogonal)	SgRectangle fromAwtRectangle2D (delegate createTransformedShape rect.toAwtRectangle2D).getBounds2D
+		else if (!isOrthogonal)	SgRectangle.fromAwtRectangle2D(delegate.createTransformedShape(rect.toAwtRectangle2D).getBounds2D)
 		else {
 			val coords:Array[Double]	=
 				Array(
@@ -88,13 +88,13 @@ final case class SgAffineTransform private (delegate:AffineTransform) {
 		modify { _.shear(factor.x, factor.y) }
 
 	def rotate(theta:Double):SgAffineTransform =
-		modify { _ rotate theta }
+		modify { _.rotate(theta) }
 
 	def andThen(that:SgAffineTransform):SgAffineTransform	=
-		modify { _ concatenate that.delegate }
+		modify { _.concatenate(that.delegate) }
 
 	def compose(that:SgAffineTransform):SgAffineTransform	=
-		that andThen this
+		that.andThen(this)
 
 	private val orthogonalMask	= AffineTransform.TYPE_MASK_ROTATION | AffineTransform.TYPE_GENERAL_TRANSFORM
 

@@ -37,14 +37,14 @@ object Responder {
 
 	given ResponderMonad:Monad[Responder]	=
 		new Monad[Responder] {
-			override def pure[R](it:R):Responder[R]												= Responder pure it
-			override def map[R,RR](it:Responder[R])(func:R=>RR):Responder[RR]					= it map func
-			override def flatMap[R,RR](it:Responder[R])(func:R=>Responder[RR]):Responder[RR]	= it flatMap func
+			override def pure[R](it:R):Responder[R]												= Responder.pure(it)
+			override def map[R,RR](it:Responder[R])(func:R=>RR):Responder[RR]					= it.map(func)
+			override def flatMap[R,RR](it:Responder[R])(func:R=>Responder[RR]):Responder[RR]	= it.flatMap(func)
 		}
 
 	given ResponderDelay:Delay[Responder]	=
 		new Delay[Responder] {
-			override def delay[R](it: =>R):Responder[R]	= Responder delay it
+			override def delay[R](it: =>R):Responder[R]	= Responder.delay(it)
 		}
 }
 
@@ -155,14 +155,14 @@ final case class Responder[T](unsafeRun:(T=>Unit)=>Unit) {
 
 	def whereIndex(pred:Long=>Boolean):Responder[T]	=
 		zipWithIndex
-		.filter { case (_, index)	=> pred(index) }
-		.map	{ case (value, _)	=> value }
+		.filter { (_, index)	=> pred(index) }
+		.map	{ (value, _)	=> value }
 
 	def zipWithIndex:Responder[(T,Long)]	=
 		scan(0L) { (index, _) => index + 1 }
 
 	def fold[U](initial:U)(combine:(U,T)=>U):Responder[U]	=
-		scan(initial)(combine) map (_._2)
+		scan(initial)(combine).map(_._2)
 
 	def scan[U](initial:U)(combine:(U,T)=>U):Responder[(T,U)]	=
 		Responder { cont =>

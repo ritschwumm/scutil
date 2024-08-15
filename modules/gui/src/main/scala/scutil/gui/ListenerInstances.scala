@@ -1,5 +1,7 @@
 package scutil.gui
 
+import scala.language.adhocExtensions
+
 import java.beans.*
 import java.awt.event.*
 import java.awt.dnd.*

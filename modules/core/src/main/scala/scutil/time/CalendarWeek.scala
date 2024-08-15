@@ -46,7 +46,7 @@ final case class CalendarWeek(number:Int, year:Int) extends Ordered[CalendarWeek
 		val correction	= GregorianDate(4, 1, year).weekday.index + Weekday.Thursday.index
 		val start		= GregorianDate(1, 1, year)
 		val offset		= number * Weekday.count + day.index - correction - 1
-		start move offset
+		start.move(offset)
 	}
 
 	def julianDayAt(day:Weekday):JulianDay	=

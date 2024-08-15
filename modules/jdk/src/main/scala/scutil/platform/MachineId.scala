@@ -10,10 +10,10 @@ import scutil.jdk.implicits.*
 
 object MachineId {
 	lazy val integer:Int	=
-		(hashBytes foldLeft 0)	{ (out, byte) => JInteger.rotateLeft(out, 8) ^ (byte & 0xff) }
+		hashBytes.foldLeft(0)	{ (out, byte) => JInteger.rotateLeft(out, 8) ^ (byte & 0xff) }
 
 	lazy val long:Long	=
-		(hashBytes foldLeft 0L)	{ (out, byte) => JLong.rotateLeft(out, 8) ^ (byte & 0xff) }
+		hashBytes.foldLeft(0L)	{ (out, byte) => JLong.rotateLeft(out, 8) ^ (byte & 0xff) }
 
 	/** provides a per-machine hash similar to how mongodb works */
 	val hashBytes:Seq[Byte]	= {
@@ -30,19 +30,19 @@ object MachineId {
 		val ifaceNames:Seq[Byte]	=
 			for {
 				iface	<- ifaces
-				byte	<- iface.getDisplayName getBytes "utf-8"
+				byte	<- iface.getDisplayName.getBytes("utf-8")
 			}
 			yield byte
 
 		val process:Seq[Byte]	=
 			for {
-				name	<- (Catch.exception in ManagementFactory.getRuntimeMXBean.getName).toVector
-				byte	<- name getBytes "utf-8"
+				name	<- Catch.exception.in(ManagementFactory.getRuntimeMXBean.getName).toVector
+				byte	<- name.getBytes("utf-8")
 			}
 			yield byte
 
 		val loader:Seq[Byte]	=
-			((System identityHashCode getClass.getClassLoader).toString getBytes "utf-8").toVector
+			System.identityHashCode(getClass.getClassLoader).toString.getBytes("utf-8").toVector
 
 		(ifaceMacs ++ ifaceNames ++ process ++ loader).toVector
 	}

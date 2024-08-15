@@ -11,41 +11,41 @@ object SeqExtensionsTest extends SimpleTestSuite {
 	test("equivalentSpans should be empty for empty input") {
 		//(Seq.empty[String] equivalentSpans equivalentSpansCriterium) must haveTheSameElementsAs(Seq.empty)
 		assertEquals(
-			(Seq.empty[String] equivalentSpans equivalentSpansCriterium),
+			Seq.empty[String].equivalentSpans(equivalentSpansCriterium),
 			Seq.empty
 		)
 	}
 
 	test("equivalentSpans should be simple for a 1-element input") {
 		assertEquals(
-			(Seq("hallo") equivalentSpans equivalentSpansCriterium),
+			Seq("hallo").equivalentSpans(equivalentSpansCriterium),
 			Seq(Seq("hallo"))
 		)
 	}
 
 	test("equivalentSpans should group together 2 equivalent elements") {
 		assertEquals(
-			(Seq("hallo", "hello") equivalentSpans equivalentSpansCriterium),
+			Seq("hallo", "hello").equivalentSpans(equivalentSpansCriterium),
 			Seq(Seq("hallo", "hello"))
 		)
 	}
 
 	test("equivalentSpans should group separate 2 non-equivalent elements") {
 		assertEquals(
-			(Seq("hallo", "ballo") equivalentSpans equivalentSpansCriterium),
+			Seq("hallo", "ballo").equivalentSpans(equivalentSpansCriterium),
 			Seq(Seq("hallo"), Seq("ballo"))
 		)
 	}
 
 	test("equivalentSpans should leave 1 non-equivalent element at the end") {
 		assertEquals(
-			(Seq("hallo", "hello", "ballo") equivalentSpans equivalentSpansCriterium),
+			Seq("hallo", "hello", "ballo").equivalentSpans(equivalentSpansCriterium),
 			Seq(Seq("hallo", "hello"), Seq("ballo"))
 		)
 	}
 
 	private def equivalentSpansCriterium(a:String, b:String):Boolean	=
-		(a charAt 0) == (b charAt 0)
+		a.charAt(0) == b.charAt(0)
 
 	//------------------------------------------------------------------------------
 
@@ -163,49 +163,49 @@ object SeqExtensionsTest extends SimpleTestSuite {
 
 	test("splitWhere should be empty for empty input") {
 		assertEquals(
-			Seq.empty[Int] splitWhere splitWherePredicate,
+			Seq.empty[Int].splitWhere(splitWherePredicate),
 			Seq.empty
 		)
 	}
 
 	test("splitWhere should be simple for a 1-element input") {
 		assertEquals(
-			Seq(0) splitWhere splitWherePredicate,
+			Seq(0).splitWhere(splitWherePredicate),
 			Seq(Right(Seq(0)))
 		)
 	}
 
 	test("splitWhere should split into two for a single separator") {
 		assertEquals(
-			Seq(1) splitWhere splitWherePredicate,
+			Seq(1).splitWhere(splitWherePredicate),
 			Seq(Right(Seq()),Left(1), Right(Seq()))
 		)
 	}
 
 	test("splitWhere should split an empty Seq before a leading separator") {
 		assertEquals(
-			Seq(1,2) splitWhere splitWherePredicate,
+			Seq(1,2).splitWhere(splitWherePredicate),
 			Seq(Right(Seq()),Left(1),Right(Seq(2)))
 		)
 	}
 
 	test("splitWhere should split an empty Seq after a trailing separator") {
 		assertEquals(
-			Seq(0,1) splitWhere splitWherePredicate,
+			Seq(0,1).splitWhere(splitWherePredicate),
 			Seq(Right(Seq(0)),Left(1),Right(Seq()))
 		)
 	}
 
 	test("splitWhere should split a simple Seq correctly") {
 		assertEquals(
-			Seq(0,1,2) splitWhere splitWherePredicate,
+			Seq(0,1,2).splitWhere(splitWherePredicate),
 			Seq(Right(Seq(0)),Left(1),Right(Seq(2)))
 		)
 	}
 
 	test("splitWhere should create an empty Seq between two adjacent separators") {
 		assertEquals(
-			Seq(0,1,1,2) splitWhere splitWherePredicate,
+			Seq(0,1,1,2).splitWhere(splitWherePredicate),
 			Seq(Right(Seq(0)),Left(1),Right(Seq()),Left(1),Right(Seq(2)))
 		)
 	}

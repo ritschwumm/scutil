@@ -2,11 +2,11 @@ package scutil.platform
 
 object ExceptionUtil {
 	def logAllExceptions(onError:(Thread,Throwable)=>Unit):Unit = {
-		Thread setDefaultUncaughtExceptionHandler new LoggingUncaughtExceptionHandler(onError)
+		Thread.setDefaultUncaughtExceptionHandler(new LoggingUncaughtExceptionHandler(onError))
 	}
 
 	def logThreadExceptions(thread:Thread, onError:(Thread,Throwable)=>Unit):Unit = {
-		thread setUncaughtExceptionHandler new LoggingUncaughtExceptionHandler(onError)
+		thread.setUncaughtExceptionHandler(new LoggingUncaughtExceptionHandler(onError))
 	}
 
 	/** replacement for logThreadExceptions(EDT) which does work in java 7, but not java 6 */

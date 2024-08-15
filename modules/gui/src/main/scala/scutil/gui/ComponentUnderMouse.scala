@@ -18,7 +18,7 @@ object ComponentUnderMouse {
 	private type Callback	= Effect[Boolean]
 
 	private final case class Entry(state:Boolean, callbacks:Seq[WeakReference[Callback]]) {
-		def referencedCallbacks:Seq[WeakReference[Callback]]	= callbacks filterNot { _.get eq null }
+		def referencedCallbacks:Seq[WeakReference[Callback]]	= callbacks.filterNot(_.get eq null)
 	}
 }
 
@@ -34,7 +34,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 
 	/** keep a hard reference to the component and either the callback or the resulting Disposer or updates will stop */
 	def listen(component:Component, callback:Callback):Disposer	= {
-		val nowUnderMouse	= underMousePredicate() apply component
+		val nowUnderMouse	= underMousePredicate().apply(component)
 		val componentRef	= new WeakReference(callback)
 		val newCallbacks	=
 			entries get component match {
@@ -44,9 +44,9 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 		entries	+= (component -> Entry(nowUnderMouse, newCallbacks))
 		Disposer delay {
 			entries	=
-				entries flatMap { case (component, entry) =>
+				entries.flatMap { (component, entry) =>
 					val newCallbacks	=
-							entry.callbacks filterNot { it =>
+							entry.callbacks.filterNot { it =>
 								val deref	= it.get
 								(deref eq null) ||
 								deref == callback
@@ -63,7 +63,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 			for {
 				pair	<- entries
 				(component, entry)	= pair
-				newState	= predicate apply component
+				newState	= predicate(component)
 				if newState != entry.state
 			}
 			yield component -> Entry(newState, entry.referencedCallbacks)
@@ -92,7 +92,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 
 	/** this is expensive, avoid calls if possible */
 	private def mouseLocation:Option[Point]	=
-		Option(MouseInfo.getPointerInfo) map { _.getLocation }
+		Option(MouseInfo.getPointerInfo).map { _.getLocation }
 
 	private def underMousePoint(mouse:Point, component:Component):Boolean	= {
 		val local	= convertPointFromScreen(mouse, component)
@@ -134,7 +134,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 		new Thread {
 			override def run():Unit	= {
 				while (true) {
-					Thread sleep testCycle.millis
+					Thread.sleep(testCycle.millis)
 					edt {
 						try {
 							update()
@@ -146,8 +146,8 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 				}
 			}
 		}
-	testThread setName		"ComponentUnderMouse"
-	testThread setDaemon	true
-	testThread setPriority	Thread.MIN_PRIORITY
+	testThread.setName("ComponentUnderMouse")
+	testThread.setDaemon(true)
+	testThread.setPriority(Thread.MIN_PRIORITY)
 	testThread.start()
 }

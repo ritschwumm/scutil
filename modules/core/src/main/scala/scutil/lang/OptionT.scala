@@ -4,38 +4,38 @@ import scutil.lang.tc.*
 
 object OptionT {
 	def some[F[_]:Applicative,T](it:T):OptionT[F,T]					= fromOption(Some(it))
-	def someF[F[_],T](it:F[T])(using M:Functor[F]):OptionT[F,T]	= OptionT((M map it)(Some.apply))
+	def someF[F[_],T](it:F[T])(using M:Functor[F]):OptionT[F,T]	= OptionT((M.map(it))(Some.apply))
 
 	def none[F[_]:Applicative,T]:OptionT[F,T]						= fromOption(None)
 
 	//------------------------------------------------------------------------------
 
 	def fromOption[F[_],T](it:Option[T])(using M:Applicative[F]):OptionT[F,T]	=
-		OptionT(M pure it)
+		OptionT(M.pure(it))
 
 	def switch[F[_]:Applicative,T](condition:Boolean, trueSome: =>T):OptionT[F,T]	=
 		fromOption(if (condition) Some(trueSome) else None)
 
 	//------------------------------------------------------------------------------
 
-	def delay[F[_],T](it: =>T)(using D:Delay[F]):OptionT[F,T]	= OptionT(D delay Some(it))
+	def delay[F[_],T](it: =>T)(using D:Delay[F]):OptionT[F,T]	= OptionT(D.delay(Some(it)))
 
 	def delayFromOption[F[_],T](it: =>Option[T])(using D:Delay[F]):OptionT[F,T]	=
-		OptionT(D delay it)
+		OptionT(D.delay(it))
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
 	given OptionTDelay[F[_]:Delay]:Delay[OptionT[F,_]]	=
 		new Delay[OptionT[F,_]] {
-			override def delay[T](it: =>T):OptionT[F,T]	= OptionT delay it
+			override def delay[T](it: =>T):OptionT[F,T]	= OptionT.delay(it)
 		}
 
 	given OptionTMonad[F[_]](using MF:Monad[F]):Monad[OptionT[F,_]]	=
 		new Monad[OptionT[F,_]] {
-			override def pure[T](it:T):OptionT[F,T]											= OptionT some it
-			override def map[S,T](its:OptionT[F,S])(func:S=>T):OptionT[F,T]					= its map func
-			override def flatMap[S,T](its:OptionT[F,S])(func:S=>OptionT[F,T]):OptionT[F,T]	= its flatMap func
+			override def pure[T](it:T):OptionT[F,T]											= OptionT.some(it)
+			override def map[S,T](its:OptionT[F,S])(func:S=>T):OptionT[F,T]					= its.map(func)
+			override def flatMap[S,T](its:OptionT[F,S])(func:S=>OptionT[F,T]):OptionT[F,T]	= its.flatMap(func)
 		}
 }
 
@@ -51,14 +51,14 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 	def map[U](func:T=>U)(using M:Functor[F]):OptionT[F,U]	=
 		OptionT(
 			M.map(value)(
-				_ map func
+				_.map(func)
 			)
 		)
 
 	def flatMap[U](func:T=>OptionT[F,U])(using M:Monad[F]):OptionT[F,U]	=
 		OptionT(
 			M.flatMap(value)(
-				_ map (func(_).value) getOrElse (M pure None)
+				_.map(func(_).value).getOrElse(M.pure(None))
 			)
 		)
 
@@ -75,7 +75,7 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 	def flatMapOption[U](func:T=>Option[U])(using M:Monad[F]):OptionT[F,U]	=
 		OptionT(
 			M.map(value)(
-				_ flatMap func
+				_.flatMap(func)
 			)
 		)
 
@@ -86,28 +86,28 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 
 	def orElse[TT>:T](that:OptionT[F,TT])(using M:Monad[F]):OptionT[F,TT]	=
 		OptionT(
-			(M flatMap value) {
+			M.flatMap(value) {
 				case None	=> that.value
-				case x		=> M pure x
+				case x		=> M.pure(x)
 			}
 		)
 
 	def orElseT[TT>:T](that:Option[TT])(using M:Functor[F]):OptionT[F,TT]	=
 		OptionT(
-			(M map value) {
+			M.map(value) {
 				case None	=> that
 				case x		=> x
 			}
 		)
 
 	def getOrElseF[TT>:T](that:F[TT])(using M:Monad[F]):F[TT]	=
-		(M flatMap value) {
+		M.flatMap(value) {
 			case None		=> that
-			case Some(x)	=> M pure x
+			case Some(x)	=> M.pure(x)
 		}
 
 	def getOrElse[TT>:T](that:TT)(using M:Functor[F]):F[TT]	=
-		(M map value) {
+		M.map(value) {
 			case None		=> that
 			case Some(x)	=> x
 		}
@@ -116,23 +116,23 @@ final case class OptionT[F[_],T](value:F[Option[T]]) {
 
 	def toRightF[L](leftValue: =>F[L])(using M:Monad[F]):EitherT[F,L,T]	=
 		EitherT {
-			(M flatMap value) {
-				case Some(x)	=> M pure Right(x)
-				case None		=> (M map leftValue)(Left.apply)
+			M.flatMap(value) {
+				case Some(x)	=> M.pure(Right(x))
+				case None		=> M.map(leftValue)(Left.apply)
 			}
 		}
 
 	def toRight[L](leftValue: =>L)(using M:Functor[F]):EitherT[F,L,T]	=
-		EitherT((M map value)(_ toRight leftValue))
+		EitherT((M.map(value))(_ toRight leftValue))
 
 	def toLeftF[R](rightValue: =>F[R])(using M:Monad[F]):EitherT[F,T,R]	=
 		EitherT {
-			(M flatMap value) {
-				case Some(x)	=> M pure Left(x)
-				case None		=> (M map rightValue)(Right.apply)
+			M.flatMap(value) {
+				case Some(x)	=> M.pure(Left(x))
+				case None		=> M.map(rightValue)(Right.apply)
 			}
 		}
 
 	def toLeft[R](rightValue: =>R)(using M:Functor[F]):EitherT[F,T,R]	=
-		EitherT((M map value)(_ toLeft rightValue))
+		EitherT((M.map(value))(_ toLeft rightValue))
 }

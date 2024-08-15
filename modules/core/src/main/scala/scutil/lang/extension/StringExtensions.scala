@@ -45,7 +45,7 @@ object StringExtensions {
 		def parseBigInt:Either[NumberFormatException,BigInt]	= parseNumber(BigInt(_))
 
 		private def parseNumber[T](func:String=>T):Either[NumberFormatException,T]	=
-			Catch.byType[NumberFormatException] in func(peer)
+			Catch.byType[NumberFormatException].in(func(peer))
 
 		//------------------------------------------------------------------------------
 
@@ -53,7 +53,7 @@ object StringExtensions {
 			ByteString.fromString(peer, charset)
 
 		def toUtf8ByteString:ByteString	=
-			ByteString fromUtf8String peer
+			ByteString.fromUtf8String(peer)
 
 		def toIArray:IArray[Char]	=
 			IArray.unsafeFromArray(peer.toCharArray)
@@ -67,19 +67,19 @@ object StringExtensions {
 		//------------------------------------------------------------------------------
 
 		def cutPrefix(prefix:String):Option[String] =
-			if (peer startsWith prefix)	Some(peer substring prefix.length)
-			else						None
+			if (peer.startsWith(prefix))	Some(peer.substring(prefix.length))
+			else							None
 
 		def cutSuffix(suffix:String):Option[String] =
-			if (peer endsWith suffix)	Some(peer.substring(0, peer.length - suffix.length))
+			if (peer.endsWith(suffix))	Some(peer.substring(0, peer.length - suffix.length))
 			else						None
 
 		def pastePrefix(prefix:String):Option[String] =
-			if (peer startsWith prefix)	None
-			else						Some(prefix + peer)
+			if (peer.startsWith(prefix))	None
+			else							Some(prefix + peer)
 
 		def pasteSuffix(suffix:String):Option[String] =
-			if (peer endsWith suffix)	None
+			if (peer.endsWith(suffix))	None
 			else						Some(peer + suffix)
 
 		//------------------------------------------------------------------------------
@@ -95,7 +95,7 @@ object StringExtensions {
 			def loop(pos:Int):Seq[String]	=
 				peer.indexOf(separator, pos) match {
 					case -1 =>
-						out	+= peer substring pos
+						out	+= peer.substring(pos)
 						out.toVector
 					case index	=>
 						out	+= peer.substring(pos, index)
@@ -113,19 +113,19 @@ object StringExtensions {
 
 		/** excludes the separator char itself */
 		def splitAroundFirstChar(separator:Char):Option[(String,String)] =
-			splitAroundIndex(peer indexOf separator)
+			splitAroundIndex(peer.indexOf(separator))
 
 		/** excludes the separator char itself */
 		def splitAroundLastChar(separator:Char):Option[(String,String)] =
-			splitAroundIndex(peer lastIndexOf separator)
+			splitAroundIndex(peer.lastIndexOf(separator))
 
 		/** excludes the separator itself */
 		def splitAroundFirstString(separator:String):Option[(String,String)] =
-			splitAroundIndex(peer indexOf separator)
+			splitAroundIndex(peer.indexOf(separator))
 
 		/** excludes the separator itself */
 		def splitAroundLastString(separator:String):Option[(String,String)] =
-			splitAroundIndex(peer lastIndexOf separator)
+			splitAroundIndex(peer.lastIndexOf(separator))
 
 		//------------------------------------------------------------------------------
 
@@ -171,7 +171,7 @@ object StringExtensions {
 			val b	= new StringBuilder
 			var i	= 0
 			while (i < peer.length) {
-				peer charAt i match {
+				peer.charAt(i) match {
 					case '<'			=> b append "&lt;"
 					case '>'			=> b append "&gt;"
 					case '&'			=> b append "&amp;"

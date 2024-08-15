@@ -6,5 +6,5 @@ import scala.concurrent.*
 
 object SwingExecutionContext {
 	given self:ExecutionContext	=
-		ExecutionContext fromExecutor (SwingUtilities invokeLater _)
+		ExecutionContext.fromExecutor(SwingUtilities.invokeLater(_))
 }

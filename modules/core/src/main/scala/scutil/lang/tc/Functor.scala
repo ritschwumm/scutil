@@ -7,7 +7,7 @@ object Functor extends FunctorLow1 {
 
 	given [S]:Functor[Function[S,_]]	=
 		new Functor[Function[S,_]] {
-			def map[A,B](it:Function[S,A])(func:A=>B):Function[S,B]	= it andThen func
+			def map[A,B](it:Function[S,A])(func:A=>B):Function[S,B]	= it.andThen(func)
 		}
 
 	// TODO can we have a TraversedMonad here?
@@ -22,7 +22,7 @@ object Functor extends FunctorLow1 {
 	// NOTE PFunction and FFunction are both just ReaderT/Kleisli
 	given [S]:Functor[[X] =>> S=>Option[X]]	=
 		new Functor[[X] =>> S=>Option[X]] {
-			def map[A,B](it:S=>Option[A])(func:A=>B):S=>Option[B]		= it(_) map func
+			def map[A,B](it:S=>Option[A])(func:A=>B):S=>Option[B]		= it(_).map(func)
 		}
 	*/
 
@@ -30,7 +30,7 @@ object Functor extends FunctorLow1 {
 	given [F[_]:Functor,S]:Functor[[X] =>> S=>F[X]]	=
 		new Functor[[X] =>> S=>F[X]] {
 			def map[A,B](it:S=>F[A])(func:A=>B):S=>F[B]	=
-					a => (Functor[F] map it(a))(func)
+				a => Functor[F].map(it(a))(func)
 		}
 }
 

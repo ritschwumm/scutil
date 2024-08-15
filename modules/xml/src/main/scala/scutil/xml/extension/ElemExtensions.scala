@@ -17,14 +17,14 @@ object ElemExtensions {
 			.map	{ _.value.text }
 
 		def xmlAttrs:Seq[(XmlAttr, String)]	=
-			peer.attributes.toVector collect {
+			peer.attributes.toVector.collect {
 				case it:PrefixedAttribute	=> XmlAttr(Some(it.pre),	it.key)	-> it.value.text
 				case it:UnprefixedAttribute	=> XmlAttr(None,			it.key)	-> it.value.text
 			}
 
 		def updateXmlAttrs(attrs:Seq[(XmlAttr, String)]):Elem	=
-			peer copy (attributes =
-				(attrs foldLeft (Null:MetaData)) { (md, next) =>
+			peer.copy(attributes =
+				attrs.foldLeft(Null:MetaData) { (md, next) =>
 					next match {
 						case (XmlAttr(pre, key), value) => Attribute(pre.orNull, key, value, md)
 					}
@@ -35,7 +35,7 @@ object ElemExtensions {
 			updateXmlAttrs(func(xmlAttrs))
 
 		def updateChildren(children:Seq[Node]):Elem	=
-			peer copy (child = children)
+			peer.copy(child = children)
 
 		def modifyChildren(func:Seq[Node]=>Seq[Node]):Elem	=
 			updateChildren(func(peer.child))

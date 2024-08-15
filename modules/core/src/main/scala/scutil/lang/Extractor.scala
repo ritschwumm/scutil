@@ -21,14 +21,14 @@ object Extractor {
 
 	given ExtractorFunctor[S]:Functor[Extractor[S,_]]	=
 		new Functor[Extractor[S,_]] {
-			def map[A,B](it:Extractor[S,A])(func:A=>B):Extractor[S,B]	= it map func
+			def map[A,B](it:Extractor[S,A])(func:A=>B):Extractor[S,B]	= it.map(func)
 		}
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
 	given ExtractorSemigroup[S,T]:Semigroup[Extractor[S,T]]	=
-		Semigroup instance (_ orElse _)
+		Semigroup.instance(_ `orElse` _)
 }
 
 /** representative extractor (as opposed to compiler magic) */
@@ -37,29 +37,29 @@ final case class Extractor[S,T](read:S=>Option[T]) {
 
 	/** symbolic alias for andThen */
 	def >=>[U](that:Extractor[T,U]):Extractor[S,U]	=
-		this andThen that
+		this.andThen(that)
 
 	/** symbolic alias for compose */
 	def <=<[R](that:Extractor[R,S]):Extractor[R,T]	=
-		this compose that
+		this.compose(that)
 
 	def compose[R](that:Extractor[R,S]):Extractor[R,T]	=
-		that andThen this
+		that.andThen(this)
 
 	def andThen[U](that:Extractor[T,U]):Extractor[S,U]	=
-		Extractor(s => this read s flatMap that.read)
+		Extractor(s => this.read(s).flatMap(that.read))
 
 	def orElse(that:Extractor[S,T]):Extractor[S,T]	=
-		Extractor(s	=> (this read s) orElse (that read s))
+		Extractor(s	=> this.read(s) `orElse` that.read(s))
 
 	def map[U](func:T=>U):Extractor[S,U]	=
-		Extractor(s => read(s) map func)
+		Extractor(s => read(s).map(func))
 
 	def contraMap[R](func:R=>S):Extractor[R,T]	=
 		Extractor(func andThen read)
 
 	def filter(pred:T=>Boolean):Extractor[S,T]	=
-		Extractor(s	=> read(s) filter pred)
+		Extractor(s	=> read(s).filter(pred))
 
 	def contraFilter(pred:S=>Boolean):Extractor[S,T]	=
 		Extractor(s	=> if (pred(s))	read(s)	else None)

@@ -17,38 +17,38 @@ object extensions {
 
 	/*
 	implicit final class BooleanSgExt(delegate:Boolean) {
-		def trueHorizontal:SgOrientation	= SgOrientation trueHorizontal	delegate
-		def trueVertical:SgOrientation		= SgOrientation trueVertical	delegate
+		def trueHorizontal:SgOrientation	= SgOrientation.trueHorizontal(delegate)
+		def trueVertical:SgOrientation		= SgOrientation.trueVertical(delegate)
 	}
 	*/
 
 	//------------------------------------------------------------------------------
 
 	implicit final class InsetsSgExt(delegate:Insets) {
-		def toSgRectangleInsets:SgRectangleInsets	= SgRectangleInsets fromAwtInsets delegate
+		def toSgRectangleInsets:SgRectangleInsets	= SgRectangleInsets.fromAwtInsets(delegate)
 	}
 
 	implicit final class AreaSgExt(delegate:Area) {
-		def toSgArea:SgArea	= SgArea fromAwtArea delegate
+		def toSgArea:SgArea	= SgArea.fromAwtArea(delegate)
 	}
 
 	implicit final class Point2DSgExt(delegate:Point2D) {
-		def toSgPoint:SgPoint	= SgPoint fromAwtPoint2D delegate
+		def toSgPoint:SgPoint	= SgPoint.fromAwtPoint2D(delegate)
 	}
 
 	implicit final class Dimension2DSgExt(delegate:Dimension2D) {
-		def toSgPoint:SgPoint	= SgPoint fromAwtDimension2D delegate
+		def toSgPoint:SgPoint	= SgPoint.fromAwtDimension2D(delegate)
 	}
 
 	implicit final class Rectangle2DSgExt(delegate:Rectangle2D) {
-		def toSgRectangle:SgRectangle	= SgRectangle fromAwtRectangle2D delegate
+		def toSgRectangle:SgRectangle	= SgRectangle.fromAwtRectangle2D(delegate)
 	}
 
 	implicit final class Line2DSgExt(delegate:Line2D) {
-		def toSgLine:SgLine	= SgLine fromAwtLine2D delegate
+		def toSgLine:SgLine	= SgLine.fromAwtLine2D(delegate)
 	}
 
 	implicit final class AffineTransformSgExt(delegate:AffineTransform) {
-		def toSgAffineTransform:SgAffineTransform	= SgAffineTransform fromAwtAffineTransform delegate
+		def toSgAffineTransform:SgAffineTransform	= SgAffineTransform.fromAwtAffineTransform(delegate)
 	}
 }

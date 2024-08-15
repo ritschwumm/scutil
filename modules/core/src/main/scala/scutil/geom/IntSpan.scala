@@ -1,5 +1,7 @@
 package scutil.geom
 
+import scala.compiletime.asMatchable
+
 object IntSpan {
 	val zero	= new IntSpan(0, 0)
 
@@ -53,8 +55,9 @@ final class IntSpan private (val start:Int, val size:Int) {
 
 	//------------------------------------------------------------------------------
 
+	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 	override def equals(that:Any):Boolean	=
-		that match {
+		that.asMatchable match {
 			case that:IntSpan	=> this.start == that.start && this.size == that.size
 			case _				=> false
 		}

@@ -7,63 +7,63 @@ import scutil.text.extension.StringContextExtensions.*
 object TextTest extends SimpleTestSuite {
 	test("stripMarginOnly should pass through blank input") {
 		assertEquals(
-			Text stripMarginOnly "",
+			Text.stripMarginOnly(""),
 			""
 		)
 	}
 
 	test("stripMarginOnly should ignore non-matching lines") {
 		assertEquals(
-			Text stripMarginOnly "test\n|test\ntest",
+			Text.stripMarginOnly("test\n|test\ntest"),
 			"test"
 		)
 	}
 
 	test("stripMarginOnly should ignore blank lines") {
 		assertEquals(
-			Text stripMarginOnly "\n|test\n\n|foo\n\n\n|bar",
+			Text.stripMarginOnly("\n|test\n\n|foo\n\n\n|bar"),
 			"test\nfoo\nbar"
 		)
 	}
 
 	test("stripMarginOnly should ignore the last linefeed") {
 		assertEquals(
-			Text stripMarginOnly "|test\n",
+			Text.stripMarginOnly("|test\n"),
 			"test"
 		)
 	}
 
 	test("stripMarginOnly should properly strip without whitespace") {
 		assertEquals(
-			Text stripMarginOnly "|test",
+			Text.stripMarginOnly("|test"),
 			"test"
 		)
 	}
 
 	test("stripMarginOnly should properly strip with blanks whitespace") {
 		assertEquals(
-			Text stripMarginOnly "  |test",
+			Text.stripMarginOnly("  |test"),
 			"test"
 		)
 	}
 
 	test("stripMarginOnly should properly strip with tabs whitespace") {
 		assertEquals(
-			Text stripMarginOnly "\t\t|test",
+			Text.stripMarginOnly("\t\t|test"),
 			"test"
 		)
 	}
 
 	test("stripMarginOnly should properly strip with mixed whitespace") {
 		assertEquals(
-			Text stripMarginOnly " \t \t |test",
+			Text.stripMarginOnly(" \t \t |test"),
 			"test"
 		)
 	}
 
 	test("stripMarginOnly should work with multiple lines") {
 		assertEquals(
-			Text stripMarginOnly "  |test\n foo\n| bar",
+			Text.stripMarginOnly("  |test\n foo\n| bar"),
 			"test\n bar"
 		)
 	}
@@ -82,7 +82,7 @@ object TextTest extends SimpleTestSuite {
 
 	test("table helper should format correctly") {
 		assertEquals(
-			Text table Vector(Vector("a","bb","ccc"),Vector("ddd","cccc","e")),
+			Text.table(Vector(Vector("a","bb","ccc"),Vector("ddd","cccc","e"))),
 			Vector(
 				"┌───┬────┬───┐",
 				"│a  │bb  │ccc│",

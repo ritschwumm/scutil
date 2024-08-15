@@ -56,19 +56,19 @@ object MoreFiles {
 
 	/** execute a closure with an InputStream reading from this File */
 	def withInputStream[T](file:Path)(code:(InputStream=>T)):T	=
-		Files.newInputStream(file) use code
+		Files.newInputStream(file).use(code)
 
 	/** execute a closure with an OutputStream writing into this File */
 	def withOutputStream[T](file:Path)(code:(OutputStream=>T)):T	=
-		Files.newOutputStream(file) use code
+		Files.newOutputStream(file).use(code)
 
 	/** execute a closure with a Reader reading from this File */
 	def withReader[T](file:Path, charset:Charset)(code:(Reader=>T)):T	=
-		Files.newBufferedReader(file, charset) use code
+		Files.newBufferedReader(file, charset).use(code)
 
 	/** execute a closure with a Writer writing into this File */
 	def withWriter[T](file:Path, charset:Charset)(code:(Writer=>T)):T	=
-		Files.newBufferedWriter(file, charset) use code
+		Files.newBufferedWriter(file, charset).use(code)
 
 	//------------------------------------------------------------------------------
 	//## content mapped
@@ -92,13 +92,13 @@ object MoreFiles {
 			directory,
 			new SimpleFileVisitor[Path] {
 				override def visitFile(file:Path, attrs:BasicFileAttributes):FileVisitResult	= {
-					Files delete file
+					Files.delete(file)
 					FileVisitResult.CONTINUE
 				}
 
 				override def postVisitDirectory(dir:Path, e:IOException):FileVisitResult	= {
 					if (e != null)	throw e
-					Files delete dir
+					Files.delete(dir)
 					FileVisitResult.CONTINUE
 				}
 			}

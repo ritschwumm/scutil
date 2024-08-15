@@ -10,19 +10,19 @@ object ValidatedTest extends SimpleTestSuite {
 	//------------------------------------------------------------------------------
 
 	test("Validated should do successful ap") {
-		val func:Validated[E,Int=>Int]	= Validated valid (_ * 2)
-		val value:Validated[E,Int]		= Validated valid 7
+		val func:Validated[E,Int=>Int]	= Validated.valid(_ * 2)
+		val value:Validated[E,Int]		= Validated.valid(7)
 		assertEquals(
-			func ap value,
+			func.ap(value),
 			Validated.valid(14)
 		)
 	}
 
 	test("Validated should combine function-first in ap") {
-		val func:Validated[E,Int=>Int]	= Validated invalid E("bug")
-		val value:Validated[E,Int]		= Validated invalid E("error")
+		val func:Validated[E,Int=>Int]	= Validated.invalid(E("bug"))
+		val value:Validated[E,Int]		= Validated.invalid(E("error"))
 		assertEquals(
-			func ap value,
+			func.ap(value),
 			Validated.invalid(EE("bug", "error"))
 		)
 	}

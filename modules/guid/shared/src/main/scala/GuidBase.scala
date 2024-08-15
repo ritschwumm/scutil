@@ -7,12 +7,12 @@ import scutil.codec.*
 
 protected abstract class GuidBase {
 	def fresh[F[_]:Delay]:F[String]	=
-		Delay[F] delay unsafeFresh()
+		Delay[F].delay(unsafeFresh())
 
 	def unsafeFresh():String	= {
-		val rand	= Hex encodeByteString randomBytes(randomCount)
-		val stamp	= Hex encodeByteString timestamp()
-		val count	= Hex encodeByteString counterValue()
+		val rand	= Hex.encodeByteString(randomBytes(randomCount))
+		val stamp	= Hex.encodeByteString(timestamp())
+		val count	= Hex.encodeByteString(counterValue())
 		rand + "-" + stamp + "-" + count
 	}
 
@@ -25,8 +25,8 @@ protected abstract class GuidBase {
 	protected def randomBytes(size:Int):ByteString
 
 	private def timestamp():ByteString	=
-		ByteString fromBigEndianLong System.currentTimeMillis()
+		ByteString.fromBigEndianLong(System.currentTimeMillis())
 
 	private def counterValue():ByteString	=
-		ByteString fromBigEndianInt counter.incrementAndGet()
+		ByteString.fromBigEndianInt(counter.incrementAndGet())
 }

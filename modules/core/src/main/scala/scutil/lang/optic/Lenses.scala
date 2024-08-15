@@ -10,7 +10,7 @@ object Lenses {
 		)
 
 	def map[K,V](k:K):Lens[Map[K,V],Option[V]]	=
-		Lens fromStoreAt (_ optionStoreAt k)
+		Lens.fromStoreAt(_.optionStoreAt(k))
 
 	/*
 	// TODO check this works
@@ -21,7 +21,7 @@ object Lenses {
 	def mapWithDefault[S,T](key:S, default:T):Lens[Map[S,T],T]	=
 		Lens(
 			get	= map =>
-				map get key getOrElse default,
+				map.get(key).getOrElse(default),
 			set	= value => map =>
 				if (value != default)	map.updated(key, value)
 				else					map - key

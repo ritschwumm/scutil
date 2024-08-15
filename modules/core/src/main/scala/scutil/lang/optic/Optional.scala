@@ -8,7 +8,7 @@ object Optional {
 
 	def total[S,T](get:S=>T, set:T=>S):Optional[S,T]	=
 		Optional(
-			get	= get andThen Some.apply,
+			get	= get.andThen(Some.apply),
 			set	= t => _ => set(t)
 		)
 
@@ -37,12 +37,12 @@ object Optional {
 		)
 
 	def codiag[T]:Optional[Either[T,T],T]	=
-		identity[T] sum identity[T]
+		identity[T].sum(identity[T])
 
 	def fromStoreAt[S,T](func:S=>Option[Store[T,S]]):Optional[S,T]	=
 		Optional(
 			get	= s			=> func(s).map(_.index),
-			set	= t => s	=> func(s).map(_ peek t).getOrElse(s)
+			set	= t => s	=> func(s).map(_.peek(t)).getOrElse(s)
 		)
 
 	//------------------------------------------------------------------------------
@@ -50,7 +50,7 @@ object Optional {
 
 	// TODO optics is this lawful?
 	given OptionalSemigroup[S,T]:Semigroup[Optional[S,T]]	=
-		Semigroup instance (_ orElse _)
+		Semigroup.instance(_ `orElse` _)
 }
 
 final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
@@ -64,10 +64,10 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 			.map		{ t => set(func(t))(s) }
 			.getOrElse	(s)
 		}
-	def modThe(s:S, func:T=>T):S	= mod(func) apply s
+	def modThe(s:S, func:T=>T):S	= mod(func).apply(s)
 
-	def modF[F[_]](func:T=>F[T])(using F:Applicative[F]):S=>F[S]	= s	=> modOptF(func) apply s getOrElse (F pure s)
-	def modTheF[F[_]](s:S, func:T=>F[T])(using F:Applicative[F]):F[S]	= modF(func) apply s
+	def modF[F[_]](func:T=>F[T])(using F:Applicative[F]):S=>F[S]	= s	=> modOptF(func).apply(s).getOrElse(F.pure(s))
+	def modTheF[F[_]](s:S, func:T=>F[T])(using F:Applicative[F]):F[S]	= modF(func).apply(s)
 
 	//------------------------------------------------------------------------------
 
@@ -83,20 +83,20 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 
 	def modOpt(func:T=>T):S=>Option[S]	=
 		s	=> {
-			get(s) map { t =>
+			get(s).map { t =>
 				set(func(t))(s)
 			}
 		}
-	def modTheOpt(s:S, func:T=>T):Option[S]	= modOpt(func) apply s
+	def modTheOpt(s:S, func:T=>T):Option[S]	= modOpt(func).apply(s)
 
 	def modOptF[F[_]](func:T=>F[T])(using F:Functor[F]):S=>Option[F[S]]	=
 		s	=> {
-			get(s) map { t =>
+			get(s).map { t =>
 				val ft:F[T] = func(t)
-				(F map ft) { t => set(t)(s) }
+				F.map(ft) { t => set(t)(s) }
 			}
 		}
-	def modTheOptF[F[_]](s:S, func:T=>F[T])(using F:Functor[F]):Option[F[S]]	= modOptF(func) apply s
+	def modTheOptF[F[_]](s:S, func:T=>F[T])(using F:Functor[F]):Option[F[S]]	= modOptF(func).apply(s)
 
 	//------------------------------------------------------------------------------
 
@@ -104,7 +104,7 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 		State { s =>
 			get(s)
 			.map { t1 =>
-				val (t2, u)	= state run t1
+				val (t2, u)	= state.run(t1)
 				set(t2)(s) -> (Some(u):Option[U])
 			}
 			.getOrElse (s -> None)
@@ -114,22 +114,22 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 		embedState(State.get)
 
 	def setState(it:T):State[S,Option[Unit]]	=
-		embedState(State set it)
+		embedState(State.set(it))
 
 	def setStateSuccess(it:T):State[S,Boolean]	=
-		setState(it) map (_.isDefined)
+		setState(it).map(_.isDefined)
 
 	def setOldState(it:T):State[S,Option[T]]	=
-		embedState(State setOld it)
+		embedState(State.setOld(it))
 
 	def modState(func:T=>T):State[S,Option[Unit]]	=
-		embedState(State mod func)
+		embedState(State.mod(func))
 
 	def modStateSuccess(func:T=>T):State[S,Boolean]	=
-		embedState(State mod func) map (_.isDefined)
+		embedState(State.mod(func)).map(_.isDefined)
 
 	def modOldState(func:T=>T):State[S,Option[T]]	=
-		embedState(State modOld func)
+		embedState(State.modOld(func))
 
 	// NOTE no transformState
 
@@ -139,13 +139,13 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 		StateT { s =>
 			get(s)
 			.map { t1 =>
-				val ftu	= state run t1
-				(F map ftu) { case (t2, u) =>
+				val ftu	= state.run(t1)
+				F.map(ftu) { (t2, u) =>
 					set(t2)(s) -> (Some(u):Option[U])
 				}
 			}
 			.getOrElse (
-				F pure (s -> (None:Option[U]))
+				F.pure(s -> (None:Option[U]))
 			)
 		}
 
@@ -153,23 +153,23 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 		embedStateT(StateT.get)
 
 	def setStateT[F[_]:Applicative](it:T):StateT[F,S,Option[Unit]]	=
-		embedStateT(StateT set it)
+		embedStateT(StateT.set(it))
 
 	def setOldStateT[F[_]:Applicative](it:T):StateT[F,S,Option[T]]	=
-		embedStateT(StateT setOld it)
+		embedStateT(StateT.setOld(it))
 
 	def modStateT[F[_]:Applicative](func:T=>T):StateT[F,S,Option[Unit]]	=
-		embedStateT(StateT mod func)
+		embedStateT(StateT.mod(func))
 
 	def modOldStateT[F[_]:Applicative](func:T=>T):StateT[F,S,Option[T]]	=
-		embedStateT(StateT modOld func)
+		embedStateT(StateT.modOld(func))
 
 	//------------------------------------------------------------------------------
 
 	def embedStateOpt[U](state:State[T,U]):StateT[Option,S,U]	=
 		StateT { (s:S) =>
-			get(s) map { t1 =>
-				val (t2, u)	= state run t1
+			get(s).map { t1 =>
+				val (t2, u)	= state.run(t1)
 				set(t2)(s) -> u
 			}
 		}
@@ -178,7 +178,7 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 
 	def orElse(that:Optional[S,T]):Optional[S,T]	=
 		Optional(
-			get	= s	=> (this get s) orElse (that get s),
+			get	= s	=> this.get(s) `orElse` that.get(s),
 			set	= set
 		)
 
@@ -192,7 +192,7 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 	/** filter the target value */
 	def filterAfter(pred:Predicate[T]):Optional[S,T]	=
 		Optional(
-			get	= s	=> get(s) filter pred,
+			get	= s	=> get(s).filter(pred),
 			set	= set
 		)
 
@@ -200,22 +200,22 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 
 	/** symbolic alias for andThen */
 	def >=>[U](that:Optional[T,U]):Optional[S,U]	=
-		this andThen that
+		this.andThen(that)
 
 	/** symbolic alias for compose */
 	def <=<[R](that:Optional[R,S]):Optional[R,T]	=
-		this compose that
+		this.compose(that)
 
 	def compose[R](that:Optional[R,S]):Optional[R,T]	=
-		that andThen this
+		that.andThen(this)
 
 	def andThen[U](that:Optional[T,U]):Optional[S,U]	=
 		Optional(
-			get	= s => this get s flatMap that.get,
+			get	= s => this.get(s).flatMap(that.get),
 			set	= (u:U) => (s:S) => {
 				get(s)
 				.map { t =>
-					this set (that set u apply t) apply s
+					this.set(that.set(u).apply(t)).apply(s)
 				}
 				.getOrElse(s)
 			}
@@ -227,8 +227,8 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 	// TODO optics PLens says this is impossible - investigate
 	def zip[U](that:Optional[S,U]):Optional[S,(T,U)]	=
 		Optional(
-			get	= s			=> (this get s) zip (that get s),
-			set	= tu => s	=> that set tu._2 apply (this set tu._1 apply s)
+			get	= s			=> this.get(s) `zip` that.get(s),
+			set	= tu => s	=> that.set(tu._2).apply(this.set(tu._1).apply (s))
 		)
 
 	// |||
@@ -236,21 +236,21 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 		Optional(
 			get	=
 				_ match {
-					case Left(s)	=> this get s
-					case Right(ss)	=> that get ss
+					case Left(s)	=> this.get(s)
+					case Right(ss)	=> that.get(ss)
 				},
 			set	= t =>
 				_ match {
-					case Left(s)	=> Left(this set t apply s)
-					case Right(ss)	=> Right(that set t apply ss)
+					case Left(s)	=> Left(this.set(t)apply (s))
+					case Right(ss)	=> Right(that.set(t).apply(ss))
 				}
 		)
 
 	// ***
 	def product[SS,TT](that:Optional[SS,TT]):Optional[(S,SS),(T,TT)]	=
 		Optional(
-			get	= sss			=> (this get sss._1) zip (that get sss._2),
-			set	= ttt => sss	=> (this set ttt._1 apply sss._1, that set ttt._2 apply sss._2)
+			get	= sss			=> this.get(sss._1) `zip` that.get(sss._2),
+			set	= ttt => sss	=> (this.set(ttt._1).apply(sss._1), that.set(ttt._2).apply(sss._2))
 		)
 
 	//------------------------------------------------------------------------------
@@ -266,16 +266,16 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 	def over[R](store:Option[Store[S,R]]):Option[Store[T,R]]	=
 		for {
 			store	<- store
-			here	<- this on store.index
+			here	<- this.on(store.index)
 		}
-		yield store andThen here
+		yield store.andThen(here)
 
 	def overTotal[R](store:Store[S,R]):Option[Store[T,R]]	=
-		this on store.index map { _ compose store }
+		this.on(store.index).map { _.compose(store) }
 
 	/*
 	// TODO optics does this make sense?
 	def toLens(default: =>Store[T,S]):Lens[S,T]	=
-		Lens fromStoreAt { on(_) getOrElse default }
+		Lens fromStoreAt { on(_).getOrElse(default) }
 	*/
 }

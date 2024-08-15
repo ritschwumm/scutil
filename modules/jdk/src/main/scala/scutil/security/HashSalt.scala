@@ -54,29 +54,29 @@ final class HashSalt(
 	saltSize:Int,
 	roundCount:Int
 ) {
-	private val	random	= SecureRandom getInstance randomAlgorithm
+	private val	random	= SecureRandom.getInstance(randomAlgorithm)
 
 	/** salt and cook a raw password so it can safely be stored somewhere */
 	@throws(classOf[NoSuchAlgorithmException])
 	def cook(raw:String):String	= {
-		val	salt		= synchronized { random byteString saltSize }
+		val	salt		= synchronized { random.byteString(saltSize) }
 		val prepared	= prepare(raw, salt, roundCount)
 		roundCount.toString				+ "$" +
-		(Base64 encodeByteString salt)	+ "$" +
-		(Base64 encodeByteString prepared)
+		Base64.encodeByteString(salt)	+ "$" +
+		Base64.encodeByteString(prepared)
 	}
 
 	/** check if a raw password, when cooked, matches the same password cooked before */
 	@throws(classOf[NoSuchAlgorithmException])
 	def taste(raw:String, cooked:String):Boolean = {
 		(for {
-			Seq(r,s,p)	<- cooked splitAroundChar '$' optionBy { _.size == 3 }
+			Seq(r,s,p)	<- cooked.splitAroundChar('$').optionBy{ _.size == 3 }
 			rounds		<- r.toIntOption
-			salt		<- Base64 decodeByteString s
-			prepared	<- Base64 decodeByteString p
+			salt		<- Base64.decodeByteString(s)
+			prepared	<- Base64.decodeByteString(p)
 		}
 		yield {
-			prepared constantTimeEquals prepare(raw, salt, rounds)
+			prepared.constantTimeEquals(prepare(raw, salt, rounds))
 		})
 		.getOrElse(false)
 	}
@@ -85,7 +85,7 @@ final class HashSalt(
 	private def prepare(raw:String, salt:ByteString, rounds:Int):ByteString	=
 		raw											|>
 		(Normalizer.normalize(_, normalizerForm))	|>
-		(_ toByteString encoding)					|>
+		(_.toByteString(encoding))					|>
 		(salt ++ _)									|>
 		hash(rounds)
 

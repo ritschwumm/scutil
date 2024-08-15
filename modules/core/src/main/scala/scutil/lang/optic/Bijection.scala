@@ -45,21 +45,21 @@ final case class Bijection[S,T](get:S=>T, set:T=>S) {
 	def mod(func:T=>T):S=>S	= s => set(func(get(s)))
 	def modThe(s:S, func:T=>T):S	= mod(func)(s)
 
-	def modF[F[_]](func:T=>F[T])(using F:Functor[F]):S=>F[S]	= s => (F map func(get(s)))(set)
-	def modTheF[F[_]:Functor](s:S, func:T=>F[T]):F[S]				= modF(func) apply s
+	def modF[F[_]](func:T=>F[T])(using F:Functor[F]):S=>F[S]	= s => F.map(func(get(s)))(set)
+	def modTheF[F[_]:Functor](s:S, func:T=>F[T]):F[S]	= modF(func).apply(s)
 
 	//------------------------------------------------------------------------------
 
 	def embedState[U](state:State[T,U]):State[S,U]	=
 		State { s =>
-			val (t,u)	= state run get(s)
+			val (t,u)	= state.run(get(s))
 			set(t) -> u
 		}
 
 	def embedStateT[F[_],U](state:StateT[F,T,U])(using F:Functor[F]):StateT[F,S,U]	=
 		StateT { s =>
-			val ftu:F[(T,U)]	= state run get(s)
-			(F map ftu) { case (t,u) =>
+			val ftu:F[(T,U)]	= state.run(get(s))
+			F.map(ftu) { (t,u) =>
 				set(t) -> u
 			}
 		}
@@ -71,19 +71,19 @@ final case class Bijection[S,T](get:S=>T, set:T=>S) {
 
 	/** symbolic alias for andThen */
 	def >=>[U](that:Bijection[T,U]):Bijection[S,U]	=
-		this andThen that
+		this.andThen(that)
 
 	/** symbolic alias for compose */
 	def <=<[R](that:Bijection[R,S]):Bijection[R,T]	=
-		this compose that
+		this.compose(that)
 
 	def compose[R](that:Bijection[R,S]):Bijection[R,T]	=
-		that andThen this
+		that.andThen(this)
 
 	def andThen[U](that:Bijection[T,U]):Bijection[S,U]	=
 		Bijection(
-			get	= s	=> that get (this get s),
-			set	= u	=> this set  (that set  u)
+			get	= s	=> that.get(this.get(s)),
+			set	= u	=> this.set(that.set(u))
 		)
 
 	def toPrism:Prism[S,T]	=

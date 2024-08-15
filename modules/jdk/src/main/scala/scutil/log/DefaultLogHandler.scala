@@ -7,13 +7,13 @@ object DefaultLogHandler extends DefaultLogHandler
 trait DefaultLogHandler extends LogHandler {
 	def handle(event:LogEvent):Unit = {
 		if (accept(event)) {
-			print(formatter format event)
+			print(formatter.format(event))
 		}
 	}
 
 	def print(s:String):Unit = {
 		synchronized {
-			printStream println	s
+			printStream.println(s)
 			printStream.flush()
 		}
 	}

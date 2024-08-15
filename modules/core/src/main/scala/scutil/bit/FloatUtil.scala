@@ -24,7 +24,7 @@ object FloatUtil {
 		// positive infinity	0x7f800000
 		// negative infinity	0xff800000
 		// NaN					0x7fc00000
-		val bits		= JFloat  floatToIntBits it
+		val bits		= JFloat.floatToIntBits(it)
 
 		// true means negative
 		val sign		= (bits & 0x80000000) != 0

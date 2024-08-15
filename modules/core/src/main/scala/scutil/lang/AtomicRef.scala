@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicReference
 object AtomicRef {
 	// NOTE initial could be lazy here
 	def apply[F[_]:Delay,G[_]:Delay,T](initial:T):F[AtomicRef[G,T]]	=
-		Delay[F] delay new AtomicRef(initial)
+		Delay[F].delay(new AtomicRef(initial))
 
 	def simple[F[_]:Delay,T](initial:T):F[AtomicRef[F,T]]	=
 		apply[F,F,T](initial)
@@ -33,7 +33,7 @@ final class AtomicRef[F[_]:Delay,T](initial:T) {
 	/** returns the previous value */
 	def set(it:T):F[T]	=
 		D delay {
-			ref getAndSet it
+			ref.getAndSet(it)
 		}
 
 	/** returns the previous value */

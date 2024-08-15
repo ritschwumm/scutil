@@ -12,7 +12,7 @@ object MapJCollectionExtensions {
 		def toJMap:JMap[S,T]	=  {
 			val out	= new JHashMap[S,T]
 			peer foreach { case (k,v) => out.put(k, v) }
-			JCollections unmodifiableMap out
+			JCollections.unmodifiableMap(out)
 		}
 
 		def toProperties(using sev:S <:< String, tev: T <:< String):Properties	= {

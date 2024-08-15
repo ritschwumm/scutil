@@ -11,7 +11,7 @@ object JMapExtensions {
 			val keyIter	= peer.keySet.iterator
 			while (keyIter.hasNext) {
 				val key		= keyIter.next
-				val value	= peer get key
+				val value	= peer.get(key)
 				out	+= (key -> value)
 			}
 			out

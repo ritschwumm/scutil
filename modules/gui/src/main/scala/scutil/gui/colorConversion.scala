@@ -8,7 +8,7 @@ object colorConversion {
 	def RGB_Color(it:RGB):Color		= new Color(it.r, it.g, it.b)
 
 	def Color_RGB(it:Color):RGB		=
-		it getRGBComponents null match {
+		it.getRGBComponents(null) match {
 			case Array(r, g, b, a)	=> RGB(r, g, b)
 			case x					=> sys error s"unexpected number of rgb components: ${x.length.toString}"
 		}
@@ -16,7 +16,7 @@ object colorConversion {
 	def RGBA_Color(it:RGBA):Color	= new Color(it.rgb.r, it.rgb.g, it.rgb.b, it.alpha.a)
 
 	def Color_RGBA(it:Color):RGBA	=
-		it getRGBComponents null match {
+		it.getRGBComponents(null) match {
 			case Array(r, g, b, a)	=> RGBA(RGB(r, g, b), Alpha(a))
 			case x					=> sys error s"unexpected number of rgb components: ${x.length.toString}"
 		}

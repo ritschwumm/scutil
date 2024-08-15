@@ -10,7 +10,7 @@ object Diff {
 	private def equalsMethod[T](a:T, b:T):Boolean	= a == b
 
 	// BETTER only compare from the first different element to the last different element
-	def compile[T](a:Seq[T], b:Seq[T], equal:(T,T)=>Boolean = equalsMethod[T] _):Diff[T] = {
+	def compile[T](a:Seq[T], b:Seq[T], equal:(T,T)=>Boolean = equalsMethod[T](_,_)):Diff[T] = {
 		val n	= a.length
 		val m	= b.length
 
@@ -78,7 +78,7 @@ object Diff {
 		}
 
 		var offset	= 0
-		val deltas	= diffs map {
+		val deltas	= diffs.map {
 			case Delta.Include(index, element) =>
 				offset	+= 1
 				Delta.Include(index, element):Delta[T]

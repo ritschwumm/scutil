@@ -16,9 +16,9 @@ object Show {
 		}
 
 	def toStringInstance[T]:Show[T]	=
-		Show instance (_.toString)
+		Show.instance(_.toString)
 
-	def doit[T](value:T)(using S:Show[T]):String	= S show value
+	def doit[T](value:T)(using S:Show[T]):String	= S.show(value)
 
 	//------------------------------------------------------------------------------
 
@@ -31,7 +31,7 @@ object Show {
 	given Show[Char]		= Show.toStringInstance
 	given Show[Boolean]		= Show.toStringInstance
 
-	given Show[String]		= Show instance identity
+	given Show[String]		= Show.instance(identity)
 
 	given BigIntShow:Show[BigInt]			= Show.toStringInstance
 	given BigDecimalShow:Show[BigDecimal]	= Show.toStringInstance
@@ -44,7 +44,7 @@ object Show {
 	given Show[UUID]		= Show.toStringInstance
 	given Show[URL]			= Show.toStringInstance
 	given Show[URI]			= Show.toStringInstance
-	given Show[File]		= Show instance (_.getPath)
+	given Show[File]		= Show.instance(_.getPath)
 	given Show[Path]		= Show.toStringInstance
 }
 
@@ -52,5 +52,5 @@ trait Show[-T] {
 	def show(it:T):String
 
 	def contraMap[S](func:S=>T):Show[S]	=
-		Show instance { func andThen show }
+		Show.instance(func.andThen(show))
 }

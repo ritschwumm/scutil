@@ -26,9 +26,9 @@ final case class ClasspathResource(url:URL) {
 
 	def withReader[T](charset:Charset)(code:Reader=>T):T	=
 		withInputStream { stream =>
-			new InputStreamReader(stream, charset) use code
+			new InputStreamReader(stream, charset).use(code)
 		}
 
 	def withInputStream[T](code:InputStream=>T):T	=
-		url.openStream() use code
+		url.openStream().use(code)
 }

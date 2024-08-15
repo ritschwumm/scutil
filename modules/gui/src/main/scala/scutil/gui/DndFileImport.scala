@@ -16,10 +16,10 @@ import scutil.geom.IntPoint
 object DndFileImport {
 	// TODO using this is a Using
 	def install(target:JComponent, consumer:IntPoint=>Option[Effect[Validated[Nes[Exception],Nes[File]]]]):Disposer	= {
-		target setTransferHandler new FileTransferHandler(consumer)
+		target.setTransferHandler(new FileTransferHandler(consumer))
 
 		Disposer delay {
-			target setTransferHandler null
+			target.setTransferHandler(null)
 		}
 	}
 
@@ -48,44 +48,46 @@ object DndFileImport {
 						// not actually used?
 						extractFileList[URL]		(support, DndFlavors.url,			filesFromURL)		getOrElse
 						// unknown format
-						(Validated invalid invalidMessage("unexpected transfer flavor"))
-					(extracted doto effect).isValid
+						Validated.invalid(invalidMessage("unexpected transfer flavor"))
+					extracted.doto(effect).isValid
 				}
 			)
 
 		//------------------------------------------------------------------------------
 
 		private def importEffect(support:TransferSupport):Option[Effect[Validated[Nes[Exception],Nes[File]]]] =
-			supportsFormat(support)	flatOption consumer(dropIntPoint(support))
+			supportsFormat(support).flatOption(consumer(dropIntPoint(support)))
 
 		private def supportsFormat(support:TransferSupport):Boolean =
-			support.getDataFlavors.toSet containsAny DndFileImport.importable
+			support.getDataFlavors.toSet.containsAny(DndFileImport.importable)
 
 		private def dropIntPoint(support:TransferSupport):IntPoint	=
 			support.getDropLocation.getDropPoint.toIntPoint
 
 		private def extractFileList[T](support:TransferSupport, flavor:DataFlavor, extractor:T=>Validated[Nes[Exception],Nes[File]]):Option[Validated[Nes[Exception],Nes[File]]]	=
-			support isDataFlavorSupported flavor option {
-				extractTransferData[T](support, flavor) leftMap Nes.one into (_.toValidated) flatMap extractor
+			support.isDataFlavorSupported(flavor).option {
+				extractTransferData[T](support, flavor).leftMap(Nes.one).toValidated.flatMap(extractor)
 			}
 
 		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 		private def extractTransferData[T](support:TransferSupport, flavor:DataFlavor):Either[Exception,T]	=
-			Catch.exception in (support.getTransferable getTransferData flavor).asInstanceOf[T]
+			Catch.exception.in(
+				support.getTransferable.getTransferData(flavor).asInstanceOf[T]
+			)
 
 		private def filesFromURIList(uriList:String):Validated[Nes[Exception],Nes[File]]	=
 			uriList
 			.split				("\r|\n")
 			.toVector
 			.filterNot			{ _.isEmpty			}
-			.filterNot			{ _ startsWith "#"	}
+			.filterNot			{ _.startsWith("#")	}
 			.traverseValidated	(fileFromURI)
-			.flatMap			{ _.toNesOption toValid invalidMessage(s"empty uri list") }
+			.flatMap			{ _.toNesOption.toValid(invalidMessage(s"empty uri list")) }
 
 		// on el captain text/uri-list contains plain file path, but new File(URI) expects an absolute URI
 		private def fileFromURI(s:String):Validated[Nes[Exception],File]	=
-			(fileFromURI1(s) leftMap Nes.one into (_.toValidated))	or
-			(fileFromURI2(s) leftMap Nes.one into (_.toValidated))
+			fileFromURI1(s).leftMap(Nes.one).toValidated	`or`
+			(fileFromURI2(s).leftMap(Nes.one).toValidated)
 
 		private def fileFromURI1(s:String):Either[Exception,File]	=
 			Catch.exception in {
@@ -102,14 +104,14 @@ object DndFileImport {
 			}
 
 		private def filesFromJList(jlist:JList[File]):Validated[Nes[Exception],Nes[File]]	=
-			jlist.toSeq.toNesOption toValid invalidMessage(s"empty file list")
+			jlist.toSeq.toNesOption.toValid(invalidMessage(s"empty file list"))
 
 		private def filesFromURL(url:URL):Validated[Nes[Exception],Nes[File]]	=
-			url.toFile toValid invalidMessage(s"not a file url: ${url.toString}") map Nes.one
+			url.toFile.toValid(invalidMessage(s"not a file url: ${url.toString}")).map(Nes.one)
 
 		//------------------------------------------------------------------------------
 
 		private def invalidMessage(message:String):Nes[Exception]	=
-			Nes one new IOException(message)
+			Nes.one(new IOException(message))
 	}
 }

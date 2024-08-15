@@ -20,14 +20,14 @@ object MathTest extends SimpleTestSuite {
 
 	test("functions.modulo should work for positive modulos") {
 		assertEquals(
-			((-6 until 6).toVector map { (i:Int) => functions.moduloInt(i, 3) }),
+			((-6 until 6).toVector.map { (i:Int) => functions.moduloInt(i, 3) }),
 			Vector(0,1,2,0,1,2,0,1,2,0,1,2)
 		)
 	}
 
 	test("functions.modulo should work for negative modulos") {
 		assertEquals(
-			((-6 until 6).toVector map { (i:Int) => functions.moduloInt(i, -3) }),
+			((-6 until 6).toVector.map { (i:Int) => functions.moduloInt(i, -3) }),
 			Vector(0,-2,-1,0,-2,-1,0,-2,-1,0,-2,-1)
 		)
 	}

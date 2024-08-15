@@ -34,15 +34,15 @@ final case class SgLinearTransform2D private (factor:SgPoint, summand:SgPoint) {
 	def inverse:SgLinearTransform2D	=
 		SgLinearTransform2D.factorSummand(
 			factor.mulInverse,
-			-(summand descale factor)
+			-summand.descale(factor)
 		)
 
 	//------------------------------------------------------------------------------
 
 	def apply(value:SgPoint):SgPoint		= transform(value)
 
-	def transform(value:SgPoint):SgPoint	= (value scale factor) + summand
-	def scale(value:SgPoint):SgPoint		= value scale factor
+	def transform(value:SgPoint):SgPoint	= value.scale(factor) + summand
+	def scale(value:SgPoint):SgPoint		= value.scale(factor)
 	def offset(value:SgPoint):SgPoint		= value + summand
 
 	def transformLine(value:SgLine):SgLine	=
@@ -53,13 +53,13 @@ final case class SgLinearTransform2D private (factor:SgPoint, summand:SgPoint) {
 
 	def transformRectangle(value:SgRectangle):SgRectangle	=
 		SgRectangle.horizontalWithVertical(
-			x transformSpan value.x,
-			y transformSpan value.y
+			x.transformSpan(value.x),
+			y.transformSpan(value.y)
 		)
 
 	//------------------------------------------------------------------------------
 	//## internal conversion
 
 	def toAffineTransform:SgAffineTransform	=
-		SgAffineTransform.identity translate summand scale factor
+		SgAffineTransform.identity.translate(summand).scale(factor)
 }

@@ -168,8 +168,8 @@ object IterableExtensions {
 			ops
 			.map		(func)
 			.groupBy	{ _._1 }
-			.map { case (k, kvs) =>
-				(k, bf.fromSpecific(peer)(kvs map { _._2 }))
+			.map { (k, kvs) =>
+				(k, bf.fromSpecific(peer)(kvs.map { _._2 }))
 			}
 
 		// NOTE these should be generalized to other AFs, not just Option and Tried
@@ -240,7 +240,7 @@ object IterableExtensions {
 				var temp	= s
 				val builder	= bf.newBuilder(peer)
 				ops foreach { it =>
-					val (next, part)	= func(it) run temp
+					val (next, part)	= func(it).run(temp)
 					temp	= next
 					builder += part
 				}

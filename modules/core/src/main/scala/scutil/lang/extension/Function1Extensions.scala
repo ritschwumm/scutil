@@ -9,20 +9,20 @@ object Function1Extensions {
 
 		/** symbolic alias for andThen */
 		def >=>[U](that:Function1[T,U]):Function1[S,U]	=
-			peer andThen that
+			peer.andThen(that)
 
 		/** symbolic alias for compose */
 		def <=<[R](that:Function1[R,S]):Function1[R,T]	=
-			peer compose that
+			peer.compose(that)
 
 		def map[U](func:T=>U):S=>U	=
-			peer andThen func
+			peer.andThen(func)
 
 		def flatMap[U](func:T=>S=>U):S=>U	=
 			s	=> func(peer(s))(s)
 
 		def contraMap[R](func:R=>S):R=>T	=
-			peer compose func
+			peer.compose(func)
 
 		def partial(predicate:Predicate[S]):PartialFunction[S,T]	=
 			new PartialFunction[S,T] {

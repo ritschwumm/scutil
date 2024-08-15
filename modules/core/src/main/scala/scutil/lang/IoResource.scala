@@ -15,10 +15,10 @@ object IoResource {
 		IoResource(value.map(_ -> Io.unit))
 
 	def disposing[T](create:Io[T])(dispose:T=>Io[Unit]):IoResource[T]	=
-		IoResource(create map { t => t -> dispose(t) })
+		IoResource(create.map { t => t -> dispose(t) })
 
 	def releasable[T](create:Io[T])(using R:Releasable[T]):IoResource[T]	=
-		IoResource(create map { t => t -> Io.delay{ R.release(t) } })
+		IoResource(create.map { t => t -> Io.delay{ R.release(t) } })
 
 	def lifecycle(before:Io[Unit], after:Io[Unit]):IoResource[Unit]	=
 		IoResource(before.map(_ -> after))
@@ -33,16 +33,16 @@ object IoResource {
 			IoResource.delay(value)
 
 		def disposing[T](create: =>T)(dispose:T=>Unit):IoResource[T]	=
-			IoResource.disposing(Io delay create)(t => Io delay dispose(t))
+			IoResource.disposing(Io.delay(create))(t => Io.delay(dispose(t)))
 
 		def releasable[T](create: =>T)(using R:Releasable[T]):IoResource[T]	=
-			IoResource.releasable(Io delay create)
+			IoResource.releasable(Io.delay(create))
 
 		def lifecycle(before: =>Unit, after: =>Unit):IoResource[Unit]	=
-			IoResource.lifecycle(Io delay before, Io delay after)
+			IoResource.lifecycle(Io.delay(before), Io.delay(after))
 
 		def afterwards(dispose: =>Unit):IoResource[Unit]	=
-			IoResource.afterwards(Io delay dispose)
+			IoResource.afterwards(Io.delay(dispose))
 	}
 
 	//------------------------------------------------------------------------------
@@ -50,19 +50,19 @@ object IoResource {
 
 	given IoResourceMonad:Monad[IoResource]	=
 		new Monad[IoResource] {
-			def pure[T](value:T):IoResource[T]										= IoResource pure value
-			def flatMap[S,T](value:IoResource[S])(func:S=>IoResource[T]):IoResource[T]	= value flatMap func
+			def pure[T](value:T):IoResource[T]										= IoResource.pure(value)
+			def flatMap[S,T](value:IoResource[S])(func:S=>IoResource[T]):IoResource[T]	= value.flatMap(func)
 		}
 
 	given IoResourceDelay:Delay[IoResource]	=
 		new Delay[IoResource] {
-			def delay[T](value: =>T):IoResource[T]	= IoResource delay value
+			def delay[T](value: =>T):IoResource[T]	= IoResource.delay(value)
 		}
 }
 
 final case class IoResource[T](open:Io[(T,Io[Unit])]) {
 	final def openVoid:Io[Io[Unit]]	=
-		open map (_._2)
+		open.map(_._2)
 
 	final def useVoid:Io[Unit]	=
 		use(_ => Io.unit)
@@ -86,7 +86,7 @@ final case class IoResource[T](open:Io[(T,Io[Unit])]) {
 		yield out
 
 	final def map[U](func:T=>U):IoResource[U]	=
-		flatMap(func andThen IoResource.pure)
+		flatMap(func.andThen(IoResource.pure))
 
 	final def ap[U,V](that:IoResource[U])(using ev:T <:< (U=>V)):IoResource[V]	=
 		map2(that) { (t,u) => t(u) }
@@ -107,7 +107,7 @@ final case class IoResource[T](open:Io[(T,Io[Unit])]) {
 				out		<-	xudu match {
 								case Left(eu)		=>
 									// second open failed, close first resource and fail now
-									dt.attempt flatMap {
+									dt.attempt.flatMap {
 										case Left(edt)	=> Io.raiseWithSecondary[(U,Io[Unit])](eu, edt)
 										case Right(_)	=> Io.raise[(U,Io[Unit])](eu)
 									}

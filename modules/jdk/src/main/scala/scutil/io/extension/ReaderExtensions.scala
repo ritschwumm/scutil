@@ -22,7 +22,7 @@ object ReaderExtensions {
 
 		def readLimited(length:Int):Option[String]	= {
 			val	buffer	= new Array[Char](length)
-			val found	= peer read buffer
+			val found	= peer.read(buffer)
 			if		(found == -1)	None
 			else if	(found == 0)	Some("")
 			else					Some(new String(buffer, 0, found))
@@ -34,7 +34,7 @@ object ReaderExtensions {
 			val out		= new StringBuilder
 			var	running	= true
 			while (running) {
-				val len	= peer read buffer
+				val	len	= peer.read(buffer)
 				if (len != -1)	out.appendAll(buffer, 0, len)
 				else			running	= false
 			}
@@ -45,7 +45,7 @@ object ReaderExtensions {
 		def skipExactly(count:Long):Long	= {
 			var done	= 0L
 			while (done < count) {
-				val len	= peer skip (count - done)
+				val len	= peer.skip(count - done)
 				if (len == -1)	return done
 				done	+= len
 			}
@@ -57,7 +57,7 @@ object ReaderExtensions {
 			val	buffer	= new Array[Char](blockSize)
 			var running	= true
 			while (true) {
-				val len = peer read buffer
+				val len = peer.read(buffer)
 				if (len == -1)	running	= false
 			}
 		}
@@ -68,7 +68,7 @@ object ReaderExtensions {
 			val	buffer	= new Array[Char](blockSize)
 			var running	= true
 			while (running) {
-				val	len	= peer read buffer
+				val	len	= peer.read(buffer)
 				if (len != -1)	out.write(buffer, 0, len)
 				else			running	= false
 			}

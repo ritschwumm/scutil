@@ -31,7 +31,7 @@ object AnyExtensions {
 
 		/** apply an effect, then return the peer itself; inspired by clojure's doto */
 		def doto(effect:T=>Unit):T	= {
-			effect apply peer
+			effect(peer)
 			peer
 		}
 

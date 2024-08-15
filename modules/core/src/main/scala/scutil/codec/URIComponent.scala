@@ -21,7 +21,7 @@ final class URIComponent(charset:Charset) {
 
 	/** percent-escapes everything except alphabetic, decimal digits, - _ . ! ~ * ' ( ) */
 	def encode(s:String):String = {
-		val bytes	= s getBytes charset
+		val bytes	= s.getBytes(charset)
 		val out		= new StringBuilder
 		var i	= 0
 		while (i < bytes.length) {
@@ -64,17 +64,17 @@ final class URIComponent(charset:Charset) {
 		val b	= new mutable.ArrayBuffer[Byte]
 		var i	= 0
 		while (i<s.length) {
-			val c	= s charAt i
+			val c	= s.charAt(i)
 			if (c >= 256)	return Left(URIComponentProblem.Invalid(i))
 			else if (c == '%') {
 				i	+= 1
 				if (i >= s.length)	return Left(URIComponentProblem.Invalid(i))
-				val n1	= decodeNibble(s charAt i)
+				val n1	= decodeNibble(s.charAt(i))
 				if (n1 == -1)		return Left(URIComponentProblem.Invalid(i))
 
 				i	+= 1
 				if (i >= s.length)	return Left(URIComponentProblem.Invalid(i))
-				val n2	= decodeNibble(s charAt i)
+				val n2	= decodeNibble(s.charAt(i))
 				if (n2 == -1)		return Left(URIComponentProblem.Invalid(i))
 
 				b	+= ((n1 << 4) | (n2 << 0)).toByte
@@ -85,7 +85,7 @@ final class URIComponent(charset:Charset) {
 				i	+= 1
 			}
 		}
-		charset decodeEitherByteString (ByteString fromIterable b) leftMap URIComponentProblem.Exception.apply
+		charset.decodeEitherByteString(ByteString.fromIterable(b)).leftMap(URIComponentProblem.Exception.apply)
 	}
 
 	private def decodeNibble(nibble:Char):Int	=

@@ -13,7 +13,7 @@ object SetExtensions {
 			(peer -- that, that -- peer)
 
 		def ior[U](that:Set[T]):Set[Ior[T,T]]	= {
-			val (here, there)	= this hereAndThere that
+			val (here, there)	= this.hereAndThere(that)
 			val both			= peer & that
 
 			both	.map { it => Ior.both	(it,it) }	++
@@ -23,7 +23,7 @@ object SetExtensions {
 
 		/** get one element and all other elements */
 		def extractSingleOption:Option[(T,Set[T])]	=
-			peer.headOption map { head => (head, peer - head) }
+			peer.headOption.map { head => (head, peer - head) }
 
 		/** set or remove the value */
 		def set(value:T, in:Boolean):Set[T]	=

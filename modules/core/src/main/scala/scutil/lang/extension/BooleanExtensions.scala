@@ -63,10 +63,10 @@ object BooleanExtensions {
 		//------------------------------------------------------------------------------
 
 		def optionT[F[_]:Applicative,T](trueValue: =>T):OptionT[F,T] =
-			OptionT fromOption option(trueValue)
+			OptionT.fromOption(option(trueValue))
 
 		def optionNotT[F[_]:Applicative,T](falseValue: =>T):OptionT[F,T] =
-			OptionT fromOption optionNot(falseValue)
+			OptionT.fromOption(optionNot(falseValue))
 
 		//------------------------------------------------------------------------------
 
@@ -111,10 +111,10 @@ object BooleanExtensions {
 		//------------------------------------------------------------------------------
 
 		def guardOptionT[F[_]:Applicative]:OptionT[F,Unit]	=
-			OptionT fromOption guardOption
+			OptionT.fromOption(guardOption)
 
 		def preventOptionT[F[_]:Applicative]:OptionT[F,Unit]	=
-			OptionT fromOption preventOption
+			OptionT.fromOption(preventOption)
 
 		def guardEitherT[F[_]:Applicative,U](leftValue: =>U):EitherT[F,U,Unit]	=
 			EitherT.switch(peer, leftValue, ())

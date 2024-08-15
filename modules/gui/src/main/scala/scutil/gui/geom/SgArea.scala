@@ -17,15 +17,15 @@ object SgArea {
 }
 
 final case class SgArea private (delegate:Area) {
-	def | (that:SgArea):SgArea	= this add			that
-	def |! (that:SgArea):SgArea	= this subtract		that
-	def ^ (that:SgArea):SgArea	= this exclusiveOr	that
-	def & (that:SgArea):SgArea	= this intersect	that
+	def | (that:SgArea):SgArea	= this.add(that)
+	def |! (that:SgArea):SgArea	= this.subtract(that)
+	def ^ (that:SgArea):SgArea	= this.exclusiveOr(that)
+	def & (that:SgArea):SgArea	= this.intersect(that)
 
-	def add(that:SgArea):SgArea			= modify { _ add			that.delegate }
-	def subtract(that:SgArea):SgArea	= modify { _ subtract		that.delegate }
-	def exclusiveOr(that:SgArea):SgArea	= modify { _ exclusiveOr	that.delegate }
-	def intersect(that:SgArea):SgArea	= modify { _ intersect		that.delegate }
+	def add(that:SgArea):SgArea			= modify { _.add(that.delegate)			}
+	def subtract(that:SgArea):SgArea	= modify { _.subtract(that.delegate)	}
+	def exclusiveOr(that:SgArea):SgArea	= modify { _.exclusiveOr(that.delegate)	}
+	def intersect(that:SgArea):SgArea	= modify { _.intersect(that.delegate)	}
 
 	//------------------------------------------------------------------------------
 	//## awt conversion
@@ -38,7 +38,7 @@ final case class SgArea private (delegate:Area) {
 	private def modify(effect:Area=>Unit):SgArea = {
 		val	out	= cloneDelegate
 		effect(out)
-		SgArea unsafeFromAwtArea out
+		SgArea.unsafeFromAwtArea(out)
 	}
 
 	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))

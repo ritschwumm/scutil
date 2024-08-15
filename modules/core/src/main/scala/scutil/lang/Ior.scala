@@ -32,7 +32,7 @@ object Ior {
 
 	given IorFunctor[A]:Functor[Ior[A,_]]	=
 		new Functor[Ior[A,_]] {
-			override def map[B,BB](it:Ior[A,B])(func:B=>BB):Ior[A,BB]	= it mapRight func
+			override def map[B,BB](it:Ior[A,B])(func:B=>BB):Ior[A,BB]	= it.mapRight(func)
 		}
 }
 
@@ -96,4 +96,3 @@ enum Ior[+A,+B] {
 			case Ior.Both(a,b)	=> Ior.both(b,a)
 		}
 }
-

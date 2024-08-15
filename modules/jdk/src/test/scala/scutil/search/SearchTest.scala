@@ -6,8 +6,8 @@ import scutil.lang.*
 import scutil.lang.implicits.*
 
 object SearchTest extends SimpleTestSuite {
-	def single(s:String):Predicate[String]			= s into SearchParser.parse into SearchCompiler.single
-	def multi(s:String):Predicate[Iterable[String]]	= s into SearchParser.parse into SearchCompiler.multi
+	def single(s:String):Predicate[String]			= s |> SearchParser.parse |> SearchCompiler.single
+	def multi(s:String):Predicate[Iterable[String]]	= s |> SearchParser.parse |> SearchCompiler.multi
 
 	test("TokenMatcher for a single string should work 1")		{ assertEquals(single	("oo")			("foobar"),			true)	}
 	test("TokenMatcher for a single string should work 2")		{ assertEquals(single	("|oo")			("foobar"),			false)	}

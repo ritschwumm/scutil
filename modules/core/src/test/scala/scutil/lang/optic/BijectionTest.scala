@@ -25,7 +25,7 @@ object BijectionTest extends SimpleTestSuite {
 		val value		= CaseObj
 		val	bijection	= Bijection.zero[CaseObj.type]
 		assertEquals(
-			bijection get value,
+			bijection.get(value),
 			(())
 		)
 	}
@@ -34,7 +34,7 @@ object BijectionTest extends SimpleTestSuite {
 		val value		= Unary(1)
 		val	bijection	= Bijection.one[Unary]
 		assertEquals(
-			bijection get value,
+			bijection.get(value),
 			1
 		)
 	}
@@ -43,7 +43,7 @@ object BijectionTest extends SimpleTestSuite {
 		val value		= Binary(1,2)
 		val	bijection	= Bijection.more[Binary]
 		assertEquals[(Int,Short)](
-			bijection get value,
+			bijection.get(value),
 			(1,2)
 		)
 	}
@@ -52,7 +52,7 @@ object BijectionTest extends SimpleTestSuite {
 		val value		= Container(Unary(1))
 		val	bijection	= Bijection.one[Container]
 		assertEquals(
-			bijection get value,
+			bijection.get(value),
 			Unary(1)
 		)
 	}
@@ -61,7 +61,7 @@ object BijectionTest extends SimpleTestSuite {
 		val value		= UnaryOption(Some(1))
 		val	bijection	= Bijection.one[UnaryOption]
 		assertEquals(
-			bijection get value,
+			bijection.get(value),
 			Some(1)
 		)
 	}

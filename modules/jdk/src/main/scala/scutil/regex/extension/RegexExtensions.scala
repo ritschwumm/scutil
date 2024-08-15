@@ -20,13 +20,13 @@ object RegexExtensions {
 
 		//------------------------------------------------------------------------------
 
-		def quote(str:String):String	= Pattern quote str
+		def quote(str:String):String	= Pattern.quote(str)
 
 		def quoteCharacterClass(str:String):String	= {
 			val b	= new StringBuilder
 			var i	= 0
 			while (i < str.length) {
-				val c	= str charAt i
+				val c	= str.charAt(i)
 				c match {
 					case '\\' | '-' | '^' | '[' | ']'	=> b append '\\'
 					case _								=>
@@ -40,10 +40,10 @@ object RegexExtensions {
 
 	implicit final class RegexExt(peer:Regex) {
 		def test(s:CharSequence):Boolean	=
-			(peer.pattern matcher s).matches
+			peer.pattern.matcher(s).matches
 
 		def toPrism:Prism[String,String]	=
-			Prism filtered test
+			Prism.filtered(test)
 
 		def removeAllFrom(s:String):String	=
 			peer.replaceAllIn(s, "")

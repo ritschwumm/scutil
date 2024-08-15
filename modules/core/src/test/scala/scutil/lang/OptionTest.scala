@@ -7,7 +7,7 @@ import scutil.core.implicits.*
 object OptionTest extends SimpleTestSuite {
 	test("Option.product works") {
 		assertEquals(
-			Option(1) product Option(2),
+			Option(1).product(Option(2)),
 			Option((1,2))
 		)
 	}
@@ -21,7 +21,7 @@ object OptionTest extends SimpleTestSuite {
 
 	test("Option.partition returns Options") {
 		assertEquals(
-			Option(1) partition (_ == 1),
+			Option(1).partition(_ == 1),
 			(Some(1), None)
 		)
 	}

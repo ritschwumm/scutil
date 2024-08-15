@@ -54,7 +54,7 @@ final case class JulianDay(value:Int) extends Ordered[JulianDay] {
 		toGregorianDate.monthYear
 
 	lazy val weekday:Weekday	=
-		Weekday fromIndex value
+		Weekday.fromIndex(value)
 
 	override def toString:String	= s"JD${value.toString}"
 }

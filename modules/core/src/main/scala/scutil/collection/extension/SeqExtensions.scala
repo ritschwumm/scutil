@@ -110,7 +110,7 @@ object SeqExtensions {
 
 		/** get item at index and the Seq without that element if possible */
 		def extractAt(index:Int)(using factory:Factory[T,Repr]):Option[(T,Repr)]	=
-			lift(index) map { it =>
+			lift(index).map { it =>
 				(
 					it,
 					factory.fromSpecific(ops.patch(index, Seq.empty, 1))
@@ -163,7 +163,7 @@ object SeqExtensions {
 				out.result()
 			}
 			else {
-				bf.fromSpecific(peer)(ops map mod)
+				bf.fromSpecific(peer)(ops.map(mod))
 			}
 
 		/** separators go to the Left, the rest goes into Right Seqs  */
@@ -288,7 +288,7 @@ object SeqExtensions {
 			else None
 
 		def storeAt(index:Int)(using factory:Factory[T,Repr]):Option[Store[T,Repr]]	=
-			lift(index) map { item =>
+			lift(index).map { item =>
 				Store[T,Repr](
 					item,
 					it => factory.fromSpecific(ops.updated(index, it))

@@ -44,7 +44,7 @@ object Prism {
 
 	// TODO optics is this lawful?
 	given PrismSemigroup[S,T]:Semigroup[Prism[S,T]]	=
-		Semigroup instance (_ orElse _)
+		Semigroup.instance(_ `orElse` _)
 }
 
 /** parser and unparser for some data into a side format, aka Prism' */
@@ -57,11 +57,11 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 
 	// these fall back to the original value if necessary
 
-	def mod(func:T=>T):S=>S	= s => get(s) map (func andThen set) getOrElse s
+	def mod(func:T=>T):S=>S	= s => get(s).map(func.andThen(set)).getOrElse(s)
 	def modThe(s:S, func:T=>T):S	= mod(func)(s)
 
-	def modF[F[_]](func:T=>F[T])(using F:Applicative[F]):S=>F[S]	= s	=> modOptF(func) apply s getOrElse (F pure s)
-	def modTheF[F[_]](s:S, func:T=>F[T])(using F:Applicative[F]):F[S]	= modF(func) apply s
+	def modF[F[_]](func:T=>F[T])(using F:Applicative[F]):S=>F[S]	= s	=> modOptF(func).apply(s).getOrElse(F.pure(s))
+	def modTheF[F[_]](s:S, func:T=>F[T])(using F:Applicative[F]):F[S]	= modF(func).apply(s)
 
 	// TODO optics this could be renamed to set, set is actually reverseGet in monocle (?)
 	def setMatching(value:T):S=>S	=
@@ -75,19 +75,19 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 
 	//------------------------------------------------------------------------------
 
-	def modOpt(func:T=>T):S=>Option[S]		= s => get(s) map (func andThen set)
-	def modTheOpt(s:S, func:T=>T):Option[S]	= modOpt(func) apply s
+	def modOpt(func:T=>T):S=>Option[S]		= s => get(s).map(func.andThen(set))
+	def modTheOpt(s:S, func:T=>T):Option[S]	= modOpt(func).apply(s)
 
 	def modOptF[F[_]](func:T=>F[T])(using F:Functor[F]):S=>Option[F[S]]	=
 		s	=> {
-			get(s) map { t =>
-				(F map func(t)) { ss =>
+			get(s).map { t =>
+				F.map(func(t)) { ss =>
 					set(ss)
 				}
 			}
 		}
 	def modTheOptF[F[_]](s:S, func:T=>F[T])(using F:Functor[F]):Option[F[S]]	=
-		modOptF(func) apply s
+		modOptF(func).apply(s)
 
 	//------------------------------------------------------------------------------
 
@@ -95,7 +95,7 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 		State { s =>
 			get(s)
 			.map { t1 =>
-				val (t2,u)	= state run t1
+				val (t2, u)	= state.run(t1)
 				set(t2) -> (Some(u):Option[U])
 			}
 			.getOrElse	(s -> None)
@@ -105,16 +105,16 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 		embedState(State.get)
 
 	def setState(it:T):State[S,Option[Unit]]	=
-		embedState(State set it)
+		embedState(State.set(it))
 
 	def setOldState(it:T):State[S,Option[T]]	=
-		embedState(State setOld it)
+		embedState(State.setOld(it))
 
 	def modState(func:T=>T):State[S,Option[Unit]]	=
-		embedState(State mod func)
+		embedState(State.mod(func))
 
 	def modOldState(func:T=>T):State[S,Option[T]]	=
-		embedState(State modOld func)
+		embedState(State.modOld(func))
 
 	//------------------------------------------------------------------------------
 
@@ -122,13 +122,13 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 		StateT { s =>
 			get(s)
 			.map { t1 =>
-				val ftu	= state run t1
-				(F map ftu) { case (t2, u) =>
+				val ftu	= state.run(t1)
+				F.map(ftu) { (t2, u) =>
 					set(t2) -> (Some(u):Option[U])
 				}
 			}
 			.getOrElse (
-				F pure (s -> (None:Option[U]))
+				F.pure(s -> (None:Option[U]))
 			)
 		}
 
@@ -136,23 +136,23 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 		embedStateT(StateT.get)
 
 	def setStateT[F[_]:Applicative](it:T):StateT[F,S,Option[Unit]]	=
-		embedStateT(StateT set it)
+		embedStateT(StateT.set(it))
 
 	def setOldStateT[F[_]:Applicative](it:T):StateT[F,S,Option[T]]	=
-		embedStateT(StateT setOld it)
+		embedStateT(StateT.setOld(it))
 
 	def modStateT[F[_]:Applicative](func:T=>T):StateT[F,S,Option[Unit]]	=
-		embedStateT(StateT mod func)
+		embedStateT(StateT.mod(func))
 
 	def modOldStateT[F[_]:Applicative](func:T=>T):StateT[F,S,Option[T]]	=
-		embedStateT(StateT modOld func)
+		embedStateT(StateT.modOld(func))
 
 	//------------------------------------------------------------------------------
 
 	def embedStateOpt[U](state:State[T,U]):StateT[Option,S,U]	=
 		StateT { (s:S) =>
-			get(s) map { t1 =>
-				val (t2, u)	= state run t1
+			get(s).map { t1 =>
+				val (t2, u)	= state.run(t1)
 				set(t2) -> u
 			}
 		}
@@ -161,7 +161,7 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 
 	def orElse(that:Prism[S,T]):Prism[S,T]	=
 		Prism(
-			get	= s	=> (this get s) orElse (that get s),
+			get	= s	=> this.get(s) `orElse` that.get(s),
 			set	= set
 		)
 
@@ -175,7 +175,7 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 	/** filter the target value */
 	def filterAfter(pred:Predicate[T]):Prism[S,T]	=
 		Prism(
-			get	= s	=> get(s) filter pred,
+			get	= s	=> get(s).filter(pred),
 			set	= set
 		)
 
@@ -183,19 +183,19 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 
 	/** symbolic alias for andThen */
 	def >=>[U](that:Prism[T,U]):Prism[S,U]	=
-		this andThen that
+		this.andThen(that)
 
 	/** symbolic alias for compose */
 	def <=<[R](that:Prism[R,S]):Prism[R,T]	=
-		this compose that
+		this.compose(that)
 
 	def compose[R](that:Prism[R,S]):Prism[R,T]	=
-		that andThen this
+		that.andThen(this)
 
 	def andThen[U](that:Prism[T,U]):Prism[S,U]	=
 		Prism(
-			get	= s	=> this get s flatMap that.get,
-			set	= t	=> this set (that set t)
+			get	= s	=> this.get(s).flatMap(that.get),
+			set	= t	=> this.set(that.set(t))
 		)
 
 	//------------------------------------------------------------------------------
@@ -207,8 +207,8 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 	// ***
 	def product[SS,TT](that:Prism[SS,TT]):Prism[(S,SS),(T,TT)]	=
 		Prism(
-			get	= sss	=> (this get sss._1) zip (that get sss._2),
-			set	= ttt	=> (this set ttt._1, that set ttt._2)
+			get	= sss	=> this.get(sss._1) `zip` that.get(sss._2),
+			set	= ttt	=> (this.set(ttt._1), that.set(ttt._2))
 		)
 
 	//------------------------------------------------------------------------------
@@ -225,7 +225,7 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 	// TODO optics this is questionable
 	def toBijection(func:S=>T):Bijection[S,T]	=
 		Bijection(
-			get	= s => get(s) getOrElse func(s),
+			get	= s => get(s).getOrElse(func(s)),
 			set	= set
 		)
 

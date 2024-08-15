@@ -35,22 +35,22 @@ object Nes {
 
 	given NesTraversedMonad:TraversedMonad[Nes]	=
 		new TraversedMonad[Nes] {
-			override def map[A,B](it:Nes[A])(func:A=>B):Nes[B]			= it map func
-			override def pure[A](it:A):Nes[A]							= Nes one it
-			override def flatMap[A,B](it:Nes[A])(func:A=>Nes[B]):Nes[B]	= it flatMap func
+			override def map[A,B](it:Nes[A])(func:A=>B):Nes[B]			= it.map(func)
+			override def pure[A](it:A):Nes[A]							= Nes.one(it)
+			override def flatMap[A,B](it:Nes[A])(func:A=>Nes[B]):Nes[B]	= it.flatMap(func)
 			override def traverse[G[_],S,T](it:Nes[S])(func:S=>G[T])(using AP:Applicative[G]):G[Nes[T]]	=
-				((it.tail map func) foldLeft ((AP map  func(it.head))(Nes.one[T]))) { (xs, x) =>
+				(it.tail.map(func).foldLeft(AP.map(func(it.head))(Nes.one[T]))) { (xs, x) =>
 					AP.map2(xs, x)(_ :+ _)
 				}
 		}
 
 	given NesSemigroup[T]:Semigroup[Nes[T]]	=
-		Semigroup instance (_ ++ _)
+		Semigroup.instance(_ ++ _)
 }
 
 final case class Nes[+T](head:T, tail:Seq[T]) {
 	def last:T	=
-		tail.lastOption getOrElse head
+		tail.lastOption.getOrElse(head)
 
 	def init:Seq[T]	=
 		if (tail.nonEmpty)	head +: (tail dropRight 1)
@@ -66,7 +66,7 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 
 	def get(index:Int):Option[T]	=
 		if (index == 0)	Some(head)
-		else			tail lift (index - 1)
+		else			tail.lift(index - 1)
 
 	def count(pred:Predicate[T]):Int	=
 		(if (pred(head)) 1 else 0) +
@@ -79,26 +79,26 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		pred(head) || (tail exists pred)
 
 	def drop(count:Int):Option[Nes[T]]	=
-		Nes fromSeq (toVector drop count)
+		Nes.fromSeq(toVector.drop(count))
 
 	def take(count:Int):Option[Nes[T]]	=
-		Nes fromSeq (toVector take count)
+		Nes.fromSeq(toVector.take(count))
 
 	def dropWhile(pred:Predicate[T]):Option[Nes[T]]	=
-		Nes fromSeq (toVector dropWhile pred)
+		Nes.fromSeq(toVector.dropWhile(pred))
 
 	def takeWhile(pred:Predicate[T]):Option[Nes[T]]	=
-		Nes fromSeq (toVector takeWhile pred)
+		Nes.fromSeq(toVector.takeWhile(pred))
 
 	def tailNes:Option[Nes[T]]	=
-		Nes fromSeq tail
+		Nes.fromSeq(tail)
 
 	def initNes:Option[Nes[T]]	=
 		if (tail.isEmpty)	None
 		else				Some(Nes(head, tail dropRight 1))
 
 	def map[U](func:T=>U):Nes[U]	=
-		Nes(func(head), tail map func)
+		Nes(func(head), tail.map(func))
 
 	// NOTE zipWith and map2 are different things for Iterables
 	def map2[U,V](that:Nes[U])(func:(T,U)=>V):Nes[V]	=
@@ -113,7 +113,7 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 
 	def flatMap[U](func:T=>Nes[U]):Nes[U]	= {
 		val Nes(h, t)	= func(head)
-		val tt			= tail flatMap { it => func(it).toSeq }
+		val tt			= tail.flatMap { it => func(it).toSeq }
 		Nes(h, t ++ tt)
 	}
 
@@ -121,10 +121,10 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		flatMap(ev)
 
 	def filter(pred:Predicate[T]):Option[Nes[T]]	=
-		Nes fromSeq (toSeq filter pred)
+		Nes.fromSeq(toSeq.filter(pred))
 
 	def filterNot(pred:Predicate[T]):Option[Nes[T]]	=
-		Nes fromSeq (toSeq filterNot pred)
+		Nes.fromSeq(toSeq.filterNot(pred))
 
 	@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 	def reverse:Nes[T]	=
@@ -150,13 +150,13 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		else				this
 
 	inline def ++[U>:T](that:Nes[U]):Nes[U]	=
-		this concat that
+		this.concat(that)
 
 	inline def :+[U>:T](item:U):Nes[U]	=
-		this append item
+		this.append(item)
 
 	inline def +:[U>:T](item:U):Nes[U]	=
-		this prepend item
+		this.prepend(item)
 
 	def updatedBy[U>:T](index:Int, func:U=>U):Option[Nes[U]]	=
 		if (containsIndex(index)) {
@@ -186,13 +186,13 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 	def zipWith[U,V](that:Nes[U])(func:(T,U)=>V):Nes[V]	=
 		Nes(
 			func(this.head, that.head),
-			(this.tail zip that.tail) map func.tupled
+			this.tail.zip(that.tail).map(func.tupled)
 		)
 
 	def zipWithIndex:Nes[(T,Int)]	=
 		Nes(
 			(this.head, 0),
-			this.tail.zipWithIndex map { case (v,i) => (v,i+1) }
+			this.tail.zipWithIndex.map { (v,i) => (v,i+1) }
 		)
 
 	def reduce[U>:T](func:(U,U)=>U)(using S:Semigroup[U]):U	=
@@ -207,7 +207,7 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 	}
 
 	def storeAt[U>:T](index:Int):Option[Store[U,Nes[U]]]	=
-		get(index) map { item =>
+		get(index).map { item =>
 			Store(
 				item,
 				(it:U) => {

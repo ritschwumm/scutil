@@ -25,8 +25,8 @@ object Catch {
 	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 	def byClass[E<:Throwable](clazz:Class[E]):Catch[E]	=
 		Catch { e =>
-			if (clazz isInstance e)	Some(e.asInstanceOf[E])
-			else					None
+			if (clazz.isInstance(e))	Some(e.asInstanceOf[E])
+			else						None
 		}
 
 	def byPrism[E<:Throwable](prism:Prism[Throwable,E]):Catch[E]	=
@@ -39,7 +39,7 @@ final class Catch[E<:Throwable](func:Throwable=>Option[E]) {
 			Right(value)
 		}
 		catch { case e:Throwable =>
-			func(e) map Left.apply getOrElse (throw e)
+			func(e).map(Left.apply).getOrElse{ throw e }
 		}
 
 	def get[T](value:Thunk[T]):Either[E,T]	=

@@ -5,6 +5,6 @@ import scutil.number.BigRational
 
 object JBigDecimalExtensions {
 	implicit final class JBigDecimalExt(peer:JBigDecimal) {
-		def toBigRational:BigRational	= BigRational fromJBigDecimal peer
+		def toBigRational:BigRational	= BigRational.fromJBigDecimal(peer)
 	}
 }

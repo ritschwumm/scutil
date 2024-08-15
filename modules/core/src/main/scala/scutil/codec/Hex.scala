@@ -11,7 +11,7 @@ object Hex {
 		encodeImpl(bytes.value)
 
 	private def encodeImpl(bytes:IArray[Byte]):String	=
-		bytes map nibbles mkString ""
+		bytes.map(nibbles).mkString("")
 
 	def nibbles(it:Byte):String	=
 		nibble.charAt((it >> 4) & 0xf).toString	+
@@ -24,7 +24,7 @@ object Hex {
 	private val invalid	= -1
 
 	def decodeByteString(s:String):Option[ByteString]	=
-		decodeImpl(s) map ByteString.fromIArray
+		decodeImpl(s).map(ByteString.fromIArray)
 
 	private def decodeImpl(s:String):Option[IArray[Byte]]	= {
 		// TODO codec Base64 ignores all whitespace here: slow, but would sometimes be useful here, too
@@ -33,8 +33,8 @@ object Hex {
 		val out	= new Array[Byte](count)
 		var i	= 0
 		while (i < count) {
-			val ch	= s charAt i*2+0
-			val cl	= s charAt i*2+1
+			val ch	= s.charAt(i*2+0)
+			val cl	= s.charAt(i*2+1)
 			val b	= byte(ch, cl)
 			if (b == invalid)	return None
 			out(i)	= b.toByte

@@ -9,7 +9,7 @@ object ThrowableExtensions {
 
 		def stackTrace:String	= {
 			val	sw	= new StringWriter
-			peer printStackTrace new PrintWriter(sw)
+			peer.printStackTrace(new PrintWriter(sw))
 			sw.toString
 		}
 	}

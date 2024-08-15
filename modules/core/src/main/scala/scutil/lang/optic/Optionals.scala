@@ -6,27 +6,27 @@ import scutil.collection.implicits.*
 object Optionals {
 	def seq[T](i:Int):Optional[Seq[T],T]	=
 		Optional(
-			get	= s			=> s lift i,
-			set	= t => s	=> s.updatedAt(i, t) getOrElse s
+			get	= s			=> s.lift(i),
+			set	= t => s	=> s.updatedAt(i, t).getOrElse(s)
 		)
 
 	def map[K,V](k:K):Optional[Map[K,V],V]	=
 		Optional(
-			get	= s			=> s get k,
-			set	= t => s	=> s.updatedAt(k, t) getOrElse s
+			get	= s			=> s.get(k),
+			set	= t => s	=> s.updatedAt(k, t).getOrElse(s)
 		)
 
 	def nes[T](i:Int):Optional[Nes[T],T]	=
 		Optional(
-			get	= s			=> s get i,
-			set	= t => s	=> s.updatedAt (i, t) getOrElse s
+			get	= s			=> s.get(i),
+			set	= t => s	=> s.updatedAt(i, t).getOrElse(s)
 		)
 
 	//------------------------------------------------------------------------------
 
 	def seqWhere[T](pred:Predicate[T]):Optional[Seq[T],T]	=
 		Optional(
-			get	= items			=> items find pred,
+			get	= items			=> items.find(pred),
 			set	= item => items	=> items.indexWhereOption(pred).cata(items, index => items.updated(index, item))
 		)
 

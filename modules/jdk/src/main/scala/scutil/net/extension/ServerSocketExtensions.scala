@@ -7,6 +7,6 @@ import scutil.time.*
 object ServerSocketExtensions {
 	implicit final class ServerSocketExt(peer:ServerSocket) {
 		def setSoTimeoutDuration(timeout:MilliDuration):Unit	=
-			peer setSoTimeout timeout.millis.toInt
+			peer.setSoTimeout(timeout.millis.toInt)
 	}
 }

@@ -24,7 +24,7 @@ object DoubleUtil {
 		// positive infinity	0x7ff0000000000000L
 		// negative infinity	0xfff0000000000000L
 		// NaN					0x7ff8000000000000L
-		val bits		= JDouble doubleToLongBits it
+		val bits		= JDouble.doubleToLongBits(it)
 
 		// true means negative
 		val sign		= (bits & 0x8000000000000000L) != 0

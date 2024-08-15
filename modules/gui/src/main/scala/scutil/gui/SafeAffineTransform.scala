@@ -18,7 +18,7 @@ object SafeAffineTransform {
 	def shear(factor:DoublePoint):SafeAffineTransform		=
 		unsafeFromAwtAffineTransform(AffineTransform.getShearInstance(factor.x,	factor.y))
 	def rotate(theta:Double):SafeAffineTransform		=
-		unsafeFromAwtAffineTransform(AffineTransform getRotateInstance		theta)
+		unsafeFromAwtAffineTransform(AffineTransform.getRotateInstance(theta))
 	def rotateAround(theta:Double, center:DoublePoint):SafeAffineTransform	=
 		unsafeFromAwtAffineTransform(AffineTransform.getRotateInstance(theta, center.x, center.y))
 
@@ -41,18 +41,18 @@ final case class SafeAffineTransform private (delegate:AffineTransform) {
 		transform(point)
 
 	def transform(point:DoublePoint):DoublePoint	=
-		geomConversion Point2D_DoublePoint delegate.transform(geomConversion DoublePoint_Point2D point, null)
+		geomConversion.Point2D_DoublePoint(delegate.transform(geomConversion.DoublePoint_Point2D(point), null))
 
 	def transformAwtPoint2D(point:Point2D):Point2D	=
 		delegate.transform(point, null)
 
 	def transformAwtShape(shape:Shape):Shape	=
-		delegate createTransformedShape shape
+		delegate.createTransformedShape(shape)
 
 	/** fast bounds calculation for a transformed rectangle, as long as the transform is orthogonal */
 	def transformBounds(rect:DoubleRect):DoubleRect	= {
 		if		(isIdentity)	rect
-		else if	(!isOrthogonal)	geomConversion Rectangle2D_DoubleRect (delegate createTransformedShape (geomConversion DoubleRect_Rectangle2D rect)).getBounds2D
+		else if	(!isOrthogonal)	geomConversion.Rectangle2D_DoubleRect((delegate.createTransformedShape(geomConversion.DoubleRect_Rectangle2D(rect))).getBounds2D)
 		else {
 			val coords:Array[Double]	=
 					Array(
@@ -89,13 +89,13 @@ final case class SafeAffineTransform private (delegate:AffineTransform) {
 		modify { _.shear(factor.x, factor.y) }
 
 	def rotate(theta:Double):SafeAffineTransform =
-		modify { _ rotate theta }
+		modify { _.rotate(theta) }
 
 	def andThen(that:SafeAffineTransform):SafeAffineTransform	=
-		modify { _ concatenate that.delegate }
+		modify { _.concatenate(that.delegate) }
 
 	def compose(that:SafeAffineTransform):SafeAffineTransform	=
-		that andThen this
+		that.andThen(this)
 
 	private val orthogonalMask	= AffineTransform.TYPE_MASK_ROTATION | AffineTransform.TYPE_GENERAL_TRANSFORM
 

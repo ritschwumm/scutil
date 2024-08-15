@@ -56,11 +56,11 @@ object EitherExtensions {
 		// NOTE we get these from applicative syntax
 
 		def flatten[LL>:L,X](using ev: R <:< Either[LL,X]):Either[LL,X]	=
-			peer flatMap ev
+			peer.flatMap(ev)
 
 		// * function effect first
 		def ap[LL>:L,X,Y](that:Either[LL,X])(using ev: R <:< (X=>Y)):Either[LL,Y]	=
-			that pa (peer map ev)
+			that.pa(peer.map(ev))
 
 		// * function effect first
 		def pa[LL>:L,X](that:Either[LL,R=>X]):Either[LL,X]	=
@@ -74,7 +74,7 @@ object EitherExtensions {
 			}
 
 		def map2[LL>:L,X,Y](that:Either[LL,X])(func:(R,X)=>Y):Either[LL,Y]	=
-			peer zip that map func.tupled
+			peer.zip(that).map(func.tupled)
 		*/
 
 		def zip[LL>:L,X](that:Either[LL,X]):Either[LL,(R,X)]	=
@@ -135,13 +135,13 @@ object EitherExtensions {
 			}
 
 		def getOrError(s: =>String):R	=
-			peer getOrElse (sys error s)
+			peer.getOrElse{ sys error s }
 
 		//------------------------------------------------------------------------------
 
 		def rescue[RR>:R](func:L=>Option[RR]):Either[L,RR]	=
 			peer match {
-				case Left(x)	=> func(x) map Right.apply getOrElse Left(x)
+				case Left(x)	=> func(x).map(Right.apply).getOrElse(Left(x))
 				case Right(x)	=> Right(x)
 			}
 
@@ -151,7 +151,7 @@ object EitherExtensions {
 		def reject[LL>:L](func:R=>Option[LL]):Either[LL,R]	=
 			peer match {
 				case Left(x)	=> Left(x)
-				case Right(x)	=> func(x) map Left.apply getOrElse Right(x)
+				case Right(x)	=> func(x).map(Left.apply).getOrElse(Right(x))
 			}
 
 		def rejectPartial[LL>:L](func:PartialFunction[R,LL]):Either[LL,R]	=
@@ -172,7 +172,7 @@ object EitherExtensions {
 		def collapseOr[LL>:L,RR](func:R=>Option[RR], fail: =>LL):Either[LL,RR]	=
 			peer match {
 				case Left(x)	=> Left(x)
-				case Right(x)	=> func(x) map Right.apply getOrElse Left(fail)
+				case Right(x)	=> func(x).map(Right.apply).getOrElse(Left(fail))
 			}
 
 		def collectOr[LL>:L,RR](func:PartialFunction[R,RR], fail: =>LL):Either[LL,RR]	=
@@ -256,6 +256,6 @@ object EitherExtensions {
 		//------------------------------------------------------------------------------
 
 		def toEitherT[F[_]](using M:Applicative[F]):EitherT[F,L,R]	=
-			EitherT fromEither peer
+			EitherT.fromEither(peer)
 	}
 }

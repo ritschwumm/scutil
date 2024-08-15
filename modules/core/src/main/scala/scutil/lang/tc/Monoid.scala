@@ -32,6 +32,7 @@ object Monoid extends MonoidLow {
 	given SetMonoid[T]:Monoid[Set[T]]	=
 		Monoid.instance(Set.empty, _ ++ _)
 
+	// TODO tc this behaves quite differently from the Monoid instance, as this uses the Last value
 	given MapMonoid[K,V]:Monoid[Map[K,V]]	=
 		Monoid.instance(Map.empty, _ ++ _)
 
@@ -50,14 +51,16 @@ object Monoid extends MonoidLow {
 			)
 		)
 
-	given Option[T](using S:Semigroup[T]):Monoid[Option[T]]	=
+	// TODO tc this is the same as in haskell, but we could have others:
+	// use the first Some, use the last Some, or return Some semigroup-combined value when both values are Some or None when any od them is None
+	given OptionMonoid[T](using S:Semigroup[T]):Monoid[Option[T]]	=
 		Monoid.instance(
 			None,
-			(a,b) => (a oneOrTwo b)(S.combine)
+			(a,b) => a.oneOrTwo(b)(S.combine)
 		)
 
 	given EndoMonoid[T]:Monoid[T=>T]	=
-		Monoid.instance(identity, _ andThen _)
+		Monoid.instance(identity, _ `andThen` _)
 }
 
 trait MonoidLow {

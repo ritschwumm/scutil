@@ -58,7 +58,7 @@ object ShowLiterals extends SimpleTestSuite {
 	import scutil.lang.tc.*
 	given OptionShow[T:Show]:Show[Option[T]]	=
 		Show instance {
-			case Some(x)	=> "some: " + (Show doit x)
+			case Some(x)	=> "some: " + Show.doit(x)
 			case None		=> "none"
 		}
 

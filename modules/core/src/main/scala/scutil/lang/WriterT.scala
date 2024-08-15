@@ -5,22 +5,22 @@ import scutil.lang.tc.*
 
 object WriterT {
 	def pure[F[_],L:Monoid,T](it:T)(using M:Applicative[F]):WriterT[F,L,T]	=
-		liftF(M pure it)
+		liftF(M.pure(it))
 
 	// TODO Delay should inherit from Monad (or Applicative?) so we don't need a Functor here
 	def delay[F[_]:Delay,L:Monoid,T](it: =>T)(using D:Delay[F], F:Functor[F]):WriterT[F,L,T]	=
-		liftF(D delay it)
+		liftF(D.delay(it))
 
 	def liftF[F[_],L:Monoid,T](io:F[T])(using F:Functor[F]):WriterT[F,L,T]	=
 		WriterT {
-			io map { v =>
+			io.map { v =>
 				Monoid[L].empty -> v
 			}
 		}
 
 	def liftL[F[_],L](log:L)(using F:Applicative[F]):WriterT[F,L,Unit]	=
 		WriterT(
-			F pure (
+			F.pure(
 				log -> (())
 			)
 		)
@@ -30,20 +30,20 @@ object WriterT {
 
 	given WriterTDelay[F[_]:Delay:Functor,L:Monoid]:Delay[WriterT[F,L,_]]	=
 		new Delay[WriterT[F,L,_]] {
-			def delay[T](it: =>T):WriterT[F,L,T]	= WriterT delay it
+			def delay[T](it: =>T):WriterT[F,L,T]	= WriterT.delay(it)
 		}
 
 	given WriterTMonad[F[_]:Monad,L:Monoid]:Monad[WriterT[F,L,_]]	=
 		new Monad[WriterT[F,L,_]] {
-			def pure[T](it:T):WriterT[F,L,T]											= WriterT pure it
-			def flatMap[S,T](its:WriterT[F,L,S])(func:S=>WriterT[F,L,T]):WriterT[F,L,T]	= its flatMap func
+			def pure[T](it:T):WriterT[F,L,T]											= WriterT.pure(it)
+			def flatMap[S,T](its:WriterT[F,L,S])(func:S=>WriterT[F,L,T]):WriterT[F,L,T]	= its.flatMap(func)
 		}
 }
 
 final case class WriterT[F[_],L,T](run:F[(L,T)]) {
 	def map[U](func:T=>U)(using F:Functor[F]):WriterT[F,L,U]	=
 		WriterT {
-			(F map run) { case (s,t) =>
+			F.map(run) { (s,t) =>
 				(s, func(t))
 			}
 		}

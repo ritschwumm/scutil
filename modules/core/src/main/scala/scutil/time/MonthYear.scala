@@ -26,7 +26,7 @@ final case class MonthYear(month:Int, year:Int) extends Ordered[MonthYear] {
 	require(month >= 1,		s"expected month >= 1, got ${month.toString}")
 	require(month <= 12,	s"expected month <= 12, got ${month.toString}")
 
-	def move(offset:Int):MonthYear	= MonthYear fromIndex (toIndex + offset)
+	def move(offset:Int):MonthYear	= MonthYear.fromIndex(toIndex + offset)
 	def until(that:MonthYear):Int	= that.toIndex - this.toIndex
 
 	def compare(that:MonthYear):Int		= {
@@ -38,7 +38,7 @@ final case class MonthYear(month:Int, year:Int) extends Ordered[MonthYear] {
 	def max(that:MonthYear):MonthYear	= if (this > that) this else that
 
 	lazy val monthIndex:Int		= month-1
-	lazy val monthValue:Month	= Month fromIndex monthIndex
+	lazy val monthValue:Month	= Month.fromIndex(monthIndex)
 	lazy val yearValue:Year		= Year(year)
 
 	// TODO time return an Option for bad day values?
@@ -47,7 +47,7 @@ final case class MonthYear(month:Int, year:Int) extends Ordered[MonthYear] {
 	lazy val firstDay:GregorianDate	= gregorianDateAt(1)
 	lazy val lastDay:GregorianDate	= gregorianDateAt(days)
 
-	lazy val days:Int	= monthValue daysInYear yearValue
+	lazy val days:Int	= monthValue.daysInYear(yearValue)
 
 	lazy val toIndex:Int	= monthIndex + year * 12
 

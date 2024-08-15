@@ -21,7 +21,7 @@ object OptionExtensions {
 	}
 
 	implicit final class OptionExt[T](peer:Option[T]) {
-		def getOrError(s:String)	= peer getOrElse (sys error s)
+		def getOrError(s:String)	= peer.getOrElse {  sys error s }
 
 		def cata[X](none: => X, some:T => X):X =
 			peer match {
@@ -48,10 +48,10 @@ object OptionExtensions {
 
 		/** the partition method defined on Iterable is useless */
 		def partition(pred:Predicate[T]):(Option[T],Option[T])	=
-			(peer filter pred, peer filterNot pred)
+			(peer.filter(pred), peer.filterNot(pred))
 
 		def partitionEither[U,V](using ev: T <:< Either[U,V]):(Option[U],Option[V])	=
-			peer map ev match {
+			peer.map(ev) match {
 				case Some(Left(x))	=> (Some(x),	None)
 				case Some(Right(x))	=> (None,		Some(x))
 				case None			=> (None,		None)
@@ -81,7 +81,7 @@ object OptionExtensions {
 			traverseOption(ev)
 
 		def traverseOption[U](func:T=>Option[U]):Option[Option[U]]	=
-			peer map func match {
+			peer.map(func) match {
 				case None		=> Some(None)
 				case Some(None)	=> None
 				case x			=> x
@@ -93,20 +93,20 @@ object OptionExtensions {
 			traverseSeq(ev)
 
 		def traverseSeq[U](func:T=>Seq[U]):Seq[Option[U]]	=
-			peer map func match {
+			peer.map(func) match {
 				case None		=> Seq(None)
-				case Some(xs)	=> xs map Some.apply
+				case Some(xs)	=> xs.map(Some.apply)
 			}
 
 		/*
 		// TODO generify these - right now, they are not working
 
 		def sequenceIterable[CC[_]<:Iterable[U],U](using factory:Factory[Option[U],CC[Option[U]]], ev: T <:< CC[U]):CC[Option[U]]	=
-				traverseIterable(ev)
+			traverseIterable(ev)
 
 		def traverseIterable[CC[_]<:Iterable[U],U](func:T=>CC[U])(using factory:Factory[Option[U],CC[Option[U]]]):CC[Option[U]]	= {
 			val builder	= factory.newBuilder
-			peer map func match {
+			peer.map(func) match {
 				case None		=> builder += None; builder.result
 				case Some(xs)	=> xs foreach { x => builder += Some(x) }
 			}
@@ -118,7 +118,7 @@ object OptionExtensions {
 			traverseEither(ev)
 
 		def traverseEither[F,W](func:T=>Either[F,W]):Either[F,Option[W]]	=
-			peer map func match {
+			peer.map(func) match {
 				case None			=> Right(None)
 				case Some(Left(x))	=> Left(x)
 				case Some(Right(x))	=> Right(Some(x))
@@ -128,7 +128,7 @@ object OptionExtensions {
 			traverseValidated(ev)
 
 		def traverseValidated[F,W](func:T=>Validated[F,W]):Validated[F,Option[W]]	=
-			peer map func match {
+			peer.map(func) match {
 				case None						=> Validated.valid(None)
 				case Some(Validated.Invalid(x))	=> Validated.invalid(x)
 				case Some(Validated.Valid(x))	=> Validated.valid(Some(x))
@@ -138,9 +138,9 @@ object OptionExtensions {
 			traverseState(ev)
 
 		def traverseState[S,U](func:T=>State[S,U]):State[S,Option[U]]	=
-			peer map func match {
-				case None		=> State pure None
-				case Some(st)	=> st map Some.apply
+			peer.map(func) match {
+				case None		=> State.pure(None)
+				case Some(st)	=> st.map(Some.apply)
 			}
 
 		// TODO state support StateT
@@ -207,25 +207,25 @@ object OptionExtensions {
 		// NOTE scala.jdk.javaapi.OptionConverters can to this
 		def toJOptional:JOptional[T]	=
 			peer match {
-				case Some(x)	=> JOptional of x
+				case Some(x)	=> JOptional.of(x)
 				case None		=> JOptional.empty[T]
 			}
 
 		//------------------------------------------------------------------------------
 
 		def toOptionT[F[_]:Applicative]:OptionT[F,T]	=
-			OptionT fromOption peer
+			OptionT.fromOption(peer)
 
 		def toRightF[F[_]:Monad,L](leftValue: =>F[L]):EitherT[F,L,T]	=
-			toOptionT[F] toRightF leftValue
+			toOptionT[F].toRightF(leftValue)
 
 		def toRightT[F[_]:Applicative,L](leftValue: =>L):EitherT[F,L,T]	=
-			toOptionT[F] toRight leftValue
+			toOptionT[F].toRight(leftValue)
 
 		def toLeftF[F[_]:Monad,R](rightValue: =>F[R]):EitherT[F,T,R]	=
-			toOptionT[F] toLeftF rightValue
+			toOptionT[F].toLeftF(rightValue)
 
 		def toLeftT[F[_]:Applicative,R](rightValue: =>R):EitherT[F,T,R]	=
-			toOptionT[F] toLeft rightValue
+			toOptionT[F].toLeft(rightValue)
 	}
 }

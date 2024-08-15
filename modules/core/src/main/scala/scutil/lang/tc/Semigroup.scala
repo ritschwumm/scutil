@@ -27,7 +27,7 @@ object Semigroup extends SemigroupLow {
 
 	// TODO questionable
 	given [S,T]:Semigroup[S=>Option[T]]	=
-		Semigroup instance (_ orElse _)
+		Semigroup.instance(_ `orElse` _)
 
 	/*
 	// TODO does this make sense without further constraints on T?
@@ -43,7 +43,7 @@ object Semigroup extends SemigroupLow {
 	/*
 	// NOTE already done with PFunctionSemigroup
 	given [T]:Semigroup[T=>Option[T]]	=
-		Semigroup instance (_ andThenFixed _)
+		Semigroup instance (_ `andThenFixed` _)
 	*/
 
 }
@@ -71,4 +71,3 @@ trait Semigroup[F] {
 			combine(f, func(s))
 		}
 }
-

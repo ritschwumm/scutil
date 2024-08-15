@@ -11,7 +11,7 @@ import scutil.time.*
 object JTimeUtil {
 	def milliInstantToGregorianDate(instant:MilliInstant, tz:TimeZone):GregorianDate	= {
 		val	cal	= new GregorianCalendar(tz)
-		cal setTime milliInstantToDate(instant)
+		cal.setTime(milliInstantToDate(instant))
 		calendarToGregorianDate(cal)
 	}
 
@@ -22,14 +22,14 @@ object JTimeUtil {
 
 	def calendarToGregorianDate(cal:Calendar):GregorianDate	=
 		GregorianDate(
-			(cal get Calendar.DAY_OF_MONTH) + 0,
-			(cal get Calendar.MONTH)		+ 1,
-			(cal get Calendar.YEAR)			+ 0
+			cal.get(Calendar.DAY_OF_MONTH)	+ 0,
+			cal.get(Calendar.MONTH)			+ 1,
+			cal.get(Calendar.YEAR)			+ 0
 		)
 
 	def gregorianDateToCalendar(it:GregorianDate, tz:TimeZone):Option[GregorianCalendar]	= {
 		val	cal	= new GregorianCalendar(tz)
-		cal setLenient false
+		cal.setLenient(false)
 		gregorianDateIntoCalendar(it, cal)
 		try { cal.getTime; Some(cal) }
 		catch { case e:Exception => None }
@@ -52,7 +52,7 @@ object JTimeUtil {
 
 	val milliInstantInstantBijection	= Bijection[MilliInstant,Instant](milliInstantToInstant, instantToMilliInstant)
 
-	def milliInstantToInstant(it:MilliInstant):Instant	= Instant ofEpochMilli it.millis
+	def milliInstantToInstant(it:MilliInstant):Instant	= Instant.ofEpochMilli(it.millis)
 	def instantToMilliInstant(it:Instant):MilliInstant	= MilliInstant(it.toEpochMilli)
 
 	//------------------------------------------------------------------------------
@@ -72,8 +72,8 @@ object JTimeUtil {
 	// DateFormat is not thread safe
 	def iso88601():DateFormat	= {
 		val	df	= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-		df setTimeZone	(TimeZone getTimeZone "UTC")
-		df setLenient	false
+		df.setTimeZone(TimeZone.getTimeZone("UTC"))
+		df.setLenient(false)
 		df
 	}
 }

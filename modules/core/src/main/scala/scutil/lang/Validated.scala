@@ -6,7 +6,7 @@ object Validated {
 	def valid[E,T](value:T):Validated[E,T]		= Valid(value)
 	def invalid[E,T](problems:E):Validated[E,T]	= Invalid(problems)
 
-	def invalidNes[E,T](problems:E):Validated[Nes[E],T]	= Invalid(Nes one problems)
+	def invalidNes[E,T](problems:E):Validated[Nes[E],T]	= Invalid(Nes.one(problems))
 
 	//------------------------------------------------------------------------------
 
@@ -27,12 +27,12 @@ object Validated {
 
 	given [S:Semigroup]:Applicative[Validated[S,_]]	=
 		new Applicative[Validated[S,_]] {
-			override def pure[A](it:A):Validated[S,A]										= Validated valid it
-			override def ap[A,B](func:Validated[S,A=>B])(it:Validated[S,A]):Validated[S,B]	= func ap it
+			override def pure[A](it:A):Validated[S,A]										= Validated.valid(it)
+			override def ap[A,B](func:Validated[S,A=>B])(it:Validated[S,A]):Validated[S,B]	= func.ap(it)
 		}
 
 	given [S:Semigroup,T]:Semigroup[Validated[S,T]]	=
-		Semigroup instance (_ or _)
+		Semigroup.instance(_ `or` _)
 }
 
 enum Validated[+E,+T] {
@@ -100,10 +100,10 @@ enum Validated[+E,+T] {
 		flatMap(ev)
 
 	def ap[EE>:E:Semigroup,U,V](that:Validated[EE,U])(using ev:T <:< (U=>V)):Validated[EE,V]	=
-		(this map2 that)(_(_))
+		this.map2(that)(_(_))
 
 	def product[EE>:E:Semigroup,U](that:Validated[EE,U]):Validated[EE,(T,U)]	=
-		(this map2 that)((_,_))
+		this.map2(that)((_,_))
 
 	def map2[EE>:E,U,V](that:Validated[EE,U])(func:(T,U)=>V)(using cc:Semigroup[EE]):Validated[EE,V]	=
 		(this, that) match {
@@ -188,14 +188,14 @@ enum Validated[+E,+T] {
 
 	def rescue[TT>:T](func:E=>Option[TT]):Validated[E,TT]	=
 		this match {
-			case Validated.Invalid(x)	=> func(x) map Validated.valid getOrElse Validated.invalid(x)
+			case Validated.Invalid(x)	=> func(x).map(Validated.valid).getOrElse(Validated.invalid(x))
 			case Validated.Valid(x)		=> Validated.valid(x)
 		}
 
 	def reject[EE>:E](func:T=>Option[EE]):Validated[EE,T]	=
 		this match {
 			case Validated.Invalid(x)	=> Validated.invalid(x)
-			case Validated.Valid(x)		=> func(x) map Validated.invalid getOrElse Validated.valid(x)
+			case Validated.Valid(x)		=> func(x).map(Validated.invalid).getOrElse(Validated.valid(x))
 		}
 
 	def validByOr[EE>:E](func:Predicate[T], invalid: =>EE):Validated[EE,T]	=
@@ -213,7 +213,7 @@ enum Validated[+E,+T] {
 	def collapseOr[EE>:E,TT](func:T=>Option[TT], invalid: =>EE):Validated[EE,TT]	=
 		this match {
 			case Validated.Invalid(x)	=> Validated.invalid(x)
-			case Validated.Valid(x)		=> func(x) map Validated.valid getOrElse Validated.invalid(invalid)
+			case Validated.Valid(x)		=> func(x).map(Validated.valid).getOrElse(Validated.invalid(invalid))
 		}
 
 	def collectOr[EE>:E,TT](func:PartialFunction[T,TT], invalid: =>EE):Validated[EE,TT]	=
@@ -222,7 +222,7 @@ enum Validated[+E,+T] {
 	//------------------------------------------------------------------------------
 
 	def validEffect(effect:Effect[T]):this.type	= {
-		this foreach effect
+		this.foreach(effect)
 		this
 	}
 
@@ -263,5 +263,5 @@ enum Validated[+E,+T] {
 	//------------------------------------------------------------------------------
 
 	def toEitherT[F[_],EE>:E,TT>:T](using F:Applicative[F]):EitherT[F,EE,TT]	=
-		EitherT fromEither toEither
+		EitherT.fromEither(toEither)
 }

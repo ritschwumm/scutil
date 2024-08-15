@@ -8,7 +8,7 @@ import java.awt.image.FilteredImageSource
 object ImageExtensions {
 	implicit final class ImageExt(peer:Image) {
 		def filter(imageFilter:ImageFilter):Image	=
-			Toolkit.getDefaultToolkit createImage (
+			Toolkit.getDefaultToolkit.createImage(
 				new FilteredImageSource(
 					peer.getSource,
 					imageFilter

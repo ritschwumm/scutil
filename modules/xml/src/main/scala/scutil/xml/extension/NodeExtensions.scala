@@ -68,6 +68,6 @@ object NodeExtensions {
 
 		//------------------------------------------------------------------------------
 
-		def toXhtml:String	= Xhtml toXhtml peer
+		def toXhtml:String	= Xhtml.toXhtml(peer)
 	}
 }

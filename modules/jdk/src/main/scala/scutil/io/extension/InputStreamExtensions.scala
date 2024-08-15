@@ -34,7 +34,7 @@ object InputStreamExtensions {
 		def readLimitedByteString(length:Int):Option[ByteString]	= {
 			// NOTE this is copied due the the length-dependent slicing necerssary
 			val buffer	= new Array[Byte](length)
-			val found	= peer read buffer
+			val found	= peer.read(buffer)
 			if		(found == -1)	None
 			else if	(found == 0)	Some(ByteString.empty)
 			else					Some(ByteString.unboundedSliceFromArray(buffer, 0, found))
@@ -42,7 +42,7 @@ object InputStreamExtensions {
 
 		/** read the complete content */
 		def readFullyByteString():ByteString	=
-			ByteString unsafeFromArray readFullyImpl()
+			ByteString.unsafeFromArray(readFullyImpl())
 
 		// NOTE java 11 has readAllBytes
 		private def readFullyImpl():Array[Byte] = {
@@ -57,7 +57,7 @@ object InputStreamExtensions {
 		def skipExactly(count:Long):Long	= {
 			var done	= 0L
 			while (done < count) {
-				val len	= peer skip (count - done)
+				val len	= peer.skip(count - done)
 				if (len == -1)	return done
 				done	+= len
 			}
@@ -69,7 +69,7 @@ object InputStreamExtensions {
 			val buffer	= new Array[Byte](blockSize)
 			var running	= true
 			while (running) {
-				val len = peer read buffer
+				val len = peer.read(buffer)
 				if (len == -1)	running	= false
 			}
 		}
@@ -80,7 +80,7 @@ object InputStreamExtensions {
 			val	buffer	= new Array[Byte](blockSize)
 			var running	= true
 			while (running) {
-				val	len	= peer read buffer
+				val	len	= peer.read(buffer)
 				if (len != -1)	out.write(buffer, 0, len)
 				else			running	= false
 			}

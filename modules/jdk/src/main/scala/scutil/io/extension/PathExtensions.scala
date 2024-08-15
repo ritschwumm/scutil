@@ -8,10 +8,10 @@ object PathExtensions {
 	/** utility methods for java Path objects */
 	implicit final class PathExt(peer:Path) {
 		/** add a component to this Path */
-		def /(name:String):Path		= peer resolve name
+		def /(name:String):Path		= peer.resolve(name)
 
 		/** add multiple components to this Paths */
-		def /+(path:Seq[String]):Path	= path.foldLeft(peer)(_ resolve _)
+		def /+(path:Seq[String]):Path	= path.foldLeft(peer)(_ `resolve` _)
 
 		/** prefer this over toString */
 		def getPathString:String	= peer.toString

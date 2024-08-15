@@ -15,7 +15,7 @@ object GlobalAWTEvent {
 		val toolkit	= Toolkit.getDefaultToolkit
 		toolkit.addAWTEventListener(listener, mask)
 		Disposer delay {
-			toolkit removeAWTEventListener listener
+			toolkit.removeAWTEventListener(listener)
 		}
 	}
 }

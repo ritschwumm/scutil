@@ -8,7 +8,7 @@ object RGBA {
 	val transparentWhite	= RGBA(RGB.white, Alpha.transparent)
 
 	def parseHex(s:String):Option[RGBA]	=
-		Hex decodeByteString s collect { case ByteString(r,g,b,a)	=>
+		Hex.decodeByteString(s).collect { case ByteString(r,g,b,a)	=>
 			RGBA(
 				RGB(
 					(r & 0xff) / 255f,
@@ -45,8 +45,8 @@ final case class RGBA(rgb:RGB, alpha:Alpha) {
 	def a	= alpha.a
 
 	def diff(that:RGBA):Float	=
-		(	(this.rgb	diff3	that.rgb) +
-			(this.alpha	diff	that.alpha)
+		(	this.rgb.diff3(that.rgb) +
+			this.alpha.diff(that.alpha)
 		) / 4f
 
 	def toHSBA:HSBA =
@@ -59,10 +59,12 @@ final case class RGBA(rgb:RGB, alpha:Alpha) {
 		(((rgb.b	* 255).toInt) <<  0)
 
 	def unparseHex:String	=
-		Hex encodeByteString ByteString(
-			(r			* 255).toByte,
-			(g			* 255).toByte,
-			(b			* 255).toByte,
-			(alpha.a	* 255).toByte
+		Hex.encodeByteString(
+			ByteString(
+				(r			* 255).toByte,
+				(g			* 255).toByte,
+				(b			* 255).toByte,
+				(alpha.a	* 255).toByte
+			)
 		)
 }

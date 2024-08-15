@@ -14,7 +14,7 @@ object LensGenTest extends SimpleTestSuite {
 		val container	= Foo(4711, "hallo")
 		val lens		= L1.a
 		assertEquals(
-			lens get container,
+			lens.get(container),
 			4711
 		)
 	}
@@ -28,7 +28,7 @@ object LensGenTest extends SimpleTestSuite {
 		val container	= Foo(4711, "hallo")
 		val lens		= L2.a
 		assertEquals(
-			lens get container,
+			lens.get(container),
 			4711
 		)
 	}
@@ -39,7 +39,7 @@ object LensGenTest extends SimpleTestSuite {
 		val container	= Foo(4711, "hallo")
 		val lens		= (Lens.Gen[Foo].a) : @nowarn
 		assertEquals(
-			lens get container,
+			lens.get(container),
 			4711
 		)
 	}
@@ -48,7 +48,7 @@ object LensGenTest extends SimpleTestSuite {
 		val container	= Foo(4711, "hallo")
 		val lens		= (Lens.Gen[Foo].a) : @nowarn
 		assertEquals(
-			lens set 1337 apply container,
+			lens.set(1337)(container),
 			Foo(1337, "hallo")
 		)
 	}
@@ -57,7 +57,7 @@ object LensGenTest extends SimpleTestSuite {
 		val container	= Bar("test")
 		val lens		= (Lens.Gen[Bar[String]].t) : @nowarn
 		assertEquals(
-			lens get container,
+			lens.get(container),
 			"test"
 		)
 	}
@@ -66,7 +66,7 @@ object LensGenTest extends SimpleTestSuite {
 		val container	= Bar("test")
 		val lens		= (Lens.Gen[Bar[String]].t) : @nowarn
 		assertEquals(
-			lens set "haha" apply container,
+			lens.set("haha")(container),
 			Bar("haha")
 		)
 	}
@@ -76,7 +76,7 @@ object LensGenTest extends SimpleTestSuite {
 		val lenses		= Lens.Gen[Foo]
 		val lens		= lenses.a
 		assertEquals(
-			lens set 1337 apply container,
+			lens.set(1337)(container),
 			Foo(1337, "hallo")
 		)
 	}
@@ -85,7 +85,7 @@ object LensGenTest extends SimpleTestSuite {
 		val container	= Foo(4711, "hallo")
 		val lens		= (Lens.Gen[Foo].a) : @nowarn
 		assertEquals(
-			lens set 1337 apply container,
+			lens.set(1337)(container),
 			Foo(1337, "hallo")
 		)
 	}

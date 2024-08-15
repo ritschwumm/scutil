@@ -217,12 +217,16 @@ object functions {
 	//------------------------------------------------------------------------------
 
 	/** ratio 0..1 select a..b */
-	def blendFloat(ratio:Float, a:Float, b:Float):Float	=
-		//a * (1 - ratio) + b * (0 + ratio)
+	def lerpFloat(ratio:Float, a:Float, b:Float):Float	=
 		a + (b - a) * ratio
 
 	/** ratio 0..1 select a..b */
-	def blendDouble(ratio:Double, a:Double, b:Double):Double	=
-		//a * (1 - ratio) + b * (0 + ratio)
+	def lerpDouble(ratio:Double, a:Double, b:Double):Double	=
 		a + (b - a) * ratio
+
+	@deprecated("use lerpFloat", "0.239.0")
+	def blendFloat(ratio:Float, a:Float, b:Float):Float			= lerpFloat(ratio, a, b)
+
+	@deprecated("use lerpDouble", "0.239.0")
+	def blendDouble(ratio:Double, a:Double, b:Double):Double	= lerpDouble(ratio, a, b)
 }

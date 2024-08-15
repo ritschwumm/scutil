@@ -27,7 +27,7 @@ object LoggingTest extends SimpleTestSuite with TestLogging {
 		INFO("logging works")
 
 		assert(
-			logHandler.strings(0) matches """^INFO\t\[.*\]\tLoggingTest.scala:\d+\tlogging works$"""
+			logHandler.strings(0).matches("""^INFO\t\[.*\]\tLoggingTest.scala:\d+\tlogging works$""")
 		)
 	}
 }

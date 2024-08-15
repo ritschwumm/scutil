@@ -5,7 +5,7 @@ import minitest.*
 object DragData {
 	object P {
 		val WorkMove:Prism[DragData,Int]			= Prism.partial({ case scutil.lang.DragData.WorkMove(workId)				=> workId				},	scutil.lang.DragData.WorkMove.apply)
-		val WorkInject:Prism[DragData,(Int,String)]	= Prism.partial({ case scutil.lang.DragData.WorkInject(workId, projectId)	=> (workId, projectId)	},	(scutil.lang.DragData.WorkInject.apply _).tupled)
+		val WorkInject:Prism[DragData,(Int,String)]	= Prism.partial({ case scutil.lang.DragData.WorkInject(workId, projectId)	=> (workId, projectId)	},	scutil.lang.DragData.WorkInject.apply.tupled)
 	}
 }
 enum DragData {
@@ -20,7 +20,7 @@ final case class	PrismClass(a:Int)	extends PrismSuper
 object PrismTest extends SimpleTestSuite {
 	test("Prism should do write in partial") {
 		val data:DragData	= DragData.WorkMove(1)
-		val opt:Option[Int]	= DragData.P.WorkMove get data
+		val opt:Option[Int]	= DragData.P.WorkMove.get(data)
 		assertEquals(
 			opt,
 			Some(1)
@@ -65,7 +65,7 @@ object PrismTest extends SimpleTestSuite {
 		val sub:PrismObject.type	= PrismObject
 		val sup:PrismSuper			= sub
 		assertEquals(
-			prism get sup,
+			prism.get(sup),
 			Some(sub)
 		)
 	}
@@ -76,7 +76,7 @@ object PrismTest extends SimpleTestSuite {
 		val sub:PrismObject.type	= PrismObject
 		val sup:PrismSuper			= sub
 		assertEquals(
-			prism set sub,
+			prism.set(sub),
 			sup
 		)
 	}
@@ -87,7 +87,7 @@ object PrismTest extends SimpleTestSuite {
 		val sub:PrismClass	= PrismClass(1)
 		val sup:PrismSuper	= sub
 		assertEquals(
-			prism get sup,
+			prism.get(sup),
 			Some(sub)
 		)
 	}
@@ -97,7 +97,7 @@ object PrismTest extends SimpleTestSuite {
 		val sub:PrismClass	= PrismClass(1)
 		val sup:PrismSuper	= sub
 		assertEquals(
-			prism set sub,
+			prism.set(sub),
 			sup
 		)
 	}

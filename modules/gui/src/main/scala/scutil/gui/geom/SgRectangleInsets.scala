@@ -18,8 +18,8 @@ object SgRectangleInsets {
 
 	def symmetric2(size:Double):SgRectangleInsets		=
 		xy(
-			SgSpanInsets symmetric size,
-			SgSpanInsets symmetric size
+			SgSpanInsets.symmetric(size),
+			SgSpanInsets.symmetric(size)
 		)
 
 	def xy(x:SgSpanInsets, y:SgSpanInsets):SgRectangleInsets	= new SgRectangleInsets(x, y)

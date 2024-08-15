@@ -11,7 +11,7 @@ object PropertiesExtensions {
 			val keyIter	= peer.stringPropertyNames.iterator
 			while (keyIter.hasNext) {
 				val key		= keyIter.next
-				val value	= peer getProperty key
+				val value	= peer.getProperty(key)
 				out	+= (key -> value)
 			}
 			out

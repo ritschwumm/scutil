@@ -16,7 +16,7 @@ object ShowLiterals {
 		/*
 		// NOTE probably not needed, we just use the standard s interpolator
 		val literals	=
-			context.valueOrAbort.parts map { raw =>
+			context.valueOrAbort.parts.map { raw =>
 				try {
 					StringContext processEscapes raw
 				}
@@ -34,7 +34,7 @@ object ShowLiterals {
 
 		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 		val shown	=
-			varArgs map { case '{ $arg: typ } =>
+			varArgs.map { case '{ $arg: typ } =>
 				/*
 				// NOTE for an invariant show, this requires widening
 				val t = TypeRepr.of[typ].widen

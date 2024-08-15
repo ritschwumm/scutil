@@ -11,7 +11,7 @@ object SetJCollectionExtensions {
 		def toJSet:JSet[T]	=  {
 			val out	= new JHashSet[T]
 			peer foreach out.add
-			JCollections unmodifiableSet out
+			JCollections.unmodifiableSet(out)
 		}
 	}
 }

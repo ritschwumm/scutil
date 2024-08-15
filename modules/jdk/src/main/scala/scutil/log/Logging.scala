@@ -11,14 +11,14 @@ trait Logging {
 		}
 
 		def time[T](what:LogValue*)(block: =>T)(using sl:SourceLocation):T	= {
-			val (out, dur)	= LogTime measure block
-			val elements	= what.toVector :+ (LogValue string dur.toHumanString)
+			val (out, dur)	= LogTime.measure(block)
+			val elements	= what.toVector :+ LogValue.string(dur.toHumanString)
 			log(elements)(using sl)
 			out
 		}
 
 		def log(elements:Seq[LogValue])(using sl:SourceLocation):Unit = {
-			logHandler handle LogEvent(level, elements, MilliInstant.now(), sl)
+			logHandler.handle(LogEvent(level, elements, MilliInstant.now(), sl))
 		}
 	}
 

@@ -9,7 +9,7 @@ object OutputStreamExtensions {
 	/** utility methods for OutputStream objects */
 	implicit final class OutputStreamExt(peer:OutputStream) {
 		def writeByteString(it:ByteString):Unit	=
-			peer write it.unsafeValue
+			peer.write(it.unsafeValue)
 
 		def writeByteString(it:ByteString, offset:Int, length:Int):Unit	=
 			peer.write(it.unsafeValue, offset, length)

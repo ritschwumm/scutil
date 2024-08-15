@@ -13,17 +13,17 @@ object SwingUtil {
 
 	val edtExecution:Execution	=
 		Execution { task	=>
-			SwingUtilities invokeLater task.toRunnable
+			SwingUtilities.invokeLater(task.toRunnable)
 		}
 
 	//------------------------------------------------------------------------------
 	//## unsafe
 
 	// transports Exceptions but not every Throwable
-	def worker[T](job: =>T):Thunk[T]	= Execution.thread	withResult thunk(job)
+	def worker[T](job: =>T):Thunk[T]	= Execution.thread	.withResult(thunk(job))
 
 	// transports Exceptions but not every Throwable
-	def edt[T](job: =>T):Thunk[T]		= edtExecution		withResult thunk(job)
+	def edt[T](job: =>T):Thunk[T]		= edtExecution		.withResult(thunk(job))
 
 	/** classical SwingWorker pattern without exception handling */
 	def swingWorker[T](calculate:Thunk[T], use:Effect[T]):Unit	= {

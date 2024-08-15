@@ -11,21 +11,21 @@ object Disposer {
 	val empty:Disposer	= Disposer(() => ())
 
 	def combineAll(subs:Iterable[Disposer]):Disposer	=
-		subs.foldLeft(empty)(_ combine _)
+		subs.foldLeft(empty)(_ `combine` _)
 
 	def combineOf(subs:Disposer*):Disposer	=
 		combineAll(subs.toVector)
 
 	// TODO this shows how wrong having Disposer is
 	def fromIo(io:Io[Unit]):Disposer	=
-		Disposer(io.unsafeRun _)
+		Disposer(() => io.unsafeRun())
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
 	given DisposerReleasable[T<:Disposer]:Releasable[T]	= _.dispose()
 
-	given Monoid[Disposer]	= Monoid.instance(empty, _ combine _)
+	given Monoid[Disposer]	= Monoid.instance(empty, _ `combine` _)
 }
 
 final case class Disposer(dispose:()=>Unit) {

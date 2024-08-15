@@ -9,10 +9,10 @@ object Execution {
 	val ignore:Execution	= Execution { task	=> ()		}
 	val direct:Execution	= Execution { task	=> task()	}
 	val thread:Execution	= Execution { task	=> new Thread(task.toRunnable).start()	}
-	val daemon:Execution	= Execution { task	=> new Thread(task.toRunnable).doto( _ setDaemon true).start() }
+	val daemon:Execution	= Execution { task	=> new Thread(task.toRunnable).doto(_.setDaemon(true)).start() }
 
 	// BETTER move into some JExecutorExtensions ?
-	def fromExecutor(executor:Executor):Execution	= Execution { task => executor execute task.toRunnable }
+	def fromExecutor(executor:Executor):Execution	= Execution { task => executor.execute(task.toRunnable) }
 }
 
 // NOTE this is equivalent to Later[Unit]
@@ -21,7 +21,7 @@ final case class Execution(submit:(()=>Unit)=>Unit) {
 	/** transports Exceptions (but not every Throwable) to the user of the value */
 	def withResult[T](job:Thunk[T]):Thunk[T] = {
 		val	out	= new LinkedBlockingQueue[Either[Exception,T]](1)
-		submit(thunk { out put (Catch.exception get job) })
+		submit(thunk { out.put(Catch.exception.get(job)) })
 		thunk { out.take().throwException }
 	}
 
@@ -55,5 +55,5 @@ final case class Execution(submit:(()=>Unit)=>Unit) {
 		)
 
 	def toExecutor:Executor	=
-		(command:Runnable) => submit(command.run _)
+		(command:Runnable) => submit(() => command.run())
 }

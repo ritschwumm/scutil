@@ -11,7 +11,7 @@ object SeqJCollectionExtensions {
 		def toJList:JList[T]	=  {
 			val out	= new JArrayList[T]
 			peer foreach out.add
-			JCollections unmodifiableList out
+			JCollections.unmodifiableList(out)
 		}
 	}
 }

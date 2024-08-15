@@ -12,6 +12,6 @@ object ImageIconExtensions {
 			new ImageIcon(func(peer.getImage))
 
 		def filter(filter:ImageFilter):ImageIcon	=
-			withImage { _ filter filter }
+			withImage { _.filter(filter) }
 	}
 }

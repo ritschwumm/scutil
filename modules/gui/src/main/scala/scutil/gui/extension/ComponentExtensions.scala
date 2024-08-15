@@ -34,9 +34,9 @@ object ComponentExtensions {
 
 		/** sets minimum, preferred and maximum size */
 		def setAllSizes(size:Dimension):Unit	= {
-			peer setMinimumSize		size
-			peer setMaximumSize		size
-			peer setPreferredSize	size
+			peer.setMinimumSize(size)
+			peer.setMaximumSize(size)
+			peer.setPreferredSize(size)
 		}
 
 		def outerRectangle:Rectangle =
@@ -61,8 +61,8 @@ object ComponentExtensions {
 			val localPosition	= new Point(screenLocation)
 			SwingUtilities.convertPointFromScreen(localPosition, peer)
 
-			val localBounds		= SwingUtilities getLocalBounds peer
-			localBounds contains localPosition
+			val localBounds		= SwingUtilities.getLocalBounds(peer)
+			localBounds.contains(localPosition)
 		}
 
 		/*
@@ -88,9 +88,9 @@ object ComponentExtensions {
 		*/
 
 		def getIntBounds:IntRect	=
-			geomConversion Rectangle_IntRect peer.getBounds
+			geomConversion.Rectangle_IntRect(peer.getBounds)
 
 		def setIntBounds(rect:IntRect):Unit	=
-			peer setBounds (geomConversion IntRect_Rectangle rect)
+			peer.setBounds(geomConversion.IntRect_Rectangle(rect))
 	}
 }

@@ -21,23 +21,25 @@ object JComponentExtensions {
 
 		def displayInFrame(size:Dimension, onClose:Thunk[Boolean] = thunk{true}):JFrame = {
 			val	frame	= new JFrame
-			frame setCenterContent	peer
-			frame setVisible		true
-			frame setSize			size
-			frame setDefaultCloseOperation WindowConstants.DO_NOTHING_ON_CLOSE
+			frame.setCenterContent(peer)
+			frame.setVisible(true)
+			frame.setSize(size)
+			frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
 
 			def doClose():Unit	= {
 				if (onClose()) {
-					frame setVisible false
+					frame.setVisible(false)
 					frame.dispose()
 				}
 			}
 
-			frame addWindowListener new WindowAdapter {
-				override def windowClosing(ev:WindowEvent):Unit	= {
-					doClose()
+			frame.addWindowListener(
+				new WindowAdapter {
+					override def windowClosing(ev:WindowEvent):Unit	= {
+						doClose()
+					}
 				}
-			}
+			)
 			frame.getRootPane.registerKeyboardAction(
 				new ActionListener {
 					def actionPerformed(ev:ActionEvent):Unit	= {

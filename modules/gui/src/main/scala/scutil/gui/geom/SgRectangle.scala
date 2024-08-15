@@ -17,8 +17,8 @@ object SgRectangle {
 
 	def zeroSized(size:SgPoint):SgRectangle	=
 		horizontalWithVertical(
-			SgSpan startZeroBy size.x,
-			SgSpan startZeroBy size.y
+			SgSpan.startZeroBy(size.x),
+			SgSpan.startZeroBy(size.y)
 		)
 
 	def topLeftWithSize(topLeft:SgPoint, size:SgPoint):SgRectangle	=
@@ -102,42 +102,42 @@ final case class SgRectangle private (x:SgSpan, y:SgSpan) {
 
 	def union(that:SgRectangle):SgRectangle	=
 		SgRectangle.horizontalWithVertical(
-			this.x union that.x,
-			this.y union that.y
+			this.x.union(that.x),
+			this.y.union(that.y),
 		)
 
 	def intersect(that:SgRectangle):Option[SgRectangle]	=
-		(this.x intersect that.x, this.y intersect that.y) match {
+		(this.x.intersect(that.x), this.y.intersect(that.y)) match {
 			case (Some(x), Some(y))	=> Some(SgRectangle.horizontalWithVertical(x,y))
 			case _					=> None
 		}
 
 	def intersects(that:SgRectangle):Boolean	=
-		(this.x intersects that.x) &&
-		(this.y intersects that.y)
+		this.x.intersects(that.x) &&
+		this.y.intersects(that.y)
 
 	def containsPoint(point:SgPoint) =
-		(x containsValue point.x)	&&
-		(y containsValue point.y)
+		x.containsValue(point.x)	&&
+		y.containsValue(point.y)
 
 	def contains(that:SgRectangle):Boolean	=
-		(this.x contains that.x) &&
-		(this.y contains that.y)
+		this.x.contains(that.x) &&
+		this.y.contains(that.y)
 
 	def move(offset:SgPoint):SgRectangle	=
 		SgRectangle.horizontalWithVertical(
-			x move offset.x,
-			y move offset.y
+			x.move(offset.x),
+			y.move(offset.y)
 		)
 
 	def inset(insets:SgRectangleInsets):SgRectangle	=
 		SgRectangle.horizontalWithVertical(
-			x inset insets.x,
-			y inset insets.y
+			x.inset(insets.x),
+			y.inset(insets.y)
 		)
 
 	def splitAtX(position:Double):(SgRectangle, SgRectangle)	= {
-		val (a, b)	= x splitAt position
+		val (a, b)	= x.splitAt(position)
 		(
 			SgRectangle.horizontalWithVertical(a, y),
 			SgRectangle.horizontalWithVertical(b, y)
@@ -145,7 +145,7 @@ final case class SgRectangle private (x:SgSpan, y:SgSpan) {
 	}
 
 	def splitAtY(position:Double):(SgRectangle, SgRectangle)	= {
-		val (a, b)	= y splitAt position
+		val (a, b)	= y.splitAt(position)
 		(
 			SgRectangle.horizontalWithVertical(x, a),
 			SgRectangle.horizontalWithVertical(x, b)
@@ -159,8 +159,8 @@ final case class SgRectangle private (x:SgSpan, y:SgSpan) {
 		)
 
 	def splitAt(position:SgPoint):(SgRectangle, SgRectangle, SgRectangle, SgRectangle)	= {
-		val (ax, bx)	= x splitAt position.x
-		val (ay, by)	= y splitAt position.y
+		val (ax, bx)	= x.splitAt(position.x)
+		val (ay, by)	= y.splitAt(position.y)
 		(
 			SgRectangle.horizontalWithVertical(ax, ay),
 			SgRectangle.horizontalWithVertical(bx, ay),

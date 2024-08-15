@@ -18,24 +18,24 @@ selects String who match a pattern with the following syntax:
 */
 object SearchParser {
 	def parse(pattern:String):SearchPattern	= {
-		val (neg, pos)	= pattern.trim splitAroundChar ' ' filter { _.nonEmpty } map parseHit partition { _._1 }
+		val (neg, pos)	= pattern.trim.splitAroundChar(' ').filter{ _.nonEmpty }.map(parseHit).partition { _._1 }
 		SearchPattern(
-			pos map { _._2 },
-			neg map { _._2 }
+			pos.map { _._2 },
+			neg.map { _._2 }
 		)
 	}
 
 	private def parseHit(descriptor:String):(Boolean,SearchToken) = {
-		val (exclude,	a)	= scan(descriptor,	_ cutPrefix "-")
-		val (start,		b)	= scan(a,			_ cutPrefix "|")
-		val (end,		c)	= scan(b,			_ cutSuffix "|")
+		val (exclude,	a)	= scan(descriptor,	_.cutPrefix("-"))
+		val (start,		b)	= scan(a,			_.cutPrefix("|"))
+		val (end,		c)	= scan(b,			_.cutSuffix("|"))
 		// TODO search this should allow unicode
 		val noCase			= c == c.toLowerCase(Locale.US)
 		(exclude, SearchToken(c, noCase, start, end))
 	}
 
 	private def scan(s:String, func:String=>Option[String]):(Boolean,String)	= {
-		val t	= func(s) filter { _.nonEmpty } toRight s
+		val t	= func(s).filter(_.nonEmpty).toRight(s)
 		(t.isRight, t.merge)
 	}
 }

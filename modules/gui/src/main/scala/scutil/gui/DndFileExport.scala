@@ -37,7 +37,7 @@ object DndFileExport {
 			)
 
 		Disposer delay {
-			dragGestureRecognizer setComponent null
+			dragGestureRecognizer.setComponent(null)
 		}
 	}
 

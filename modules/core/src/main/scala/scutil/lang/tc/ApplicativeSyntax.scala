@@ -2,7 +2,7 @@ package scutil.lang.tc
 
 object ApplicativeSyntax {
 	implicit final class ApplicativePureSyntaxExt[T](peer:T) {
-		def pure[F[_]](using F:Applicative[F]):F[T]	= F pure peer
+		def pure[F[_]](using F:Applicative[F]):F[T]	= F.pure(peer)
 	}
 
 	implicit final class ApplicativeBooleanSyntax(peer:Boolean) {

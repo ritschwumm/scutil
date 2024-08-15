@@ -17,20 +17,20 @@ final case class Alpha(a:Float) {
 	def inverse:Alpha	= Alpha(1-a)
 
 	def blendAlpha(off:Alpha, on:Alpha):Alpha	=
-		Alpha(blendFloat(a, off.a, on.a))
+		Alpha(lerpFloat(a, off.a, on.a))
 
 	def blendRGB(off:RGB, on:RGB):RGB	=
 		RGB(
-			r	= blendFloat(a, off.r, on.r),
-			g	= blendFloat(a, off.g, on.g),
-			b	= blendFloat(a, off.b, on.b)
+			r	= lerpFloat(a, off.r, on.r),
+			g	= lerpFloat(a, off.g, on.g),
+			b	= lerpFloat(a, off.b, on.b)
 		)
 
 	def blendHSB(off:HSB, on:HSB):HSB	=
 		HSB(
-			h	= blendFloat(a, off.h, on.h),
-			s	= blendFloat(a, off.s, on.s),
-			b	= blendFloat(a, off.b, on.b)
+			h	= lerpFloat(a, off.h, on.h),
+			s	= lerpFloat(a, off.s, on.s),
+			b	= lerpFloat(a, off.b, on.b)
 		)
 
 	def blendRGBA(off:RGBA, on:RGBA):RGBA	=

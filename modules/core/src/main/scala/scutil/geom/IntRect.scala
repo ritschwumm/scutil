@@ -1,5 +1,7 @@
 package scutil.geom
 
+import scala.compiletime.asMatchable
+
 object IntRect {
 	val zero	= new IntRect(IntSpan.zero, IntSpan.zero)
 
@@ -53,27 +55,27 @@ final class IntRect private (val horizontal:IntSpan, val vertical:IntSpan) {
 	def bottomRight:IntPoint	= IntPoint(right,	bottom)
 
 	def contains(pt:IntPoint):Boolean	=
-		(horizontal	contains pt.x) &&
-		(vertical	contains pt.y)
+		horizontal.contains(pt.x) &&
+		vertical.contains(pt.y)
 
 	def swap:IntRect			= new IntRect(vertical, horizontal)
 	def negate:IntRect			= new IntRect(horizontal.negate,	vertical.negate)
 	def normalize:IntRect		= new IntRect(horizontal.normalize,	vertical.normalize)
 
-	def move(d:IntPoint):IntRect	= new IntRect(horizontal move		d.x,	vertical move		d.y)
-	def unmove(d:IntPoint):IntRect	= new IntRect(horizontal unmove		d.x,	vertical unmove		d.y)
+	def move(d:IntPoint):IntRect	= new IntRect(horizontal .move		(d.x),	vertical .move		(d.y))
+	def unmove(d:IntPoint):IntRect	= new IntRect(horizontal .unmove	(d.x),	vertical .unmove		(d.y))
 
-	def scale(f:IntPoint):IntRect	= new IntRect(horizontal scale		f.x,	vertical scale		f.y)
-	def unscale(f:IntPoint):IntRect	= new IntRect(horizontal unscale	f.x,	vertical unscale	f.y)
+	def scale(f:IntPoint):IntRect	= new IntRect(horizontal .scale		(f.x),	vertical .scale		(f.y))
+	def unscale(f:IntPoint):IntRect	= new IntRect(horizontal .unscale	(f.x),	vertical .unscale	(f.y))
 
 	def union(that:IntRect):IntRect	=
 		new  IntRect(
-			this.horizontal union that.horizontal,
-			this.vertical	union that.vertical
+			this.horizontal .union (that.horizontal),
+			this.vertical	.union (that.vertical)
 		)
 
 	def intersect(that:IntRect):Option[IntRect]	=
-		(this.horizontal intersect that.horizontal, this.vertical intersect that.vertical) match {
+		(this.horizontal.intersect(that.horizontal), this.vertical.intersect(that.vertical)) match {
 			case (Some(horizontal), Some(vertical))	=> Some(new  IntRect(horizontal, vertical))
 			case _									=> None
 		}
@@ -82,8 +84,9 @@ final class IntRect private (val horizontal:IntSpan, val vertical:IntSpan) {
 
 	//------------------------------------------------------------------------------
 
+	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 	override def equals(that:Any):Boolean	=
-		that match {
+		that.asMatchable match {
 			case that:IntRect	=> this.horizontal == that.horizontal && this.vertical == that.vertical
 			case _				=> false
 		}

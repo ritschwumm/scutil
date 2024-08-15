@@ -11,7 +11,7 @@ object Colors {
 
 	def decodeEither(s:String):Either[NumberFormatException,Color]	=
 		try {
-			Right(Color decode s)
+			Right(Color.decode(s))
 		}
 		catch { case e:NumberFormatException =>
 			Left(e)

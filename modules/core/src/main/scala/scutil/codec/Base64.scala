@@ -34,7 +34,7 @@ object Base64 {
 			var pad	= false
 			var i	= 0
 			while (i < s.length) {
-				val c	= s charAt i
+				val c	= s.charAt(i)
 				if (c < 0)				return false
 				if (c > table.length)	return false
 				val x	= table(c)
@@ -87,7 +87,7 @@ object Base64 {
 
 	/** standard alphabet, whitespace is ignored, padding is required */
 	def decodeByteString(text:String):Option[ByteString] =
-		decodeImpl(text) map ByteString.fromIArray
+		decodeImpl(text).map(ByteString.fromIArray)
 
 	private def decodeImpl(text:String):Option[IArray[Byte]] = {
 		// TODO codec ignoring all whitespace input might be stupid

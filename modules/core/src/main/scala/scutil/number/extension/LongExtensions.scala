@@ -4,6 +4,6 @@ import scutil.number.BigRational
 
 object LongExtensions {
 	implicit final class LongExt(peer:Long) {
-		def toBigRational:BigRational	= BigRational fromLong peer
+		def toBigRational:BigRational	= BigRational.fromLong(peer)
 	}
 }

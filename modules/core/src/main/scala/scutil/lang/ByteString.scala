@@ -1,6 +1,7 @@
 package scutil.lang
 
 import scala.annotation.tailrec
+import scala.compiletime.asMatchable
 
 import java.util.{ Arrays as JArrays }
 import java.nio.ByteBuffer
@@ -172,19 +173,19 @@ final class ByteString private (val value:IArray[Byte]) {
 		containsSlice(index, index+that.size) && {
 			@tailrec def loop(i:Int):Boolean	=
 				(i == that.size)						||
-				(this value index+i) == (that value i)	&&
+				this.value(index+i) == that.value(i)	&&
 				loop(i+1)
 			loop(0)
 		}
 
 	inline def ++(that:ByteString):ByteString	=
-		this concat that
+		this.concat(that)
 
 	inline def +:(that:Byte):ByteString	=
-		this prepend that
+		this.prepend(that)
 
 	inline def :+(that:Byte):ByteString	=
-		this append that
+		this.append(that)
 
 	def concat(that:ByteString):ByteString	=
 		ByteString.makeWithArray(this.size + that.size) { tmp =>
@@ -204,7 +205,7 @@ final class ByteString private (val value:IArray[Byte]) {
 			tmp(size)	= value
 		}
 
-	// returns an empty ByteStrign for negative factors
+	/** returns an empty ByteString for negative factors */
 	def times(count:Int)	=
 		if (count >=0 ) {
 			val outSize	= size * count
@@ -250,7 +251,7 @@ final class ByteString private (val value:IArray[Byte]) {
 	}
 
 	def toByteBuffer:ByteBuffer	=
-		ByteBuffer wrap toArray
+		ByteBuffer.wrap(toArray)
 
 	def toIArray:IArray[Byte]		= value
 	def toIterable:Iterable[Byte]	= value
@@ -356,8 +357,9 @@ final class ByteString private (val value:IArray[Byte]) {
 
 	//------------------------------------------------------------------------------
 
+	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 	override def equals(that:Any):Boolean	=
-		that match {
+		that.asMatchable match {
 			case that:ByteString	=> JArrays.equals(this.unsafeValue, that.unsafeValue)
 			case _					=> false
 		}

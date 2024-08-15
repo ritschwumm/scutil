@@ -12,7 +12,7 @@ object External {
 	/** execute an external process. */
 	def exec(command:Seq[String], env:Map[String,String]=Map.empty, pwd:Option[Path]=None, input:Seq[String]=Seq.empty):External = {
 		val	builder	= new ProcessBuilder(command.toJList)
-		builder.environment() putAll env.toJMap
+		builder.environment().putAll(env.toJMap)
 		pwd foreach { path => builder.directory(path.toFile) }
 		val proc	= builder.start()
 
@@ -30,8 +30,8 @@ object External {
 	private def spewLines(st:OutputStream, lines:Seq[String]):Unit = {
 		new OutputStreamWriter(st) use { writer =>
 			lines foreach { line =>
-				writer write line
-				writer write SystemProperties.line.separator
+				writer.write(line)
+				writer.write(SystemProperties.line.separator)
 			}
 		}
 	}
@@ -39,7 +39,7 @@ object External {
 	private val execute	= Execution.thread
 
 	private def spawn[T](task: =>T):Thunk[T] =
-		execute withResult thunk(task)
+		execute.withResult{thunk(task)}
 }
 
 final class External(proc:Process, out:Thunk[Seq[String]], err:Thunk[Seq[String]]) {

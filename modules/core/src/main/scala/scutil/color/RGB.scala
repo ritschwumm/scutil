@@ -10,7 +10,7 @@ object RGB {
 	val black	= RGB(0,0,0)
 
 	def parseHex(s:String):Option[RGB]	=
-		Hex decodeByteString s collect { case ByteString(r,g,b)	=>
+		Hex.decodeByteString(s).collect { case ByteString(r,g,b)	=>
 			RGB(
 				(r & 0xff) / 255f,
 				(g & 0xff) / 255f,
@@ -74,9 +74,11 @@ final case class RGB(r:Float, g:Float, b:Float) {
 			(((b * 255).toInt) <<  0)
 
 	def unparseHex:String	=
-		Hex encodeByteString ByteString(
-			(r * 255).toByte,
-			(g * 255).toByte,
-			(b * 255).toByte
+		Hex.encodeByteString(
+			ByteString(
+				(r * 255).toByte,
+				(g * 255).toByte,
+				(b * 255).toByte
+			)
 		)
 }
