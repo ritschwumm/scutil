@@ -5,9 +5,9 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.249.0",
+	version			:= "0.250.0",
 
-	scalaVersion	:= "3.4.2",
+	scalaVersion	:= "3.5.0",
 	scalacOptions	++= Seq(
 		"-feature",
 		"-deprecation",
@@ -16,7 +16,7 @@ inThisBuild(Seq(
 		// "-explain",
 		"-Wunused:all",
 		"-Xfatal-warnings",
-		"-Ykind-projector:underscores",
+		"-Xkind-projector:underscores",
 	),
 
 	versionScheme	:= Some("early-semver"),

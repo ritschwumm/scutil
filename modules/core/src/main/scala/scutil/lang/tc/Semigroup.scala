@@ -2,6 +2,7 @@ package scutil.lang.tc
 
 import scutil.lang.Nes
 
+import scutil.lang.extension.OptionExtensions.*
 import scutil.lang.extension.PFunctionExtensions.*
 
 object Semigroup extends SemigroupLow {
@@ -46,11 +47,86 @@ object Semigroup extends SemigroupLow {
 		Semigroup instance (_ `andThenFixed` _)
 	*/
 
+	//------------------------------------------------------------------------------
+
+	// TODO tc generalize to any iterable and remove SeqMonoid
+
+	given VectorMonoid[T]:Monoid[Vector[T]]	=
+		Monoid.instance(Vector.empty, _ ++ _)
+
+	given ListMonoid[T]:Monoid[List[T]]	=
+		Monoid.instance(Nil, _ ++ _)
+
+	given SetMonoid[T]:Monoid[Set[T]]	=
+		Monoid.instance(Set.empty, _ ++ _)
+
+	given UnitMonoid:Monoid[Unit]	=
+		Monoid.instance((), (_,_)=>())
+
+	given StringMonoid:Monoid[String]	=
+		Monoid.instance("", _ + _)
+
+	given PairMonoid[T1,T2](using T1:Monoid[T1], T2:Monoid[T2]):Monoid[(T1,T2)]	=
+		Monoid.instance(
+			(T1.empty, T2.empty),
+			(a, b) => (
+				T1.combine(a._1, b._1),
+				T2.combine(a._2, b._2)
+			)
+		)
+
+	//-----------------------------------------------------------------------------
+
+	// TODO tc add more alternatives here
+
+	def MapLastMonoid[K,V]:Monoid[Map[K,V]]	=
+		Monoid.instance(Map.empty, _ ++ _)
+
+	//-----------------------------------------------------------------------------
+
+	// this is the one used in haskell
+	def OptionMergeMonoid[T](using S:Semigroup[T]):Monoid[Option[T]]	=
+		Monoid.instance(
+			None,
+			(a,b) => a.oneOrTwo(b)(S.combine)
+		)
+
+	def OptionBothMonoid[T](using S:Semigroup[T]):Monoid[Option[T]]	=
+		Monoid.instance(
+			None,
+			(a,b) => (a,b) match {
+				case (Some(a), Some(b))	=> Some(S.combine(a, b))
+				case _					=> None
+			}
+		)
+
+	def OptionFirstMonoid[T]:Monoid[Option[T]]	=
+		Monoid.instance(
+			None,
+			(a,b) => a `orElse` b
+		)
+
+	def OptionLastMonoid[T]:Monoid[Option[T]]	=
+		Monoid.instance(
+			None,
+			(a,b) => b `orElse` a
+		)
+
+	//-----------------------------------------------------------------------------
+
+	def EndoMonoid[T]:Monoid[T=>T]	=
+		Monoid.instance(identity, _ `andThen` _)
+
+	def KleisliMonoid[S,T](using M:Monoid[T]):Monoid[S=>T]	=
+		Monoid.instance(
+						(s) => Monoid.empty[T],
+			(a,b) =>	(s) => M.combine(a(s), b(s)),
+		)
 }
 
 trait SemigroupLow {
-	// TODO dotty is this really necessary? why doesn't inheritance provide us with an instance?
-	given[F](using F:Monoid[F]):Semigroup[F]	= F
+	given SeqMonoid[T]:Monoid[Seq[T]]	=
+		Monoid.instance(Seq.empty, _ ++ _)
 }
 
 trait Semigroup[F] {

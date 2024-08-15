@@ -20,8 +20,6 @@ object RegexExtensions {
 
 		//------------------------------------------------------------------------------
 
-		def quote(str:String):String	= Pattern.quote(str)
-
 		def quoteCharacterClass(str:String):String	= {
 			val b	= new StringBuilder
 			var i	= 0

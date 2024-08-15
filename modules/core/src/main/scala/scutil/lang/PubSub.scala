@@ -1,7 +1,6 @@
 package scutil.lang
 
 import scutil.core.implicits.*
-import scutil.lang.*
 
 object PubSub {
 	private final case class Item[T](key:Long, subscriber:T=>Io[Unit])

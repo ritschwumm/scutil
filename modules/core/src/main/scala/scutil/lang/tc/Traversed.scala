@@ -1,12 +1,7 @@
 package scutil.lang.tc
 
-object Traversed extends TraversedLow {
+object Traversed {
 	def apply[F[_]](using ev:Traversed[F]):Traversed[F]	= ev
-}
-
-trait TraversedLow {
-	// TODO dotty is this really necessary? why doesn't inheritance provide us with an instance?
-	given[F[_]](using F:TraversedMonad[F]):Traversed[F]	= F
 }
 
 trait Traversed[F[_]] extends Functor[F] {
