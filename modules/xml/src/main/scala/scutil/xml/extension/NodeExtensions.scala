@@ -5,7 +5,7 @@ import scala.xml.*
 import scutil.xml.*
 
 object NodeExtensions {
-	implicit final class NodeExt(peer:Node) {
+	extension (peer:Node) {
 		// BETTER modify this?
 		def xmlNamespaces:Seq[XmlNs]	= {
 			def loop(scope:NamespaceBinding):Seq[XmlNs]	=

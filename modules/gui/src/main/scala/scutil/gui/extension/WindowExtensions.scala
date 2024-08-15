@@ -6,7 +6,7 @@ import scutil.geom.*
 import scutil.gui.geomConversion
 
 object WindowExtensions {
-	implicit final class WindowExt(peer:Window) {
+	extension (peer:Window) {
 		def restrictToScreen():Unit	= {
 			val frame	= geomConversion.Rectangle_IntRect(peer.getBounds)
 			val screen	= geomConversion.Rectangle_IntRect(peer.getGraphicsConfiguration.getBounds)

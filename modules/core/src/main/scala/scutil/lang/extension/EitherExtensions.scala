@@ -4,7 +4,7 @@ import scutil.lang.*
 import scutil.lang.tc.*
 
 object EitherExtensions {
-	implicit final class EitherCompanionExt(peer:Either.type) {
+	extension (peer:Either.type) {
 		def unit[L]:Either[L,Unit]			= Right(())
 
 		def right[L,R](it:R):Either[L,R]	= Right(it)
@@ -21,7 +21,7 @@ object EitherExtensions {
 			Either.cond(condition, trueRight, falseLeft)
 	}
 
-	implicit final class EitherExt[L,R](peer:Either[L,R]) {
+	extension [L,R](peer:Either[L,R]) {
 		def cata[U](left:L=>U, right:R=>U):U	= peer.fold(left, right)
 
 		//------------------------------------------------------------------------------

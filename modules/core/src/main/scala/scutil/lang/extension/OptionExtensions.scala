@@ -9,7 +9,7 @@ import scutil.lang.*
 import scutil.lang.tc.*
 
 object OptionExtensions {
-	implicit final class OptionCompanionExt(peer:Option.type) {
+	extension (peer:Option.type) {
 		def unit[L]:Option[Unit]	= Some(())
 
 		def none[T]:Option[T]		= None
@@ -20,7 +20,7 @@ object OptionExtensions {
 			else			None
 	}
 
-	implicit final class OptionExt[T](peer:Option[T]) {
+	extension [T](peer:Option[T]) {
 		def getOrError(s:String)	= peer.getOrElse {  sys error s }
 
 		def cata[X](none: => X, some:T => X):X =

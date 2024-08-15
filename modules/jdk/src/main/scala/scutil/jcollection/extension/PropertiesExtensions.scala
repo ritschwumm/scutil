@@ -5,7 +5,7 @@ import java.util.Properties
 import scala.collection.immutable.HashMap
 
 object PropertiesExtensions {
-	implicit final class PropertiesExt(peer:Properties) {
+	extension (peer:Properties) {
 		def toHashMap:Map[String,String]	= {
 			var out		= HashMap.empty[String,String]
 			val keyIter	= peer.stringPropertyNames.iterator

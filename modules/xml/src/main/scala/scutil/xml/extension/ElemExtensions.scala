@@ -5,7 +5,7 @@ import scala.xml.*
 import scutil.xml.*
 
 object ElemExtensions {
-	implicit final class ElemExt(peer:Elem) {
+	extension (peer:Elem) {
 		def attributeValue(attr:XmlAttr):Option[String]	=
 			peer.attributes
 			.find	{

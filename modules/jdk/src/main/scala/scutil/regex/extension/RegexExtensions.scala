@@ -7,8 +7,8 @@ import scala.util.matching.Regex
 import scutil.lang.*
 
 object RegexExtensions {
-	implicit final class RegexCompanionExt(peer:Regex.type) {
-		val prism:Prism[String,Regex]	=
+	extension (peer:Regex.type) {
+		def prism:Prism[String,Regex]	=
 			Prism(compile(_).toOption, _.pattern.toString)
 
 		def compile(str:String):Either[PatternSyntaxException,Regex]	=
@@ -38,7 +38,7 @@ object RegexExtensions {
 		}
 	}
 
-	implicit final class RegexExt(peer:Regex) {
+	extension (peer:Regex) {
 		def test(s:CharSequence):Boolean	=
 			peer.pattern.matcher(s).matches
 

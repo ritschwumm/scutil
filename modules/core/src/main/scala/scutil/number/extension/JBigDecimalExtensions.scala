@@ -4,7 +4,7 @@ import java.math.{ BigDecimal	as JBigDecimal }
 import scutil.number.BigRational
 
 object JBigDecimalExtensions {
-	implicit final class JBigDecimalExt(peer:JBigDecimal) {
+	extension (peer:JBigDecimal) {
 		def toBigRational:BigRational	= BigRational.fromJBigDecimal(peer)
 	}
 }

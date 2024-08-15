@@ -3,7 +3,7 @@ package scutil.collection.extension
 import scutil.lang.*
 
 object SetExtensions {
-	implicit final class SetExt[T](peer:Set[T]) {
+	extension [T](peer:Set[T]) {
 		def containsAll(that:Set[T]):Boolean	= (peer & that) == that
 		def containsAny(that:Set[T]):Boolean	= (peer & that).nonEmpty
 		def containsNone(that:Set[T]):Boolean	= (peer & that).isEmpty
@@ -13,7 +13,7 @@ object SetExtensions {
 			(peer -- that, that -- peer)
 
 		def ior[U](that:Set[T]):Set[Ior[T,T]]	= {
-			val (here, there)	= this.hereAndThere(that)
+			val (here, there)	= hereAndThere(that)
 			val both			= peer & that
 
 			both	.map { it => Ior.both	(it,it) }	++

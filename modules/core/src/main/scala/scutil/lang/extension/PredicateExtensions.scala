@@ -3,7 +3,7 @@ package scutil.lang.extension
 import scutil.lang.*
 
 object PredicateExtensions {
-	implicit final class PredicateExt[T](peer:Predicate[T]) {
+	extension [T](peer:Predicate[T]) {
 		def unary_! :Predicate[T]						= Predicates.not	(peer)
 		def && [U<:T](that:Predicate[U]):Predicate[U]	= Predicates.and	(peer, that)
 		def || [U<:T](that:Predicate[U]):Predicate[U]	= Predicates.or		(peer, that)

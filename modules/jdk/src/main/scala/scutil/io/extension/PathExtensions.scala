@@ -6,7 +6,7 @@ import scutil.core.implicits.*
 
 object PathExtensions {
 	/** utility methods for java Path objects */
-	implicit final class PathExt(peer:Path) {
+	extension (peer:Path) {
 		/** add a component to this Path */
 		def /(name:String):Path		= peer.resolve(name)
 

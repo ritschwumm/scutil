@@ -8,7 +8,7 @@ import scala.collection.mutable
 import scutil.lang.*
 
 object StringExtensions {
-	implicit final class LangStringExt(peer:String) {
+	extension (peer:String) {
 		def toBigIntOption:Option[BigInt]	= parseBigInt.toOption
 
 		// toBoolean throws an IllegalArgumentException, not a NumberFormatException

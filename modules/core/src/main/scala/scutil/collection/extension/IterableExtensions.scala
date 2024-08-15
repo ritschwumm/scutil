@@ -8,8 +8,8 @@ import scutil.lang.*
 import scutil.lang.tc.*
 
 object IterableExtensions {
-	implicit final class IterableExt[Repr,T,Self](peer:Repr)(using isIterable:IsIterable[Repr] { type A = T; type C = Self  }) {
-		private val ops	= isIterable(peer)
+	extension [Repr,T,Self](peer:Repr)(using isIterable:IsIterable[Repr] { type A = T; type C = Self  }) {
+		inline private def ops	= isIterable(peer)
 
 		/** Some if the collection contains exactly one element, else None */
 		def singleOption:Option[T]	= {

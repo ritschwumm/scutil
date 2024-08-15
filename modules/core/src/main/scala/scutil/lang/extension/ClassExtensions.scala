@@ -1,7 +1,7 @@
 package scutil.lang.extension
 
 object ClassExtensions {
-	implicit final class ClassExt[T](peer:Class[T]) {
+	extension [T](peer:Class[T]) {
 		def boxed:Class[?]	= peer match {
 			case java.lang.Boolean.TYPE		=> classOf[java.lang.Boolean]
 			case java.lang.Character.TYPE	=> classOf[java.lang.Character]

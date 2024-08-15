@@ -6,9 +6,10 @@ import java.nio.charset.Charset
 import scutil.lang.ByteString
 
 object InputStreamExtensions {
+	private val blockSize	= 16384
+
 	/** utility methods for InputStream objects */
-	implicit final class InputStreamExt(peer:InputStream) {
-		val blockSize	= 16384
+	extension (peer:InputStream) {
 
 		/** read as much into the buffer as possible, return how much */
 		def readExactly(buffer:Array[Byte]):Int	=

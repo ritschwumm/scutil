@@ -6,7 +6,7 @@ import java.nio.charset.*
 import scutil.lang.ByteString
 
 object CharsetExtensions {
-	implicit final class CharsetExt(peer:Charset) {
+	extension (peer:Charset) {
 		def encodeEitherByteString(string:String):Either[CharacterCodingException,ByteString]	=
 			encodeEitherImpl(string).map(ByteString.unsafeFromArray)
 

@@ -5,7 +5,7 @@ import java.awt.geom.AffineTransform
 import scutil.gui.*
 
 object AffineTransformExtensions {
-	implicit final class AffineTransformExt(delegate:AffineTransform) {
+	extension (delegate:AffineTransform) {
 		def toSafeAffineTransform:SafeAffineTransform	= SafeAffineTransform.fromAwtAffineTransform(delegate)
 	}
 }

@@ -3,7 +3,7 @@ package scutil.collection.extension
 import scutil.lang.*
 
 object MapExtensions {
-	implicit final class MapExt[S,T](peer:Map[S,T]) {
+	extension [S,T](peer:Map[S,T]) {
 		// aliases with low precendence
 
 		def put(key:S, value:T):Map[S,T]	= peer + (key -> value)

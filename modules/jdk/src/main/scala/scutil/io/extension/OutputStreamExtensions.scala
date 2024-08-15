@@ -7,7 +7,7 @@ import scutil.lang.ByteString
 
 object OutputStreamExtensions {
 	/** utility methods for OutputStream objects */
-	implicit final class OutputStreamExt(peer:OutputStream) {
+	extension (peer:OutputStream) {
 		def writeByteString(it:ByteString):Unit	=
 			peer.write(it.unsafeValue)
 

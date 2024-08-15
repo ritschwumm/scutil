@@ -3,7 +3,7 @@ package scutil.gui.extension
 import java.awt.{ List as _, * }
 
 object ContainerExtensions {
-	implicit final class ContainerExt(peer:Container) {
+	extension (peer:Container) {
 		def children:Seq[Component]	= childrenIterator.toVector
 
 		def childrenIterator:Iterator[Component]	=

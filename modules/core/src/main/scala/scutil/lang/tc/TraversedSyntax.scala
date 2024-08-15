@@ -1,7 +1,7 @@
 package scutil.lang.tc
 
 object TraversedSyntax {
-	implicit final class TraversedSyntaxExt[F[_],T](peer:F[T]) {
+	extension [F[_],T](peer:F[T]) {
 		// NOTE dotty if ev and AP are swapped we get an "Ambiguous given instances" error at usage site
 		def sequence[G[_],U](using TR:Traversed[F], ev:T <:< G[U], AP:Applicative[G]):G[F[U]]	=
 			traverse(ev)

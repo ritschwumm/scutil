@@ -8,7 +8,7 @@ import scutil.lang.*
 import scutil.gui.extension.RootPaneContainerExtensions.*
 
 object JComponentExtensions {
-	implicit final class JComponentExt(peer:JComponent) {
+	extension (peer:JComponent) {
 		def innerRectangle:Rectangle	= {
 			val insets	= peer.getInsets
 			new Rectangle(

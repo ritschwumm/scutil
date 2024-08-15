@@ -4,7 +4,7 @@ import java.awt.{ Insets }
 import java.awt.geom.{ Point2D, Dimension2D, Rectangle2D, Line2D, Area, AffineTransform }
 
 object extensions {
-	implicit final class DoubleSgExt(delegate:Double) {
+	extension (delegate:Double) {
 		def pointWith(y:Double):SgPoint	= SgPoint(delegate, y)
 
 		def spanTo(end:Double):SgSpan			= SgSpan .startEnd	(delegate, end)
@@ -16,7 +16,7 @@ object extensions {
 	}
 
 	/*
-	implicit final class BooleanSgExt(delegate:Boolean) {
+	extension (delegate:Boolean) {
 		def trueHorizontal:SgOrientation	= SgOrientation.trueHorizontal(delegate)
 		def trueVertical:SgOrientation		= SgOrientation.trueVertical(delegate)
 	}
@@ -24,31 +24,31 @@ object extensions {
 
 	//------------------------------------------------------------------------------
 
-	implicit final class InsetsSgExt(delegate:Insets) {
+	extension (delegate:Insets) {
 		def toSgRectangleInsets:SgRectangleInsets	= SgRectangleInsets.fromAwtInsets(delegate)
 	}
 
-	implicit final class AreaSgExt(delegate:Area) {
+	extension (delegate:Area) {
 		def toSgArea:SgArea	= SgArea.fromAwtArea(delegate)
 	}
 
-	implicit final class Point2DSgExt(delegate:Point2D) {
+	extension (delegate:Point2D) {
 		def toSgPoint:SgPoint	= SgPoint.fromAwtPoint2D(delegate)
 	}
 
-	implicit final class Dimension2DSgExt(delegate:Dimension2D) {
+	extension (delegate:Dimension2D) {
 		def toSgPoint:SgPoint	= SgPoint.fromAwtDimension2D(delegate)
 	}
 
-	implicit final class Rectangle2DSgExt(delegate:Rectangle2D) {
+	extension (delegate:Rectangle2D) {
 		def toSgRectangle:SgRectangle	= SgRectangle.fromAwtRectangle2D(delegate)
 	}
 
-	implicit final class Line2DSgExt(delegate:Line2D) {
+	extension (delegate:Line2D) {
 		def toSgLine:SgLine	= SgLine.fromAwtLine2D(delegate)
 	}
 
-	implicit final class AffineTransformSgExt(delegate:AffineTransform) {
+	extension (delegate:AffineTransform) {
 		def toSgAffineTransform:SgAffineTransform	= SgAffineTransform.fromAwtAffineTransform(delegate)
 	}
 }

@@ -6,7 +6,7 @@ import java.util.{
 }
 
 object IteratorJCollectionExtensions {
-	implicit final class IteratorJCollectionSyntaxExt[T](peer:Iterator[T]) {
+	extension [T](peer:Iterator[T]) {
 		def toJIterator:JIterator[T]		= new IteratorAsJIterator(peer)
 		def toJEnumeration:JEnumeration[T]	= new IteratorAsJEnumeration(peer)
 	}

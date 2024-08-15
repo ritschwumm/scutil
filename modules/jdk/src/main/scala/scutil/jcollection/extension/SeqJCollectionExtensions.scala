@@ -7,7 +7,7 @@ import java.util.{
 }
 
 object SeqJCollectionExtensions {
-	implicit final class SeqJCollectionSyntaxExt[T](peer:Seq[T]) {
+	extension [T](peer:Seq[T]) {
 		def toJList:JList[T]	=  {
 			val out	= new JArrayList[T]
 			peer foreach out.add

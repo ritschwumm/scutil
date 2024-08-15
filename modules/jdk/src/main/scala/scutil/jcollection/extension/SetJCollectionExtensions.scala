@@ -7,7 +7,7 @@ import java.util.{
 }
 
 object SetJCollectionExtensions {
-	implicit final class SetJCollectionSyntaxExt[T](peer:Set[T]) {
+	extension [T](peer:Set[T]) {
 		def toJSet:JSet[T]	=  {
 			val out	= new JHashSet[T]
 			peer foreach out.add

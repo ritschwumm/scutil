@@ -4,7 +4,7 @@ import scala.concurrent.*
 import scala.util.{ Try, Success, Failure }
 
 object FutureExtensions {
-	implicit final class FutureExt[T](peer:Future[T]) {
+	extension [T](peer:Future[T]) {
 		def map2[U,V](that:Future[U])(func:(T,U)=>V)(using executor:ExecutionContext):Future[V]	=
 			peer.zip(that).map(func.tupled)
 

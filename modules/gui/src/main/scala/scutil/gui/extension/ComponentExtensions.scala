@@ -8,7 +8,7 @@ import scutil.geom.*
 import scutil.gui.geomConversion
 
 object ComponentExtensions {
-	implicit final class ComponentExt(peer:Component) {
+	extension (peer:Component) {
 		/** the nearest Window in the ancestor chain, including this component itself */
 		def windowSelfOrAncestor:Option[Window]	=
 			windowSelfOrAncestorImpl(peer)

@@ -5,7 +5,7 @@ import java.awt.event.*
 import scutil.geom.*
 
 object MouseEventExtensions {
-	implicit final class MouseEventExt(peer:MouseEvent) {
+	extension (peer:MouseEvent) {
 		def doublePoint:DoublePoint	=
 			DoublePoint(
 				peer.getX,

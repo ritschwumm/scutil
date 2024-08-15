@@ -6,7 +6,7 @@ import java.awt.geom.*
 import scutil.gui.*
 
 object DimensionConversionExtensions {
-	implicit final class DimensionConversionDimension2DExt(peer:Dimension2D) {
+	extension (peer:Dimension2D) {
 		def toPoint2D:Point2D	=
 			new Point2D.Double(
 				peer.getWidth,
@@ -14,7 +14,7 @@ object DimensionConversionExtensions {
 			)
 	}
 
-	implicit final class DimensionConversionDimensionExt(peer:Dimension) {
+	extension (peer:Dimension) {
 		def toPoint:Point	=
 			new Point(
 				peer.width,
@@ -22,7 +22,7 @@ object DimensionConversionExtensions {
 			)
 	}
 
-	implicit final class DimensionConversionPoint2DExt(peer:Point2D) {
+	extension (peer:Point2D) {
 		def toDimension2D:Dimension2D	=
 			new Dimension2D_Double(
 				peer.getX,
@@ -30,7 +30,7 @@ object DimensionConversionExtensions {
 			)
 	}
 
-	implicit final class DimensionConversionPointExt(peer:Point) {
+	extension (peer:Point) {
 		def toDimension:Dimension	=
 			new Dimension(
 				peer.x,

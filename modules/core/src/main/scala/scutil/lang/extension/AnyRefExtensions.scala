@@ -1,7 +1,7 @@
 package scutil.lang.extension
 
 object AnyRefExtensions {
-	implicit final class AnyRefExt[T <: AnyRef](peer:T) {
+	extension [T <: AnyRef](peer:T) {
 		/** Some if not null, None if null */
 		def optionNotNull:Option[T]	=
 			if (peer != null)	Some(peer)

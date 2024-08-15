@@ -4,7 +4,7 @@ import scutil.lang.*
 import scutil.lang.tc.*
 
 object BooleanExtensions {
-	implicit final class BooleanExt(peer:Boolean) {
+	extension (peer:Boolean) {
 		def cata[T](falseValue: =>T, trueValue: =>T):T =
 			if (peer)	trueValue
 			else		falseValue

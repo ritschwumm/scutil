@@ -3,7 +3,7 @@ package scutil.regex.extension
 import java.util.regex.Matcher
 
 object MatcherExtensions {
-	implicit final class MatcherExt(peer:Matcher) {
+	extension (peer:Matcher) {
 		def matchedString:Option[String]	=
 			if (peer.matches)	Some(peer.group(0))
 			else				None

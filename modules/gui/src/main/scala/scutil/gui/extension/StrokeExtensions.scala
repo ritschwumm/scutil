@@ -5,14 +5,14 @@ import java.awt.Stroke
 import scutil.gui.CompositeStroke
 
 object StrokeExtensions {
-	implicit final class StrokeExt(peer:Stroke) {
+	extension (peer:Stroke) {
 		/** symbolic alias for andThen */
 		def >=>(that:Stroke):Stroke	=
-			this.andThen(that)
+			andThen(that)
 
 		/** symbolic alias for compose */
 		def <=<(that:Stroke):Stroke	=
-			this.compose(that)
+			compose(that)
 
 		def compose(that:Stroke):Stroke	= new CompositeStroke(peer, that)
 		def andThen(that:Stroke):Stroke	= new CompositeStroke(that, peer)

@@ -3,7 +3,7 @@ package scutil.jcollection.extension
 import java.util.{ Optional as JOptional }
 
 object JOptionalExtensions {
-	implicit final class JOptionalExt[T](peer:JOptional[T]) {
+	extension [T](peer:JOptional[T]) {
 		def cata[X](none: => X, some:T => X):X =
 			if (peer.isPresent)	some(peer.get)
 			else				none

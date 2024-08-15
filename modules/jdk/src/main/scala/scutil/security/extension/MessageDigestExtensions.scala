@@ -6,7 +6,7 @@ import scutil.lang.ByteString
 
 object MessageDigestExtensions {
 	/** utility methods for MessageDigest objects */
-	implicit final class MessageDigestExt(peer:MessageDigest) {
+	extension (peer:MessageDigest) {
 		def updateByteString(it:ByteString):Unit	=
 			peer.update(it.unsafeValue)
 

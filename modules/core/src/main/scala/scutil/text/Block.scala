@@ -1,6 +1,8 @@
 package scutil.text
 
-import scutil.core.implicits.*
+// import scutil.core.implicits.*
+import scutil.lang.implicits.*
+import scutil.collection.implicits.*
 
 object Block {
 	def generate(parts:Seq[String], args:Seq[String]):String	= {

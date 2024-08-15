@@ -8,8 +8,8 @@ import scala.collection.mutable.Builder
 import scutil.lang.*
 
 object SeqExtensions {
-	implicit final class SeqExt[Repr,T,Self](peer:Repr)(using isSeq:IsSeq[Repr] { type A = T; type C = Self }) {
-		private val ops	= isSeq(peer)
+	extension [Repr,T,Self](peer:Repr)(using isSeq:IsSeq[Repr] { type A = T; type C = Self }) {
+		inline private def ops	= isSeq(peer)
 
 		def toNesOption:Option[Nes[T]]	=
 			Nes.fromSeq(ops.toSeq)

@@ -3,7 +3,7 @@ package scutil.gui.extension
 import java.awt.Color
 
 object ColorExtensions {
-	implicit final class ColorExt(peer:Color) {
+	extension (peer:Color) {
 		def withAlpha(alpha:Float):Color	=
 			new Color(redF, greenF, blueF, alpha)
 

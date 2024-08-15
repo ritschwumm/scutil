@@ -3,7 +3,7 @@ package scutil.math.extension
 import scala.annotation.tailrec
 
 object OrderingExtensions {
-	implicit final class OrderingCompanionExt(peer:Ordering.type) {
+	extension (peer:Ordering.type) {
 		/**
 		treats everything as equal,
 		forms a Monoid with OrderingExt#orElse
@@ -42,7 +42,7 @@ object OrderingExtensions {
 			many(orderings.toVector)
 	}
 
-	implicit final class OrderingExt[T](peer:Ordering[T]) {
+	extension [T](peer:Ordering[T]) {
 		/** Ordering should be contravariant */
 		def vary[U<:T]:Ordering[U]	=
 			new Ordering[U] {

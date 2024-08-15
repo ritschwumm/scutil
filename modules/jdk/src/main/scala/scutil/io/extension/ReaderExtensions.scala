@@ -5,8 +5,9 @@ import java.io.*
 import scala.collection.mutable
 
 object ReaderExtensions {
-	implicit final class ReaderExt(peer:Reader) {
-		val blockSize	= 16384
+	private val blockSize	= 16384
+
+	extension (peer:Reader) {
 
 		/** read as much into the buffer as possible, return how much */
 		def readExactly(buffer:Array[Char]):Int	= {

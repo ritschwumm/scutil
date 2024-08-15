@@ -5,7 +5,7 @@ import java.lang.{
 }
 
 object JIterableExtensions {
-	implicit final class JIterableExt[T](peer:JIterable[T]) {
+	extension [T](peer:JIterable[T]) {
 		def toIterable:Iterable[T]	= new JIterableAsIterable(peer)
 	}
 }

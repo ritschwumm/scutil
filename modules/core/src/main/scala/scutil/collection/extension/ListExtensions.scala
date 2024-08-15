@@ -3,7 +3,7 @@ package scutil.collection.extension
 import scala.annotation.tailrec
 
 object ListExtensions {
-	implicit final class ListExt[T](peer:List[T]) {
+	extension [T](peer:List[T]) {
 		def cata[U](nil: =>U, cons:(T,List[T])=>U):U =
 			peer match {
 				case head :: tail	=> cons(head, tail)

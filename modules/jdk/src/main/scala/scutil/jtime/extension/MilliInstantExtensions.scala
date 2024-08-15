@@ -11,7 +11,7 @@ object MilliInstantExtensions {
 	// DateTimeFormatter.ISO_INSTANT as usd in Instant.toString leaves out the milliseconds when they are 0
 	private val isoInstantMilli	= new DateTimeFormatterBuilder().appendInstant(3).toFormatter();
 
-	implicit final class MilliInstantExt(peer:MilliInstant) {
+	extension (peer:MilliInstant) {
 		def toGregorianDate(tz:TimeZone):GregorianDate	=
 			JTimeUtil.milliInstantToGregorianDate(peer, tz)
 

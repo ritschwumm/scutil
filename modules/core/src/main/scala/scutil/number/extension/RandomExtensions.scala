@@ -5,7 +5,7 @@ import java.util.Random
 import scutil.lang.*
 
 object RandomExtensions {
-	implicit final class RandomExt(peer:Random) {
+	extension (peer:Random) {
 		def string(alphabet:String, length:Int):String	= {
 			val	out	= new StringBuilder
 			var i	= 0

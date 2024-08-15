@@ -4,7 +4,7 @@ import scutil.time.*
 
 object LongExtensions {
 	/** provide conversion from Long to MilliDuration */
-	implicit final class TimeLongExt(peer:Long) {
+	extension (peer:Long) {
 		def weeks:MilliDuration		= MilliDuration.week	*! peer
 		def days:MilliDuration		= MilliDuration.day		*! peer
 		def hours:MilliDuration		= MilliDuration.hour	*! peer

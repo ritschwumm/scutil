@@ -8,7 +8,7 @@ import scala.collection.IterableFactory
 import scutil.lang.*
 
 object AnyExtensions {
-	implicit final class AnyExt[T](peer:T) {
+	extension [T](peer:T) {
 		/** ensure we get the java wrapper */
 		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 		def boxed:AnyRef	= peer.asInstanceOf[AnyRef]

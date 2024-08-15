@@ -1,9 +1,11 @@
 package scutil.lang.extension
 
+// import scala.annotation.targetName
+
 import scutil.lang.*
 
 object PFunctionExtensions {
-	implicit final class PFunctionExt[S,T](peer:S=>Option[T]) {
+	extension [S,T](peer:S=>Option[T]) {
 		def applyOrElse(it:S, default:T):T	=
 			peer(it).getOrElse(default)
 
@@ -16,13 +18,17 @@ object PFunctionExtensions {
 		def orElse(that:S=>Option[T]):S=>Option[T]	=
 			it	=> peer(it) `orElse` that(it)
 
-		/** symbolic alias for andThenFixed */
+		/*
+		// symbolic alias for andThenFixed
+		@targetName("pFunctionAndThenFixed")
 		def >=>[U](that:T=>Option[U]):S=>Option[U]	=
-			this.andThenFixed(that)
+			andThenFixed(that)
 
-		/** symbolic alias for composeFixed */
+		// symbolic alias for composeFixed
+		@targetName("pFunctionComposeFixed")
 		def <=<[R](that:R=>Option[S]):R=>Option[T]	=
-			this.composeFixed(that)
+			composeFixed(that)
+		*/
 
 		def andThenFixed[U](that:T=>Option[U]):S=>Option[U]	=
 			it	=> peer(it).flatMap(that)

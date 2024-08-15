@@ -5,7 +5,7 @@ import scutil.time.MilliInstant
 
 /** provides a LogHandler and syntax to turn LogLevels into logging methods */
 trait Logging {
-	implicit final class LogLevelAsLogger(level:LogLevel) {
+	extension (level:LogLevel) {
 		def apply(elements:LogValue*)(using sl:SourceLocation):Unit = {
 			log(elements.toVector)
 		}

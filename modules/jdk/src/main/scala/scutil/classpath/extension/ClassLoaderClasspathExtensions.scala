@@ -3,7 +3,7 @@ package scutil.classpath.extension
 import scutil.classpath.*
 
 object ClassLoaderClasspathExtensions {
-	implicit final class ClassLoaderResourceExt(peer:ClassLoader) {
+	extension (peer:ClassLoader) {
 		/** paths here do not require a leading slash */
 		def classpathResource(path:String):Option[ClasspathResource]	=
 			Option(peer.getResource(path)).map(ClasspathResource.apply)

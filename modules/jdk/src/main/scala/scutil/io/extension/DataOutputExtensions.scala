@@ -5,7 +5,7 @@ import java.io.*
 import scutil.lang.*
 
 object DataOutputExtensions {
-	implicit final class DataOutputExt(peer:DataOutput) {
+	extension (peer:DataOutput) {
 		def writeByteString(it:ByteString):Unit	=
 			peer.write(it.unsafeValue)
 

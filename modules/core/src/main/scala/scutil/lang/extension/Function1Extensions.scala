@@ -3,7 +3,7 @@ package scutil.lang.extension
 import scutil.lang.*
 
 object Function1Extensions {
-	implicit final class Function1Ext[S,T](peer:Function1[S,T]) {
+	extension [S,T](peer:Function1[S,T]) {
 		/** symbolic alias for apply */
 		def <|(value:S):T	= peer(value)
 

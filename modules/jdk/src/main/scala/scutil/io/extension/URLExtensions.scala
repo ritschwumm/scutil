@@ -8,7 +8,7 @@ import java.net.*
 import scutil.core.implicits.*
 
 object URLExtensions {
-	implicit final class URLExt(peer:URL) {
+	extension (peer:URL) {
 		/** execute a closure with an InputStream reading from this URL */
 		def withInputStream[T](proxy:Option[Proxy])(code:InputStream=>T):T	=
 			openConnectionWithOptionalProxy(proxy).getInputStream().use(code)

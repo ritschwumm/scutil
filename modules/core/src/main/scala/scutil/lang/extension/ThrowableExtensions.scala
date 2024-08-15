@@ -3,7 +3,7 @@ package scutil.lang.extension
 import java.io.*
 
 object ThrowableExtensions {
-	implicit final class ThrowableExt(peer:Throwable) {
+	extension (peer:Throwable) {
 		def causeOption:Option[Throwable]	=
 			Option(peer.getCause)
 

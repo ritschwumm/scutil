@@ -3,7 +3,7 @@ package scutil.text.extension
 import scutil.text.*
 
 object StringContextExtensions {
-	implicit final class TextStringContextExt(peer:StringContext) {
+	extension (peer:StringContext) {
 		/** applies Text.stripMarginOnly */
 		def strip(args:String*):String	= Text.stripMarginOnly(peer.s(args*))
 
