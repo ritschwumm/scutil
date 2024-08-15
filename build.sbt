@@ -5,9 +5,9 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.248.0",
+	version			:= "0.249.0",
 
-	scalaVersion	:= "3.4.1",
+	scalaVersion	:= "3.4.2",
 	scalacOptions	++= Seq(
 		"-feature",
 		"-deprecation",
@@ -177,7 +177,7 @@ lazy val `scutil-xml`	=
 		fixConsoleSettings,
 		scalacOptions	++= Seq(),
 		libraryDependencies	++= Seq(
-			"org.scala-lang.modules"	%% "scala-xml"	% "2.2.0"	% "compile"
+			"org.scala-lang.modules"	%% "scala-xml"	% "2.3.0"	% "compile"
 		)
 	)
 	.dependsOn(
