@@ -59,9 +59,11 @@ object FixedXML extends XMLLoader[Elem] {
 	def loadFilePath(path:Path):Elem	=
 		loadFile(path.toFile)
 
+	@SuppressWarnings(Array("org.wartremover.warts.DefaultArguments"))
 	def saveFilePath(path:Path, node:Node, xmlDecl:Boolean=true, docType:Option[DocType]=None, minimizeTags:MinimizeMode.Value=MinimizeMode.Default):Unit =
 		MoreFiles.withWriter(path, encoding) { write(node, xmlDecl, docType, minimizeTags) }
 
+	@SuppressWarnings(Array("org.wartremover.warts.DefaultArguments"))
 	def saveFile(file:File, node:Node, xmlDecl:Boolean=true, docType:Option[DocType]=None, minimizeTags:MinimizeMode.Value=MinimizeMode.Default):Unit =
 		saveFilePath(file.toPath, node, xmlDecl, docType, minimizeTags)
 

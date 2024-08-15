@@ -12,7 +12,7 @@ import scutil.jdk.implicits.*
 object PropertiesUtil {
 	def empty:Properties	= new Properties
 
-	def loadURL(url:URL, proxy:Option[Proxy] = None):Map[String,String]	=
+	def loadURL(url:URL, proxy:Option[Proxy]):Map[String,String]	=
 		loadRawURL(url, proxy).toMap
 
 	def loadFile(path:Path):Map[String,String]	=
@@ -23,7 +23,7 @@ object PropertiesUtil {
 
 	//------------------------------------------------------------------------------
 
-	def loadRawURL(url:URL, proxy:Option[Proxy] = None):Properties	=
+	def loadRawURL(url:URL, proxy:Option[Proxy]):Properties	=
 		url.withInputStream(proxy) { st =>
 			new Properties doto {
 				_.load(st)

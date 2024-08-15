@@ -19,6 +19,7 @@ object JComponentExtensions {
 			)
 		}
 
+		@SuppressWarnings(Array("org.wartremover.warts.DefaultArguments"))
 		def displayInFrame(size:Dimension, onClose:Thunk[Boolean] = thunk{true}):JFrame = {
 			val	frame	= new JFrame
 			frame.setCenterContent(peer)

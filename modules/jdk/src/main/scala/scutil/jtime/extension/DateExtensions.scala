@@ -9,7 +9,8 @@ import scutil.jtime.*
 
 object DateExtensions {
 	extension (peer:Date) {
-		def format(fmt:String, tz:TimeZone = TimeZone.getDefault):String	= {
+		// TimeZone.getDefault
+		def format(fmt:String, tz:TimeZone):String	= {
 			val df	= new SimpleDateFormat(fmt)
 			df.setTimeZone(tz)
 			df.format(peer)

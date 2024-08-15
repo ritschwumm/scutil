@@ -79,7 +79,7 @@ object Human {
 	//------------------------------------------------------------------------------
 	//## convenience functions
 
-	val full	= HumanConfig(smallUnits = 0, decimalPlaces = 0)
+	val full	= HumanConfig.default.copy(smallUnits = 0, decimalPlaces = 0)
 	val rounded	= HumanConfig(smallUnits = 0, maxUnits = 1, decimalPlaces = 2)
 
 	val fullBinary:BigDecimal=>String		= binary	.renderer (full)
@@ -94,13 +94,13 @@ object Human {
 	//## more convenience functions
 
 	val roundedDms:BigDecimal=>String	=
-		degrees.renderer(HumanConfig(decimalPlaces=3))
+		degrees.renderer(HumanConfig.default.copy(decimalPlaces=3))
 
 	private val millisToSeconds:BigDecimal=>BigDecimal	=
 		_ * time.divisor(1)
 
 	val fullMilliDuration:BigDecimal=>String	=
-		millisToSeconds.andThen(time.renderer(HumanConfig(smallUnits = 1, decimalPlaces = 0)))
+		millisToSeconds.andThen(time.renderer(HumanConfig.default.copy(smallUnits = 1, decimalPlaces = 0)))
 
 	val roundedMilliDuration:BigDecimal=>String	=
 		millisToSeconds.andThen(time.renderer(HumanConfig(smallUnits = 1, maxUnits = 1, decimalPlaces = 2)))

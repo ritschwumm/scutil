@@ -42,9 +42,9 @@ object IterableExtensionsTest extends SimpleTestSuite {
 		)
 	}
 
-	test("iterable extension should return the correct type and values for fproduct") {
+	test("iterable extension should return the correct type and values for fproductIterable") {
 		val in:List[Int]			= List(1,2,3)
-		val out:List[(Int,Long)]	= in.fproduct(_ * 2L)
+		val out:List[(Int,Long)]	= in.fproductIterable(_ * 2L)
 		assertEquals(
 			out,
 			List((1,2L),(2,4L), (3,6L))

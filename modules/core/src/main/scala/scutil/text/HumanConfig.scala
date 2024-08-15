@@ -1,7 +1,16 @@
 package scutil.text
 
+object HumanConfig {
+	val default	=
+		HumanConfig(
+			maxUnits		= 10000,
+			smallUnits		= 10000,
+			decimalPlaces	= 0
+		)
+}
+
 final case class HumanConfig(
-	maxUnits:Int		= 10000,
-	smallUnits:Int		= 10000,
-	decimalPlaces:Int	= 0
+	maxUnits:Int,
+	smallUnits:Int,
+	decimalPlaces:Int,
 )

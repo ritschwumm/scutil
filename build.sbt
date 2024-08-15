@@ -5,7 +5,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.246.0",
+	version			:= "0.247.0",
 
 	scalaVersion	:= "3.4.0",
 	scalacOptions	++= Seq(
@@ -44,7 +44,7 @@ inThisBuild(Seq(
 		//Wart.ImplicitParameter,
 		Wart.ExplicitImplicitTypes,
 		Wart.LeakingSealed,
-		//Wart.DefaultArguments,
+		Wart.DefaultArguments,
 		//Wart.Overloading,
 		//Wart.PublicInference,
 		//Wart.TraversableOps,

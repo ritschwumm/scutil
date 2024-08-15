@@ -71,7 +71,8 @@ object IterableExtensions {
 		// NOTE these don't terminate for infinite collections!
 
 		/** pair elements of a collection with a function applied to an element */
-		def fproduct[That,U](func:T=>U)(using bf:BuildFrom[Repr,(T,U),That]):That	=
+		// TODO extension this had to be renamed to avoid clashing with the FunctorSyntax
+		def fproductIterable[That,U](func:T=>U)(using bf:BuildFrom[Repr,(T,U),That]):That	=
 			bf.fromSpecific(peer)(
 				ops.map(it => (it, func(it)))
 			)

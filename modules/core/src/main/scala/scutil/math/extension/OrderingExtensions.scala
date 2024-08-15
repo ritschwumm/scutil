@@ -19,18 +19,18 @@ object OrderingExtensions {
 				def compare(a:Seq[T], b:Seq[T]):Int	= {
 					@tailrec
 					def loop(index:Int):Int	=
-							(a.lift(index), b.lift(index)) match {
-								case (Some(aa), Some(bb))	=>
-									val tmp	= base.compare(aa, bb)
-									if (tmp != 0)	tmp
-									else			loop(index+1)
-								case (Some(aa), None)	=>
-									if (missingFirst) +1 else -1
-								case (None, Some(bb))	=>
-									if (missingFirst) -1 else +1
-								case (None, None)	=>
-									0
-							}
+						(a.lift(index), b.lift(index)) match {
+							case (Some(aa), Some(bb))	=>
+								val tmp	= base.compare(aa, bb)
+								if (tmp != 0)	tmp
+								else			loop(index+1)
+							case (Some(aa), None)	=>
+								if (missingFirst) +1 else -1
+							case (None, Some(bb))	=>
+								if (missingFirst) -1 else +1
+							case (None, None)	=>
+								0
+						}
 					loop(0)
 				}
 			}

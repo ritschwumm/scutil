@@ -15,13 +15,16 @@ object Function1Extensions {
 		def <=<[R](that:Function1[R,S]):Function1[R,T]	=
 			peer.compose(that)
 
-		def map[U](func:T=>U):S=>U	=
+		// TODO extension these had to be renamed as they break simple things like String.flatMap,
+		// probably due to a conflict with scala's builtin StringOps
+
+		def mapFunction[U](func:T=>U):S=>U	=
 			peer.andThen(func)
 
-		def flatMap[U](func:T=>S=>U):S=>U	=
+		def flatMapFunction[U](func:T=>S=>U):S=>U	=
 			s	=> func(peer(s))(s)
 
-		def contraMap[R](func:R=>S):R=>T	=
+		def contraMapFunction[R](func:R=>S):R=>T	=
 			peer.compose(func)
 
 		def partial(predicate:Predicate[S]):PartialFunction[S,T]	=

@@ -171,6 +171,7 @@ object StringExtensions {
 		//------------------------------------------------------------------------------
 
 		/** quote for use in XML */
+		@SuppressWarnings(Array("org.wartremover.warts.DefaultArguments"))
 		def quoteXML(quot:Boolean = false, apos:Boolean = false):String	= {
 			val b	= new StringBuilder
 			var i	= 0

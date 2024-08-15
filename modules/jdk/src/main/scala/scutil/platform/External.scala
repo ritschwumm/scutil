@@ -10,6 +10,7 @@ import scutil.concurrent.*
 
 object External {
 	/** execute an external process. */
+	@SuppressWarnings(Array("org.wartremover.warts.DefaultArguments"))
 	def exec(command:Seq[String], env:Map[String,String]=Map.empty, pwd:Option[Path]=None, input:Seq[String]=Seq.empty):External = {
 		val	builder	= new ProcessBuilder(command.toJList)
 		builder.environment().putAll(env.toJMap)
