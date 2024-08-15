@@ -1,8 +1,7 @@
 package scutil.gui.geom
 
+import java.lang.Math.*
 import java.awt.Insets
-
-import scala.math.*
 
 object SgRectangleInsets {
 	//------------------------------------------------------------------------------

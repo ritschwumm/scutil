@@ -1,6 +1,6 @@
 package scutil.color
 
-import scala.math.*
+import java.lang.Math.*
 
 import scutil.math.functions.*
 

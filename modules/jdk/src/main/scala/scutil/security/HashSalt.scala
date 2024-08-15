@@ -44,8 +44,7 @@ hashing hides the cleartext,
 salting makes dictionary attacks more expensive,
 multiple rounds help against brute force attacks.
 */
-// TODO scala get this back
-//@throws(classOf[NoSuchAlgorithmException])
+@throws(classOf[NoSuchAlgorithmException])
 final class HashSalt(
 	encoding:Charset,
 	normalizerForm:Normalizer.Form,

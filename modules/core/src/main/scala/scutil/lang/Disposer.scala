@@ -34,8 +34,8 @@ final case class Disposer(dispose:()=>Unit) {
 	* in case of exceptions, the first occuring one is thrown, if a second occurs it's addSuppressed to the first
 	*/
 	final def combine(that:Disposer):Disposer	=
-		if		(this == Disposer.empty)	that
-		else if	(that == Disposer.empty)	this
+		if		(this eq Disposer.empty)	that
+		else if	(that eq Disposer.empty)	this
 		else {
 			Disposer delay {
 				var thisError:Throwable	= null;	try { this.dispose() } catch { case t:Throwable	=> thisError	= t }

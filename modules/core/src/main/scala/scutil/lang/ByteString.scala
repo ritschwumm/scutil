@@ -44,50 +44,48 @@ object ByteString {
 	//------------------------------------------------------------------------------
 
 	def fromBigEndianShort(it:Short):ByteString	=
-		new ByteString(IArray.unsafeFromArray(ByteArrayUtil.fromBigEndianShort(it)))
+		unsafeFromArray(ByteArrayUtil.fromBigEndianShort(it))
 
 	def fromBigEndianInt(it:Int):ByteString	=
-		new ByteString(IArray.unsafeFromArray(ByteArrayUtil.fromBigEndianInt(it)))
+		unsafeFromArray(ByteArrayUtil.fromBigEndianInt(it))
 
 	def fromBigEndianLong(it:Long):ByteString	=
-		new ByteString(IArray.unsafeFromArray(ByteArrayUtil.fromBigEndianLong(it)))
+		unsafeFromArray(ByteArrayUtil.fromBigEndianLong(it))
 
 	def fromLittleEndianShort(it:Short):ByteString	=
-		new ByteString(IArray.unsafeFromArray(ByteArrayUtil.fromLittleEndianShort(it)))
+		unsafeFromArray(ByteArrayUtil.fromLittleEndianShort(it))
 
 	def fromLittleEndianInt(it:Int):ByteString	=
-		new ByteString(IArray.unsafeFromArray(ByteArrayUtil.fromLittleEndianInt(it)))
+		unsafeFromArray(ByteArrayUtil.fromLittleEndianInt(it))
 
 	def fromLittleEndianLong(it:Long):ByteString	=
-		new ByteString(IArray.unsafeFromArray(ByteArrayUtil.fromLittleEndianLong(it)))
+		unsafeFromArray(ByteArrayUtil.fromLittleEndianLong(it))
 
 	//------------------------------------------------------------------------------
 
 	def makeWithArray(size:Int)(effect:Effect[Array[Byte]]):ByteString	= {
 		val tmp	= new Array[Byte](size)
 		effect(tmp)
-		new ByteString(IArray.unsafeFromArray(tmp))
+		unsafeFromArray(tmp)
 	}
 
 	def makeWithByteBuffer(size:Int)(effect:Effect[ByteBuffer]):ByteString	= {
 		val tmp	= ByteBuffer.allocate(size)
 		effect(tmp)
-		new ByteString(IArray.unsafeFromArray(tmp.array()))
+		unsafeFromArray(tmp.array())
 	}
 
 	def unsafeFromArray(it:Array[Byte]):ByteString	=
 		new ByteString(IArray.unsafeFromArray(it))
 
 	def unsafeFromByteBuffer(it:ByteBuffer):ByteString	=
-		new ByteString(IArray.unsafeFromArray(it.array()))
+		unsafeFromArray(it.array())
 
 	val unboundedArrayBijection:Bijection[Array[Byte],ByteString]	=
 		Bijection(ByteString.unsafeFromArray, _.unsafeValue)
 
 	def unboundedSliceFromArray(it:Array[Byte], srcPos:Int, copyLength:Int):ByteString	=
-		makeWithArray(copyLength) { tmp =>
-			System.arraycopy(it, srcPos, tmp, 0, copyLength)
-		}
+		unsafeFromArray(JArrays.copyOfRange(it, srcPos, srcPos + copyLength))
 
 	//------------------------------------------------------------------------------
 
@@ -244,11 +242,8 @@ final class ByteString private (val value:IArray[Byte]) {
 	def asString(charset:Charset):String	= new String(unsafeValue, charset)
 	def asUtf8String:String					= asString(Charsets.utf_8)
 
-	def toArray:Array[Byte]	= {
-		val tmp	= new Array[Byte](size)
-		System.arraycopy(value, 0, tmp, 0, size)
-		tmp
-	}
+	def toArray:Array[Byte]	=
+		JArrays.copyOf(value.unsafeArray, size)
 
 	def toByteBuffer:ByteBuffer	=
 		ByteBuffer.wrap(toArray)
@@ -348,12 +343,8 @@ final class ByteString private (val value:IArray[Byte]) {
 	def unsafeValue:Array[Byte]		= value.asInstanceOf[Array[Byte]]
 	def unsafeByteBuffer:ByteBuffer	= ByteBuffer.wrap(unsafeValue)
 
-	private def unboundedSlice(begin:Int, end:Int):ByteString	= {
-		val length	= end - begin
-		ByteString.makeWithArray(length) { tmp =>
-			System.arraycopy(value, begin, tmp, 0, length)
-		}
-	}
+	private def unboundedSlice(begin:Int, end:Int):ByteString	=
+		ByteString.unsafeFromArray(JArrays.copyOfRange(unsafeValue, begin, end))
 
 	//------------------------------------------------------------------------------
 

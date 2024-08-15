@@ -2,25 +2,32 @@ package scutil.math
 
 import scala.annotation.tailrec
 
-import scala.{ math as smath }
+import java.lang.Math.*
+import java.lang.{ Math as JMath }
 
 object functions {
-	val PiHalf		= smath.Pi / 2
-	val PiDouble	= smath.Pi * 2
+	val Pi			= JMath.PI
+	val PiHalf		= Pi / 2
+	val PiDouble	= Pi * 2
+
+	val E			= JMath.E
 
 	//------------------------------------------------------------------------------
 
-	val Log2			= smath.log(2)
+	val Log2			= log(2)
 	val Log2Reciprocal	= 1.0 / Log2
 
-	def log2(value:Double):Double	= smath.log(value) * Log2Reciprocal
-	def exp2(value:Double):Double	= smath.exp(value * Log2)
+	def log2(value:Double):Double	= log(value) * Log2Reciprocal
+	def exp2(value:Double):Double	= exp(value * Log2)
 
-	def exp10(value:Double):Double	= smath.pow(10, value)
-	// def log10(value:Double):Double	= smath log10 value
+	val Log10			= log(10)
+	val Log10Reciprocal	= 1.0 / Log10
 
-	def logB(base:Double, value:Double):Double	= smath.log(value) / smath.log(base)
-	// def expB(base:Double, value:Double):Double	= smath.pow(base, value)
+	def exp10(value:Double):Double	= pow(10, value)
+	def log10(value:Double):Double	= JMath.log10(value)
+
+	def logB(base:Double, value:Double):Double	= log(value) / log(base)
+	def expB(base:Double, value:Double):Double	= pow(base, value)
 
 	//------------------------------------------------------------------------------
 
@@ -44,57 +51,57 @@ object functions {
 
 	//------------------------------------------------------------------------------
 
-	def max3Byte(a:Byte, b:Byte, c:Byte):Byte			= smath.max(a, smath.max(b,c)).toByte
-	def max3Short(a:Short, b:Short, c:Short):Short		= smath.max(a, smath.max(b,c)).toShort
-	def max3Int(a:Int, b:Int, c:Int):Int				= smath.max(a, smath.max(b,c))
-	def max3Long(a:Long, b:Long, c:Long):Long			= smath.max(a, smath.max(b,c))
-	def max3Float(a:Float, b:Float, c:Float):Float		= smath.max(a, smath.max(b,c))
-	def max3Double(a:Double, b:Double, c:Double):Double	= smath.max(a, smath.max(b,c))
+	def max3Byte(a:Byte, b:Byte, c:Byte):Byte			= max(a, max(b,c)).toByte
+	def max3Short(a:Short, b:Short, c:Short):Short		= max(a, max(b,c)).toShort
+	def max3Int(a:Int, b:Int, c:Int):Int				= max(a, max(b,c))
+	def max3Long(a:Long, b:Long, c:Long):Long			= max(a, max(b,c))
+	def max3Float(a:Float, b:Float, c:Float):Float		= max(a, max(b,c))
+	def max3Double(a:Double, b:Double, c:Double):Double	= max(a, max(b,c))
 
 	//------------------------------------------------------------------------------
 
-	def min3Byte(a:Byte, b:Byte, c:Byte):Byte			= smath.min(a, smath.min (b,c)).toByte
-	def min3Short(a:Short, b:Short, c:Short):Short		= smath.min(a, smath.min (b,c)).toShort
-	def min3Int(a:Int, b:Int, c:Int):Int				= smath.min(a, smath.min(b,c))
-	def min3Long(a:Long, b:Long, c:Long):Long			= smath.min(a, smath.min(b,c))
-	def min3Float(a:Float, b:Float, c:Float):Float		= smath.min(a, smath.min(b,c))
-	def min3Double(a:Double, b:Double, c:Double):Double	= smath.min(a, smath.min(b,c))
+	def min3Byte(a:Byte, b:Byte, c:Byte):Byte			= min(a, min (b,c)).toByte
+	def min3Short(a:Short, b:Short, c:Short):Short		= min(a, min (b,c)).toShort
+	def min3Int(a:Int, b:Int, c:Int):Int				= min(a, min(b,c))
+	def min3Long(a:Long, b:Long, c:Long):Long			= min(a, min(b,c))
+	def min3Float(a:Float, b:Float, c:Float):Float		= min(a, min(b,c))
+	def min3Double(a:Double, b:Double, c:Double):Double	= min(a, min(b,c))
 
 	//------------------------------------------------------------------------------
 
 	@tailrec
 	def gcdByte(a:Byte, b:Byte):Byte	=
-		if (b == 0)	(smath abs a).toByte
+		if (b == 0)	abs(a).toByte
 		else		gcdByte(b, (a % b).toByte)
 
 	@tailrec
 	def gcdShort(a:Short, b:Short):Short	=
-		if (b == 0)	(smath abs a).toShort
+		if (b == 0)	abs(a).toShort
 		else		gcdShort(b, (a % b).toShort)
 
 	@tailrec
 	def gcdInt(a:Int, b:Int):Int	=
-		if (b == 0)	(smath abs a)
+		if (b == 0)	abs(a)
 		else		gcdInt(b, a % b)
 
 	@tailrec
 	def gcdLong(a:Long, b:Long):Long	=
-		if (b == 0)	(smath abs a)
+		if (b == 0)	abs(a)
 		else		gcdLong(b, a % b)
 
 	//------------------------------------------------------------------------------
 
 	def lcmByte(a:Byte, b:Byte):Byte	=
-		((smath abs (a * b)) / gcdByte(a, b)).toByte
+		(abs(a * b) / gcdByte(a, b)).toByte
 
 	def lcmShort(a:Short, b:Short):Short	=
-		((smath abs (a * b)) / gcdShort(a, b)).toShort
+		(abs(a * b) / gcdShort(a, b)).toShort
 
 	def lcmInt(a:Int, b:Int):Int	=
-		(smath abs (a * b)) / gcdInt(a, b)
+		abs(a * b) / gcdInt(a, b)
 
 	def lcmLong(a:Long, b:Long):Long	=
-		(smath abs (a * b)) / gcdLong(a, b)
+		abs(a * b) / gcdLong(a, b)
 
 	//------------------------------------------------------------------------------
 

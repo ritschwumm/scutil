@@ -1,6 +1,7 @@
 package scutil.geom
 
-import scala.{ math as smath }
+import java.lang.Math.*
+import java.lang.Integer.{ signum as isignum }
 
 object IntPoint {
 	val zero	= IntPoint(0, 0)
@@ -36,7 +37,7 @@ final case class IntPoint(x:Int, y:Int) {
 	def scale(f:Int):IntPoint	= IntPoint(x * f, y * f)
 	def unscale(f:Int):IntPoint	= IntPoint(x / f, y / f)
 
-	def signum:IntPoint	= IntPoint(smath signum x, smath signum y)
+	def signum:IntPoint	= IntPoint(isignum(x), isignum(y))
 
 	//------------------------------------------------------------------------------
 
@@ -45,10 +46,10 @@ final case class IntPoint(x:Int, y:Int) {
 
 	//------------------------------------------------------------------------------
 
-	def angle:Double	= smath.atan2(y, x)
+	def angle:Double	= atan2(y, x)
 
 	// TODO this is dangerous, converting Long to Double is lossy
-	def length:Double	= smath sqrt lengthQ.toDouble
+	def length:Double	= sqrt(lengthQ.toDouble)
 	def lengthQ:Long	= x*x + y*y
 
 	//------------------------------------------------------------------------------

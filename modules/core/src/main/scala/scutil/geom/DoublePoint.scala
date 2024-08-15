@@ -1,6 +1,7 @@
 package scutil.geom
 
-import scala.{ math as smath }
+import java.lang.Math.*
+import java.lang.{ Math as JMath }
 
 object DoublePoint {
 	val zero:DoublePoint	= DoublePoint(0, 0)
@@ -39,7 +40,7 @@ final case class DoublePoint(x:Double, y:Double) {
 	def scale(f:Double):DoublePoint		= DoublePoint(x * f, y * f)
 	def unscale(f:Double):DoublePoint	= DoublePoint(x / f, y / f)
 
-	def signum:DoublePoint	= DoublePoint(smath signum x, smath signum y)
+	def signum:DoublePoint	= DoublePoint(JMath.signum(x), JMath.signum(y))
 
 	//------------------------------------------------------------------------------
 
@@ -48,17 +49,17 @@ final case class DoublePoint(x:Double, y:Double) {
 
 	//------------------------------------------------------------------------------
 
-	def angle:Double	= smath.atan2(y, x)
+	def angle:Double	= atan2(y, x)
 
-	def length:Double	= smath sqrt lengthQ
+	def length:Double	= sqrt(lengthQ)
 	def lengthQ:Double	= x*x + y*y
 
 	def distance(that:DoublePoint):Double	= (that - this).length
 	def distanceQ(that:DoublePoint):Double	= (that - this).lengthQ
 
 	def rotate(angle:Double):DoublePoint	= {
-		val	s	= smath sin angle
-		val	c	= smath cos angle
+		val	s	= sin(angle)
+		val	c	= cos(angle)
 		val xx	= x * c - y * s
 		val yy	= x * s + y * c
 		DoublePoint(xx, yy)

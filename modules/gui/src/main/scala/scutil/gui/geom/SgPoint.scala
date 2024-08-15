@@ -1,8 +1,8 @@
 package scutil.gui.geom
 
+import java.lang.Math.*
+import java.lang.{ Math as JMath }
 import java.awt.geom.{ Point2D, Dimension2D }
-
-import scala.math.*
 
 import scutil.gui.Dimension2D_Double
 
@@ -68,7 +68,7 @@ final case class SgPoint(x:Double, y:Double) {
 	def scale(that:SgPoint):SgPoint		= SgPoint(this.x*that.x, this.y*that.y)
 	def descale(that:SgPoint):SgPoint	= SgPoint(this.x/that.x, this.y/that.y)
 
-	def signum:SgPoint	= SgPoint(scala.math.signum(this.x), scala.math.signum(this.y))
+	def signum:SgPoint	= SgPoint(JMath.signum(this.x), JMath.signum(this.y))
 
 	def length:Double	= sqrt(lengthQ)
 	def lengthQ:Double	= x*x + y*y
