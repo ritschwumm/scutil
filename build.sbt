@@ -5,9 +5,9 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.269.0",
+	version			:= "0.270.0",
 
-	scalaVersion	:= "3.8.4",
+	scalaVersion	:= "3.10.0",
 	scalacOptions	++= Seq(
 		"-preview",
 		"-feature",
@@ -15,7 +15,6 @@ inThisBuild(Seq(
 		"-unchecked",
 		"-explain",
 		"-source:future",
-		"-language:experimental.into",
 		"-Wunused:all",
 		"-Wsafe-init",
 		"-Wshadow:all",
@@ -25,6 +24,8 @@ inThisBuild(Seq(
 		"-Xcheck-macros",
 		// leads to an InternalError for the variable e inside Catch.in
 		// "-Ysafe-init-global",
+		"-Wconf:id=E028:silent",
+		"-Wconf:id=E230:silent",
 	),
 
 	versionScheme	:= Some("early-semver"),
@@ -177,7 +178,7 @@ lazy val `scutil-xml`	=
 		fixConsoleSettings,
 		scalacOptions	++= Seq(),
 		libraryDependencies	++= Seq(
-			"org.scala-lang.modules"	%% "scala-xml"	% "2.4.0"	% "compile"
+			"org.scala-lang.modules"	%% "scala-xml"	% "2.5.0"	% "compile"
 		)
 	)
 	.dependsOn(

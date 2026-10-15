@@ -1,10 +1,13 @@
 package scutil.lang
 
+import scala.annotation.experimental
+
 import minitest.*
 
 import scutil.core.implicits.*
 import scutil.lang.extension.TupleExtensions
 
+@experimental
 object TupleExtensionsTest extends SimpleTestSuite {
 	type TestS	= (String, Int, Boolean)
 	val s:TestS	= ("hello", 1, true)

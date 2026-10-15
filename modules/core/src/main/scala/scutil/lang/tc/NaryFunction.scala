@@ -1,5 +1,7 @@
 package scutil.lang.tc
 
+import scala.annotation.experimental
+
 import scala.util.TupledFunction
 
 object NaryFunction {
@@ -15,6 +17,7 @@ object NaryFunction {
 			type Nary	= Nary0
 		}
 
+	@experimental
 	given [TupS <: Tuple, Out, Nary0] => (tf:TupledFunction[Nary0, TupS=>Out]) => Aux[TupS, Out, Nary0]	=
 		new NaryFunction[TupS, Out] {
 			type Nary	= Nary0

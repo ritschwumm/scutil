@@ -1,11 +1,14 @@
 package scutil.lang.tc
 
+import scala.annotation.experimental
+
 import minitest.*
 
 // import scutil.core.implicits.*
 import scutil.lang.*
 import scutil.lang.tc.TupleK
 
+@experimental
 object TupleKTest extends SimpleTestSuite {
 	test("TupleK.productN should work") {
 		assertEquals(
