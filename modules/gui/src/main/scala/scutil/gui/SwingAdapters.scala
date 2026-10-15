@@ -4,13 +4,13 @@ import javax.swing.event.*
 
 object SwingAdapters {
 	abstract class CellEditorAdapter extends CellEditorListener {
-		override def editingStopped(ev:ChangeEvent):Unit		= {}
+		override def editingStopped(ev:ChangeEvent):Unit	= {}
 		override def editingCanceled(ev:ChangeEvent):Unit	= {}
 	}
 
 	abstract class MenuDragMouseAdapter extends MenuDragMouseListener {
 		override def menuDragMouseEntered(ev:MenuDragMouseEvent):Unit	= {}
-		override def menuDragMouseExited(ev:MenuDragMouseEvent):Unit		= {}
+		override def menuDragMouseExited(ev:MenuDragMouseEvent):Unit	= {}
 		override def menuDragMouseDragged(ev:MenuDragMouseEvent):Unit	= {}
 		override def menuDragMouseReleased(ev:MenuDragMouseEvent):Unit	= {}
 	}
@@ -34,15 +34,15 @@ object SwingAdapters {
 	}
 
 	abstract class DocumentAdapter extends DocumentListener {
-		override def insertUpdate(ev:DocumentEvent):Unit		= {}
-		override def removeUpdate(ev:DocumentEvent):Unit		= {}
+		override def insertUpdate(ev:DocumentEvent):Unit	= {}
+		override def removeUpdate(ev:DocumentEvent):Unit	= {}
 		override def changedUpdate(ev:DocumentEvent):Unit	= {}
 	}
 
 	abstract class MenuAdapter extends MenuListener {
-		override def menuSelected(ev:MenuEvent):Unit		= {}
+		override def menuSelected(ev:MenuEvent):Unit	= {}
 		override def menuDeselected(ev:MenuEvent):Unit	= {}
-		override def menuCanceled(ev:MenuEvent):Unit		= {}
+		override def menuCanceled(ev:MenuEvent):Unit	= {}
 	}
 
 	abstract class PopupMenuAdapter extends PopupMenuListener {

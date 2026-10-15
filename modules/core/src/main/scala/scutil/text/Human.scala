@@ -3,7 +3,6 @@ package scutil.text
 import java.util.Locale
 
 import scutil.lang.*
-import scutil.core.implicits.*
 
 /** format (positive) numbers in a human readable way */
 object Human {
@@ -111,7 +110,7 @@ final case class Human(table:Nes[HumanUnit]) {
 	private val smallCount	= table.count(_.divisor < Human.one)
 
 	private def smallCut(smallUnits:Int):Nes[HumanUnit]	=
-		table.reverse.drop(smallCount - smallUnits).cata(Nes.one(table.head), _.reverse)
+		table.reverse.drop(smallCount - smallUnits).map(_.reverse).getOrElse(Nes.one(table.head))
 
 	//------------------------------------------------------------------------------
 

@@ -5,7 +5,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.256.0",
+	version			:= "0.257.0",
 
 	scalaVersion	:= "3.6.3",
 	scalacOptions	++= Seq(
@@ -15,8 +15,12 @@ inThisBuild(Seq(
 		"-source:future",
 		// "-explain",
 		"-Wunused:all",
+		"-Wsafe-init",
+		"-Wshadow:all",
 		"-Xfatal-warnings",
 		"-Xkind-projector:underscores",
+		// leads to an InternalError for the variable e inside Catch.in
+		// "-Ysafe-init-global",
 	),
 
 	versionScheme	:= Some("early-semver"),
