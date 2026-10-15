@@ -3,6 +3,10 @@ package scutil.lang
 import scutil.lang.tc.*
 
 object Lens {
+	val Gen	= LensGen
+
+	//-----------------------------------------------------------------------------
+
 	def identity[T]:Lens[T,T]	=
 		// fromStoreAt(Store.identity)
 		Lens(t => t, t => _ => t)
@@ -19,41 +23,14 @@ object Lens {
 			get	= s			=> func(s).index,
 			set	= t => s	=> func(s).peek(t)
 		)
-
-	@deprecated("use Lenses.first", "0.253.0")
-	def first[S,T]:Lens[(S,T),S]	=
-		Lens(
-			get	= p			=> p._1,
-			set	= t => p	=> (t, p._2)
-		)
-
-	@deprecated("use Lenses.second", "0.253.0")
-	def second[S,T]:Lens[(S,T),T]	=
-		Lens(
-			get	= p			=> p._2,
-			set	=  t => p	=> (p._1, t)
-		)
-
-	val Gen	= LensGen
 }
 
 /** functional reference to a part of product type, aka Lens' */
 final case class Lens[S,T](get:S=>T, set:T=>S=>S) {
-	@deprecated("use set(t)(s)", "0.253.0")
-	def setThe(s:S, t:T):S	= set(t)(s)
-
-	//------------------------------------------------------------------------------
-
 	def mod(func:T=>T):S=>S	= s => set.apply(func(get(s))).apply(s)
 
-	@deprecated("use mod(func)(s)", "0.253.0")
-	def modThe(s:S, func:T=>T):S	= mod(func)(s)
-
 	// van laarhoven form
-	def modF[F[_]](func:T=>F[T])(using F:Functor[F]):S=>F[S]	= s	=> F.map(func(get(s))) { t => set(t).apply(s) }
-
-	@deprecated("use modF(func)(s)", "0.253.0")
-	def modTheF[F[_]:Functor](s:S, func:T=>F[T]):F[S]			= modF(func).apply(s)
+	def modF[F[_]:Functor as F](func:T=>F[T]):S=>F[S]	= s	=> F.map(func(get(s))) { t => set(t).apply(s) }
 
 	//------------------------------------------------------------------------------
 
@@ -86,7 +63,7 @@ final case class Lens[S,T](get:S=>T, set:T=>S=>S) {
 
 	//------------------------------------------------------------------------------
 
-	def embedStateT[F[_],U](state:StateT[F,T,U])(using F:Functor[F]):StateT[F,S,U]	=
+	def embedStateT[F[_]:Functor as F,U](state:StateT[F,T,U]):StateT[F,S,U]	=
 		StateT { s =>
 			val ftu:F[(T,U)] = state.run(get(s))
 			F.map(ftu) { (t,u) =>

@@ -5,6 +5,10 @@ import scala.reflect.*
 import scutil.lang.tc.*
 
 object Prism {
+	val Gen	= PrismGen
+
+	//-----------------------------------------------------------------------------
+
 	def partial[S,T](get:PartialFunction[S,T], set:T=>S):Prism[S,T] =
 		Prism(get.lift, set)
 
@@ -26,27 +30,19 @@ object Prism {
 			Predef.identity
 		)
 
-	def some[T]:Prism[Option[T],T]			= Prism(x=>x, Some.apply)
-
-	def left[A,B]:Prism[Either[A,B],A]		= Prism(_.swap.toOption,	Left.apply)
-	def right[A,B]:Prism[Either[A,B],B]		= Prism(_.toOption,			Right.apply)
-
-	def invalid[A,B]:Prism[Validated[A,B],A]	= Prism(_.invalidToOption,	Validated.invalid)
-	def valid[A,B]:Prism[Validated[A,B],B]		= Prism(_.toOption,			Validated.valid)
-
 	//------------------------------------------------------------------------------
 
 	def subType[S,T<:S](using tt:TypeTest[S,T]):Prism[S,T]	=
 		Prism(tt.unapply, Predef.identity)
 
-	//------------------------------------------------------------------------------
-	//## typeclass instances
+	/**
+	example:
 
-	/*
-	// TODO optics is this lawful?
-	given [S,T] => Semigroup[Prism[S,T]]	=
-		Semigroup.instance(_ `orElse` _)
+	val P = Prism.subTypes[MyEnum]
+	val p:Prism[MyEnum, MyEnumVairant] = P[MyEnumVariant]
 	*/
+	def subTypes[S]:[T <: S] => (TypeTest[S, T]) ?=> Prism[S, T]	=
+		[T<:S] => (tt:TypeTest[S, T]) ?=> subType[S,T]
 }
 
 /** parser and unparser for some data into a side format, aka Prism' */
@@ -61,13 +57,7 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 
 	def mod(func:T=>T):S=>S	= s => get(s).map(func.andThen(set)).getOrElse(s)
 
-	@deprecated("use mod(func)(s)", "0.253.0")
-	def modThe(s:S, func:T=>T):S	= mod(func)(s)
-
-	def modF[F[_]](func:T=>F[T])(using F:Applicative[F]):S=>F[S]	= s	=> modOptF(func).apply(s).getOrElse(F.pure(s))
-
-	@deprecated("use modF(func)(s)", "0.253.0")
-	def modTheF[F[_]](s:S, func:T=>F[T])(using F:Applicative[F]):F[S]	= modF(func).apply(s)
+	def modF[F[_]:Applicative as F](func:T=>F[T]):S=>F[S]	= s	=> modOptF(func).apply(s).getOrElse(F.pure(s))
 
 	// TODO optics this could be renamed to set, set is actually reverseGet in monocle (?)
 	def setMatching(value:T):S=>S	=
@@ -83,10 +73,7 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 
 	def modOpt(func:T=>T):S=>Option[S]		= s => get(s).map(func.andThen(set))
 
-	@deprecated("use modOpt(func)(s)", "0.253.0")
-	def modTheOpt(s:S, func:T=>T):Option[S]	= modOpt(func).apply(s)
-
-	def modOptF[F[_]](func:T=>F[T])(using F:Functor[F]):S=>Option[F[S]]	=
+	def modOptF[F[_]:Functor as F](func:T=>F[T]):S=>Option[F[S]]	=
 		s	=> {
 			get(s).map { t =>
 				F.map(func(t)) { ss =>
@@ -94,10 +81,6 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 				}
 			}
 		}
-
-	@deprecated("use modOptF(func)(s)", "0.253.0")
-	def modTheOptF[F[_]](s:S, func:T=>F[T])(using F:Functor[F]):Option[F[S]]	=
-		modOptF(func).apply(s)
 
 	//------------------------------------------------------------------------------
 
@@ -128,7 +111,7 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 
 	//------------------------------------------------------------------------------
 
-	def embedStateT[F[_],U](state:StateT[F,T,U])(using F:Applicative[F]):StateT[F,S,Option[U]]	=
+	def embedStateT[F[_]:Applicative as F,U](state:StateT[F,T,U]):StateT[F,S,Option[U]]	=
 		StateT { s =>
 			get(s)
 			.map { t1 =>
@@ -168,15 +151,6 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 		}
 
 	//------------------------------------------------------------------------------
-
-	/*
-	// TODO optics shouldn't this try to set both? or the one where the first get succeeded?
-	def orElse(that:Prism[S,T]):Prism[S,T]	=
-		Prism(
-			get	= s	=> this.get(s) `orElse` that.get(s),
-			set	= set
-		)
-	*/
 
 	/** filter the source value */
 	def filterBefore(pred:Predicate[S]):Prism[S,T]	=

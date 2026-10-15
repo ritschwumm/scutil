@@ -89,6 +89,14 @@ object SeqExtensions {
 		def liftOrElse(index:Int, default:T):T	=
 			if (containsIndex(index)) ops.apply(index) else default
 
+		def cutPrefix(prefix:Iterable[T]):Option[Self]	=
+			if (ops.startsWith(prefix))	Some(ops.drop(prefix.size))
+			else						None
+
+		def cutSuffix(suffix:Iterable[T]):Option[Self]	=
+			if (ops.endsWith(suffix))	Some(ops.dropRight(suffix.size))
+			else						None
+
 		/** like collectFirst but searching from the end to the front */
 		def collectLast[U](pf:PartialFunction[T,U]):Option[U]	=
 			// behaves like peer.reverse collectFirst pf

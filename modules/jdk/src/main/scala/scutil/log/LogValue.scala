@@ -6,15 +6,14 @@ import scutil.lang.*
 import scutil.lang.tc.Show
 
 object LogValue {
-	implicit def StringAsLogValue(it:String):LogValue				= LogValue.string(it)
-	implicit def ThrowableAsLogValue(it:Throwable):LogValue			= LogValue.throwable(it)
-	implicit def MultipleAsLogValue(it:Seq[LogValue]):LogValue		= LogValue.multiple(it)
+	implicit def StringAsLogValue(it:String):LogValue			= string(it)
+	implicit def ThrowableAsLogValue(it:Throwable):LogValue		= throwable(it)
+	implicit def MultipleAsLogValue(it:Seq[LogValue]):LogValue	= multiple(it)
 
-	implicit def ShowAsLogValue[T:Show](it:T):LogValue				= LogValue.string(Show.doit(it))
+	implicit def ShowAsLogValue[T:Show](it:T):LogValue			= show(it)
 
-	implicit def SeqShowAsLogValue[T](it:Seq[T])(using S:Show[T]):LogValue	= LogValue.multiple(it.map(S.show).map(LogValue.string))
-	implicit def SetShowAsLogValue[T](it:Set[T])(using S:Show[T]):LogValue	= SeqShowAsLogValue(it.toVector)
-	implicit def NesShowAsLogValue[T](it:Nes[T])(using S:Show[T]):LogValue	= SeqShowAsLogValue(it.toSeq)
+	implicit def IterableShowAsLogValue[T:Show](it:Iterable[T]):LogValue	= LogValue.multiple(it.toVector.map(show))
+	implicit def NesShowAsLogValue[T:Show](it:Nes[T]):LogValue				= IterableShowAsLogValue(it.toSeq)
 
 	//------------------------------------------------------------------------------
 
@@ -22,6 +21,7 @@ object LogValue {
 	def throwable(it:Throwable):LogValue	= LogThrowable(it)
 	def multiple(it:Seq[LogValue]):LogValue	= LogMultiple(it)
 	def variable(it:LogValue*):LogValue		= LogMultiple(it)
+	def show[T:Show as S](it:T):LogValue	= LogString(S.show(it))
 }
 
 enum LogValue {

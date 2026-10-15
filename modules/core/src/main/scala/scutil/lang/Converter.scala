@@ -162,7 +162,7 @@ abstract class Converter[E,S,T] {
 	//------------------------------------------------------------------------------
 
 	// NOTE this uses the Traverse instance instead of a native implementation
-	def liftTraversed[F[_]](using F:Traversed[F], CC:Semigroup[E]):Converter[E,F[S],F[T]]	= _.traverse(convert)
+	def liftTraversed[F[_]:Traversed](using CC:Semigroup[E]):Converter[E,F[S],F[T]]	= _.traverse(convert)
 
 	def liftOption:Converter[E,Option[S],Option[T]]							= _.traverseValidated(convert)
 	def liftSeq(using cc:Semigroup[E]):Converter[E,Seq[S],Seq[T]]			= _.traverseValidated(convert)

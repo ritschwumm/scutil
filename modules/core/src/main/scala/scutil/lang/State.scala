@@ -63,6 +63,6 @@ final case class State[S,+T](run:S=>(S,T)) {
 
 	//------------------------------------------------------------------------------
 
-	def toStateT[F[_],TT>:T](using M:Applicative[F]):StateT[F,S,TT]	=
+	def toStateT[F[_]:Applicative,TT>:T]:StateT[F,S,TT]	=
 		StateT.fromState(this)
 }

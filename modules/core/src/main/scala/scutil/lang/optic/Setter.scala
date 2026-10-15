@@ -6,11 +6,6 @@ object Setter {
 
 	def trivial[T]:Setter[T,Unit]	=
 		Setter(_ => it => it)
-
-	/*
-	def first[S,T]:Setter[(S,T), S]	= ???
-	def second[S,T]:Setter[(S,T), T]	= ???
-	*/
 }
 
 final case class Setter[S,T](mod:(T=>T)=>(S=>S)) {

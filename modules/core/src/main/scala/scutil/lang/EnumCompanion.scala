@@ -29,7 +29,7 @@ object EnumCompanion {
 
 	inline given [T<:Enum] => EnumCompanion[T] = ${ ofImpl[T] }
 
-	def ofImpl[T<:Enum](using quotes:Quotes, tpe:Type[T]):Expr[EnumCompanion[T]]	= {
+	def ofImpl[T<:Enum:Type](using quotes:Quotes):Expr[EnumCompanion[T]]	= {
 		import quotes.reflect.*
 
 		val companion	= Ref(TypeTree.of[T].symbol.companionModule)

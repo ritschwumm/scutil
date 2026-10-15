@@ -19,12 +19,23 @@ object LensGenImpl {
 	def selectImpl[T:Type](name:Expr[String])(using quotes:Quotes):Expr[Any] = {
 		import quotes.reflect.*
 
-		val containerTypeRepr	= TypeRepr.of[T].dealias
+		/*
+		val tpe = TypeRepr.of[Tuple]
+		val sym: Symbol = tpe.typeSymbol.companionClass
+		val repr = sym.fullName
 
-		val containerTypeSymbol:Symbol	=
-			containerTypeRepr.typeSymbol
+		Or if the type module is statically known we can also do
 
-		val containerGenericTypeArguments	=
+		val tpe = TypeRepr.of[Tuple.type]
+		val sym: Symbol = tpe.typeSymbol
+		val repr = sym.fullName
+		*/
+
+		val containerTypeRepr:TypeRepr	= TypeRepr.of[T].dealias
+
+		val containerTypeSymbol:Symbol	= containerTypeRepr.typeSymbol
+
+		val containerGenericTypeArguments:List[TypeRepr]	=
 			containerTypeRepr.asMatchable match {
 				case AppliedType(_, argTypeReprs)	=> argTypeReprs
 				case _								=> Nil
@@ -45,8 +56,7 @@ object LensGenImpl {
 		// NOTE this leads to a different result type - why?
 		//val fieldType =
 		//	containerTypeRepr.select(caseField)
-		val fieldType:TypeRepr =
-			containerTypeRepr.memberType(caseFieldSymbol)
+		val fieldType:TypeRepr = containerTypeRepr.memberType(caseFieldSymbol)
 
 		// TODO dotty check alternatives
 		// def getterTerm(container:Term):Term	= Typed(Select.unique(container, nameValue), fieldType)
@@ -55,15 +65,14 @@ object LensGenImpl {
 		//def getterTerm(container:Term):Term	= Typed(Select.unique(container, nameValue), Inferred(fieldType))
 		// NOTE compiles, but doesn't help
 
-		def getterTerm(container:Term):Term	=
-			container.select(caseFieldSymbol)
+		def getterTerm(container:Term):Term	= container.select(caseFieldSymbol)
 
 		def setterTerm(container:Term, value:Term):Term	=
 			Select.overloaded(container, "copy", containerGenericTypeArguments, List(NamedArg(caseFieldSymbol.name, value)))
 
-
 		// NOTE we can match on Type value and recover the type's type like this!
 		// @see https://softwaremill.com/scala-3-macros-tips-and-tricks/
+		// @see https://docs.scala-lang.org/scala3/guides/macros/faq.html
 		(containerTypeRepr.asType, fieldType.asType) match { case ('[c], '[f]) =>
 			'{
 				Lens(

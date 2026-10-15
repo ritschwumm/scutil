@@ -1,7 +1,7 @@
 package scutil.lang.tc
 
 object ShowSyntax {
-	extension [T](peer:T)(using TC:Show[T]) {
+	extension [T:Show as TC](peer:T) {
 		def show:String	= TC.show(peer)
 	}
 }

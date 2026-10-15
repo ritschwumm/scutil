@@ -4,6 +4,7 @@ import scala.annotation.nowarn
 
 import minitest.*
 
+// NOTE the @nowarn are necessary dues to https://github.com/scala/scala3/issues/17753
 object LensGenTest extends SimpleTestSuite {
 	final case class Foo(a:Int, b:String)
 	final case class Bar[T](t:T)

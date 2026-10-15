@@ -45,7 +45,7 @@ object Nes {
 			override def map[A,B](it:Nes[A])(func:A=>B):Nes[B]			= it.map(func)
 			override def pure[A](it:A):Nes[A]							= Nes.one(it)
 			override def flatMap[A,B](it:Nes[A])(func:A=>Nes[B]):Nes[B]	= it.flatMap(func)
-			override def traverse[G[_],S,T](it:Nes[S])(func:S=>G[T])(using AP:Applicative[G]):G[Nes[T]]	=
+			override def traverse[G[_]:Applicative as AP,S,T](it:Nes[S])(func:S=>G[T]):G[Nes[T]]	=
 				(it.tail.map(func).foldLeft(AP.map(func(it.head))(Nes.one[T]))) { (xs, x) =>
 					AP.map2(xs, x)(_ :+ _)
 				}
@@ -202,7 +202,7 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 			this.tail.zipWithIndex.map { (v,i) => (v,i+1) }
 		)
 
-	def reduce[U>:T](func:(U,U)=>U)(using S:Semigroup[U]):U	=
+	def reduce[U>:T:Semigroup as S](func:(U,U)=>U):U	=
 		reduceWith(S.combine)
 
 	def reduceWith[U>:T](func:(U,U)=>U):U	= {

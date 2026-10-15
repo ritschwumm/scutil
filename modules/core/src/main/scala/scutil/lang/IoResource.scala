@@ -17,7 +17,7 @@ object IoResource {
 	def disposing[T](create:Io[T])(dispose:T=>Io[Unit]):IoResource[T]	=
 		IoResource(create.map { t => t -> dispose(t) })
 
-	def releasable[T](create:Io[T])(using R:Releasable[T]):IoResource[T]	=
+	def releasable[T:Releasable as R](create:Io[T]):IoResource[T]	=
 		IoResource(create.map { t => t -> Io.delay{ R.release(t) } })
 
 	def lifecycle(before:Io[Unit], after:Io[Unit]):IoResource[Unit]	=
@@ -35,7 +35,7 @@ object IoResource {
 		def disposing[T](create: =>T)(dispose:T=>Unit):IoResource[T]	=
 			IoResource.disposing(Io.delay(create))(t => Io.delay(dispose(t)))
 
-		def releasable[T](create: =>T)(using R:Releasable[T]):IoResource[T]	=
+		def releasable[T:Releasable as A](create: =>T):IoResource[T]	=
 			IoResource.releasable(Io.delay(create))
 
 		def lifecycle(before: =>Unit, after: =>Unit):IoResource[Unit]	=

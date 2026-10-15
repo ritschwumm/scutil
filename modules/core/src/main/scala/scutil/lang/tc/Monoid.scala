@@ -1,7 +1,7 @@
 package scutil.lang.tc
 
 object Monoid {
-	def apply[F](using ev:Monoid[F]):Monoid[F]	= ev
+	def apply[F:Monoid as F]:Monoid[F]	= F
 
 	def instance[T](empty1:T, func:(T,T)=>T):Monoid[T]	=
 		new Monoid[T] {
@@ -11,12 +11,12 @@ object Monoid {
 
 	//------------------------------------------------------------------------------
 
-	def empty[T](using T:Monoid[T]):T	= T.empty
+	def empty[T:Monoid as T]:T	= T.empty
 
 	def combineOf[T:Monoid](items:T*):T	=
 		combineAll(items)
 
-	def combineAll[T](items:Iterable[T])(using T:Monoid[T]):T	=
+	def combineAll[T:Monoid as T](items:Iterable[T]):T	=
 		T.combineAll(items)
 }
 

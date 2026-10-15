@@ -2,9 +2,9 @@ package scutil.lang
 
 import minitest.*
 
-@SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
 object BijectionTest extends SimpleTestSuite {
 	case object CaseObj
+	final case class Nullary()
 	final case class Unary(a:Int)
 	final case class Binary(a:Int, b:Short)
 	final case class Container(x:Unary)
@@ -14,7 +14,6 @@ object BijectionTest extends SimpleTestSuite {
 	final case class Parametrized1[A](x:Fooz[A])
 	final case class Parametrized2[A,B](x:Fooz[A], y:Fooz[B])
 
-	@SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
 	object Wrapper {
 		final case class Inner(t:Int)
 	}
@@ -27,6 +26,15 @@ object BijectionTest extends SimpleTestSuite {
 		assertEquals(
 			bijection.get(value),
 			(())
+		)
+	}
+
+	test("Bijection should work with nullary case classes") {
+		val value		= Nullary()
+		val	bijection	= Bijection.zero[Nullary]
+		assertEquals(
+			bijection.get(value),
+			()
 		)
 	}
 

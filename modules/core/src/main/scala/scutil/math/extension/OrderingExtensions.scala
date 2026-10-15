@@ -14,7 +14,7 @@ object OrderingExtensions {
 			}
 
 		/** orders lexicographically from left to right */
-		def sequence[T](missingFirst:Boolean)(using base:Ordering[T]):Ordering[Seq[T]]	=
+		def sequence[T:Ordering as base](missingFirst:Boolean):Ordering[Seq[T]]	=
 			new Ordering[Seq[T]] {
 				def compare(a:Seq[T], b:Seq[T]):Int	= {
 					@tailrec

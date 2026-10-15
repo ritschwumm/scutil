@@ -4,7 +4,6 @@ import minitest.*
 
 import scutil.lang.*
 
-@SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
 object HexTest extends SimpleTestSuite {
 	test("Hex should decode an empty string") {
 		assertEquals(

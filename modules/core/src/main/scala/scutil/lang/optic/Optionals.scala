@@ -52,12 +52,6 @@ object Optionals {
 			set	=	t	=>	s	=> if (s.nonEmpty) s.updated(s.size-1, t) else s
 		)
 
-	@deprecated("use seqFirstWhere", "0.253.0")
-	def seqWhere[T](pred:Predicate[T]):Optional[Seq[T],T]			= seqFirstWhere(pred)
-
-	@deprecated("use seqFirstWhereEqual", "0.253.0")
-	def seqWhereEqual[S,T](extract:S=>T, id:T):Optional[Seq[S],S]	= seqFirstWhereEqual(extract, id)
-
 	def seqFirstWhere[T](pred:Predicate[T]):Optional[Seq[T],T]	=
 		Optional(
 			get	= items			=> items.find(pred),
@@ -100,12 +94,6 @@ object Optionals {
 			get	=			s	=> s.lastOption,
 			set	=	t	=>	s	=> if (s.nonEmpty) s.updated(s.size-1, t) else s
 		)
-
-	@deprecated("use vectorFirstWhere", "0.253.0")
-	def vectorWhere[T](pred:Predicate[T]):Optional[Vector[T],T]			= vectorFirstWhere(pred)
-
-	@deprecated("use vectorFirstWhereEqual", "0.253.0")
-	def vectorWhereEqual[S,T](extract:S=>T, id:T):Optional[Vector[S],S]	= vectorFirstWhereEqual(extract, id)
 
 	def vectorFirstWhere[T](pred:Predicate[T]):Optional[Vector[T],T]	=
 		Optional(

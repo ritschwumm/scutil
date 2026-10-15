@@ -1,10 +1,10 @@
 package scutil.lang
 
 object Delay {
-	def apply[F[_]](using ev:Delay[F]):Delay[F]	= ev
+	def apply[F[_]:Delay as D]:Delay[F]	= D
 
-	def of[F[_],T](it: =>T)(using ev:Delay[F]):F[T]				= ev.delay(it)
-	def ofThunk[F[_],T](it:Thunk[T])(using ev:Delay[F]):F[T]	= ev.delayThunk(it)
+	def of[F[_]:Delay as D,T](it: =>T):F[T]				= D.delay(it)
+	def ofThunk[F[_]:Delay as D,T](it:Thunk[T]):F[T]	= D.delayThunk(it)
 }
 
 trait Delay[F[_]] {

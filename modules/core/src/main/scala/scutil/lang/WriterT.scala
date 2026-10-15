@@ -4,21 +4,21 @@ import scutil.core.implicits.*
 import scutil.lang.tc.*
 
 object WriterT {
-	def pure[F[_],L:Monoid,T](it:T)(using M:Applicative[F]):WriterT[F,L,T]	=
+	def pure[F[_]:Applicative as M,L:Monoid,T](it:T):WriterT[F,L,T]	=
 		liftF(M.pure(it))
 
 	// TODO Delay should inherit from Monad (or Applicative?) so we don't need a Functor here
-	def delay[F[_]:Delay,L:Monoid,T](it: =>T)(using D:Delay[F], F:Functor[F]):WriterT[F,L,T]	=
+	def delay[F[_]:{ Delay as D, Functor as F },L:Monoid,T](it: =>T):WriterT[F,L,T]	=
 		liftF(D.delay(it))
 
-	def liftF[F[_],L:Monoid,T](io:F[T])(using F:Functor[F]):WriterT[F,L,T]	=
+	def liftF[F[_]:Functor as F,L:Monoid,T](io:F[T]):WriterT[F,L,T]	=
 		WriterT {
 			io.map { v =>
 				Monoid[L].empty -> v
 			}
 		}
 
-	def liftL[F[_],L](log:L)(using F:Applicative[F]):WriterT[F,L,Unit]	=
+	def liftL[F[_]:Applicative as F,L](log:L):WriterT[F,L,Unit]	=
 		WriterT(
 			F.pure(
 				log -> (())

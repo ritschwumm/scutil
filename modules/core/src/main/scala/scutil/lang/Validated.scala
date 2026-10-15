@@ -105,11 +105,11 @@ enum Validated[+E,+T] {
 	def product[EE>:E:Semigroup,U](that:Validated[EE,U]):Validated[EE,(T,U)]	=
 		this.map2(that)((_,_))
 
-	def map2[EE>:E,U,V](that:Validated[EE,U])(func:(T,U)=>V)(using cc:Semigroup[EE]):Validated[EE,V]	=
+	def map2[EE>:E:Semigroup as EE,U,V](that:Validated[EE,U])(func:(T,U)=>V):Validated[EE,V]	=
 		(this, that) match {
 			case (Validated.Invalid(a),	Validated.Valid(_))		=> Validated.Invalid(a)
 			case (Validated.Valid(_),	Validated.Invalid(b))	=> Validated.Invalid(b)
-			case (Validated.Invalid(a),	Validated.Invalid(b))	=> Validated.Invalid(cc.combine(a, b))
+			case (Validated.Invalid(a),	Validated.Invalid(b))	=> Validated.Invalid(EE.combine(a, b))
 			case (Validated.Valid(a),	Validated.Valid(b))		=> Validated.Valid(func(a, b))
 		}
 
@@ -156,9 +156,9 @@ enum Validated[+E,+T] {
 	//------------------------------------------------------------------------------
 
 	// NOTE cats' orElse drops errors, this is like cats' <+>
-	def or[EE>:E,TT>:T](that:Validated[EE,TT])(using cc:Semigroup[EE]):Validated[EE,TT]	=
+	def or[EE>:E:Semigroup as EE,TT>:T](that:Validated[EE,TT]):Validated[EE,TT]	=
 		(this, that) match {
-			case (Validated.Invalid(a),		Validated.Invalid(b))	=> Validated.invalid(cc.combine(a, b))
+			case (Validated.Invalid(a),		Validated.Invalid(b))	=> Validated.invalid(EE.combine(a, b))
 			case (Validated.Valid(a),	_)							=> Validated.valid(a)
 			case (_,						Validated.Valid(b))		=> Validated.valid(b)
 		}
@@ -262,6 +262,6 @@ enum Validated[+E,+T] {
 
 	//------------------------------------------------------------------------------
 
-	def toEitherT[F[_],EE>:E,TT>:T](using F:Applicative[F]):EitherT[F,EE,TT]	=
+	def toEitherT[F[_]:Applicative as F,EE>:E,TT>:T]:EitherT[F,EE,TT]	=
 		EitherT.fromEither(toEither)
 }

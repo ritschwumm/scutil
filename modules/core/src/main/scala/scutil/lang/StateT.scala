@@ -3,19 +3,19 @@ package scutil.lang
 import scutil.lang.tc.*
 
 object StateT { outer =>
-	def pure[F[_],S,T](it:T)(using F:Applicative[F]):StateT[F,S,T]	=
+	def pure[F[_]:Applicative as F,S,T](it:T):StateT[F,S,T]	=
 		StateT { s => F.pure(s -> it) }
 
-	def pureF[F[_],S,T](it:F[T])(using F:Functor[F]):StateT[F,S,T]	=
+	def pureF[F[_]:Functor as F,S,T](it:F[T]):StateT[F,S,T]	=
 		StateT { s => F.map(it) { s -> _ } }
 
-	def fromState[F[_],S,T](it:State[S,T])(using F:Applicative[F]):StateT[F,S,T]	=
+	def fromState[F[_]:Applicative as F,S,T](it:State[S,T]):StateT[F,S,T]	=
 		fromStateFunc(it.run)
 
-	def fromStateFunc[F[_],S,T](it:S=>(S,T))(using F:Applicative[F]):StateT[F,S,T]	=
+	def fromStateFunc[F[_]:Applicative as F,S,T](it:S=>(S,T)):StateT[F,S,T]	=
 		StateT { s => F.pure(it(s)) }
 
-	def transformPureF[M[_],S](using F:Functor[M]):M ~> StateT[M,S,_]	=
+	def transformPureF[M[_]:Functor as M,S]:M ~> StateT[M,S,_]	=
 		new (M ~> StateT[M,S,_]) {
 			def apply[X](it:M[X]):StateT[M,S,X]	=
 				StateT.pureF(it)
@@ -23,43 +23,43 @@ object StateT { outer =>
 
 	//------------------------------------------------------------------------------
 
-	def delay[F[_],S,T](it: =>T)(using D:Delay[F]):StateT[F,S,T]	=
+	def delay[F[_]:Delay as D,S,T](it: =>T):StateT[F,S,T]	=
 		StateT { s => D.delay(s -> it) }
 
 	//------------------------------------------------------------------------------
 
-	def get[F[_],S](using F:Applicative[F]):StateT[F,S,S]	=
+	def get[F[_]:Applicative as F,S]:StateT[F,S,S]	=
 		StateT { s => F.pure(s -> s) }
 
 	//------------------------------------------------------------------------------
 
-	def set[F[_],S](it:S)(using F:Applicative[F]):StateT[F,S,Unit]	=
+	def set[F[_]:Applicative as F,S](it:S):StateT[F,S,Unit]	=
 		StateT { s => F.pure(it -> (())) }
 
-	def setF[F[_],S](it:F[S])(using F:Functor[F]):StateT[F,S,Unit]	=
+	def setF[F[_]:Functor as F,S](it:F[S]):StateT[F,S,Unit]	=
 		StateT { s => F.map(it)(s1 => (s1, ())) }
 
-	def setOld[F[_],S](it:S)(using F:Applicative[F]):StateT[F,S,S]	=
+	def setOld[F[_]:Applicative as F,S](it:S):StateT[F,S,S]	=
 		StateT { s => F.pure(it -> s) }
 
 	//------------------------------------------------------------------------------
 
-	def mod[F[_],S](func:S=>S)(using F:Applicative[F]):StateT[F,S,Unit]	=
+	def mod[F[_]:Applicative as F,S](func:S=>S):StateT[F,S,Unit]	=
 		StateT { s => F.pure(func(s) -> (())) }
 
-	def modF[F[_],S](func:S=>F[S])(using F:Functor[F]):StateT[F,S,Unit]	=
+	def modF[F[_]:Functor as F,S](func:S=>F[S]):StateT[F,S,Unit]	=
 		StateT { s => F.map(func(s))(s1 => (s1, ())) }
 
-	def modOld[F[_],S](func:S=>S)(using F:Applicative[F]):StateT[F,S,S]	=
+	def modOld[F[_]:Applicative as F,S](func:S=>S):StateT[F,S,S]	=
 		StateT { s => F.pure(func(s) -> s) }
 
 	//------------------------------------------------------------------------------
 
 	// == get map func
-	def stateless[F[_],S,T](func:S=>T)(using F:Applicative[F]):StateT[F,S,T]	=
+	def stateless[F[_]:Applicative as F,S,T](func:S=>T):StateT[F,S,T]	=
 		StateT { s => F.pure(s -> func(s)) }
 
-	def statelessF[F[_],S,T](func:S=>F[T])(using F:Functor[F]):StateT[F,S,T]	=
+	def statelessF[F[_]:Functor as F,S,T](func:S=>F[T]):StateT[F,S,T]	=
 		StateT { s => F.map(func(s)) { s -> _ } }
 
 	//------------------------------------------------------------------------------

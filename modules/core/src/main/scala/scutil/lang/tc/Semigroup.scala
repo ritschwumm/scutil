@@ -6,7 +6,7 @@ import scutil.lang.extension.OptionExtensions.*
 import scutil.lang.extension.PFunctionExtensions.*
 
 object Semigroup extends SemigroupLow {
-	def apply[F](using ev:Semigroup[F]):Semigroup[F]	= ev
+	def apply[F:Semigroup as F]:Semigroup[F]	= F
 
 	def instance[T](func:(T,T)=>T):Semigroup[T]	=
 		new Semigroup[T] {
@@ -15,13 +15,13 @@ object Semigroup extends SemigroupLow {
 
 	//------------------------------------------------------------------------------
 
-	def combine[T](a:T, b:T)(using T:Semigroup[T]):T	=
+	def combine[T:Semigroup as T](a:T, b:T):T	=
 		T.combine(a, b)
 
 	def combineOf1[T:Semigroup](x:T, xs:T*)	=
 		combineAll1(Nes(x, xs))
 
-	def combineAll1[T](items:Nes[T])(using T:Semigroup[T]):T	=
+	def combineAll1[T:Semigroup as T](items:Nes[T]):T	=
 		T.combineAll1(items)
 
 	//------------------------------------------------------------------------------
@@ -85,13 +85,13 @@ object Semigroup extends SemigroupLow {
 	//-----------------------------------------------------------------------------
 
 	// this is the one used in haskell
-	def OptionMergeMonoid[T](using S:Semigroup[T]):Monoid[Option[T]]	=
+	def OptionMergeMonoid[T:Semigroup as S]:Monoid[Option[T]]	=
 		Monoid.instance(
 			None,
 			(a,b) => a.oneOrTwo(b)(S.combine)
 		)
 
-	def OptionBothMonoid[T](using S:Semigroup[T]):Monoid[Option[T]]	=
+	def OptionBothMonoid[T:Semigroup as S]:Monoid[Option[T]]	=
 		Monoid.instance(
 			None,
 			(a,b) => (a,b) match {
@@ -117,7 +117,7 @@ object Semigroup extends SemigroupLow {
 	def EndoMonoid[T]:Monoid[T=>T]	=
 		Monoid.instance(identity, _ `andThen` _)
 
-	def KleisliMonoid[S,T](using M:Monoid[T]):Monoid[S=>T]	=
+	def KleisliMonoid[S,T:Monoid as M]:Monoid[S=>T]	=
 		Monoid.instance(
 						(s) => Monoid.empty[T],
 			(a,b) =>	(s) => M.combine(a(s), b(s)),

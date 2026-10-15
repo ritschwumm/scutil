@@ -1,8 +1,6 @@
 package scutil.lang.tc
 
-object ApplicativeTupleNSyntax extends ApplicativeTupleNSyntax
-
-trait ApplicativeTupleNSyntax {
+object ApplicativeTupleNSyntax {
 	extension [F[_],S1](items:Tuple1[F[S1]]) {
 		def zipN(using F:Applicative[F]):F[Tuple1[S1]]	=
 			mapN(Tuple1.apply)

@@ -1,7 +1,7 @@
 package scutil.lang.tc
 
 object Applicative {
-	def apply[F[_]](using ev:Applicative[F]):Applicative[F]	= ev
+	def apply[F[_]:Applicative as F]:Applicative[F]	= F
 }
 
 trait Applicative[F[_]] extends Functor[F] {

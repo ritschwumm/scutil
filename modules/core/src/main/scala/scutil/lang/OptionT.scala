@@ -3,14 +3,14 @@ package scutil.lang
 import scutil.lang.tc.*
 
 object OptionT {
-	def some[F[_]:Applicative,T](it:T):OptionT[F,T]					= fromOption(Some(it))
-	def someF[F[_],T](it:F[T])(using M:Functor[F]):OptionT[F,T]	= OptionT((M.map(it))(Some.apply))
+	def some[F[_]:Applicative,T](it:T):OptionT[F,T]			= fromOption(Some(it))
+	def someF[F[_]:Functor as M,T](it:F[T]):OptionT[F,T]	= OptionT((M.map(it))(Some.apply))
 
-	def none[F[_]:Applicative,T]:OptionT[F,T]						= fromOption(None)
+	def none[F[_]:Applicative,T]:OptionT[F,T]				= fromOption(None)
 
 	//------------------------------------------------------------------------------
 
-	def fromOption[F[_],T](it:Option[T])(using M:Applicative[F]):OptionT[F,T]	=
+	def fromOption[F[_]:Applicative as M,T](it:Option[T]):OptionT[F,T]	=
 		OptionT(M.pure(it))
 
 	def switch[F[_]:Applicative,T](condition:Boolean, trueSome: =>T):OptionT[F,T]	=
@@ -18,9 +18,9 @@ object OptionT {
 
 	//------------------------------------------------------------------------------
 
-	def delay[F[_],T](it: =>T)(using D:Delay[F]):OptionT[F,T]	= OptionT(D.delay(Some(it)))
+	def delay[F[_]:Delay as D,T](it: =>T):OptionT[F,T]	= OptionT(D.delay(Some(it)))
 
-	def delayFromOption[F[_],T](it: =>Option[T])(using D:Delay[F]):OptionT[F,T]	=
+	def delayFromOption[F[_]:Delay as D,T](it: =>Option[T]):OptionT[F,T]	=
 		OptionT(D.delay(it))
 
 	//------------------------------------------------------------------------------

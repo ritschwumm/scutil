@@ -1,7 +1,7 @@
 package scutil.lang.tc
 
 object Monad {
-	def apply[F[_]](using ev:Monad[F]):Monad[F]	= ev
+	def apply[F[_]:Monad as F]:Monad[F]	= F
 }
 
 trait Monad[F[_]] extends Applicative[F] {

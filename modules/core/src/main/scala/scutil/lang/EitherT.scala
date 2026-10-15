@@ -12,7 +12,7 @@ object EitherT {
 
 	//------------------------------------------------------------------------------
 
-	def fromEither[F[_],L,R](it:Either[L,R])(using M:Applicative[F]):EitherT[F,L,R]	=
+	def fromEither[F[_]:Applicative as M,L,R](it:Either[L,R]):EitherT[F,L,R]	=
 		EitherT(M.pure(it))
 
 	def switch[F[_]:Applicative,L,R](condition:Boolean, falseLeft: =>L, trueRight: =>R):EitherT[F,L,R]	=
@@ -20,10 +20,10 @@ object EitherT {
 
 	//------------------------------------------------------------------------------
 
-	def delay[F[_],L,R](it: =>R)(using D:Delay[F]):EitherT[F,L,R]	=
+	def delay[F[_]:Delay as D,L,R](it: =>R):EitherT[F,L,R]	=
 		EitherT(D.delay(Right(it)))
 
-	def delayFromEither[F[_],L,R](it: =>Either[L,R])(using D:Delay[F]):EitherT[F,L,R]	=
+	def delayFromEither[F[_]:Delay as D,L,R](it: =>Either[L,R]):EitherT[F,L,R]	=
 		EitherT(D.delay(it))
 
 	def delayCatching[F[_]:Delay,T](it: =>T):EitherT[F,Exception,T]	=

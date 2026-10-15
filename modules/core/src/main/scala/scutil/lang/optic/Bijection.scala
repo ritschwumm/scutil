@@ -44,13 +44,7 @@ final case class Bijection[S,T](get:S=>T, set:T=>S) {
 
 	def mod(func:T=>T):S=>S	= s => set(func(get(s)))
 
-	@deprecated("use mod(func)(s)", "0.253.0")
-	def modThe(s:S, func:T=>T):S	= mod(func)(s)
-
-	def modF[F[_]](func:T=>F[T])(using F:Functor[F]):S=>F[S]	= s => F.map(func(get(s)))(set)
-
-	@deprecated("use modF(func)(s)", "0.253.0")
-	def modTheF[F[_]:Functor](s:S, func:T=>F[T]):F[S]	= modF(func).apply(s)
+	def modF[F[_]:Functor as F](func:T=>F[T]):S=>F[S]	= s => F.map(func(get(s)))(set)
 
 	//------------------------------------------------------------------------------
 
@@ -60,7 +54,7 @@ final case class Bijection[S,T](get:S=>T, set:T=>S) {
 			set(t) -> u
 		}
 
-	def embedStateT[F[_],U](state:StateT[F,T,U])(using F:Functor[F]):StateT[F,S,U]	=
+	def embedStateT[F[_]:Functor as F,U](state:StateT[F,T,U]):StateT[F,S,U]	=
 		StateT { s =>
 			val ftu:F[(T,U)]	= state.run(get(s))
 			F.map(ftu) { (t,u) =>

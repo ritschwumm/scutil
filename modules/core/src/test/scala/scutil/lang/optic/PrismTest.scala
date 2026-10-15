@@ -15,8 +15,10 @@ object PrismTest extends SimpleTestSuite {
 	}
 
 	sealed trait PrismSuper
-	case object			PrismObject			extends PrismSuper
-	final case class	PrismClass(a:Int)	extends PrismSuper
+	case object			PrismObject						extends PrismSuper
+	final case class	PrismZero()						extends PrismSuper
+	final case class	PrismOne(a:Int)					extends PrismSuper
+	final case class	PrismTwo(a:String, b:Boolean)	extends PrismSuper
 
 	//-----------------------------------------------------------------------------
 
@@ -61,46 +63,82 @@ object PrismTest extends SimpleTestSuite {
 
 	//------------------------------------------------------------------------------
 
+	test("Prism.subType should not get the wrong variant") {
+		val prism	= Prism.subType[PrismSuper,PrismTwo]
+		assertEquals(
+			prism.get(PrismOne(1)),
+			None
+		)
+	}
+
 	test("Prism.subType should get a case object") {
-		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
-		val prism					= Prism.subType[PrismSuper,PrismObject.type]
-		val sub:PrismObject.type	= PrismObject
-		val sup:PrismSuper			= sub
+		val prism	= Prism.subType[PrismSuper,PrismObject.type]
 		assertEquals(
-			prism.get(sup),
-			Some(sub)
+			prism.get(PrismObject),
+			Some(PrismObject)
 		)
 	}
-
 	test("Prism.subType should put a case object") {
-		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
-		val prism					= Prism.subType[PrismSuper,PrismObject.type]
-		val sub:PrismObject.type	= PrismObject
-		val sup:PrismSuper			= sub
+		val prism	= Prism.subType[PrismSuper,PrismObject.type]
 		assertEquals(
-			prism.set(sub),
-			sup
+			prism.set(PrismObject),
+			PrismObject
 		)
 	}
 
-	test("Prism.subType should get a case class") {
-		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
-		val prism			= Prism.subType[PrismSuper,PrismClass]
-		val sub:PrismClass	= PrismClass(1)
-		val sup:PrismSuper	= sub
+	test("Prism.subType should get a case class with 0 fields") {
+		val prism	= Prism.subType[PrismSuper,PrismZero]
 		assertEquals(
-			prism.get(sup),
-			Some(sub)
+			prism.get(PrismZero()),
+			Some(PrismZero())
 		)
 	}
-	test("Prism.subType should put a case class") {
-		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
-		val prism			= Prism.subType[PrismSuper,PrismClass]
-		val sub:PrismClass	= PrismClass(1)
-		val sup:PrismSuper	= sub
+	test("Prism.subType should put a case class with 0 fields") {
+		val prism	= Prism.subType[PrismSuper,PrismZero]
 		assertEquals(
-			prism.set(sub),
-			sup
+			prism.set(PrismZero()),
+			PrismZero()
+		)
+	}
+
+	test("Prism.subType should get a case class with 1 field") {
+		val prism	= Prism.subType[PrismSuper,PrismOne]
+		assertEquals(
+			prism.get(PrismOne(1)),
+			Some(PrismOne(1))
+		)
+	}
+	test("Prism.subType should put a case class with 1 field") {
+		val prism	= Prism.subType[PrismSuper,PrismOne]
+		assertEquals(
+			prism.set(PrismOne(1)),
+			PrismOne(1)
+		)
+	}
+
+	test("Prism.subType should get a case class with 2 fields") {
+		val prism	= Prism.subType[PrismSuper,PrismTwo]
+		assertEquals(
+			prism.get(PrismTwo("hello", true)),
+			Some(PrismTwo("hello", true))
+		)
+	}
+	test("Prism.subType should put a case class with 2 fields") {
+		val prism	= Prism.subType[PrismSuper,PrismTwo]
+		assertEquals(
+			prism.set( PrismTwo("hello", true)),
+			PrismTwo("hello", true)
+		)
+	}
+
+	//-----------------------------------------------------------------------------
+
+	test("Prism.subTypes should put a case class with 2 fields") {
+		val prisms	= Prism.subTypes[PrismSuper]
+		val prism	= prisms[PrismTwo]
+		assertEquals(
+			prism.set( PrismTwo("hello", true)),
+			PrismTwo("hello", true)
 		)
 	}
 }

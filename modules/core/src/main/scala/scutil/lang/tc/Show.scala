@@ -8,7 +8,7 @@ import java.nio.file.Path
 import java.math.{ BigInteger as JBigInteger, BigDecimal as JBigDecimal}
 
 object Show {
-	def apply[T](using ev:Show[T]):Show[T]	= ev
+	def apply[T:Show as T]:Show[T]	= T
 
 	def instance[T](func:T=>String):Show[T]	=
 		new Show[T] {
@@ -18,7 +18,7 @@ object Show {
 	def toStringInstance[T]:Show[T]	=
 		Show.instance(_.toString)
 
-	def doit[T](value:T)(using S:Show[T]):String	= S.show(value)
+	def doit[T:Show as S](value:T):String	= S.show(value)
 
 	//------------------------------------------------------------------------------
 
