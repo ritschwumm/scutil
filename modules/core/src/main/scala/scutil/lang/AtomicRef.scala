@@ -26,13 +26,13 @@ final class AtomicRef[F[_]:Delay,T](initial:T) {
 	private val D	= Delay[F]
 
 	val get:F[T]	=
-		D delay {
+		D.delay {
 			ref.get
 		}
 
 	/** returns the previous value */
 	def set(it:T):F[T]	=
-		D delay {
+		D.delay {
 			ref.getAndSet(it)
 		}
 
@@ -43,7 +43,7 @@ final class AtomicRef[F[_]:Delay,T](initial:T) {
 		}
 
 	def modify[U](func:T=>(T,U)):F[U]	=
-		D delay {
+		D.delay {
 			RefUtil.modify(ref, func)
 		}
 

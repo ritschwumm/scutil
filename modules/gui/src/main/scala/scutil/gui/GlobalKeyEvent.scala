@@ -15,7 +15,7 @@ object GlobalKeyEvent {
 		val focusManager	= KeyboardFocusManager.getCurrentKeyboardFocusManager
 		// addKeyEventPostProcessor
 		focusManager.addKeyEventDispatcher(dispatcher)
-		Disposer delay {
+		Disposer.delay {
 			focusManager.removeKeyEventDispatcher(dispatcher)
 		}
 	}

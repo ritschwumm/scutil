@@ -17,7 +17,7 @@ object RefUtil {
 	def modify[T,U](ref:AtomicReference[T], func:T=>(T,U)):U	= {
 		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 		var out:U	= null.asInstanceOf[U]
-		ref getAndUpdate { old =>
+		ref.getAndUpdate { old =>
 			val (next, res)	= func(old)
 			out	= res
 			next

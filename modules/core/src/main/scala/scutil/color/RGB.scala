@@ -69,9 +69,9 @@ final case class RGB(r:Float, g:Float, b:Float) {
 	}
 
 	def toIntRGB:Int	=
-			(((r * 255).toInt) << 16) |
-			(((g * 255).toInt) <<  8) |
-			(((b * 255).toInt) <<  0)
+		(((r * 255).toInt) << 16) |
+		(((g * 255).toInt) <<  8) |
+		(((b * 255).toInt) <<  0)
 
 	def unparseHex:String	=
 		Hex.encodeByteString(

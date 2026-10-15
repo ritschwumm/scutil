@@ -1,10 +1,12 @@
 package scutil.lang
 
 object Synchronized {
+	@deprecated("use AtomicReference", "0.239.0")
 	def apply[T](initial:T):Synchronized[T]	=
 		new Synchronized[T](initial)
 }
 
+@deprecated("use AtomicReference", "0.239.0")
 final class Synchronized[T](initial:T) {
 	var value	= initial
 

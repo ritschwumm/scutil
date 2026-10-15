@@ -26,22 +26,22 @@ final case class Execution(submit:(()=>Unit)=>Unit) {
 	}
 
 	def submitIo(action:Io[Unit]):Io[Unit]	=
-		Io delay {
+		Io.delay {
 			submit(action.unsafeRun)
 		}
 
 	def withResultIo[T](action:Io[T]):Io[Io[T]]	=
-		Io delay {
+		Io.delay {
 			val running	= withResult(action.unsafeRun)
-			Io delay { running() }
+			Io.delay { running() }
 		}
 
 
 	def wrapIoResource[T](resource:IoResource[T]):IoResource[T]	=
 		IoResource(
-			Io delay {
+			Io.delay {
 				val (value, disposer)	= withResult{ () => resource.open.unsafeRun() }()
-				val disposer2			= Io delay { withResult{ () => disposer.unsafeRun() }() }
+				val disposer2			= Io.delay { withResult{ () => disposer.unsafeRun() }() }
 				value -> disposer2
 			}
 		)

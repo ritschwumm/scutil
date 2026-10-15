@@ -18,7 +18,7 @@ object DndFileImport {
 	def install(target:JComponent, consumer:IntPoint=>Option[Effect[Validated[Nes[Exception],Nes[File]]]]):Disposer	= {
 		target.setTransferHandler(new FileTransferHandler(consumer))
 
-		Disposer delay {
+		Disposer.delay {
 			target.setTransferHandler(null)
 		}
 	}

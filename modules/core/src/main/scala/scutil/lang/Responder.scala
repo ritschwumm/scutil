@@ -21,12 +21,12 @@ object Responder {
 
 	def optional[T](value:Option[T]):Responder[T]	=
 		Responder { cont =>
-			value foreach cont
+			value.foreach(cont)
 		}
 
 	def many[T](value:Iterable[T]):Responder[T]	=
 		Responder { cont =>
-			value foreach cont
+			value.foreach(cont)
 		}
 
 	def of[T](values:T*):Responder[T]	=
@@ -78,7 +78,7 @@ final case class Responder[T](unsafeRun:(T=>Unit)=>Unit) {
 	def flatMap[U](func:T=>Responder[U]):Responder[U]	=
 		Responder { cont =>
 			unsafeRun { item =>
-				func(item) unsafeRun cont
+				func(item).unsafeRun(cont)
 			}
 		}
 
@@ -88,7 +88,7 @@ final case class Responder[T](unsafeRun:(T=>Unit)=>Unit) {
 	def mapFilter[U](func:T=>Option[U]):Responder[U]	=
 		Responder { cont =>
 			unsafeRun { item =>
-				func(item) foreach cont
+				func(item).foreach(cont)
 			}
 		}
 

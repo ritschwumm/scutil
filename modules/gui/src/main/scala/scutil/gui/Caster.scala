@@ -14,7 +14,7 @@ abstract class Caster[L,E] private[gui] (
 		{
 			addListener(listener)
 		}
-		Disposer delay {
+		Disposer.delay {
 			removeListener(listener)
 		}
 	}

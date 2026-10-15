@@ -37,7 +37,7 @@ final case class Disposer(dispose:()=>Unit) {
 		if		(this eq Disposer.empty)	that
 		else if	(that eq Disposer.empty)	this
 		else {
-			Disposer delay {
+			Disposer.delay {
 				var thisError:Throwable	= null;	try { this.dispose() } catch { case t:Throwable	=> thisError	= t }
 				var thatError:Throwable	= null;	try { that.dispose() } catch { case t:Throwable	=> thatError	= t }
 				if		((thisError ne null) && (thatError ne null))	{ thisError.addSuppressed(thatError);	throw thisError }
@@ -47,5 +47,5 @@ final case class Disposer(dispose:()=>Unit) {
 		}
 
 	final def toIo:Io[Unit]	=
-		Io delay { dispose() }
+		Io.delay { dispose() }
 }

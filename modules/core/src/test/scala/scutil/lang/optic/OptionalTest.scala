@@ -38,6 +38,22 @@ object OptionalTest extends SimpleTestSuite {
 
 	//------------------------------------------------------------------------------
 
+	test("Optionals.indexed should change an existing item") {
+		assertEquals(
+			Optionals.indexed[Vector, Int](2).set(99)(Vector(1, 2, 3, 4)),
+			Vector(1, 2, 99, 4)
+		)
+	}
+
+	test("Optionals.indexed should not explode with a non-existing item") {
+		assertEquals(
+			Optionals.indexed[Vector, Int](7).set(99)(Vector(1, 2, 3, 4)),
+			Vector(1, 2, 3, 4)
+		)
+	}
+
+	//------------------------------------------------------------------------------
+
 	test("Optionals.map should change an existing item") {
 		assertEquals(
 			Optionals.map[String,Int]("two").set(99)(Map("one" -> 1, "two" -> 2)),

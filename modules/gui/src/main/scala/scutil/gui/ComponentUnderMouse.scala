@@ -42,7 +42,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 				case None			=> Vector(componentRef)
 			}
 		entries	+= (component -> Entry(nowUnderMouse, newCallbacks))
-		Disposer delay {
+		Disposer.delay {
 			entries	=
 				entries.flatMap { (component, entry) =>
 					val newCallbacks	=

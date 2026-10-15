@@ -6,6 +6,9 @@ object TraversedSyntax {
 		def sequence[G[_],U](using TR:Traversed[F], ev:T <:< G[U], AP:Applicative[G]):G[F[U]]	=
 			traverse(ev)
 
+		def sequenceVoid[G[_],U](using TR:Traversed[F], ev:T <:< G[U], AP:Applicative[G]):G[Unit]	=
+			traverseVoid(ev)
+
 		def traverse[G[_],U](func:T=>G[U])(using TR:Traversed[F], AP:Applicative[G]):G[F[U]]	=
 			TR.traverse(peer)(func)
 
