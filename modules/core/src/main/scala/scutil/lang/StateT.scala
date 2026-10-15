@@ -16,10 +16,7 @@ object StateT { outer =>
 		StateT { s => F.pure(it(s)) }
 
 	def transformPureF[M[_]:Functor as M, S]:M ~> StateT[M, S ,_]	=
-		new (M ~> StateT[M, S, _]) {
-			def apply[X](it:M[X]):StateT[M, S, X]	=
-				StateT.pureF(it)
-		}
+		[X] => StateT.pureF(_)
 
 	//------------------------------------------------------------------------------
 

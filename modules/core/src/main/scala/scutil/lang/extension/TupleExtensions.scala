@@ -1,6 +1,7 @@
 package scutil.lang.extension
 
-import scutil.lang.tc.ApplicativeTuple
+import scutil.lang.tc.Applicative
+import scutil.lang.tc.TupleK
 import scutil.lang.tc.NaryFunction
 
 object TupleExtensions {
@@ -35,20 +36,16 @@ object TupleExtensions {
 	//-----------------------------------------------------------------------------
 	//## applicative traversal
 
-	extension [TupT <: NonEmptyTuple : ApplicativeTuple as AT](inputs:TupT) {
-		def productN:AT.Result	=
-			AT.productN(inputs)
+	extension [TupT <: NonEmptyTuple : TupleK as TK](inputs:TupT) {
+		def productN(using Applicative[TK.Container]):TK.Result	=
+			TK.productN(inputs)
 
-		@deprecated("use productN", "0.264.0")
-		def zipN:AT.Container[AT.Elements]	=
-			AT.productN(inputs)
-
-		def mapN[U](using NF:NaryFunction[AT.Elements, U])(func:NF.Nary):AT.Container[U]	=
-			ApplicativeTuple.mapN(inputs)(func)
+		def mapN[U](using AP:Applicative[TK.Container], NF:NaryFunction[TK.Elements, U])(func:NF.Nary):TK.Container[U]	=
+			TupleK.mapN(inputs)(func)
 	}
 
 	extension [TupT <: Tuple](inputs:TupT) {
-		def traverseN[F[_]](func:[A] => A => F[A])(using AT:ApplicativeTuple[Tuple.Map[inputs.type, F]]):AT.Result	=
-			ApplicativeTuple.traverseN(inputs)(func)
+		def traverseN[F[_]](func:[A] => A => F[A])(using TK:TupleK[Tuple.Map[inputs.type, F]], AP:Applicative[TK.Container]):TK.Result	=
+			TupleK.traverseN(inputs)(func)
 	}
 }

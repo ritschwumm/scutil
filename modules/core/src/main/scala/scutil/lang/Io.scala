@@ -69,10 +69,8 @@ object Io extends IoInstancesLow {
 
 	//------------------------------------------------------------------------------
 
-	val ToResponder:NaturalTransformation[Io, Responder]	=
-		new NaturalTransformation[Io, Responder] {
-			def apply[T](orig:Io[T]):Responder[T]	= orig.toResponder
-		}
+	val ToResponder:Io ~> Responder	=
+		[A] => _.toResponder
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances
