@@ -14,18 +14,18 @@ object IterableExtensions {
 		/** Some if the collection contains exactly one element, else None */
 		def singleOption:Option[T]	= {
 			val iter	= ops.iterator
-			if (!iter.hasNext)	return None
+			if !iter.hasNext	then return None
 			val out		= iter.next()
-			if (iter.hasNext)	return None
+			if iter.hasNext		then return None
 			Some(out)
 		}
 
 		/** Left(false) for zero elements, Right(x) for one element, Left(true) for more */
 		def singleEither:Either[Boolean,T] = {
 			val iter	= ops.iterator
-			if (!iter.hasNext)	return Left(false)
+			if !iter.hasNext	then return Left(false)
 			val out		= iter.next()
-			if (iter.hasNext)	return Left(true)
+			if iter.hasNext		then return Left(true)
 			Right(out)
 		}
 
@@ -61,9 +61,9 @@ object IterableExtensions {
 		// TODO cats mapFilterFirst would be better
 		def collectFirstSome[U](find:T=>Option[U]):Option[U]	= {
 			val iter	= ops.iterator
-			while (iter.hasNext) {
+			while iter.hasNext do {
 				val opt	= find(iter.next())
-				if (opt.isDefined)	return opt
+				if opt.isDefined	then return opt
 			}
 			None
 		}
@@ -93,14 +93,16 @@ object IterableExtensions {
 
 		def validateEither[L,R,CL,CR](using ev:T <:< Either[L,R], bfl:BuildFrom[Repr,L,CL], bfr:BuildFrom[Repr,R,CR]):Either[CL,CR]	= {
 			val (ls, rs)	= ops.partitionMap(ev)
-			if (ls.isEmpty)	Right(bfr.fromSpecific(peer)(rs))
-			else			Left(bfl.fromSpecific(peer)(ls))
+			if ls.isEmpty
+			then Right(bfr.fromSpecific(peer)(rs))
+			else Left(bfl.fromSpecific(peer)(ls))
 		}
 
 		def validateValidated[B,G,CB,CG](using ev:T <:< Validated[B,G], bfb:BuildFrom[Repr,B,CB], bfg:BuildFrom[Repr,G,CG]):Validated[CB,CG]	= {
 			val (bs, gs)	= ops.partitionMap(it => ev(it).toEither)
-			if (bs.isEmpty)	Validated.valid(bfg.fromSpecific(peer)(gs))
-			else			Validated.invalid(bfb.fromSpecific(peer)(bs))
+			if bs.isEmpty
+			then Validated.valid(bfg.fromSpecific(peer)(gs))
+			else Validated.invalid(bfb.fromSpecific(peer)(bs))
 		}
 
 		// NOTE zipWith and map2 are different things for Iterables
@@ -109,7 +111,7 @@ object IterableExtensions {
 			val builder	= bf.newBuilder(peer)
 			val	xi	= ops.iterator
 			val yi	= that.iterator
-			while (xi.hasNext && yi.hasNext) {
+			while xi.hasNext && yi.hasNext do {
 				builder	+= func(xi.next(), yi.next())
 			}
 			builder.result()
@@ -117,7 +119,7 @@ object IterableExtensions {
 
 		def zipTail[That](using bf:BuildFrom[Repr,(T,T),That]):That	= {
 			val builder	=  bf.newBuilder(peer)
-			if (ops.nonEmpty) {
+			if ops.nonEmpty then {
 				val now		= ops.iterator
 				val later	= ops.iterator
 				later.next()
@@ -148,12 +150,13 @@ object IterableExtensions {
 		/** insert a separator between elements */
 		def intersperse[That,U>:T](separator: =>U)(using bf:BuildFrom[Repr,U,That]):That	= {
 			val bld:Builder[U,That]	= bf.newBuilder(peer)
-			if (ops.nonEmpty) {
+			if ops.nonEmpty then {
 				val iter	= ops.iterator
 				var first	= true
-				while (iter.hasNext) {
-					if (first)	first = false
-					else		bld	+= separator
+				while iter.hasNext do {
+					if first
+					then first = false
+					else bld	+= separator
 					bld	+= iter.next()
 				}
 			}
@@ -182,7 +185,7 @@ object IterableExtensions {
 		def traverseOption[That,U](func:T=>Option[U])(using bf:BuildFrom[Repr,U,That]):Option[That]	= {
 			val builder	= bf.newBuilder(peer)
 			val iter	= ops.iterator
-			while (iter.hasNext) {
+			while iter.hasNext do {
 				func(iter.next()) match {
 					case None		=> return None
 					case Some(x)	=> builder	+= x
@@ -197,7 +200,7 @@ object IterableExtensions {
 		def traverseEither[That,L,R](func:T=>Either[L,R])(using bf:BuildFrom[Repr,R,That]):Either[L,That]	= {
 			val builder	= bf.newBuilder(peer)
 			val iter	= ops.iterator
-			while (iter.hasNext) {
+			while iter.hasNext do {
 				func(iter.next()) match {
 					case Left(x)	=> return Left(x)
 					case Right(x)	=> builder	+= x
@@ -217,7 +220,7 @@ object IterableExtensions {
 			ops.foreach { it =>
 				func(it) match {
 					case Validated.Valid(x)	=>
-						if (problems.isEmpty) {
+						if problems.isEmpty then {
 							builder	+= x
 						}
 					case Validated.Invalid(x)		=>

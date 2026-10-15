@@ -1,7 +1,5 @@
 package scutil.gui.extension
 
-import scala.annotation.nowarn
-
 import java.awt.{ List as _, * }
 
 object ContainerExtensions {
@@ -10,7 +8,6 @@ object ContainerExtensions {
 
 		def childrenIterator:Iterator[Component]	=
 			new Iterator[Component] {
-				@nowarn("msg=unused private member")
 				var	index	= 0
 				def hasNext:Boolean		= index < peer.getComponentCount
 				def next():Component	= {

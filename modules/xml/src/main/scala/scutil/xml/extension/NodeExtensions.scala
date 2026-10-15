@@ -9,8 +9,9 @@ object NodeExtensions {
 		// BETTER modify this?
 		def xmlNamespaces:Seq[XmlNs]	= {
 			def loop(scope:NamespaceBinding):Seq[XmlNs]	=
-				if (scope == TopScope)	Vector.empty
-				else					loop(scope.parent) :+ XmlNs(Option(scope.prefix), scope.uri)
+				if scope == TopScope
+				then Vector.empty
+				else loop(scope.parent) :+ XmlNs(Option(scope.prefix), scope.uri)
 			loop(peer.scope)
 		}
 

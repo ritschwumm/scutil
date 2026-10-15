@@ -29,14 +29,14 @@ final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[Gre
 		this.toJulianDay.until(that.toJulianDay)
 
 	def compare(that:GregorianDate):Int		= {
-		val	y	= this.year		`compare` that.year;	if (y != 0)	return y
-		val	m	= this.month	`compare` that.month;	if (m != 0)	return m
-		val	d	= this.day		`compare` that.day;		if (d != 0)	return d
+		val	y	= this.year		`compare` that.year;	if y != 0	then return y
+		val	m	= this.month	`compare` that.month;	if m != 0	then return m
+		val	d	= this.day		`compare` that.day;		if d != 0	then return d
 		0
 	}
 
-	def min(that:GregorianDate):GregorianDate	= if (this < that) this else that
-	def max(that:GregorianDate):GregorianDate	= if (this > that) this else that
+	def min(that:GregorianDate):GregorianDate	= if this < that then this else that
+	def max(that:GregorianDate):GregorianDate	= if this > that then this else that
 
 	def weekday:Weekday	= toJulianDay.weekday
 	def dayIndex:Int	= day-1
@@ -55,9 +55,9 @@ final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[Gre
 		val rawNumber	= (dayOfYear - weekday.index + Weekday.count + Weekday.Thursday.index) / Weekday.count
 		val lastNumber	= yearValue.lastCalendarWeek.number
 
-		if		(rawNumber < 1)				yearValue.move(-1).lastCalendarWeek
-		else if	(rawNumber > lastNumber)	yearValue.move(+1).firstCalendarWeek
-		else								yearValue.calendarWeekAt(rawNumber)
+		if		rawNumber < 1				then	yearValue.move(-1).lastCalendarWeek
+		else if	(rawNumber > lastNumber)	then	yearValue.move(+1).firstCalendarWeek
+		else										yearValue.calendarWeekAt(rawNumber)
 	}
 
 	lazy val toJulianDay:JulianDay	= {

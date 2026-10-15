@@ -15,7 +15,7 @@ object SimpleWorker {
 				new Thread {
 					override def run():Unit =
 						try {
-							while (keepOn.get() && !isInterrupted() && action.unsafeRun()) {}
+							while keepOn.get() && !isInterrupted() && action.unsafeRun() do {}
 						}
 						catch { case _:InterruptedException =>
 							// just exit

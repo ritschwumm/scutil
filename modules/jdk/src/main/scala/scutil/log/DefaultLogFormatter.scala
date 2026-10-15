@@ -24,7 +24,7 @@ class DefaultLogFormatter extends LogFormatter {
 		val throwableItems	= throwables.map(formatThrowable)
 
 		((headerItems ++ messageItems) mkString "\t")	+
-		(if (throwableItems.nonEmpty) "\n" else "")		+
+		(if throwableItems.nonEmpty then "\n" else "")	+
 		(throwableItems mkString "")
 	}
 
@@ -46,11 +46,13 @@ class DefaultLogFormatter extends LogFormatter {
 		}
 
 	def formatMessage(it:String):String	=
-		if (it != null)	it.toString
-		else			"<null>"
+		if it != null
+		then it.toString
+		else "<null>"
 
 	// TODO scala-js this is not very useful in the browser
 	def formatThrowable(it:Throwable):String	=
-		if (it != null)	it.stackTrace
-		else			"<null>"
+		if it != null
+		then it.stackTrace
+		else "<null>"
 }

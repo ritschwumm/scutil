@@ -28,7 +28,7 @@ object JComponentExtensions {
 			frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
 
 			def doClose():Unit	= {
-				if (onClose()) {
+				if onClose() then {
 					frame.setVisible(false)
 					frame.dispose()
 				}

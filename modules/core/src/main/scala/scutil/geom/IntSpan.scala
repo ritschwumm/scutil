@@ -31,8 +31,7 @@ final class IntSpan private (val start:Int, val size:Int) {
 
 	def normal:Boolean	= size >= 0
 	def normalize:IntSpan	=
-		if (normal)	this
-		else		negate
+		if normal then this else negate
 
 	def union(that:IntSpan):IntSpan	=
 		IntSpan.startEnd(
@@ -41,12 +40,12 @@ final class IntSpan private (val start:Int, val size:Int) {
 		)
 
 	def intersect(that:IntSpan):Option[IntSpan]	=
-		if		(this.end   <= that.start)							None
-		else if	(this.start >= that.end)							None
-		else if	(this.start	>= that.start && this.end <= that.end)	Some(this)
-		else if	(this.start	<= that.start && this.end >= that.end)	Some(that)
-		else if	(this.start	<= that.start && this.end <= that.end)	Some(IntSpan.startEnd(that.start, this.end))
-		else														Some(IntSpan.startEnd(this.start, that.end))
+		if		this.end   <= that.start							then	None
+		else if	this.start >= that.end								then	None
+		else if	this.start	>= that.start && this.end <= that.end	then	Some(this)
+		else if	this.start	<= that.start && this.end >= that.end	then	Some(that)
+		else if	this.start	<= that.start && this.end <= that.end	then	Some(IntSpan.startEnd(that.start, this.end))
+		else																Some(IntSpan.startEnd(this.start, that.end))
 
 	def rectWith(that:IntSpan):IntRect	=
 		IntRect.horizontalWithVertical(this, that)

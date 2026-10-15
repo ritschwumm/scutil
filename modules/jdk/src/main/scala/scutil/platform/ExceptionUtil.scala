@@ -31,7 +31,7 @@ private final class LoggingUncaughtExceptionHandler(onError:(Thread,Throwable)=>
 private final class Java6AWTExceptionHandler {
 	def handle(throwable:Throwable):Unit = {
 		try {
-			if (ExceptionUtil.java6AwtHandler != null) {
+			if ExceptionUtil.java6AwtHandler != null then {
 				ExceptionUtil.java6AwtHandler.apply(Thread.currentThread, throwable)
 			}
 		}

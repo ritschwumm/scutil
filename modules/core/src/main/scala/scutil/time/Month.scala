@@ -13,8 +13,9 @@ object Month {
 
 	def ordering(first:Month):Ordering[Month]	=
 		Ordering[Int] on { month =>
-			if (month.index >= first.index)	month.index
-			else							month.index + count
+			if month.index >= first.index
+			then	month.index
+			else	month.index + count
 		}
 
 	//------------------------------------------------------------------------------
@@ -35,7 +36,7 @@ enum Month {
 	def days(leapYear:Boolean):Int	=
 		this match {
 			case January	=> 31
-			case February	=> if (leapYear) 29 else 28
+			case February	=> if leapYear then 29 else 28
 			case March		=> 31
 			case April		=> 30
 			case May		=> 31

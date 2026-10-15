@@ -34,8 +34,7 @@ final class DoubleSpan private (val start:Double, val size:Double) {
 
 	def normal:Boolean	= size >= 0
 	def normalize:DoubleSpan	=
-		if (normal)	this
-		else		negate
+		if normal then this else negate
 
 	def union(that:DoubleSpan):DoubleSpan	=
 		DoubleSpan.startEnd(
@@ -44,12 +43,12 @@ final class DoubleSpan private (val start:Double, val size:Double) {
 		)
 
 	def intersect(that:DoubleSpan):Option[DoubleSpan]	=
-		if		(this.end   <= that.start)							None
-		else if	(this.start >= that.end)							None
-		else if	(this.start	>= that.start && this.end <= that.end)	Some(this)
-		else if	(this.start	<= that.start && this.end >= that.end)	Some(that)
-		else if	(this.start	<= that.start && this.end <= that.end)	Some(DoubleSpan.startEnd(that.start, this.end))
-		else														Some(DoubleSpan.startEnd(this.start, that.end))
+		if		this.end   <= that.start							then	None
+		else if	this.start >= that.end								then	None
+		else if	this.start	>= that.start && this.end <= that.end	then	Some(this)
+		else if	this.start	<= that.start && this.end >= that.end	then	Some(that)
+		else if	this.start	<= that.start && this.end <= that.end	then	Some(DoubleSpan.startEnd(that.start, this.end))
+		else																Some(DoubleSpan.startEnd(this.start, that.end))
 
 	def rectWith(that:DoubleSpan):DoubleRect	=
 		DoubleRect.horizontalWithVertical(this, that)

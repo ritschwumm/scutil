@@ -30,12 +30,12 @@ final case class MonthYear(month:Int, year:Int) extends Ordered[MonthYear] {
 	def until(that:MonthYear):Int	= that.toIndex - this.toIndex
 
 	def compare(that:MonthYear):Int		= {
-		val	y	= this.year		`compare` that.year;	if (y != 0)	return y
-		val	m	= this.month	`compare` that.month;	if (m != 0)	return m
+		val	y	= this.year		`compare` that.year;	if y != 0	then return y
+		val	m	= this.month	`compare` that.month;	if m != 0	then return m
 		0
 	}
-	def min(that:MonthYear):MonthYear	= if (this < that) this else that
-	def max(that:MonthYear):MonthYear	= if (this > that) this else that
+	def min(that:MonthYear):MonthYear	= if this < that then this else that
+	def max(that:MonthYear):MonthYear	= if this > that then this else that
 
 	lazy val monthIndex:Int		= month-1
 	lazy val monthValue:Month	= Month.fromIndex(monthIndex)

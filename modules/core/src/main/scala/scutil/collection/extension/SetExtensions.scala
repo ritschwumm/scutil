@@ -27,8 +27,9 @@ object SetExtensions {
 
 		/** set or remove the value */
 		def set(value:T, in:Boolean):Set[T]	=
-			if (in)	peer + value
-			else	peer - value
+			if in
+			then peer + value
+			else peer - value
 
 		/** create a map from all elements with a given function to generate the values */
 		def mapTo[U](value:T=>U):Map[T,U]	=

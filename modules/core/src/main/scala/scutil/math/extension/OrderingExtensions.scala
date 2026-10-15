@@ -22,12 +22,13 @@ object OrderingExtensions {
 						(a.lift(index), b.lift(index)) match {
 							case (Some(aa), Some(bb))	=>
 								val tmp	= base.compare(aa, bb)
-								if (tmp != 0)	tmp
-								else			loop(index+1)
+								if tmp != 0
+								then tmp
+								else loop(index+1)
 							case (Some(_), None)	=>
-								if (missingFirst) +1 else -1
+								if missingFirst then +1 else -1
 							case (None, Some(_))	=>
-								if (missingFirst) -1 else +1
+								if missingFirst then -1 else +1
 							case (None, None)	=>
 								0
 						}
@@ -62,8 +63,9 @@ object OrderingExtensions {
 			new Ordering[U] {
 				def compare(x:U, y:U):Int	= {
 					val	high	= peer.compare(x,y)
-					if (high != 0)	high
-					else			that.compare(x,y)
+					if high != 0
+					then high
+					else that.compare(x,y)
 				}
 			}
 	}

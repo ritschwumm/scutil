@@ -88,7 +88,7 @@ object PrismGenImpl {
 				*/
 
 				val isValidSubtype	= variantTypeRepr <:< sumTypeRepr
-				if (!isValidSubtype) {
+				if !isValidSubtype then {
 					report.errorAndAbort(
 						s"cannot find variant ${variantName} for sum type ${sumTypeName}",
 						// put the error on the name

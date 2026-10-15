@@ -10,8 +10,8 @@ object OrderingSyntaxExtensions {
 
 		def equiv(that:T):Boolean	= compare(that) == 0
 
-		def min(that:T):T			= if (<(that))	peer else that
-		def max(that:T):T			= if (>=(that))	peer else that
+		def min(that:T):T			= if <(that)	then peer else that
+		def max(that:T):T			= if >=(that)	then peer else that
 
 		private def compare(that:T):Int	= summon[Ordering[T]].compare(peer, that)
 	}

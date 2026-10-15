@@ -51,8 +51,9 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 								(deref eq null) ||
 								deref == callback
 							}
-					if (newCallbacks.nonEmpty)	List(component -> Entry(entry.state, newCallbacks))
-					else						List.empty
+					if newCallbacks.nonEmpty
+					then List(component -> Entry(entry.state, newCallbacks))
+					else List.empty
 				}
 		}
 	}
@@ -105,7 +106,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 		var y:Int		= point.y
 		var c:Component	= component
 
-		while (true) {
+		while true do {
 			c match {
 				case cc @ (_:Window) =>
 					try {
@@ -122,9 +123,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 					x	-= c.getX
 					y	-= c.getY
 					c	= c.getParent
-					if (c eq null) {
-						return new Point(x, y)
-					}
+					if c eq null	then return new Point(x, y)
 			}
 		}
 		nothing
@@ -133,7 +132,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 	private val testThread	=
 		new Thread {
 			override def run():Unit	= {
-				while (true) {
+				while true do {
 					Thread.sleep(testCycle.millis)
 					edt {
 						try {

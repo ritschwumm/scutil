@@ -15,8 +15,9 @@ object Nes {
 		Nes(head, tail.toVector)
 
 	def fromSeq[T](it:Seq[T]):Option[Nes[T]]	=
-		if (it.nonEmpty)	Some(unsafeFromSeq(it))
-		else				None
+		if it.nonEmpty
+		then Some(unsafeFromSeq(it))
+		else None
 
 	@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 	def unsafeFromSeq[T](it:Seq[T]):Nes[T]	=
@@ -60,8 +61,9 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		tail.lastOption.getOrElse(head)
 
 	def init:Seq[T]	=
-		if (tail.nonEmpty)	head +: tail.dropRight(1)
-		else				Vector(head)
+		if tail.nonEmpty
+		then head +: tail.dropRight(1)
+		else Vector(head)
 
 	def size:Int	= tail.size + 1
 
@@ -72,11 +74,12 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		get(index)
 
 	def get(index:Int):Option[T]	=
-		if (index == 0)	Some(head)
-		else			tail.lift(index - 1)
+		if index == 0
+		then Some(head)
+		else tail.lift(index - 1)
 
 	def count(pred:Predicate[T]):Int	=
-		(if (pred(head)) 1 else 0) +
+		(if pred(head) then 1 else 0) +
 		tail.count(pred)
 
 	def forall(pred:Predicate[T]):Boolean	=
@@ -101,8 +104,9 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		Nes.fromSeq(tail)
 
 	def initNes:Option[Nes[T]]	=
-		if (tail.isEmpty)	None
-		else				Some(Nes(head, tail.dropRight(1)))
+		if tail.isEmpty
+		then None
+		else Some(Nes(head, tail.dropRight(1)))
 
 	def map[U](func:T=>U):Nes[U]	=
 		Nes(func(head), tail.map(func))
@@ -135,8 +139,9 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 
 	@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 	def reverse:Nes[T]	=
-		if (tail.nonEmpty)	Nes(tail.last, tail.init.reverse :+ head)
-		else				this
+		if tail.nonEmpty
+		then Nes(tail.last, tail.init.reverse :+ head)
+		else this
 
 	def concat[U>:T](that:Nes[U]):Nes[U]	=
 		Nes(this.head, (this.tail :+ that.head) ++ that.tail)
@@ -149,12 +154,14 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 
 	@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 	def prependMany[U>:T](items:Seq[U]):Nes[U]	=
-		if (items.nonEmpty)	Nes(items.head, items.tail ++ this.toVector)
-		else				this
+		if items.nonEmpty
+		then Nes(items.head, items.tail ++ this.toVector)
+		else this
 
 	def appendMany[U>:T](items:Seq[U]):Nes[U]	=
-		if (items.nonEmpty)	Nes(this.head, this.tail ++ items)
-		else				this
+		if items.nonEmpty
+		then Nes(this.head, this.tail ++ items)
+		else this
 
 	inline def ++[U>:T](that:Nes[U]):Nes[U]	=
 		this.concat(that)
@@ -166,19 +173,21 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		this.prepend(item)
 
 	def updatedBy[U>:T](index:Int, func:U=>U):Option[Nes[U]]	=
-		if (containsIndex(index)) {
+		if containsIndex(index) then {
 			Some(
-				if (index == 0)	Nes(func(head), tail)
-				else			Nes(head, tail.updated(index-1, func(tail.apply(index-1))))
+				if index == 0
+				then Nes(func(head), tail)
+				else Nes(head, tail.updated(index-1, func(tail.apply(index-1))))
 			)
 		}
 		else None
 
 	def updatedAt[U>:T](index:Int, item:U):Option[Nes[U]]	=
-		if (containsIndex(index)) {
+		if containsIndex(index) then {
 			Some(
-				if (index == 0)	Nes(item, tail)
-				else			Nes(head, tail.updated(index-1, item))
+				if index == 0
+				then Nes(item, tail)
+				else Nes(head, tail.updated(index-1, item))
 			)
 		}
 		else None
@@ -218,8 +227,9 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 			Store(
 				item,
 				(it:U) => {
-					if (index == 0)	Nes(it, tail)
-					else			Nes(head, tail.updated(index-1, it))
+					if index == 0
+					then Nes(it, tail)
+					else Nes(head, tail.updated(index-1, it))
 				}
 			)
 		}

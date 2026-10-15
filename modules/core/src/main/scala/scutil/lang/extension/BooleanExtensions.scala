@@ -6,46 +6,56 @@ import scutil.lang.tc.*
 object BooleanExtensions {
 	extension (peer:Boolean) {
 		def cata[T](falseValue: =>T, trueValue: =>T):T =
-			if (peer)	trueValue
-			else		falseValue
+			if peer
+			then trueValue
+			else falseValue
 
 		//------------------------------------------------------------------------------
 
 		def option[T](trueValue: =>T):Option[T] =
-			if (peer)	Some(trueValue)
-			else		None
+			if peer
+			then Some(trueValue)
+			else None
 
 		def optionNot[T](falseValue: =>T):Option[T] =
-			if (!peer)	Some(falseValue)
-			else		None
+			if !peer
+			then Some(falseValue)
+			else None
 
 		def list[T](trueValue: =>T):List[T]	=
-			if (peer)	List(trueValue)
-			else		List.empty
+			if peer
+			then List(trueValue)
+			else List.empty
 
 		def listNot[T](falseValue: =>T):List[T]	=
-			if (!peer)	List(falseValue)
-			else		List.empty
+			if !peer
+			then List(falseValue)
+			else List.empty
 
 		def vector[T](trueValue: =>T):Vector[T]	=
-			if (peer)	Vector(trueValue)
-			else		Vector.empty
+			if peer
+			then Vector(trueValue)
+			else Vector.empty
 
 		def vectorNot[T](falseValue: =>T):Vector[T]	=
-			if (!peer)	Vector(falseValue)
-			else		Vector.empty
+			if !peer
+			then Vector(falseValue)
+			else Vector.empty
 
 		def set[T](trueValue: =>T):Set[T]	=
-			if (peer)	Set(trueValue)
-			else		Set.empty
+			if peer
+			then Set(trueValue)
+			else Set.empty
 
 		def setNot[T](falseValue: =>T):Set[T]	=
-			if (!peer)	Set(falseValue)
-			else		Set.empty
+			if !peer
+			then Set(falseValue)
+			else Set.empty
 
 		def either[U,V](falseLeft: =>U, trueRight: =>V):Either[U,V] =
-			if (peer)	Right(trueRight)
-			else		Left(falseLeft)
+			if peer
+			then Right(trueRight)
+			else Left(falseLeft)
 
 		def validated[E,T](falseProblems: =>E, trueValid: =>T):Validated[E,T]	=
 			Validated.switch(peer, falseProblems, trueValid)
@@ -53,12 +63,14 @@ object BooleanExtensions {
 		//------------------------------------------------------------------------------
 
 		def flatOption[T](trueValue: =>Option[T]):Option[T] =
-			if (peer)	trueValue
-			else		None
+			if peer
+			then trueValue
+			else None
 
 		def flatOptionNot[T](falseValue: =>Option[T]):Option[T] =
-			if (!peer)	falseValue
-			else		None
+			if !peer
+			then falseValue
+			else None
 
 		//------------------------------------------------------------------------------
 
@@ -79,20 +91,24 @@ object BooleanExtensions {
 			optionNot(())
 
 		def guardEither[U](leftValue: =>U):Either[U,Unit]	=
-			if (peer)	Right(())
-			else		Left(leftValue)
+			if peer
+			then Right(())
+			else Left(leftValue)
 
 		def preventEither[U](leftValue: =>U):Either[U,Unit]	=
-			if (!peer)	Right(())
-			else		Left(leftValue)
+			if !peer
+			then Right(())
+			else Left(leftValue)
 
 		def guardValidated[E](problems: =>E):Validated[E,Unit]	=
-			if (peer)	Validated.valid(())
-			else		Validated.invalid(problems)
+			if peer
+			then Validated.valid(())
+			else Validated.invalid(problems)
 
 		def preventValidated[E](problems: =>E):Validated[E,Unit]	=
-			if (!peer)	Validated.valid(())
-			else		Validated.invalid(problems)
+			if !peer
+			then Validated.valid(())
+			else Validated.invalid(problems)
 
 		def guardSeq[T](trueValue: =>T):Seq[T] =
 			guardVector(trueValue)
@@ -101,12 +117,14 @@ object BooleanExtensions {
 			preventVector(falseValue)
 
 		def guardVector[T](trueValue: =>T):Vector[T] =
-			if (peer)	Vector(trueValue)
-			else		Vector.empty
+			if peer
+			then Vector(trueValue)
+			else Vector.empty
 
 		def preventVector[T](falseValue: =>T):Vector[T] =
-			if (!peer)	Vector(falseValue)
-			else		Vector.empty
+			if !peer
+			then Vector(falseValue)
+			else Vector.empty
 
 		//------------------------------------------------------------------------------
 
@@ -124,7 +142,7 @@ object BooleanExtensions {
 
 		//------------------------------------------------------------------------------
 
-		def trueEffect(effect: =>Unit):Boolean	= { if (peer)	effect; peer }
-		def falseEffect(effect: =>Unit):Boolean	= { if (!peer)	effect; peer }
+		def trueEffect(effect: =>Unit):Boolean	= { if peer		then effect; peer }
+		def falseEffect(effect: =>Unit):Boolean	= { if !peer	then effect; peer }
 	}
 }

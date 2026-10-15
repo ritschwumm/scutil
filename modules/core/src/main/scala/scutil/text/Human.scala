@@ -137,7 +137,8 @@ final case class Human(table:Nes[HumanUnit]) {
 			case Some(tail)	=>
 				val (div, mod)	= value /% table.head.divisor
 				val prefix		= div.toBigInt.toString + table.head.short
-				if (mod == Human.zero)	prefix
-				else					prefix + " " + renderRaw(tail, decimalPlaces, mod)
+				if mod == Human.zero
+				then	prefix
+				else	prefix + " " + renderRaw(tail, decimalPlaces, mod)
 		}
 }

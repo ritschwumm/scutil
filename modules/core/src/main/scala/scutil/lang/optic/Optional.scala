@@ -32,7 +32,7 @@ object Optional {
 
 	def filtered[T](pred:T=>Boolean):Optional[T,T]	=
 		Optional(
-			s => if (pred(s)) Some(s) else None,
+			s => if pred(s) then Some(s) else None,
 			x => _ => x
 		)
 
@@ -60,8 +60,9 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 
 	def setOpt(t:T):S=>Option[S]	=
 		s => {
-			if (get(s).isDefined)	Some(set(t)(s))
-			else					None
+			if get(s).isDefined
+			then Some(set(t)(s))
+			else None
 		}
 
 	//------------------------------------------------------------------------------
@@ -162,7 +163,7 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 	/** filter the source value */
 	def filterBefore(pred:Predicate[S]):Optional[S,T]	=
 		Optional(
-			get	= s	=> if (pred(s)) get(s) else None,
+			get	= s	=> if pred(s) then get(s) else None,
 			set	= set
 		)
 

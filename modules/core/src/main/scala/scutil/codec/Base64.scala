@@ -33,14 +33,14 @@ object Base64 {
 		(s.length % 4 == 0)	&& {
 			var pad	= false
 			var i	= 0
-			while (i < s.length) {
+			while i < s.length do {
 				val c	= s.charAt(i)
-				if (c < 0)				return false
-				if (c > table.length)	return false
+				if c < 0			then return false
+				if c > table.length	then return false
 				val x	= table(c)
-				if		(x == invalidFlag)			return false
-				else if	(x == paddingFlag && !pad)	pad = true
-				else if	(x != paddingFlag &&  pad)	return false
+				if		x == invalidFlag			then return false
+				else if	x == paddingFlag && !pad	then pad = true
+				else if	x != paddingFlag &&  pad	then return false
 				i = i + 1
 			}
 			true
@@ -60,7 +60,7 @@ object Base64 {
 		val	output			= new StringBuilder
 		var	inputIndex		= 0
 		var packetsIndex	= 0
-		while (packetsIndex < packetsSize) {
+		while packetsIndex < packetsSize do {
 			output.append(alphabet(((data(inputIndex+0) >> 2) & 0x3f)))
 			output.append(alphabet(((data(inputIndex+0) << 4) & 0x30) | ((data(inputIndex+1) >> 4) & 0x0f)))
 			output.append(alphabet(((data(inputIndex+1) << 2) & 0x3c) | ((data(inputIndex+2) >> 6) & 0x03)))
@@ -68,13 +68,13 @@ object Base64 {
 			packetsIndex	+= 1
 			inputIndex		+= 3
 		}
-		if (extraSize == 1) {
+		if extraSize == 1 then {
 			output.append(alphabet(((data(inputIndex+0) >> 2) & 0x3f)))
 			output.append(alphabet(((data(inputIndex+0) << 4) & 0x30)))
 			output.append(padding)
 			output.append(padding)
 		}
-		else if (extraSize == 2) {
+		else if extraSize == 2 then {
 			output.append(alphabet(((data(inputIndex+0) >> 2) & 0x3f)))
 			output.append(alphabet(((data(inputIndex+0) << 4) & 0x30) | ((data(inputIndex+1) >> 4) & 0x0f)))
 			output.append(alphabet(((data(inputIndex+1) << 2) & 0x3c)))
@@ -92,29 +92,29 @@ object Base64 {
 	private def decodeImpl(text:String):Option[IArray[Byte]] = {
 		// TODO codec ignoring all whitespace input might be stupid
 		val cleanText	= text.replaceAll(whitespaceRE, "")
-		if (cleanText.length == 0)	return Some(emptyOutput)
-		if (!validInput(cleanText))	return None
+		if cleanText.length == 0	then return Some(emptyOutput)
+		if !validInput(cleanText)	then return None
 
 		val	input		= cleanText.toCharArray
 		val	inputSize	= input.length
 		val	outputSize	=
 			((inputSize + 3 ) / 4 ) * 3 -
-			(if (input(inputSize-1) == padding) 1 else 0)	-
-			(if (input(inputSize-2) == padding) 1 else 0)
+			(if input(inputSize-1) == padding then 1 else 0)	-
+			(if input(inputSize-2) == padding then 1 else 0)
 		val	output		= new Array[Byte](outputSize)
 
 		var inputIndex	= 0
 		var	outputIndex	= 0
 		var	bitShift	= 0
 		var	akku		= 0
-		while (inputIndex < inputSize) {
+		while inputIndex < inputSize do {
 			val	value	= table(input(inputIndex))
 			// ignores padding as well as invalid chars
-			if (value >= 0) {
+			if value >= 0 then {
 				bitShift	+=	6
 				akku		<<=	6
 				akku		|=	value
-				if (bitShift >= 8) {
+				if bitShift >= 8 then {
 					bitShift	-=	8
 					output(outputIndex)	= (akku >> bitShift).toByte
 					outputIndex	+= 1

@@ -11,8 +11,9 @@ object Validated {
 	//------------------------------------------------------------------------------
 
 	def switch[E,T](ok:Boolean, problems: =>E, value: =>T):Validated[E,T]	=
-		if (ok)	valid(value)
-		else	invalid(problems)
+		if ok
+		then valid(value)
+		else invalid(problems)
 
 	extension [T](peer:Validated[T,T]) {
 		def merge:T	=
@@ -201,13 +202,13 @@ enum Validated[+E,+T] {
 	def validByOr[EE>:E](func:Predicate[T], invalid: =>EE):Validated[EE,T]	=
 		this match {
 			case Validated.Invalid(x)	=> Validated.invalid(x)
-			case Validated.Valid(x)		=> if (func(x)) Validated.valid(x) else Validated.invalid(invalid)
+			case Validated.Valid(x)		=> if func(x) then Validated.valid(x) else Validated.invalid(invalid)
 		}
 
 	def validNotByOr[EE>:E](func:Predicate[T], invalid: =>EE):Validated[EE,T]	=
 		this match {
 			case Validated.Invalid(x)	=> Validated.invalid(x)
-			case Validated.Valid(x)		=> if (!func(x)) Validated.valid(x) else Validated.invalid(invalid)
+			case Validated.Valid(x)		=> if !func(x) then Validated.valid(x) else Validated.invalid(invalid)
 		}
 
 	def collapseOr[EE>:E,TT](func:T=>Option[TT], invalid: =>EE):Validated[EE,TT]	=

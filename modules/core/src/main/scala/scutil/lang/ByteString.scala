@@ -38,8 +38,9 @@ object ByteString {
 		fromArray(it.array)
 
 	def sliceFromArray(it:Array[Byte], srcPos:Int, copyLength:Int):Option[ByteString]	=
-		if (containsSlice(srcPos, srcPos+copyLength, it.length))	Some(unboundedSliceFromArray(it, srcPos, copyLength))
-		else														None
+		if containsSlice(srcPos, srcPos+copyLength, it.length)
+		then Some(unboundedSliceFromArray(it, srcPos, copyLength))
+		else None
 
 	//------------------------------------------------------------------------------
 
@@ -132,40 +133,46 @@ final class ByteString private (val value:IArray[Byte]) {
 		ByteString.containsSlice(begin, end, size)
 
 	def safeIndex(rawIndex:Int):Option[Int]	=
-		if (containsIndex(rawIndex))	Some(rawIndex)
-		else							None
+		if containsIndex(rawIndex)
+		then Some(rawIndex)
+		else None
 
 	def safeGap(rawGap:Int):Option[Int]	=
-		if (ByteString.containsGap(rawGap, size))	Some(rawGap)
-		else										None
+		if ByteString.containsGap(rawGap, size)
+		then Some(rawGap)
+		else None
 
 	def safeSlicing(rawBegin:Int, rawEnd:Int):Option[(Int,Int)]	=
-		if (containsSlice(rawBegin, rawEnd))	Some((rawBegin, rawEnd))
-		else									None
+		if containsSlice(rawBegin, rawEnd)
+		then Some((rawBegin, rawEnd))
+		else None
 
 	def get(index:Int):Option[Byte]	=
-		if (containsIndex(index))	Some(unboundedGet(index))
-		else						None
+		if containsIndex(index)
+		then Some(unboundedGet(index))
+		else None
 
 	def slice(begin:Int, end:Int):Option[ByteString]	=
-		if		(!containsSlice(begin, end))	None
-		else if	(begin == end)					Some(ByteString.empty)
-		else if	(begin == 0 && end == size)		Some(this)
-		else									Some(unboundedSlice(begin, end))
+		if		!containsSlice(begin, end)		then	None
+		else if	begin == end					then	Some(ByteString.empty)
+		else if	begin == 0 && end == size		then	Some(this)
+		else											Some(unboundedSlice(begin, end))
 
 	def splitFirst:Option[(ByteString,Byte)]	=
-		if (size > 0)	Some((unboundedSlice(1, size), unboundedGet(0)))
-		else			None
+		if size > 0
+		then Some((unboundedSlice(1, size), unboundedGet(0)))
+		else None
 
 	def splitLast:Option[(ByteString,Byte)]	=
-		if (size > 0)	Some((unboundedSlice(0, last), unboundedGet(last)))
-		else			None
+		if size > 0
+		then Some((unboundedSlice(0, last), unboundedGet(last)))
+		else None
 
 	def splitAt(index:Int):Option[(ByteString,ByteString)]	=
-		if		(!containsGap(index))	None
-		else if	(index == 0)			Some((ByteString.empty, this))
-		else if	(index == size)			Some((this, ByteString.empty))
-		else							Some((unboundedSlice(0, index), unboundedSlice(index, size)))
+		if		!containsGap(index)	then	None
+		else if	index == 0			then	Some((ByteString.empty, this))
+		else if	index == size		then	Some((this, ByteString.empty))
+		else								Some((unboundedSlice(0, index), unboundedSlice(index, size)))
 
 	def containsAt(index:Int, that:ByteString):Boolean	=
 		containsSlice(index, index+that.size) && {
@@ -205,11 +212,11 @@ final class ByteString private (val value:IArray[Byte]) {
 
 	/** returns an empty ByteString for negative factors */
 	def times(count:Int)	=
-		if (count >=0 ) {
+		if count >= 0 then {
 			val outSize	= size * count
 			ByteString.makeWithArray(outSize) { tmp =>
 				var i = 0
-				while (i < outSize) {
+				while i < outSize do {
 					copyIntoArray(tmp, i)
 					i += size
 				}
@@ -221,7 +228,7 @@ final class ByteString private (val value:IArray[Byte]) {
 		val length	= this.size min that.size
 		var diff	= this.size ^ that.size
 		var i = 0
-		while (i < length) {
+		while i < length do {
 			diff |= this.unboundedGet(i) ^ that.unboundedGet(i)
 			i	+= 1
 		}
@@ -263,7 +270,7 @@ final class ByteString private (val value:IArray[Byte]) {
 		val ok	=
 			ByteString.containsSlice(srcPos,	srcPos	+ copyLength, size) &&
 			ByteString.containsSlice(destPos,	destPos	+ copyLength, dest.length)
-		if (ok)	System.arraycopy(this.value, srcPos, dest, destPos, copyLength)
+		if ok	then System.arraycopy(this.value, srcPos, dest, destPos, copyLength)
 		ok
 	}
 
@@ -279,32 +286,39 @@ final class ByteString private (val value:IArray[Byte]) {
 	//------------------------------------------------------------------------------
 
 	def toByte:Option[Byte]	=
-		if (size == 1)	Some(value(0))
-		else			None
+		if size == 1
+		then Some(value(0))
+		else None
 
 	def toBigEndianShort:Option[Short]	=
-		if (size == 2)	Some(ByteArrayUtil.toBigEndianShort(unsafeValue))
-		else			None
+		if size == 2
+		then Some(ByteArrayUtil.toBigEndianShort(unsafeValue))
+		else None
 
 	def toBigEndianInt:Option[Int]		=
-		if (size == 4)	Some(ByteArrayUtil.toBigEndianInt(unsafeValue))
-		else			None
+		if size == 4
+		then Some(ByteArrayUtil.toBigEndianInt(unsafeValue))
+		else None
 
 	def toBigEndianLong:Option[Long]		=
-		if (size == 8)	Some(ByteArrayUtil.toBigEndianLong(unsafeValue))
-		else			None
+		if size == 8
+		then Some(ByteArrayUtil.toBigEndianLong(unsafeValue))
+		else None
 
 	def toLittleEndianShort:Option[Short]	=
-		if (size == 2)	Some(ByteArrayUtil.toLittleEndianShort(unsafeValue))
-		else			None
+		if size == 2
+		then Some(ByteArrayUtil.toLittleEndianShort(unsafeValue))
+		else None
 
 	def toLittleEndianInt:Option[Int]		=
-		if (size == 4)	Some(ByteArrayUtil.toLittleEndianInt(unsafeValue))
-		else			None
+		if size == 4
+		then Some(ByteArrayUtil.toLittleEndianInt(unsafeValue))
+		else None
 
 	def toLittleEndianLong:Option[Long]		=
-		if (size == 8)	Some(ByteArrayUtil.toLittleEndianLong(unsafeValue))
-		else			None
+		if size == 8
+		then Some(ByteArrayUtil.toLittleEndianLong(unsafeValue))
+		else None
 
 	//------------------------------------------------------------------------------
 
@@ -312,28 +326,34 @@ final class ByteString private (val value:IArray[Byte]) {
 	def getByte(offset:Int):Option[Byte]	= get(offset)
 
 	def getBigEndianShort(offset:Int):Option[Short]	=
-		if (containsSlice(offset, offset+2))	Some(ByteArrayUtil.getBigEndianShort(unsafeValue, offset))
-		else									None
+		if containsSlice(offset, offset+2)
+		then Some(ByteArrayUtil.getBigEndianShort(unsafeValue, offset))
+		else None
 
 	def getBigEndianInt(offset:Int):Option[Int]		=
-		if (containsSlice(offset, offset+4))	Some(ByteArrayUtil.getBigEndianInt(unsafeValue, offset))
-		else									None
+		if containsSlice(offset, offset+4)
+		then Some(ByteArrayUtil.getBigEndianInt(unsafeValue, offset))
+		else None
 
 	def getBigEndianLong(offset:Int):Option[Long]		=
-		if (containsSlice(offset, offset+8))	Some(ByteArrayUtil.getBigEndianLong(unsafeValue, offset))
-		else									None
+		if containsSlice(offset, offset+8)
+		then Some(ByteArrayUtil.getBigEndianLong(unsafeValue, offset))
+		else None
 
 	def getLittleEndianShort(offset:Int):Option[Short]	=
-		if (containsSlice(offset, offset+2))	Some(ByteArrayUtil.getLittleEndianShort(unsafeValue, offset))
-		else									None
+		if containsSlice(offset, offset+2)
+		then Some(ByteArrayUtil.getLittleEndianShort(unsafeValue, offset))
+		else None
 
 	def getLittleEndianInt(offset:Int):Option[Int]		=
-		if (containsSlice(offset, offset+4))	Some(ByteArrayUtil.getLittleEndianInt(unsafeValue, offset))
-		else									None
+		if containsSlice(offset, offset+4)
+		then Some(ByteArrayUtil.getLittleEndianInt(unsafeValue, offset))
+		else None
 
 	def getLittleEndianLong(offset:Int):Option[Long]		=
-		if (containsSlice(offset, offset+8))	Some(ByteArrayUtil.getLittleEndianLong(unsafeValue, offset))
-		else									None
+		if containsSlice(offset, offset+8)
+		then Some(ByteArrayUtil.getLittleEndianLong(unsafeValue, offset))
+		else None
 
 	//------------------------------------------------------------------------------
 

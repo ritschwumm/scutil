@@ -39,7 +39,7 @@ final case class SgSpan private (start:Double, end:Double) {
 
 	def swap:SgSpan	= SgSpan.startEnd(end, start)
 
-	def normalize:SgSpan	= if (normal) this else swap
+	def normalize:SgSpan	= if normal then this else swap
 
 	def union(that:SgSpan):SgSpan	=
 		SgSpan.startEnd(
@@ -48,13 +48,13 @@ final case class SgSpan private (start:Double, end:Double) {
 		)
 
 	def intersect(that:SgSpan):Option[SgSpan]	=
-		if		(this.empty || that.empty)							None
-		else if (this.end	<= that.start)							None
-		else if (this.start	>= that.end)							None
-		else if (this.start	<= that.start && this.end >= that.end)	Some(that)
-		else if (this.start	>= that.start && this.end <= that.end)	Some(this)
-		else if (this.start	<= that.start && this.end <= that.end)	Some(SgSpan.startEnd(that.start, this.end))
-		else														Some(SgSpan.startEnd(this.start, that.end))
+		if		this.empty || that.empty							then	None
+		else if this.end	<= that.start							then	None
+		else if this.start	>= that.end								then	None
+		else if this.start	<= that.start && this.end >= that.end	then	Some(that)
+		else if this.start	>= that.start && this.end <= that.end	then	Some(this)
+		else if this.start	<= that.start && this.end <= that.end	then	Some(SgSpan.startEnd(that.start, this.end))
+		else																Some(SgSpan.startEnd(this.start, that.end))
 
 	// TODO should this normalize?
 	def containsValue(pos:Double) = {
@@ -74,7 +74,7 @@ final case class SgSpan private (start:Double, end:Double) {
 
 	// TODO should this normalize?
 	def intersects(that:SgSpan):Boolean	= {
-		if (this.empty || that.empty) {
+		if this.empty || that.empty then {
 			false
 		}
 		else {

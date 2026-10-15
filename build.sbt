@@ -5,21 +5,22 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.259.0",
+	version			:= "0.260.0",
 
-	scalaVersion	:= "3.7.2",
+	scalaVersion	:= "3.7.3",
 	scalacOptions	++= Seq(
 		"-feature",
 		"-deprecation",
 		"-unchecked",
 		"-source:future",
+		"-language:experimental.into",
 		// "-explain",
 		"-Wunused:all",
 		"-Wsafe-init",
 		"-Wshadow:all",
 		"-Xfatal-warnings",
 		"-Xkind-projector:underscores",
-		"-Xcheck-macros"
+		"-Xcheck-macros",
 		// leads to an InternalError for the variable e inside Catch.in
 		// "-Ysafe-init-global",
 	),

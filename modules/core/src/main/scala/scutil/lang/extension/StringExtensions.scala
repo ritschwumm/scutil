@@ -13,9 +13,9 @@ object StringExtensions {
 
 		// toBoolean throws an IllegalArgumentException, not a NumberFormatException
 		def parseBoolean:Either[NumberFormatException,Boolean]	=
-			if		(caselessTrue(peer))	Right(true)
-			else if	(caselessFalse(peer))	Right(false)
-			else							Left(new NumberFormatException("not a boolean: " + peer))
+			if		caselessTrue(peer)	then	Right(true)
+			else if	caselessFalse(peer)	then	Right(false)
+			else								Left(new NumberFormatException("not a boolean: " + peer))
 
 		// NOTE does not use String.toLowercase because that would depend on the default Locale,
 		// and other Locales might not be supported in scala-js
@@ -61,26 +61,31 @@ object StringExtensions {
 		//------------------------------------------------------------------------------
 
 		def optionNonEmpty:Option[String]	=
-			if (peer.nonEmpty)	Some(peer)
-			else				None
+			if peer.nonEmpty
+			then Some(peer)
+			else None
 
 		//------------------------------------------------------------------------------
 
 		def cutPrefix(prefix:String):Option[String] =
-			if (peer.startsWith(prefix))	Some(peer.substring(prefix.length))
-			else							None
+			if peer.startsWith(prefix)
+			then Some(peer.substring(prefix.length))
+			else None
 
 		def cutSuffix(suffix:String):Option[String] =
-			if (peer.endsWith(suffix))	Some(peer.substring(0, peer.length - suffix.length))
-			else						None
+			if peer.endsWith(suffix)
+			then Some(peer.substring(0, peer.length - suffix.length))
+			else None
 
 		def pastePrefix(prefix:String):Option[String] =
-			if (peer.startsWith(prefix))	None
-			else							Some(prefix + peer)
+			if peer.startsWith(prefix)
+			then None
+			else Some(prefix + peer)
 
 		def pasteSuffix(suffix:String):Option[String] =
-			if (peer.endsWith(suffix))	None
-			else						Some(peer + suffix)
+			if peer.endsWith(suffix)
+			then None
+			else Some(peer + suffix)
 
 		//------------------------------------------------------------------------------
 
@@ -108,8 +113,9 @@ object StringExtensions {
 
 		/** excludes the indexed char itself */
 		def splitAroundIndex(index:Int):Option[(String,String)]	=
-			if (index >= 0 && index < peer.length)	Some((peer.substring(0,index), peer.substring(index+1)))
-			else									None
+			if index >= 0 && index < peer.length
+			then Some((peer.substring(0,index), peer.substring(index+1)))
+			else None
 
 		/** excludes the separator char itself */
 		def splitAroundFirstChar(separator:Char):Option[(String,String)] =
@@ -131,8 +137,9 @@ object StringExtensions {
 
 		/** like splitAt, but None for indices outside the String's boundaries */
 		def splitAtIndex(index:Int):Option[(String,String)]	=
-			if (index >= 0 && index <= peer.length)	Some((peer.substring(0,index), peer.substring(index)))
-			else									None
+			if index >= 0 && index <= peer.length
+			then Some((peer.substring(0,index), peer.substring(index)))
+			else None
 
 		//------------------------------------------------------------------------------
 
@@ -175,7 +182,7 @@ object StringExtensions {
 		def quoteXML(quot:Boolean = false, apos:Boolean = false):String	= {
 			val b	= new StringBuilder
 			var i	= 0
-			while (i < peer.length) {
+			while i < peer.length do {
 				peer.charAt(i) match {
 					case '<'			=> b.append("&lt;")
 					case '>'			=> b.append("&gt;")

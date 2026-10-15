@@ -20,22 +20,22 @@ object functions {
 	//------------------------------------------------------------------------------
 
 	def clampByte(value:Byte, minValue:Byte, maxValue:Byte):Byte	=
-		if (value < minValue) minValue else if (value > maxValue) maxValue else value
+		if value < minValue then minValue else if value > maxValue then maxValue else value
 
 	def clampShort(value:Short, minValue:Short, maxValue:Short):Short	=
-		if (value < minValue) minValue else if (value > maxValue) maxValue else value
+		if value < minValue then minValue else if value > maxValue then maxValue else value
 
 	def clampInt(value:Int, minValue:Int, maxValue:Int):Int	=
-		if (value < minValue) minValue else if (value > maxValue) maxValue else value
+		if value < minValue then minValue else if value > maxValue then maxValue else value
 
 	def clampLong(value:Long, minValue:Long, maxValue:Long):Long	=
-		if (value < minValue) minValue else if (value > maxValue) maxValue else value
+		if value < minValue then minValue else if value > maxValue then maxValue else value
 
 	def clampFloat(value:Float, minValue:Float, maxValue:Float):Float	=
-		if (value < minValue) minValue else if (value > maxValue) maxValue else value
+		if value < minValue then minValue else if value > maxValue then maxValue else value
 
 	def clampDouble(value:Double, minValue:Double, maxValue:Double):Double	=
-		if (value < minValue) minValue else if (value > maxValue) maxValue else value
+		if value < minValue then minValue else if value > maxValue then maxValue else value
 
 	//------------------------------------------------------------------------------
 
@@ -59,23 +59,27 @@ object functions {
 
 	@tailrec
 	def gcdByte(a:Byte, b:Byte):Byte	=
-		if (b == 0)	abs(a).toByte
-		else		gcdByte(b, (a % b).toByte)
+		if b == 0
+		then abs(a).toByte
+		else gcdByte(b, (a % b).toByte)
 
 	@tailrec
 	def gcdShort(a:Short, b:Short):Short	=
-		if (b == 0)	abs(a).toShort
-		else		gcdShort(b, (a % b).toShort)
+		if b == 0
+		then abs(a).toShort
+		else gcdShort(b, (a % b).toShort)
 
 	@tailrec
 	def gcdInt(a:Int, b:Int):Int	=
-		if (b == 0)	abs(a)
-		else		gcdInt(b, a % b)
+		if b == 0
+		then abs(a)
+		else gcdInt(b, a % b)
 
 	@tailrec
 	def gcdLong(a:Long, b:Long):Long	=
-		if (b == 0)	abs(a)
-		else		gcdLong(b, a % b)
+		if b == 0
+		then abs(a)
+		else gcdLong(b, a % b)
 
 	//------------------------------------------------------------------------------
 
@@ -95,32 +99,32 @@ object functions {
 
 	def moduloByte(value:Byte, raster:Byte):Byte = {
 		val	raw	= value % raster
-		(if (raster < 0 && raw > 0 || raster > 0 && raw < 0)	raw + raster else raw).toByte
+		(if raster < 0 && raw > 0 || raster > 0 && raw < 0 then raw + raster else raw).toByte
 	}
 
 	def moduloShort(value:Short, raster:Short):Short = {
 		val	raw	= value % raster
-		(if (raster < 0 && raw > 0 || raster > 0 && raw < 0)	raw + raster else raw).toShort
+		(if raster < 0 && raw > 0 || raster > 0 && raw < 0 then raw + raster else raw).toShort
 	}
 
 	def moduloInt(value:Int, raster:Int):Int = {
 		val	raw	= value % raster
-		if (raster < 0 && raw > 0 || raster > 0 && raw < 0)	raw + raster else raw
+		if raster < 0 && raw > 0 || raster > 0 && raw < 0 then raw + raster else raw
 	}
 
 	def moduloLong(value:Long, raster:Long):Long = {
 		val	raw	= value % raster
-		if (raster < 0 && raw > 0 || raster > 0 && raw < 0)	raw + raster else raw
+		if raster < 0 && raw > 0 || raster > 0 && raw < 0 then raw + raster else raw
 	}
 
 	def moduloFloat(value:Float, raster:Float):Float = {
 		val	raw	= value % raster
-		if (raster < 0 && raw > 0 || raster > 0 && raw < 0)	raw + raster else raw
+		if raster < 0 && raw > 0 || raster > 0 && raw < 0 then raw + raster else raw
 	}
 
 	def moduloDouble(value:Double, raster:Double):Double = {
 		val	raw	= value % raster
-		if (raster < 0 && raw > 0 || raster > 0 && raw < 0)	raw + raster else raw
+		if raster < 0 && raw > 0 || raster > 0 && raw < 0 then raw + raster else raw
 	}
 
 	//------------------------------------------------------------------------------
@@ -144,68 +148,80 @@ object functions {
 		ceilDivInt(value, raster).toShort
 
 	def floorDivInt(value:Int, raster:Int):Int	=
-		if (raster > 0) {
-			if (value >= 0) (value)					/ raster
-			else			(value - raster + 1)	/ raster
+		if raster > 0 then {
+			if value >= 0
+			then (value)				/ raster
+			else (value - raster + 1)	/ raster
 		}
-		else if (raster < 0) {
-			if (value >= 0)	(value - raster - 1)	/ raster
-			else			(value)					/ raster
+		else if raster < 0 then {
+			if value >= 0
+			then (value - raster - 1)	/ raster
+			else (value)				/ raster
 		}
 		else throw new ArithmeticException("division by zero")
 
 	def roundDivInt(value:Int, raster:Int):Int   =
-		if (raster > 0) {
-			if (value >= 0) (value + (raster/2)) / raster
-			else            (value - (raster/2)) / raster
+		if raster > 0 then {
+			if value >= 0
+			then (value + (raster/2)) / raster
+			else (value - (raster/2)) / raster
 		}
-		else if (raster < 0) {
-			if (value >= 0) (value - (raster/2)) / raster
-			else            (value + (raster/2)) / raster
+		else if raster < 0 then {
+			if value >= 0
+			then (value - (raster/2)) / raster
+			else (value + (raster/2)) / raster
 		}
 		else throw new ArithmeticException("division by zero")
 
 	def ceilDivInt(value:Int, raster:Int):Int	=
-		if (raster > 0) {
-			if (value >= 0) (value + raster - 1)	/ raster
-			else			(value)					/ raster
+		if raster > 0 then {
+			if value >= 0
+			then (value + raster - 1)	/ raster
+			else (value)				/ raster
 		}
-		else if (raster < 0) {
-			if (value >= 0) (value)					/ raster
-			else			(value+ raster + 1)		/ raster
+		else if raster < 0 then {
+			if value >= 0
+			then (value)				/ raster
+			else (value+ raster + 1)	/ raster
 		}
 		else throw new ArithmeticException("division by zero")
 
 	def floorDivLong(value:Long, raster:Long):Long	=
-		if (raster > 0) {
-			if (value >= 0) (value)					/ raster
-			else			(value - raster + 1)	/ raster
+		if raster > 0 then {
+			if value >= 0
+			then (value)				/ raster
+			else (value - raster + 1)	/ raster
 		}
-		else if (raster < 0) {
-			if (value >= 0)	(value - raster - 1)	/ raster
-			else			(value)					/ raster
+		else if raster < 0 then {
+			if value >= 0
+			then (value - raster - 1)	/ raster
+			else (value)				/ raster
 		}
 		else throw new ArithmeticException("division by zero")
 
 	def roundDivLong(value:Long, raster:Long):Long   =
-		if (raster > 0) {
-			if (value >= 0) (value + (raster/2)) / raster
-			else            (value - (raster/2)) / raster
+		if raster > 0 then {
+			if value >= 0
+			then (value + (raster/2)) / raster
+			else (value - (raster/2)) / raster
 		}
-		else if (raster < 0) {
-			if (value >= 0) (value - (raster/2)) / raster
-			else            (value + (raster/2)) / raster
+		else if raster < 0 then {
+			if value >= 0
+			then (value - (raster/2)) / raster
+			else (value + (raster/2)) / raster
 		}
 		else throw new ArithmeticException("division by zero")
 
 	def ceilDivLong(value:Long, raster:Long):Long	=
-		if (raster > 0) {
-			if (value >= 0) (value + raster - 1)	/ raster
-			else			(value)					/ raster
+		if raster > 0 then {
+			if value >= 0
+			then (value + raster - 1)	/ raster
+			else (value)				/ raster
 		}
-		else if (raster < 0) {
-			if (value >= 0) (value)					/ raster
-			else			(value+ raster + 1)		/ raster
+		else if raster < 0 then {
+			if value >= 0
+			then (value)				/ raster
+			else (value+ raster + 1)	/ raster
 		}
 		else throw new ArithmeticException("division by zero")
 

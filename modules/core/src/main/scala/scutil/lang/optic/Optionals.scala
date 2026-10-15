@@ -43,13 +43,13 @@ object Optionals {
 	def seqHead[T]:Optional[Seq[T],T]	=
 		Optional(
 			get	=			s	=> s.headOption,
-			set	=	t	=>	s	=> if (s.nonEmpty) s.updated(0, t) else s
+			set	=	t	=>	s	=> if s.nonEmpty then s.updated(0, t) else s
 		)
 
 	def seqLast[T]:Optional[Seq[T],T]	=
 		Optional(
 			get	=			s	=> s.lastOption,
-			set	=	t	=>	s	=> if (s.nonEmpty) s.updated(s.size-1, t) else s
+			set	=	t	=>	s	=> if s.nonEmpty then s.updated(s.size-1, t) else s
 		)
 
 	def seqFirstWhere[T](pred:Predicate[T]):Optional[Seq[T],T]	=
@@ -86,13 +86,13 @@ object Optionals {
 	def vectorHead[T]:Optional[Vector[T],T]	=
 		Optional(
 			get	=			s	=> s.headOption,
-			set	=	t	=>	s	=> if (s.nonEmpty) s.updated(0, t) else s
+			set	=	t	=>	s	=> if s.nonEmpty then s.updated(0, t) else s
 		)
 
 	def vectorLast[T]:Optional[Vector[T],T]	=
 		Optional(
 			get	=			s	=> s.lastOption,
-			set	=	t	=>	s	=> if (s.nonEmpty) s.updated(s.size-1, t) else s
+			set	=	t	=>	s	=> if s.nonEmpty then s.updated(s.size-1, t) else s
 		)
 
 	def vectorFirstWhere[T](pred:Predicate[T]):Optional[Vector[T],T]	=
@@ -124,7 +124,8 @@ object Optionals {
 		Optional(
 			get	= s			=> s.lift(i),
 			set	= t => s	=>
-				if (i >= 0 && i < s.size)	factory.fromSpecific(s.updated(i, t))
+				if i >= 0 && i < s.size
+				then factory.fromSpecific(s.updated(i, t))
 				else s
 		)
 

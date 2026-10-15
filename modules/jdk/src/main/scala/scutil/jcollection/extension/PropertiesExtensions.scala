@@ -9,7 +9,7 @@ object PropertiesExtensions {
 		def toHashMap:Map[String,String]	= {
 			var out		= HashMap.empty[String,String]
 			val keyIter	= peer.stringPropertyNames.iterator
-			while (keyIter.hasNext) {
+			while keyIter.hasNext do {
 				val key		= keyIter.next
 				val value	= peer.getProperty(key)
 				out	+= (key -> value)

@@ -4,9 +4,9 @@ import java.lang.{ Long as JLong }
 
 object functions {
 	def nextPow2(it:Long):Long	=
-		if		(it == 0)	0
-		else if	(it == 1)	1
-		else				JLong.highestOneBit(it-1) << 1
+		if		it == 0	then	0
+		else if	it == 1	then	1
+		else					JLong.highestOneBit(it-1) << 1
 
 	//------------------------------------------------------------------------------
 
@@ -15,8 +15,9 @@ object functions {
 	def unsignedInt(value:Int):Long		= (value & 0xffffffffL)
 	def unsignedLong(value:Long):BigInt	= {
 		val	tmp	= BigInt(value)
-		if (tmp >= 0)	tmp
-		else			BigInt(Long.MaxValue)*2	- tmp
+		if tmp >= 0
+		then tmp
+		else BigInt(Long.MaxValue)*2	- tmp
 	}
 
 	//------------------------------------------------------------------------------

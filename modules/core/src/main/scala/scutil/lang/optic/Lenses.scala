@@ -24,7 +24,7 @@ object Lenses {
 	def set[T](t:T):Lens[Set[T],Boolean]	=
 		Lens(
 			get	= _.contains(t),
-			set	= v => c	=> if (v) c + t else c - t
+			set	= v => c	=> if v then c + t else c - t
 		)
 
 	//-----------------------------------------------------------------------------
@@ -44,7 +44,8 @@ object Lenses {
 			get	= map =>
 				map.get(key).getOrElse(default),
 			set	= value => map =>
-				if (value != default)	map.updated(key, value)
-				else					map - key
+				if value != default
+				then map.updated(key, value)
+				else map - key
 		)
 }

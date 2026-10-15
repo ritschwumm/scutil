@@ -30,4 +30,26 @@ object LoggingTest extends SimpleTestSuite with TestLogging {
 			logHandler.strings(0).matches("""^INFO\t\[.*\]\tLoggingTest.scala:\d+\tlogging works$""")
 		)
 	}
+
+	//-----------------------------------------------------------------------------
+
+	test("LogValue takes single values") {
+		logHandler.reset()
+
+		INFO("string", 1, false)
+
+		assert(
+			logHandler.strings(0).matches("""^INFO\t\[.*\]\tLoggingTest.scala:\d+\tstring\t1\tfalse$""")
+		)
+	}
+
+	test("LogValue takes multi-values") {
+		logHandler.reset()
+
+		INFO("string", Vector(1, 1))
+
+		assert(
+			logHandler.strings(0).matches("""^INFO\t\[.*\]\tLoggingTest.scala:\d+\tstring\t1\t1$""")
+		)
+	}
 }

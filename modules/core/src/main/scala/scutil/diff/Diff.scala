@@ -32,7 +32,7 @@ object Diff {
 			ii <- 1.to(n)
 			jj <- 1.to(m)
 		} {
-			if (equal(a(ii-1), b(jj-1))) {
+			if equal(a(ii-1), b(jj-1)) then {
 				S(ii)(jj)	= S(ii-1)(jj-1) + 1
 				R(ii)(jj)	= DiffDirection.UpAndLeft
 			}
@@ -41,12 +41,12 @@ object Diff {
 				R(ii)(jj)	= DiffDirection.Neither
 			}
 
-			if (S(ii-1)(jj) >= S(ii)(jj)) {
+			if S(ii-1)(jj) >= S(ii)(jj) then {
 				S(ii)(jj)	= S(ii-1)(jj)
 				R(ii)(jj)	= DiffDirection.Up
 			}
 
-			if (S(ii)(jj-1) >= S(ii)(jj)) {
+			if S(ii)(jj-1) >= S(ii)(jj) then {
 				S(ii)(jj)	= S(ii)(jj-1)
 				R(ii)(jj)	= DiffDirection.Left
 			}
@@ -59,7 +59,7 @@ object Diff {
 		var diffs	= Vector.empty[Delta[T]]
 		var ii	= n
 		var jj	= m
-		while (ii > 0 || jj > 0) {
+		while ii > 0 || jj > 0 do {
 			R(ii)(jj) match {
 				case DiffDirection.UpAndLeft =>
 					ii		-= 1

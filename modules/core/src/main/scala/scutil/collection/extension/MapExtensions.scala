@@ -98,16 +98,18 @@ object MapExtensions {
 
 		/** None when the key does not exist */
 		def updatedAt(key:S, value:T):Option[Map[S,T]]	=
-			if (peer.contains(key))	Some(peer.updated(key, value))
-			else					None
+			if peer.contains(key)
+			then Some(peer.updated(key, value))
+			else None
 
 		/** map the value for a single key if it exists or insert a new value for this key */
 		def updatedByOrInserted(key:S, update:T=>T, insert: =>T):Map[S,T]	=
 			peer + (key -> peer.get(key).map(update).getOrElse(insert))
 
 		def putIfNotExist(key:S, value:T):(Map[S,T],Boolean)	=
-			if (peer.contains(key))	(peer, false)
-			else					(peer + (key -> value), true)
+			if peer.contains(key)
+			then (peer, false)
+			else (peer + (key -> value), true)
 
 		def storeAt(key:S):Option[Store[T,Map[S,T]]]	=
 			peer.get(key).map { item	=>

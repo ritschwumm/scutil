@@ -32,8 +32,9 @@ object PathExtensions {
 			Option(peer.getParent)
 
 		def nameOption(index:Int):Option[Path]	=
-			if (index >= 0 && index < peer.getNameCount)	Some(peer.getName(index))
-			else											None
+			if index >= 0 && index < peer.getNameCount
+			then Some(peer.getName(index))
+			else None
 
 		/** get a sub path or None if not possible */
 		def subpathOption(beginIndex:Int, endIndex:Int):Option[Path]	=
@@ -41,7 +42,7 @@ object PathExtensions {
 				beginIndex >= 0 && beginIndex < peer.getNameCount &&
 				endIndex > beginIndex &&
 				endIndex <= peer.getNameCount
-			) {
+			) then {
 				Some(peer.subpath(beginIndex, endIndex))
 			}
 			else None
@@ -57,10 +58,10 @@ object PathExtensions {
 		/** the path upwards from another Path to this Path */
 		def containsRecursive(that:Path):Option[Seq[String]]	= {
 			def loop(test:Path, path:Seq[String]):Option[Seq[String]]	=
-				if		(test == null)	None
-				else if	(test == peer)	Some(path)
+				if		(test == null)	then None
+				else if	(test == peer)	then Some(path)
 				// TODO path check using an empty string here makes sense
-				else					loop(test.getParent, Option(test.getFileName).map(_.toString).getOrElse("") +: path)
+				else	loop(test.getParent, Option(test.getFileName).map(_.toString).getOrElse("") +: path)
 			loop(that, Vector.empty)
 		}
 

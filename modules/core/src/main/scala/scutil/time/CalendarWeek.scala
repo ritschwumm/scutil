@@ -19,7 +19,7 @@ final case class CalendarWeek(number:Int, year:Int) extends Ordered[CalendarWeek
 	val yearValue	= Year(year)
 
 	require(number >= 1,						"expected number >= 1")
-	require(number <= yearValue.calendarWeeks,	s"expected number <= ${yearValue.calendarWeeks.toString} in a ${if(yearValue.longCalendarWeeks) "long" else "short"} year}")
+	require(number <= yearValue.calendarWeeks,	s"expected number <= ${yearValue.calendarWeeks.toString} in a ${if yearValue.longCalendarWeeks then "long" else "short"} year}")
 
 	def leaping:Boolean	= number == 53
 
@@ -32,12 +32,12 @@ final case class CalendarWeek(number:Int, year:Int) extends Ordered[CalendarWeek
 		this.firstDay.toJulianDay.until(that.firstDay.toJulianDay) / CalendarWeek.days
 
 	def compare(that:CalendarWeek):Int		= {
-		val	y	= this.year		`compare` that.year;	if (y != 0)	return y
-		val	n	= this.number	`compare` that.number;	if (n != 0)	return n
+		val	y	= this.year		`compare` that.year;	if y != 0	then return y
+		val	n	= this.number	`compare` that.number;	if n != 0	then return n
 		0
 	}
-	def min(that:CalendarWeek):CalendarWeek	= if (this < that) this else that
-	def max(that:CalendarWeek):CalendarWeek	= if (this > that) this else that
+	def min(that:CalendarWeek):CalendarWeek	= if this < that then this else that
+	def max(that:CalendarWeek):CalendarWeek	= if this > that then this else that
 
 	lazy val firstDay:GregorianDate	= gregorianDayAt(Weekday.Monday)
 	lazy val lastDay:GregorianDate	= gregorianDayAt(Weekday.Sunday)
@@ -57,5 +57,5 @@ final case class CalendarWeek(number:Int, year:Int) extends Ordered[CalendarWeek
 
 	override def toString:String	= s"KW${number.toString}/${year.toString}"
 
-	def toIso8601:String	= year.toString + "W" + (if (number <= 10) "0" else "") + number.toString
+	def toIso8601:String	= year.toString + "W" + (if number <= 10 then "0" else "") + number.toString
 }

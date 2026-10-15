@@ -44,8 +44,9 @@ object ComponentExtensions {
 
 		def underMousePointer:Boolean	= {
 			val	pi	= MouseInfo.getPointerInfo
-			if (pi != null)	containsScreenLocation(pi.getLocation )
-			else			false
+			if pi != null
+			then containsScreenLocation(pi.getLocation )
+			else false
 		}
 
 		/*

@@ -103,12 +103,12 @@ final case class Responder[T](unsafeRun:(T=>Unit)=>Unit) {
 
 	def filter(pred:T=>Boolean):Responder[T]	=
 		Responder { cont =>
-			unsafeRun(t => if (pred(t)) cont(t))
+			unsafeRun(t => if pred(t) then cont(t))
 		}
 
 	def filterNot(pred:T=>Boolean):Responder[T]	=
 		Responder { cont =>
-			unsafeRun(t => if (!pred(t)) cont(t))
+			unsafeRun(t => if !pred(t) then cont(t))
 		}
 
 	def concat(that:Responder[T]):Responder[T]	=
@@ -178,12 +178,12 @@ final case class Responder[T](unsafeRun:(T=>Unit)=>Unit) {
 			var batch	= Vector.empty[T]
 			unsafeRun { item =>
 				batch	:+= item
-				if (batch.size >= size) {
+				if batch.size >= size then {
 					cont(batch)
 					batch	= Vector.empty
 				}
 			}
-			if (batch.nonEmpty) {
+			if batch.nonEmpty then {
 				cont(batch)
 			}
 		}

@@ -46,7 +46,7 @@ object External {
 final class External(proc:Process, out:Thunk[Seq[String]], err:Thunk[Seq[String]]) {
 	/** may throw exceptions when reading stdout and stderr of the process failed  */
 	def result(destroy:Boolean):ExternalResult	= {
-		if (destroy) {
+		if destroy then {
 			proc.destroy()
 		}
 		// avoid memory leak, see http://developer.java.sun.com/developer/qow/archive/68/

@@ -23,12 +23,11 @@ final case class Year(value:Int) extends Ordered[Year] {
 	def until(that:Year):Int	= that.value - this.value
 
 	def compare(that:Year):Int	= this.value compare that.value
-	def min(that:Year):Year		= if (this < that) this else that
-	def max(that:Year):Year		= if (this > that) this else that
+	def min(that:Year):Year		= if this < that then this else that
+	def max(that:Year):Year		= if this > that then this else that
 
 	def days:Int	=
-		if (gregorianLeap)	366
-		else				365
+		if gregorianLeap then 366 else 365
 
 	lazy val firstDay:GregorianDate	= GregorianDate(1,	1,	value)
 	lazy val lastDay:GregorianDate	= GregorianDate(31,	12,	value)
@@ -40,8 +39,7 @@ final case class Year(value:Int) extends Ordered[Year] {
 	lazy val lastCalendarWeek:CalendarWeek	= calendarWeekAt(calendarWeeks)
 
 	def calendarWeeks:Int	=
-		if (longCalendarWeeks)	53
-		else					52
+		if longCalendarWeeks	then 53	else 52
 
 	lazy val longCalendarWeeks:Boolean	=
 		Year.longYears.contains(moduloInt(value, 2000))

@@ -13,9 +13,9 @@ object ReaderExtensions {
 		def readExactly(buffer:Array[Char]):Int	= {
 			val length	= buffer.length
 			var offset	= 0
-			while (offset < length) {
+			while offset < length do {
 				val	read	= peer.read(buffer, offset, length-offset)
-				if (read == -1)	return offset
+				if read == -1	then return offset
 				offset	+= read
 			}
 			offset
@@ -24,9 +24,9 @@ object ReaderExtensions {
 		def readLimited(length:Int):Option[String]	= {
 			val	buffer	= new Array[Char](length)
 			val found	= peer.read(buffer)
-			if		(found == -1)	None
-			else if	(found == 0)	Some("")
-			else					Some(new String(buffer, 0, found))
+			if		found == -1	then	None
+			else if	found == 0	then	Some("")
+			else						Some(new String(buffer, 0, found))
 		}
 
 		/** read the complete content */
@@ -34,10 +34,11 @@ object ReaderExtensions {
 			val	buffer	= new Array[Char](blockSize)
 			val out		= new StringBuilder
 			var	running	= true
-			while (running) {
+			while running do {
 				val	len	= peer.read(buffer)
-				if (len != -1)	out.appendAll(buffer, 0, len)
-				else			running	= false
+				if len != -1
+				then out.appendAll(buffer, 0, len)
+				else running	= false
 			}
 			out.toString
 		}
@@ -45,9 +46,9 @@ object ReaderExtensions {
 		/** skip as much as desired if possible, return how much */
 		def skipExactly(count:Long):Long	= {
 			var done	= 0L
-			while (done < count) {
+			while done < count do {
 				val len	= peer.skip(count - done)
-				if (len == -1)	return done
+				if len == -1	then return done
 				done	+= len
 			}
 			done
@@ -57,9 +58,9 @@ object ReaderExtensions {
 		def skipFully():Unit = {
 			val	buffer	= new Array[Char](blockSize)
 			var running	= true
-			while (running) {
+			while running do {
 				val len = peer.read(buffer)
-				if (len == -1)	running	= false
+				if len == -1	then running	= false
 			}
 		}
 
@@ -70,10 +71,11 @@ object ReaderExtensions {
 			val in		= new BufferedReader(peer)
 			val buffer	= new mutable.ArrayBuffer[String]
 			var running	= true
-			while (running) {
+			while running do {
 				val	line	= in.readLine
-				if (line != null)	buffer	+= line
-				else				running	= false
+				if line != null
+				then buffer	+= line
+				else running	= false
 			}
 			buffer.toVector
 		}

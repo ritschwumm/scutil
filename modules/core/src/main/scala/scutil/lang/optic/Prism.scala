@@ -26,7 +26,7 @@ object Prism {
 
 	def filtered[T](pred:T=>Boolean):Prism[T,T]	=
 		Prism(
-			it => if (pred(it)) Some(it) else None,
+			it => if pred(it) then Some(it) else None,
 			Predef.identity
 		)
 
@@ -155,7 +155,7 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 	/** filter the source value */
 	def filterBefore(pred:Predicate[S]):Prism[S,T]	=
 		Prism(
-			get	= s	=> if (pred(s)) get(s) else None,
+			get	= s	=> if pred(s) then get(s) else None,
 			set	= set
 		)
 

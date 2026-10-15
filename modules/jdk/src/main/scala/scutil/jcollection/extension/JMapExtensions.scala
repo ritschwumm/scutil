@@ -9,7 +9,7 @@ object JMapExtensions {
 		def toHashMap:Map[K,V]	= {
 			var out		= HashMap.empty[K,V]
 			val keyIter	= peer.keySet.iterator
-			while (keyIter.hasNext) {
+			while keyIter.hasNext do {
 				val key		= keyIter.next
 				val value	= peer.get(key)
 				out	+= (key -> value)

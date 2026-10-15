@@ -31,14 +31,14 @@ object Io extends IoInstancesLow {
 
 	def forever(action:Io[Unit]):Io[Unit]	=
 		delay {
-			while (true) {
+			while true do {
 				action.unsafeRun()
 			}
 		}
 
 	def loopWhile(action:Io[Boolean]):Io[Unit]	=
 		delay {
-			while (action.unsafeRun()) {}
+			while action.unsafeRun() do {}
 		}
 
 	def loopTo[T](action:Io[Option[T]]):Io[T]	= {

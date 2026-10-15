@@ -18,7 +18,7 @@ object DoubleUtil {
 
 	inline def denormal(it:Double):Boolean	= it != 0d && JMath.getExponent(it) == JDouble.MIN_EXPONENT - 1
 
-	inline def ftz(it:Double):Double	= if (denormal(it))	0d else it
+	inline def ftz(it:Double):Double	= if denormal(it) then 0d else it
 
 	def bits(it:Double):(Boolean,Long,Short)	= {
 		// positive infinity	0x7ff0000000000000L

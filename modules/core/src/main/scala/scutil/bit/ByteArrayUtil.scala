@@ -5,7 +5,7 @@ object ByteArrayUtil {
 		val l	= value.length
 		val	out	= new Array[Byte](l)
 		var i	= 0
-		while (i < l) {
+		while i < l do {
 			out(i)	= value(l-i-1)
 			i	+= 1
 		}

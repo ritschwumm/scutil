@@ -2,12 +2,14 @@ package scutil.gui.geom
 
 object SgOrientation {
 	def trueHorizontal(horizontal:Boolean):SgOrientation	=
-		if (horizontal)	SgOrientation.Horizontal
-		else			SgOrientation.Vertical
+		if horizontal
+		then SgOrientation.Horizontal
+		else SgOrientation.Vertical
 
 	def trueVertical(vertical:Boolean):SgOrientation	=
-		if (vertical)	SgOrientation.Vertical
-		else			SgOrientation.Horizontal
+		if vertical
+		then SgOrientation.Vertical
+		else SgOrientation.Horizontal
 }
 
 enum SgOrientation {

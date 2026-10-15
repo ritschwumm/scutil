@@ -16,8 +16,9 @@ import scutil.time.*
 
 object MoreFiles {
 	def optionExists(path:Path):Option[Path]	=
-		if (Files.exists(path))	Some(path)
-		else					None
+		if Files.exists(path)
+		then Some(path)
+		else None
 
 	//------------------------------------------------------------------------------
 	//## modification time
@@ -97,7 +98,7 @@ object MoreFiles {
 				}
 
 				override def postVisitDirectory(dir:Path, e:IOException):FileVisitResult	= {
-					if (e != null)	throw e
+					if e != null	then throw e
 					Files.delete(dir)
 					FileVisitResult.CONTINUE
 				}
@@ -110,7 +111,7 @@ object MoreFiles {
 
 	/** list files in this directory */
 	def listFilesWhere(directory:Path, predicate:Path=>Boolean):Option[Vector[Path]]	=
-		if (Files.isDirectory(directory)) {
+		if Files.isDirectory(directory) then {
 			var	out	= Vector.empty[Path]
 
 			Files.walkFileTree(
@@ -119,14 +120,14 @@ object MoreFiles {
 				1,
 				new SimpleFileVisitor[Path] {
 					override def preVisitDirectory(dir:Path, attrs:BasicFileAttributes)	= {
-						if (dir != directory && predicate(dir)) {
+						if dir != directory && predicate(dir) then {
 							out	= out :+ dir
 						}
 						FileVisitResult.CONTINUE
 					}
 
 					override def visitFile(file:Path, attrs:BasicFileAttributes)	= {
-						if (predicate(file)) {
+						if predicate(file) then {
 							out	= out :+ file
 						}
 						FileVisitResult.CONTINUE

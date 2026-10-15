@@ -12,7 +12,7 @@ object Hashing {
 		val digest	= MessageDigest.getInstance(digestAlgorithm)
 		var trip	= bytes.unsafeValue
 		var round	= 0
-		while (round < roundCount) {
+		while round < roundCount do{
 			digest.update(trip)
 			trip	= digest.digest()
 			round	+= 1

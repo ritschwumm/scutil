@@ -77,15 +77,15 @@ object AnyExtensions {
 
 		/** Some if the predicate matches, else None */
 		def optionBy(predicate:T=>Boolean):Option[T]	=
-			if (predicate(peer)) Some(peer) else None
+			if predicate(peer) then Some(peer) else None
 
 		/** None if the predicate matches, else Some */
 		def optionNotBy(predicate:T=>Boolean):Option[T]	=
-			if (predicate(peer)) None else Some(peer)
+			if predicate(peer) then None else Some(peer)
 
 		/** Right if the predicate matches, else Left */
 		def eitherBy(predicate:T=>Boolean):Either[T,T]	=
-			if (predicate(peer)) Right(peer) else Left(peer)
+			if predicate(peer) then Right(peer) else Left(peer)
 
 		/** Right if Some else original value in Left */
 		def rightBy[U](func:T=>Option[U]):Either[T,U]	=
@@ -156,8 +156,9 @@ object AnyExtensions {
 		/** apply until the value doesn't change any more */
 		def fixpoint(func:T=>T, equal:(T,T)=>Boolean):T	=
 			tailFold[T,T](func) { (a,b) =>
-				if (equal(a,b))	Right(a)
-				else			Left(b)
+				if equal(a, b)
+				then Right(a)
+				else Left(b)
 			}
 
 		/** apply until the value becomes None */

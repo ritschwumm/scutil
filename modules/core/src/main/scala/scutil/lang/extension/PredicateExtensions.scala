@@ -16,21 +16,21 @@ object PredicateExtensions {
 		//------------------------------------------------------------------------------
 
 		def optionOn[S<:T,U](function:S=>U):S=>Option[U]	=
-			it	=> if (peer(it))	Some(function(it))	else None
+			it	=> if peer(it)	then Some(function(it))	else None
 
 		def optionNotOn[S<:T,U](function:S=>U):S=>Option[U]	=
-			it	=> if (!peer(it))	Some(function(it))	else None
+			it	=> if !peer(it)	then Some(function(it))	else None
 
 		def flatOptionOn[S<:T,U](function:S=>Option[U]):S=>Option[U]	=
-			it	=> if (peer(it))	function(it)	else None
+			it	=> if peer(it)	then function(it)	else None
 
 		def flatOptionNotOn[S<:T,U](function:S=>Option[U]):S=>Option[U]	=
-			it	=> if (!peer(it))	function(it)	else None
+			it	=> if !peer(it)	then function(it)	else None
 
 		def eitherOn[S<:T,UL,UR](left:S=>UL, right:S=>UR):S=>Either[UL,UR]	=
-			it	=> if (peer(it))	Left(left(it))	else	Right(right(it))
+			it	=> if peer(it)	then Left(left(it))	else	Right(right(it))
 
 		def validatedOn[S<:T,UL,UR](invalid:S=>UL, valid:S=>UR):S=>Validated[UL,UR]	=
-			it	=> if (peer(it))	Validated.invalid(invalid(it))	else	Validated.valid(valid(it))
+			it	=> if peer(it)	then Validated.invalid(invalid(it))	else	Validated.valid(valid(it))
 	}
 }

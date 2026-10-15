@@ -92,14 +92,15 @@ object DndFileImport {
 		private def fileFromURI1(s:String):Either[Exception,File]	=
 			Catch.exception.in {
 				val uri	= new URI(s)
-				if (uri.getScheme != null)	new File(uri)
-				else						new File(s)
+				if uri.getScheme != null
+				then new File(uri)
+				else new File(s)
 			}
 
 		private def fileFromURI2(s:String):Either[Exception,File]	=
 			Catch.exception.in {
 				val file	= new File(s)
-				if (!file.exists)	throw new FileNotFoundException(s"file does not exist: ${file.toString}")
+				if !file.exists	then throw new FileNotFoundException(s"file does not exist: ${file.toString}")
 				file
 			}
 

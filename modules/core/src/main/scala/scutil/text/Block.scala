@@ -62,9 +62,9 @@ object Block {
 				.filter		{ idx => allBlank(unixPart.substring(idx+1, unixPart.length)) }
 				.getOrElse	(unixPart.length)
 
-			if		(front == 0 && behind == unixPart.length)	unixPart
-			else if	(front > behind)							""
-			else												unixPart.substring(front, behind)
+			if		front == 0 && behind == unixPart.length	then	unixPart
+			else if	(front > behind)						then	""
+			else													unixPart.substring(front, behind)
 		}
 
 	private def unindent(indented:String):String	= {
@@ -73,15 +73,16 @@ object Block {
 		val relevantIndents:Seq[String]	=
 			indentedLines.filter(_.nonEmpty).map(indentOf)
 
-		if (relevantIndents.nonEmpty) {
+		if relevantIndents.nonEmpty then {
 			// reduce is legal here, we a relevantIndent
 			@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 			val commonIndentSize:Int	= relevantIndents.reduce(commonPrefix).length
 
 			indentedLines
 			.map { line =>
-				if (line.length >= commonIndentSize)	line.substring(commonIndentSize)
-				else									""
+				if line.length >= commonIndentSize
+				then line.substring(commonIndentSize)
+				else ""
 			}
 			.mkString ("\n")
 		}
@@ -90,7 +91,7 @@ object Block {
 
 	private def commonPrefix(a:String, b:String):String	= {
 		var	i	= 0
-		while (i < a.length && i < b.length && a.charAt(i) == b.charAt(i))	i	+= 1
+		while i < a.length && i < b.length && a.charAt(i) == b.charAt(i) do i	+= 1
 		a.substring(0, i)
 	}
 

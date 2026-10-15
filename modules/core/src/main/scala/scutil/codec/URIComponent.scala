@@ -24,9 +24,9 @@ final class URIComponent(charset:Charset) {
 		val bytes	= s.getBytes(charset)
 		val out		= new StringBuilder
 		var i	= 0
-		while (i < bytes.length) {
+		while i < bytes.length do {
 			val byte	= bytes(i)
-			if (safe(byte)) {
+			if safe(byte) then {
 				out.append(byte.toChar)
 			}
 			else {
@@ -40,8 +40,9 @@ final class URIComponent(charset:Charset) {
 	}
 
 	inline private def encodeNibble(nibble:Int):Char =
-		if (nibble < 10)	(nibble + '0'		).toChar
-		else				(nibble + 'A' - 10	).toChar
+		if nibble < 10
+		then (nibble + '0'		).toChar
+		else (nibble + 'A' - 10	).toChar
 
 	inline private def safe(byte:Int):Boolean =
 		byte >= 'a' && byte <= 'z'	||
@@ -63,19 +64,19 @@ final class URIComponent(charset:Charset) {
 	def decode(s:String):Either[URIComponentProblem,String]	= {
 		val b	= new mutable.ArrayBuffer[Byte]
 		var i	= 0
-		while (i<s.length) {
+		while i < s.length do {
 			val c	= s.charAt(i)
-			if (c >= 256)	return Left(URIComponentProblem.Invalid(i))
-			else if (c == '%') {
+			if c >= 256	then return Left(URIComponentProblem.Invalid(i))
+			else if (c == '%') then {
 				i	+= 1
-				if (i >= s.length)	return Left(URIComponentProblem.Invalid(i))
+				if i >= s.length	then return Left(URIComponentProblem.Invalid(i))
 				val n1	= decodeNibble(s.charAt(i))
-				if (n1 == -1)		return Left(URIComponentProblem.Invalid(i))
+				if n1 == -1			then return Left(URIComponentProblem.Invalid(i))
 
 				i	+= 1
-				if (i >= s.length)	return Left(URIComponentProblem.Invalid(i))
+				if i >= s.length	then return Left(URIComponentProblem.Invalid(i))
 				val n2	= decodeNibble(s.charAt(i))
-				if (n2 == -1)		return Left(URIComponentProblem.Invalid(i))
+				if n2 == -1			then return Left(URIComponentProblem.Invalid(i))
 
 				b	+= ((n1 << 4) | (n2 << 0)).toByte
 				i	+= 1
@@ -89,8 +90,8 @@ final class URIComponent(charset:Charset) {
 	}
 
 	private def decodeNibble(nibble:Char):Int	=
-		if		(nibble >= '0' && nibble <= '9')	nibble - '0'
-		else if	(nibble >= 'a' && nibble <= 'f')	nibble - 'a' + 10
-		else if	(nibble >= 'A' && nibble <= 'F')	nibble - 'A' + 10
-		else										-1
+		if		nibble >= '0' && nibble <= '9' then	nibble - '0'
+		else if	nibble >= 'a' && nibble <= 'f' then	nibble - 'a' + 10
+		else if	nibble >= 'A' && nibble <= 'F' then	nibble - 'A' + 10
+		else -1
 }

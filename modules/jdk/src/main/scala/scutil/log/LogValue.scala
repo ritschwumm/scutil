@@ -1,19 +1,17 @@
 package scutil.log
 
-import scala.language.implicitConversions
-
 import scutil.lang.*
 import scutil.lang.tc.Show
 
 object LogValue {
-	implicit def StringAsLogValue(it:String):LogValue			= string(it)
-	implicit def ThrowableAsLogValue(it:Throwable):LogValue		= throwable(it)
-	implicit def MultipleAsLogValue(it:Seq[LogValue]):LogValue	= multiple(it)
+	given Conversion[String, LogValue]			= LogValue.string
+	given Conversion[Throwable, LogValue]		= LogValue.throwable
+	given Conversion[Seq[LogValue], LogValue]	= LogValue.multiple
 
-	implicit def ShowAsLogValue[T:Show](it:T):LogValue			= show(it)
+	given [T:Show]	=> Conversion[T, LogValue]	= show
 
-	implicit def IterableShowAsLogValue[T:Show](it:Iterable[T]):LogValue	= LogValue.multiple(it.toVector.map(show))
-	implicit def NesShowAsLogValue[T:Show](it:Nes[T]):LogValue				= IterableShowAsLogValue(it.toSeq)
+	given [T:Show as S]	=> Conversion[Iterable[T], LogValue]	= it => LogValue.multiple(it.toVector.map(show))
+	given [T:Show as S]	=> Conversion[Nes[T], LogValue]			= it => LogValue.multiple(it.toVector.map(show))
 
 	//------------------------------------------------------------------------------
 

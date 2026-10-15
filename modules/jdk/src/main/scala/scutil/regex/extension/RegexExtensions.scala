@@ -23,7 +23,7 @@ object RegexExtensions {
 		def quoteCharacterClass(str:String):String	= {
 			val b	= new StringBuilder
 			var i	= 0
-			while (i < str.length) {
+			while i < str.length do {
 				val c	= str.charAt(i)
 				c match {
 					case '\\' | '-' | '^' | '[' | ']'	=> b.append('\\')

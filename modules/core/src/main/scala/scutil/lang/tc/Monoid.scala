@@ -32,7 +32,7 @@ trait Monoid[F] extends Semigroup[F] {
 	def times(item:F, count:Int):F	= {
 		var accu	= empty
 		var i		= 0
-		while (i < count) {
+		while i < count do {
 			accu	= combine(accu, item)
 			i		+= 1
 		}

@@ -11,7 +11,7 @@ object Text {
 		val	out	= new StringBuilder
 		var col	= 0
 		var i	= 0
-		while (i < text.length) {
+		while i < text.length do {
 			text.charAt(i) match {
 				case '\r'	=>
 					out.append('\r')
@@ -66,8 +66,9 @@ object Text {
 		val bottomRuler	= widths.map { width => "─" * width }.mkString ("└", "┴", "┘")
 
 		val spersed	=
-			if (lines.isEmpty)	Vector.empty[String]
-			else				lines.flatMap{ it => Vector(it, midRuler) }.dropRight(1)
+			if lines.isEmpty
+			then Vector.empty[String]
+			else lines.flatMap{ it => Vector(it, midRuler) }.dropRight(1)
 
 		Vector(topRuler) ++ spersed ++ Vector(bottomRuler)
 	}

@@ -6,7 +6,7 @@ object DefaultLogHandler extends DefaultLogHandler
 
 trait DefaultLogHandler extends LogHandler {
 	def handle(event:LogEvent):Unit = {
-		if (accept(event)) {
+		if accept(event) then {
 			print(formatter.format(event))
 		}
 	}

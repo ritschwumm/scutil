@@ -16,8 +16,9 @@ object OptionExtensions {
 		def some[T](it:T):Option[T]	= Some(it)
 
 		def switch[T](condition:Boolean, trueSome: =>T):Option[T]	=
-			if (condition)	Some(trueSome)
-			else			None
+			if condition
+			then Some(trueSome)
+			else None
 	}
 
 	extension [T](peer:Option[T]) {
@@ -71,7 +72,7 @@ object OptionExtensions {
 		}
 
 		def noneEffect(effect: =>Unit):Option[T] = {
-			if (peer.isEmpty)  effect
+			if peer.isEmpty then effect
 			peer
 		}
 

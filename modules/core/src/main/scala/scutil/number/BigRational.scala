@@ -23,11 +23,12 @@ object BigRational {
 	//------------------------------------------------------------------------------
 
 	def apply(numerator:JBigInteger, denominator:JBigInteger):Option[BigRational] =
-		if (denominator != JBigInteger.ZERO)	Some(new BigRational(numerator, denominator))
-		else									None
+		if denominator != JBigInteger.ZERO
+		then Some(new BigRational(numerator, denominator))
+		else None
 
 	def fromLongs(numerator:Long, denominator:Long):Option[BigRational] =
-		if (denominator != 0L) {
+		if denominator != 0L then {
 			Some(new BigRational(
 				JBigInteger.valueOf(numerator),
 				JBigInteger.valueOf(denominator)
@@ -81,14 +82,16 @@ object BigRational {
 
 /** an immutable, auto-simplifying BigInteger fraction */
 final class BigRational private (_numerator:JBigInteger, _denominator:JBigInteger) extends JNumber with Ordered[BigRational] {
-	if (_denominator == JBigInteger.ZERO)	throw new ArithmeticException("denominator must not be zero")
+	if _denominator == JBigInteger.ZERO	then throw new ArithmeticException("denominator must not be zero")
 
 	// simplify
 	val (numerator, denominator) = {
 		val gcd	= _numerator.gcd(_denominator)
 		(
-			(	if (_denominator.signum == -1)	_numerator.negate
-				else							_numerator
+			(
+				if _denominator.signum == -1
+				then _numerator.negate
+				else _numerator
 			).divide(gcd),
 			_denominator.abs.divide(gcd)
 		)
@@ -103,32 +106,32 @@ final class BigRational private (_numerator:JBigInteger, _denominator:JBigIntege
 	//## calculation
 
 	def +(that:BigRational):BigRational =
-		if		(this == BigRational.zero)	that
-		else if	(that == BigRational.zero)	this
+		if		this == BigRational.zero	then that
+		else if	that == BigRational.zero	then this
 		else new BigRational(
 			this.numerator.multiply(that.denominator) `add` this.denominator.multiply(that.numerator),
 			this.denominator.multiply(that.denominator)
 		)
 
 	def -(that:BigRational):BigRational =
-		if		(this == BigRational.zero)	that.negate
-		else if	(that == BigRational.zero)	this
+		if		this == BigRational.zero	then that.negate
+		else if	that == BigRational.zero	then this
 		else new BigRational(
 			this.numerator.multiply(that.denominator) `subtract` this.denominator.multiply(that.numerator),
 			this.denominator.multiply(that.denominator)
 		)
 
 	def *(that:BigRational):BigRational =
-		if		(this == BigRational.one)	that
-		else if	(that == BigRational.one)	this
+		if		this == BigRational.one		then that
+		else if	that == BigRational.one		then this
 		else new BigRational(
 			this.numerator		.multiply (that.numerator),
 			this.denominator	.multiply (that.denominator)
 		)
 
 	def /(that:BigRational):BigRational =
-		if		(this == BigRational.one)	that.reciprocal
-		else if	(that == BigRational.one)	this
+		if		this == BigRational.one		then that.reciprocal
+		else if	that == BigRational.one		then this
 		else new BigRational(
 			this.numerator		.multiply (that.denominator),
 			this.denominator	.multiply (that.numerator)
@@ -138,7 +141,7 @@ final class BigRational private (_numerator:JBigInteger, _denominator:JBigIntege
 
 	/** additive inverse */
 	def negate:BigRational =
-		if (this == BigRational.zero)	this
+		if this == BigRational.zero	then this
 		else new BigRational(
 			numerator.negate,
 			denominator
@@ -146,7 +149,7 @@ final class BigRational private (_numerator:JBigInteger, _denominator:JBigIntege
 
 	/** multiplicative inverse */
 	def reciprocal:BigRational =
-		if (this == BigRational.zero)	this
+		if this == BigRational.zero	then this
 		else new BigRational(
 			denominator,
 			numerator
@@ -154,8 +157,9 @@ final class BigRational private (_numerator:JBigInteger, _denominator:JBigIntege
 
 	/** absolute value */
 	def abs:BigRational =
-		if (signum >= 0)	this
-		else				negate
+		if signum >= 0
+		then this
+		else negate
 
 	/** -1 for negative, 0 for zero, +1 for positive */
 	def signum:Int	= numerator.compareTo(JBigInteger.ZERO)
@@ -171,12 +175,13 @@ final class BigRational private (_numerator:JBigInteger, _denominator:JBigIntege
 	//------------------------------------------------------------------------------
 	//## comparison
 
-	def min(that:BigRational):BigRational = if (this < that) this else that
-	def max(that:BigRational):BigRational = if (this > that) this else that
+	def min(that:BigRational):BigRational = if this < that then this else that
+	def max(that:BigRational):BigRational = if this > that then this else that
 
 	def compare(that:BigRational):Int =
-		if (this == that)	0
-		else				(this.numerator.multiply(that.denominator)).compareTo(that.numerator.multiply(this.denominator))
+		if this == that
+		then 0
+		else this.numerator.multiply(that.denominator) `compareTo` that.numerator.multiply(this.denominator)
 
 	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 	override def equals(that:Any)	=

@@ -13,8 +13,9 @@ object Weekday {
 
 	def ordering(first:Weekday):Ordering[Weekday]	=
 		Ordering[Int] on { weekday =>
-			if (weekday.index >= first.index)	weekday.index
-			else								weekday.index + count
+			if weekday.index >= first.index
+			then weekday.index
+			else weekday.index + count
 		}
 
 	//------------------------------------------------------------------------------

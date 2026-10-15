@@ -14,7 +14,7 @@ object Extractor {
 		Extractor(func.lift)
 
 	def filtered[T](pred:Predicate[T]):Extractor[T,T]	=
-		Extractor(it => if (pred(it)) Some(it) else None)
+		Extractor(it => if pred(it) then Some(it) else None)
 
 	def identity[T]:Extractor[T,T]	=
 		Extractor(Some.apply)
@@ -65,7 +65,7 @@ final case class Extractor[S,T](read:S=>Option[T]) {
 		Extractor(s	=> read(s).filter(pred))
 
 	def contraFilter(pred:S=>Boolean):Extractor[S,T]	=
-		Extractor(s	=> if (pred(s))	read(s)	else None)
+		Extractor(s	=> if pred(s) then read(s) else None)
 
 	def toPFunction:S=>Option[T]	=
 		s => read(s)

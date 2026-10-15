@@ -18,7 +18,7 @@ object FloatUtil {
 
 	inline def denormal(it:Float):Boolean	= it != 0f && JMath.getExponent(it) == JFloat.MIN_EXPONENT - 1
 
-	inline def ftz(it:Float):Float	= if (denormal(it))	0f else it
+	inline def ftz(it:Float):Float	= if denormal(it) then 0f else it
 
 	def bits(it:Float):(Boolean,Int,Short)	= {
 		// positive infinity	0x7f800000

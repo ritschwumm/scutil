@@ -14,7 +14,7 @@ object OptionT {
 		OptionT(M.pure(it))
 
 	def switch[F[_]:Applicative,T](condition:Boolean, trueSome: =>T):OptionT[F,T]	=
-		fromOption(if (condition) Some(trueSome) else None)
+		fromOption(if condition then Some(trueSome) else None)
 
 	//------------------------------------------------------------------------------
 

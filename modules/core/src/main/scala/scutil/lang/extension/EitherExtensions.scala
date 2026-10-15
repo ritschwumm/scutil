@@ -13,8 +13,9 @@ object EitherExtensions {
 		//------------------------------------------------------------------------------
 
 		def notNull[T<:AnyRef](it:T):Either[Null,T]	=
-			if (it eq null)	Left(null)
-			else			Right(it)
+			if it eq null
+			then Left(null)
+			else Right(it)
 
 		// Either.cond with flipped arguments
 		def switch[L,R](condition:Boolean, falseLeft: =>L, trueRight: =>R):Either[L,R]	=
@@ -160,13 +161,13 @@ object EitherExtensions {
 		def rightByOr[LL>:L](func:Predicate[R], fail: =>LL):Either[LL,R]	=
 			peer match {
 				case Left(x)	=> Left(x)
-				case Right(x)	=> if (func(x)) Right(x) else Left(fail)
+				case Right(x)	=> if func(x) then Right(x) else Left(fail)
 			}
 
 		def rightNotByOr[LL>:L](func:Predicate[R], fail: =>LL):Either[LL,R]	=
 			peer match {
 				case Left(x)	=> Left(x)
-				case Right(x)	=> if (!func(x)) Right(x) else Left(fail)
+				case Right(x)	=> if !func(x) then Right(x) else Left(fail)
 			}
 
 		def collapseOr[LL>:L,RR](func:R=>Option[RR], fail: =>LL):Either[LL,RR]	=

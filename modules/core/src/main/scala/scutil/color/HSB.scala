@@ -21,7 +21,7 @@ final case class HSB(h:Float, s:Float, b:Float) {
 		HSBA(this, alpha)
 
 	def toRGB:RGB	= {
-		if (s == 0)	return RGB(b, b, b)
+		if s == 0	then return RGB(b, b, b)
 
 		val	H	= (h - floor(h).toFloat) * 6f
 		val F	= H - floor(H).toFloat

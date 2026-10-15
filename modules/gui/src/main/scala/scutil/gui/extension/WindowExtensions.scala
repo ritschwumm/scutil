@@ -12,10 +12,10 @@ object WindowExtensions {
 			val screen	= geomConversion.Rectangle_IntRect(peer.getGraphicsConfiguration.getBounds)
 
 			def restrict(frame:IntSpan, screen:IntSpan):IntSpan	=
-				if		(frame.size		> screen.size)	screen
-				else if (frame.start	< screen.start)	IntSpan.startSize(screen.start,				frame.size)
-				else if (frame.end		> screen.end)	IntSpan.startSize(screen.end - frame.size,	frame.size)
-				else									frame
+				if		frame.size	> screen.size	then	screen
+				else if frame.start	< screen.start	then	IntSpan.startSize(screen.start,				frame.size)
+				else if frame.end	> screen.end	then	IntSpan.startSize(screen.end - frame.size,	frame.size)
+				else										frame
 
 			val bounds	=
 				IntRect.horizontalWithVertical(

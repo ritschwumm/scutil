@@ -25,8 +25,8 @@ enum LogLevel extends Ordered[LogLevel] {
 	case FATAL
 
 	def compare(that:LogLevel):Int	= this.ordinal compare that.ordinal
-	def min(that:LogLevel):LogLevel	= if (this < that) this else that
-	def max(that:LogLevel):LogLevel	= if (this > that) this else that
+	def min(that:LogLevel):LogLevel	= if this < that then this else that
+	def max(that:LogLevel):LogLevel	= if this > that then this else that
 }
 
 // necessary because we use log levels to extend them with the actual log functions

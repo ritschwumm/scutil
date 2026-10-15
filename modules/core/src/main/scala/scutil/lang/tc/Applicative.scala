@@ -39,8 +39,9 @@ trait Applicative[F[_]] extends Functor[F] {
 	// TODO allow F[T] forall T for these?
 
 	def whenA(cond:Boolean)(value: =>F[Unit]):F[Unit]	=
-		if (cond)	value
-		else		unit
+		if cond
+		then value
+		else unit
 
 	def unlessA(cond:Boolean)(value: =>F[Unit]):F[Unit]	=
 		whenA(!cond)(value)

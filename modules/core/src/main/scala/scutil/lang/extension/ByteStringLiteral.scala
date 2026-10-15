@@ -18,7 +18,7 @@ object ByteStringLiteral {
 
 	private def bytesImpl(context:Expr[StringContext])(using Quotes):Expr[ByteString]	=
 		GenericLiteral.build(context){ literal =>
-			if (validRe.matches(literal)) {
+			if validRe.matches(literal) then {
 				val deblanked	= literal.replaceAll("\\s", "")
 				Hex.decodeByteString(deblanked).toRight("not a valid ByteString literal")
 			}

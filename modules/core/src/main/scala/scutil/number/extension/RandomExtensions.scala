@@ -9,7 +9,7 @@ object RandomExtensions {
 		def string(alphabet:String, length:Int):String	= {
 			val	out	= new StringBuilder
 			var i	= 0
-			while (i < length) {
+			while i < length do {
 				out	+= alphabet(peer.nextInt(alphabet.length))
 				i	+= 1
 			}
