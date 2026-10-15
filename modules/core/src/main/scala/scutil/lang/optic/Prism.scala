@@ -43,7 +43,7 @@ object Prism {
 	//## typeclass instances
 
 	// TODO optics is this lawful?
-	given PrismSemigroup[S,T]:Semigroup[Prism[S,T]]	=
+	given [S,T] => Semigroup[Prism[S,T]]	=
 		Semigroup.instance(_ `orElse` _)
 }
 

@@ -77,20 +77,20 @@ object Io extends IoInstancesLow {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	given IoMonoid[T](using F:Monoid[T]):Monoid[Io[T]]	=
+	given [T] => (F:Monoid[T]) => Monoid[Io[T]]	=
 		new Monoid[Io[T]] {
 			def empty:Io[T]						= Io.pure(F.empty)
 			def combine(a:Io[T], b:Io[T]):Io[T]	= a.map2(b)(F.combine)
 		}
 
-	given IoMonad:Monad[Io]	=
+	given Monad[Io]	=
 		new Monad[Io] {
 			override def pure[A](it:A):Io[A]							= Io.pure(it)
 			override def map[A,B](it:Io[A])(func:A=>B):Io[B]			= it.map(func)
 			override def flatMap[A,B](it:Io[A])(func:A=>Io[B]):Io[B]	= it.flatMap(func)
 		}
 
-	given IoDelay:Delay[Io]	=
+	given Delay[Io]	=
 		new Delay[Io] {
 			override def delay[T](it: =>T):Io[T]	= Io.delay(it)
 		}
@@ -186,7 +186,7 @@ enum Io[T] {
 
 trait IoInstancesLow {
 	/** this exists for cases where we only have a Semigroup for T and not a full Monoid */
-	given IoSemigroup[T](using F:Semigroup[T]):Semigroup[Io[T]]	=
+	given [T] => (F:Semigroup[T]) => Semigroup[Io[T]]	=
 		new Semigroup[Io[T]] {
 			def combine(a:Io[T], b:Io[T]):Io[T]	= a.map2(b)(F.combine)
 		}

@@ -19,15 +19,15 @@ object Extractor {
 	def trivial[T]:Extractor[T,Any]	=
 		Extractor(constant(None))
 
-	given ExtractorFunctor[S]:Functor[Extractor[S,_]]	=
+	//------------------------------------------------------------------------------
+	//## typeclass instances
+
+	given [S] => Functor[Extractor[S,_]]	=
 		new Functor[Extractor[S,_]] {
 			def map[A,B](it:Extractor[S,A])(func:A=>B):Extractor[S,B]	= it.map(func)
 		}
 
-	//------------------------------------------------------------------------------
-	//## typeclass instances
-
-	given ExtractorSemigroup[S,T]:Semigroup[Extractor[S,T]]	=
+	given [S,T] => Semigroup[Extractor[S,T]]	=
 		Semigroup.instance(_ `orElse` _)
 }
 

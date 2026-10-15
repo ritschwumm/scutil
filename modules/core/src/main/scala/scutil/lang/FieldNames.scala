@@ -4,7 +4,7 @@ import scala.deriving.*
 import scala.compiletime.*
 
 object FieldNames {
-	inline given of[T](using m:Mirror.ProductOf[T]):FieldNames[T]	=
+	inline given [T] => (m:Mirror.ProductOf[T]) => FieldNames[T]	=
 		FieldNames(
 			constValueTuple[m.MirroredElemLabels]
 			.productIterator

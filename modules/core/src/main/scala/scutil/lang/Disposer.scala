@@ -23,7 +23,7 @@ object Disposer {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	given DisposerReleasable[T<:Disposer]:Releasable[T]	= _.dispose()
+	given [T<:Disposer] => Releasable[T]	= _.dispose()
 
 	given Monoid[Disposer]	= Monoid.instance(empty, _ `combine` _)
 }

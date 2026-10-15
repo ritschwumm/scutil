@@ -65,12 +65,12 @@ object StateT { outer =>
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	given StateTDelay[F[_]:Delay,S]:Delay[StateT[F,S,_]]	=
+	given [F[_]:Delay,S] => Delay[StateT[F,S,_]]	=
 		new Delay[StateT[F,S,_]] {
 			override def delay[T](it: =>T):StateT[F,S,T]	= StateT.delay(it)
 		}
 
-	given StateTMonad[F[_]:Monad,S]:Monad[StateT[F,S,_]]	=
+	given [F[_]:Monad,S] => Monad[StateT[F,S,_]]	=
 		new Monad[StateT[F,S,_]] {
 			override def pure[T](it:T):StateT[F,S,T]											= StateT.pure(it)
 			override def map[T,U](its:StateT[F,S,T])(func:T=>U):StateT[F,S,U]					= its.map(func)

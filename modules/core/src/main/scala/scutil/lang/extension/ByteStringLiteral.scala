@@ -23,7 +23,7 @@ object ByteStringLiteral {
 			else Left("invalid whitespace in ByteString literal")
 		}
 
-	private given ToExpr[ByteString]	with {
+	private given ToExpr[ByteString] {
 		def apply(it:ByteString)(using Quotes):Expr[ByteString] =
 			'{
 				ByteString.unsafeFromArray(

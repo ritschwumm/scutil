@@ -5,9 +5,9 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.251.0",
+	version			:= "0.252.0",
 
-	scalaVersion	:= "3.5.0",
+	scalaVersion	:= "3.6.2",
 	scalacOptions	++= Seq(
 		"-feature",
 		"-deprecation",

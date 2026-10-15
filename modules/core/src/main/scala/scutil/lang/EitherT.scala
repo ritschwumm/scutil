@@ -38,12 +38,12 @@ object EitherT {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	given EitherTDelay[F[_]:Delay,L]:Delay[EitherT[F,L,_]]	=
+	given [F[_]:Delay,L] => Delay[EitherT[F,L,_]]	=
 		new Delay[EitherT[F,L,_]] {
 			override def delay[R](it: =>R):EitherT[F,L,R]	= EitherT.delay(it)
 		}
 
-	given EitherTMonad[F[_]:Monad,L]:Monad[EitherT[F,L,_]]	=
+	given [F[_]:Monad,L] => Monad[EitherT[F,L,_]]	=
 		new Monad[EitherT[F,L,_]] {
 			override def pure[R](it:R):EitherT[F,L,R]												= EitherT.right(it)
 			override def map[R,RR](it:EitherT[F,L,R])(func:R=>RR):EitherT[F,L,RR]					= it.map(func)

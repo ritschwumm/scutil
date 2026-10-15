@@ -67,7 +67,7 @@ object Converter {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	given ConverterApplicative[E,S](using E:Semigroup[E]):Applicative[Converter[E,S,_]]	=
+	given [E,S] => (E:Semigroup[E]) => Applicative[Converter[E,S,_]]	=
 		new Applicative[Converter[E,S,_]] {
 			override def pure[A](it:A):Converter[E,S,A]												= Converter.pure(it)
 			override def ap[A,B](func:Converter[E,S,A=>B])(its:Converter[E,S,A]):Converter[E,S,B]	= func.ap(its)
@@ -82,7 +82,7 @@ object Converter {
 		}
 	*/
 
-	given ConverterSemigroup[E:Semigroup,S,T]:Semigroup[Converter[E,S,T]]	=
+	given [E:Semigroup,S,T] => Semigroup[Converter[E,S,T]]	=
 		Semigroup.instance(_ `or` _)
 }
 

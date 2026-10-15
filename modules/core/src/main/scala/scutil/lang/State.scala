@@ -13,7 +13,7 @@ object State {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	given StateMonad[S]:Monad[State[S,_]]	=
+	given [S] => Monad[State[S,_]]	=
 		new Monad[State[S,_]] {
 			override def pure[T](it:T):State[S,T]										= State.pure(it)
 			override def map[T,U](its:State[S,T])(func:T=>U):State[S,U]					= its.map(func)

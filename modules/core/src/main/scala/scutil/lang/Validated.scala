@@ -25,13 +25,13 @@ object Validated {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	given [S:Semigroup]:Applicative[Validated[S,_]]	=
+	given [S:Semigroup] => Applicative[Validated[S,_]]	=
 		new Applicative[Validated[S,_]] {
 			override def pure[A](it:A):Validated[S,A]										= Validated.valid(it)
 			override def ap[A,B](func:Validated[S,A=>B])(it:Validated[S,A]):Validated[S,B]	= func.ap(it)
 		}
 
-	given [S:Semigroup,T]:Semigroup[Validated[S,T]]	=
+	given [S:Semigroup,T] => Semigroup[Validated[S,T]]	=
 		Semigroup.instance(_ `or` _)
 }
 

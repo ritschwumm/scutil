@@ -40,7 +40,7 @@ object Nes {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	given NesTraversedMonad:TraversedMonad[Nes]	=
+	given TraversedMonad[Nes]	=
 		new TraversedMonad[Nes] {
 			override def map[A,B](it:Nes[A])(func:A=>B):Nes[B]			= it.map(func)
 			override def pure[A](it:A):Nes[A]							= Nes.one(it)
@@ -51,7 +51,7 @@ object Nes {
 				}
 		}
 
-	given NesSemigroup[T]:Semigroup[Nes[T]]	=
+	given [T] => Semigroup[Nes[T]]	=
 		Semigroup.instance(_ ++ _)
 }
 

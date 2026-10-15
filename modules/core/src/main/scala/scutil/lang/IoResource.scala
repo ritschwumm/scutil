@@ -50,7 +50,7 @@ object IoResource {
 
 	given IoResourceMonad:Monad[IoResource]	=
 		new Monad[IoResource] {
-			def pure[T](value:T):IoResource[T]										= IoResource.pure(value)
+			def pure[T](value:T):IoResource[T]											= IoResource.pure(value)
 			def flatMap[S,T](value:IoResource[S])(func:S=>IoResource[T]):IoResource[T]	= value.flatMap(func)
 		}
 

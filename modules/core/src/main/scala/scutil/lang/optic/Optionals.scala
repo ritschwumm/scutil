@@ -7,6 +7,33 @@ import scutil.lang.implicits.*
 import scutil.collection.implicits.*
 
 object Optionals {
+	//-----------------------------------------------------------------------------
+	//## Option
+
+	def some[T]:Optional[Option[T], T]	=
+		Optional(
+			get	= identity,
+			set	= (t:T) => (s:Option[T]) => s.map(_ => t)
+		)
+
+	//-----------------------------------------------------------------------------
+	//## Either
+
+	def left[L,R]:Optional[Either[L,R], L]	=
+		Optional(
+			get	= _.leftToOption,
+			set	= (t:L) => (s:Either[L,R]) => s.leftMap(_ => t)
+		)
+
+	def right[L,R]:Optional[Either[L,R], R]	=
+		Optional(
+			get	= _.toOption,
+			set	= (t:R) => (s:Either[L,R]) => s.map(_ => t)
+		)
+
+	//-----------------------------------------------------------------------------
+	//## Seq
+
 	def seq[T](i:Int):Optional[Seq[T],T]	=
 		Optional(
 			get	= s			=> s.lift(i),
@@ -37,6 +64,7 @@ object Optionals {
 		)
 
 	//-----------------------------------------------------------------------------
+	//## Vector
 
 	def vector[T](i:Int):Optional[Vector[T],T]	=
 		Optional(
@@ -68,6 +96,7 @@ object Optionals {
 		)
 
 	//-----------------------------------------------------------------------------
+	//## IndexedSeq
 
 	def indexed[F[T] <: IndexedSeq[T], T](i:Int)(using factory:Factory[T, F[T]]):Optional[F[T],T]	=
 		Optional(
@@ -78,6 +107,7 @@ object Optionals {
 		)
 
 	//-----------------------------------------------------------------------------
+	//## Nes
 
 	def nes[T](i:Int):Optional[Nes[T],T]	=
 		Optional(
@@ -86,6 +116,7 @@ object Optionals {
 		)
 
 	//-----------------------------------------------------------------------------
+	//## Map
 
 	def map[K,V](k:K):Optional[Map[K,V],V]	=
 		Optional(

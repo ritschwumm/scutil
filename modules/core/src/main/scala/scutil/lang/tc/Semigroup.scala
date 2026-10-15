@@ -27,12 +27,12 @@ object Semigroup extends SemigroupLow {
 	//------------------------------------------------------------------------------
 
 	// TODO questionable
-	given [S,T]:Semigroup[S=>Option[T]]	=
+	given [S,T] => Semigroup[S=>Option[T]]	=
 		Semigroup.instance(_ `orElse` _)
 
 	/*
 	// TODO does this make sense without further constraints on T?
-	given [S,T]:Semigroup[Either[S,T]]	=
+	given [S,T] => Semigroup[Either[S,T]]	=
 		Semigroup instance { (a,b) =>
 			a match {
 				case Left(_)	=> b
@@ -43,7 +43,7 @@ object Semigroup extends SemigroupLow {
 
 	/*
 	// NOTE already done with PFunctionSemigroup
-	given [T]:Semigroup[T=>Option[T]]	=
+	given [T] => Semigroup[T=>Option[T]]	=
 		Semigroup instance (_ `andThenFixed` _)
 	*/
 
@@ -51,22 +51,22 @@ object Semigroup extends SemigroupLow {
 
 	// TODO tc generalize to any iterable and remove SeqMonoid
 
-	given VectorMonoid[T]:Monoid[Vector[T]]	=
+	given [T] => Monoid[Vector[T]]	=
 		Monoid.instance(Vector.empty, _ ++ _)
 
-	given ListMonoid[T]:Monoid[List[T]]	=
+	given [T] => Monoid[List[T]]	=
 		Monoid.instance(Nil, _ ++ _)
 
-	given SetMonoid[T]:Monoid[Set[T]]	=
+	given [T] => Monoid[Set[T]]	=
 		Monoid.instance(Set.empty, _ ++ _)
 
-	given UnitMonoid:Monoid[Unit]	=
+	given Monoid[Unit]	=
 		Monoid.instance((), (_,_)=>())
 
-	given StringMonoid:Monoid[String]	=
+	given Monoid[String]	=
 		Monoid.instance("", _ + _)
 
-	given PairMonoid[T1,T2](using T1:Monoid[T1], T2:Monoid[T2]):Monoid[(T1,T2)]	=
+	given [T1,T2] => (T1:Monoid[T1], T2:Monoid[T2]) => Monoid[(T1,T2)]	=
 		Monoid.instance(
 			(T1.empty, T2.empty),
 			(a, b) => (
@@ -125,7 +125,7 @@ object Semigroup extends SemigroupLow {
 }
 
 trait SemigroupLow {
-	given SeqMonoid[T]:Monoid[Seq[T]]	=
+	given [T] => Monoid[Seq[T]]	=
 		Monoid.instance(Seq.empty, _ ++ _)
 }
 

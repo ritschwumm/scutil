@@ -20,7 +20,7 @@ object BigRationalLiterals {
 			}
 		}
 
-	private given ToExpr[BigRational]	with {
+	private given ToExpr[BigRational] {
 		def apply(it:BigRational)(using Quotes):Expr[BigRational] =
 			'{
 				BigRational.unsafeCreate(
@@ -30,7 +30,7 @@ object BigRationalLiterals {
 			}
 	}
 
-	private given ToExpr[JBigInteger] with {
+	private given ToExpr[JBigInteger] {
 		def apply(it:JBigInteger)(using Quotes):Expr[JBigInteger] =
 			'{
 				new JBigInteger(

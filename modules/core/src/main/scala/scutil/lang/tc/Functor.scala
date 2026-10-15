@@ -7,13 +7,13 @@ object Functor extends FunctorLow1 {
 
 	//------------------------------------------------------------------------------
 
-	given [S]:Functor[Function[S,_]]	=
+	given [S] => Functor[Function[S,_]]	=
 		new Functor[Function[S,_]] {
 			def map[A,B](it:Function[S,A])(func:A=>B):Function[S,B]	= it.andThen(func)
 		}
 
 	// TODO can we have a TraversedMonad here?
-	given [S]:Functor[(S,_)]	=
+	given [S] => Functor[(S,_)]	=
 		new Functor[(S,_)] {
 			def map[A,B](it:(S,A))(func:A=>B):(S,B)	= (it._1, func(it._2))
 		}
@@ -22,14 +22,14 @@ object Functor extends FunctorLow1 {
 	// TODO questionable
 	// TODO do we get this for free with FFunctionFunctor*
 	// NOTE PFunction and FFunction are both just ReaderT/Kleisli
-	given [S]:Functor[[X] =>> S=>Option[X]]	=
+	given [S] => (Functor[[X] =>> S=>Option[X]])	=
 		new Functor[[X] =>> S=>Option[X]] {
 			def map[A,B](it:S=>Option[A])(func:A=>B):S=>Option[B]		= it(_).map(func)
 		}
 	*/
 
 	// TODO questionable
-	given [F[_]:Functor,S]:Functor[[X] =>> S=>F[X]]	=
+	given [F[_]:Functor, S] => Functor[[X] =>> S=>F[X]]	=
 		new Functor[[X] =>> S=>F[X]] {
 			def map[A,B](it:S=>F[A])(func:A=>B):S=>F[B]	=
 				a => Functor[F].map(it(a))(func)
@@ -51,7 +51,7 @@ object Functor extends FunctorLow1 {
 				}
 		}
 
-	given EitherTraversedMonad[S]:TraversedMonad[Either[S,_]]	=
+	given [S] => TraversedMonad[Either[S,_]]	=
 		new TraversedMonad[Either[S,_]] {
 			override def pure[A](it:A):Either[S,A]										= Right(it)
 			override def map[A,B](it:Either[S,A])(func:A=>B):Either[S,B]				= it.map(func)
@@ -64,7 +64,7 @@ object Functor extends FunctorLow1 {
 				}
 		}
 
-	given VectorTraversedMonad:TraversedMonad[Vector]	=
+	given TraversedMonad[Vector]	=
 		new TraversedMonad[Vector] {
 			override def map[A,B](it:Vector[A])(func:A=>B):Vector[B]				= it.map(func)
 			override def pure[A](it:A):Vector[A]									= Vector(it)
@@ -75,7 +75,7 @@ object Functor extends FunctorLow1 {
 				}
 		}
 
-	given ListTraversedMonad:TraversedMonad[List]	=
+	given TraversedMonad[List]	=
 		new TraversedMonad[List] {
 			override def map[A,B](it:List[A])(func:A=>B):List[B]			= it.map(func)
 			override def pure[A](it:A):List[A]								= List(it)
@@ -97,7 +97,7 @@ object Functor extends FunctorLow1 {
 }
 
 trait FunctorLow1 extends FunctorLow2 {
-	given SeqTraversedMonad:TraversedMonad[Seq]	=
+	given TraversedMonad[Seq]	=
 		new TraversedMonad[Seq] {
 			override def map[A,B](it:Seq[A])(func:A=>B):Seq[B]			= it.map(func)
 			override def pure[A](it:A):Seq[A]							= Seq(it)
@@ -110,7 +110,7 @@ trait FunctorLow1 extends FunctorLow2 {
 }
 
 trait FunctorLow2 {
-	given IdentityTraversedMonad:TraversedMonad[Identity]	=
+	given TraversedMonad[Identity]	=
 		new TraversedMonad[Identity] {
 			override def map[A,B](it:Identity[A])(func:A=>B):Identity[B]				= func(it)
 			override def pure[A](it:A):Identity[A]										= it

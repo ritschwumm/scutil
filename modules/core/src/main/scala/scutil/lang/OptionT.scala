@@ -26,12 +26,12 @@ object OptionT {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	given OptionTDelay[F[_]:Delay]:Delay[OptionT[F,_]]	=
+	given [F[_]:Delay] => Delay[OptionT[F,_]]	=
 		new Delay[OptionT[F,_]] {
 			override def delay[T](it: =>T):OptionT[F,T]	= OptionT.delay(it)
 		}
 
-	given OptionTMonad[F[_]](using MF:Monad[F]):Monad[OptionT[F,_]]	=
+	given [F[_]] => (MF:Monad[F]) => Monad[OptionT[F,_]]	=
 		new Monad[OptionT[F,_]] {
 			override def pure[T](it:T):OptionT[F,T]											= OptionT.some(it)
 			override def map[S,T](its:OptionT[F,S])(func:S=>T):OptionT[F,T]					= its.map(func)

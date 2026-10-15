@@ -2,12 +2,14 @@ package scutil.lang
 
 object NaturalTransformation {
 	def identity[F[_]]:F ~> F	=
+		// TODO dotty should work, but does not
+		//[A] => (it:F[A]) => it
 		new NaturalTransformation[F,F] {
 			def apply[A](fa:F[A]):F[A]	= fa
 		}
 }
 
-// TODO dotty is this just type ~>[A[_], B[_]] = [t] => A[t] => B[t] ?
+// TODO dotty this is just type NaturalTransformation[F[_], G[_]]	= [T] => F[T] => G[T]
 
 // aka FunctionK
 trait NaturalTransformation[-F[_],+G[_]] { self =>
@@ -17,6 +19,8 @@ trait NaturalTransformation[-F[_],+G[_]] { self =>
 		that.andThen(this)
 
 	def andThen[H[_]](that:G ~> H):F ~> H	=
+		// TODO dotty should work, but does not
+		// [A] => (it:F[A]) => that(self(it))
 		new NaturalTransformation[F,H] {
 			def apply[A](it:F[A]):H[A]	=
 				that(self(it))

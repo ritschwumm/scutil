@@ -27,7 +27,7 @@ for creating a completely new class which would come in handy to automatically a
 object EnumCompanion {
 	def apply[T<:Enum:EnumCompanion]:EnumCompanion[T]	= summon
 
-	inline given of[T<:Enum]:EnumCompanion[T] = ${ ofImpl[T] }
+	inline given [T<:Enum] => EnumCompanion[T] = ${ ofImpl[T] }
 
 	def ofImpl[T<:Enum](using quotes:Quotes, tpe:Type[T]):Expr[EnumCompanion[T]]	= {
 		import quotes.reflect.*

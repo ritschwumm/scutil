@@ -12,7 +12,7 @@ object Store {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	given StoreFunctor[S]:Functor[Store[S,_]]	=
+	given [S] => Functor[Store[S,_]]	=
 		new Functor[Store[S,_]] {
 			def map[A,B](it:Store[S,A])(func:A=>B):Store[S,B]	= it.map(func)
 		}

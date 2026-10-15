@@ -22,7 +22,7 @@ object HexColorLiterals {
 			RGBA.parseHex(literal).toRight("not a valid RGBA literal")
 		}
 
-	private given ToExpr[RGBA]	with {
+	private given ToExpr[RGBA] {
 		def apply(it:RGBA)(using Quotes):Expr[RGBA] =
 			'{
 				RGBA(
@@ -32,7 +32,7 @@ object HexColorLiterals {
 			}
 	}
 
-	private given ToExpr[RGB]	with {
+	private given ToExpr[RGB] {
 		def apply(it:RGB)(using Quotes):Expr[RGB] =
 			'{
 				RGB(
@@ -43,7 +43,7 @@ object HexColorLiterals {
 			}
 	}
 
-	private given ToExpr[Alpha]	with {
+	private given ToExpr[Alpha]	{
 		def apply(it:Alpha)(using Quotes):Expr[Alpha] =
 			'{
 				Alpha(

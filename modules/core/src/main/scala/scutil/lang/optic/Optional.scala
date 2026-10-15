@@ -49,7 +49,7 @@ object Optional {
 	//## typeclass instances
 
 	// TODO optics is this lawful?
-	given OptionalSemigroup[S,T]:Semigroup[Optional[S,T]]	=
+	given [S,T] => Semigroup[Optional[S,T]]	=
 		Semigroup.instance(_ `orElse` _)
 }
 

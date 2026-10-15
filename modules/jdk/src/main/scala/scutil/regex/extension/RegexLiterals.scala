@@ -23,7 +23,7 @@ object RegexLiterals {
 		}
 
 	// we have to pass the string here: the Regex constructor calls Pattern.compile, but we cannot create a Regex from a Pattern
-	private given ToExpr[Regex]	with {
+	private given ToExpr[Regex] {
 		def apply(it:Regex)(using Quotes):Expr[Regex] =
 			'{
 				new Regex(

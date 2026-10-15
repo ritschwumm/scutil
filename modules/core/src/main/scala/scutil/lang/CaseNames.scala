@@ -4,7 +4,7 @@ import scala.deriving.*
 import scala.compiletime.*
 
 object CaseNames {
-	inline given of[T](using m:Mirror.SumOf[T]):CaseNames[T]	=
+	inline given [T] => (m:Mirror.SumOf[T]) => CaseNames[T] =
 		CaseNames(
 			constValueTuple[m.MirroredElemLabels]
 			.productIterator

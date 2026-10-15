@@ -1,11 +1,16 @@
 package scutil.concurrent
 
+import scala.annotation.targetName
+
 import java.util.concurrent.locks.Lock
 import java.util.TimerTask
 
 import scala.util.Using.Releasable
 
 object instances {
-	given LockReleasable[T<:Lock]:Releasable[T]				= _.unlock()
-	given TimerTaskReleasable[T<:TimerTask]:Releasable[T]	= _.cancel()
+	@targetName("LockReleasable")
+	given [T<:Lock] => Releasable[T]		= _.unlock()
+
+	@targetName("TimerTaskReleasable")
+	given [T<:TimerTask] => Releasable[T]	= _.cancel()
 }
