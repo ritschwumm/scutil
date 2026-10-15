@@ -1,15 +1,15 @@
 package scutil.lang.tc
 
 object MonoidSyntax {
-	extension [T:Monoid as T](peer:T) {
+	extension [T](peer:T)(using T:Monoid[T]) {
 		def times(count:Int):T	= T.times(peer, count)
 	}
 
-	extension [T:Monoid as T](peer:Iterable[T]) {
+	extension [T](peer:Iterable[T])(using T:Monoid[T]) {
 		def combineAll:T	= T.combineAll(peer)
 	}
 
 	extension [T](peer:Iterable[T]) {
-		def foldMap[U:Monoid as U](func:T=>U):U	= U.foldMap(peer)(func)
+		def foldMap[U](func:T=>U)(using U:Monoid[U]):U	= U.foldMap(peer)(func)
 	}
 }

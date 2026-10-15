@@ -3,7 +3,7 @@ package scutil.lang.syntaxes
 import scala.util.Using.Releasable
 
 object ReleaseableSyntax {
-	extension [T:Releasable as RS](peer:T) {
+	extension [T](peer:T)(using RS:Releasable[T]) {
 		/** do something to us, then dispose */
 		def use[U](consume:T=>U):U	= {
 			var primary:Throwable	= null
