@@ -215,7 +215,7 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 	def reduce[U>:T:Semigroup as S]:U   =
 		combineAll1
 
-	// semigroups are associative, but not necessarily coo´mmutative, so the order does make a difference here - and we run from the left
+	// semigroups are associative, but not necessarily commutative, so the order does make a difference here - and we run from the left
 	def combineAll1[U>:T:Semigroup as S]:U	=
 		reduceLeft(S.combine)
 
@@ -223,7 +223,7 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		val iter	= tail.iterator
 		var state:U	= head
 		while iter.hasNext do {
-			state	= func(state, iter.next)
+			state	= func(state, iter.next())
 		}
 		state
 	}
@@ -231,9 +231,9 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 	def reduceRight[U>:T](func:(U, U)=>U):U	= {
 		val iter	= tail.reverseIterator
 		if (iter.hasNext) then {
-			var state:U	= iter.next
+			var state:U	= iter.next()
 			while iter.hasNext do {
-				state	= func(iter.next, state)
+				state	= func(iter.next(), state)
 			}
 			func(state, head)
 		}

@@ -193,7 +193,7 @@ object StringExtensions {
 				}
 				i	+= 1
 			}
-			b.result
+			b.result()
 		}
 	}
 }

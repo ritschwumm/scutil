@@ -13,7 +13,7 @@ object RandomExtensions {
 				out	+= alphabet(peer.nextInt(alphabet.length))
 				i	+= 1
 			}
-			out.result
+			out.result()
 		}
 
 		def byteString(length:Int):ByteString	=

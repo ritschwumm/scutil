@@ -32,7 +32,7 @@ object Text {
 			}
 			i	+= 1
 		}
-		out.result
+		out.result()
 	}
 
 	private val Strip	= """^\s*\|(.*)$""".r
