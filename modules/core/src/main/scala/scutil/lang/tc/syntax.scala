@@ -8,5 +8,4 @@ object syntax {
 	export MonoidSyntax.*
 	export ShowSyntax.*
 	export TraversedSyntax.*
-	export ApplicativeTupleNSyntax.*
 }

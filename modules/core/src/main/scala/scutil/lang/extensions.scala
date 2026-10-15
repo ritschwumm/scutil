@@ -23,4 +23,5 @@ object extensions {
 	export StringExtensions.*
 	export ThrowableExtensions.*
 	export TryExtensions.*
+	export TupleExtensions.*
 }
