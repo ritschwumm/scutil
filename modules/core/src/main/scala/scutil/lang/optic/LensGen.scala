@@ -48,7 +48,7 @@ object LensGenImpl {
 		val caseFieldSymbol:Symbol	=
 			containerTypeSymbol.caseFields.find(it => it.name == nameValue).getOrElse {
 				report.errorAndAbort(
-					s"field ${containerTypeSymbol.fullName}#${name} does not exist",
+					s"field ${containerTypeSymbol.fullName}#${nameValue} does not exist",
 					// put the error on the name
 					name.asTerm.pos
 				)

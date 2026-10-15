@@ -1,6 +1,8 @@
 package scutil.lang.tc
 
 object MonoidSyntax {
+	// TODO foldable add a Foldable typeclass
+
 	extension [T](peer:T)(using T:Monoid[T]) {
 		def times(count:Int):T	= T.times(peer, count)
 	}

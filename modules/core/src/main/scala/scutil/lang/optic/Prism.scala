@@ -39,7 +39,7 @@ object Prism {
 	example:
 
 	val P = Prism.subTypes[MyEnum]
-	val p:Prism[MyEnum, MyEnumVairant] = P[MyEnumVariant]
+	val p:Prism[MyEnum, MyEnumVariant] = P[MyEnumVariant]
 	*/
 	def subTypes[S]:[T <: S] => (TypeTest[S, T]) ?=> Prism[S, T]	=
 		[T<:S] => (tt:TypeTest[S, T]) ?=> subType[S, T]

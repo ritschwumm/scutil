@@ -12,7 +12,6 @@ object FunctionK {
 	}
 }
 
-// aka FunctionK
 type FunctionK[F[_], G[_]]	= [A] => F[A] => G[A]
 
 /*

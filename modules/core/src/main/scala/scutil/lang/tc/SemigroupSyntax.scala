@@ -3,6 +3,8 @@ package scutil.lang.tc
 import scutil.lang.Nes
 
 object SemigroupSyntax {
+	// TODO foldable add a Foldable1 typeclass
+
 	extension [T](peer:T)(using T:Semigroup[T]) {
 		def combine(that:T):T	= T.combine(peer, that)
 	}

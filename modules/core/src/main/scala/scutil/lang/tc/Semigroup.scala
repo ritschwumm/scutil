@@ -140,8 +140,9 @@ trait Semigroup[F] {
 
 	// TODO foldable add a Foldable1 typeclass
 	def combineAll1(items:Nes[F]):F	=
-		items.reduceWith(combine)
+		items.reduceLeft(combine)
 
+	// TODO foldable add a Foldable1 typeclass
 	def foldMap1[S](items:Nes[S])(func:S=>F):F	=
 		items.tail.foldLeft(func(items.head)) { (f, s) =>
 			combine(f, func(s))

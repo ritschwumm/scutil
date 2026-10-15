@@ -5,9 +5,9 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.266.0",
+	version			:= "0.267.0",
 
-	scalaVersion	:= "3.7.3",
+	scalaVersion	:= "3.8.0",
 	scalacOptions	++= Seq(
 		"-preview",
 		"-feature",
@@ -19,7 +19,8 @@ inThisBuild(Seq(
 		"-Wunused:all",
 		"-Wsafe-init",
 		"-Wshadow:all",
-		"-Xfatal-warnings",
+		"-Wtostring-interpolated",
+		"-Werror",
 		"-Xkind-projector:underscores",
 		"-Xcheck-macros",
 		// leads to an InternalError for the variable e inside Catch.in
@@ -59,7 +60,7 @@ lazy val fixConsoleSettings	=
 	Seq(
 		Compile / console / scalacOptions ~= (opts => opts filterNot Set(
 			"-Wunused:all",
-			"-Xfatal-warnings",
+			"-Werror",
 		))
 	)
 

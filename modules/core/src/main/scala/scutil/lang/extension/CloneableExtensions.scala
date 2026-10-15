@@ -7,7 +7,7 @@ object CloneableExtensions {
 
 	extension [T <: SafeCloneable](peer:T) {
 		@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
-		def safeClone:T	=
+		inline def safeClone:T	=
 			peer.clone().asInstanceOf[T]
 	}
 }

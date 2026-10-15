@@ -211,15 +211,33 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 			this.tail.zipWithIndex.map { (v, i) => (v, i+1) }
 		)
 
-	def reduce[U>:T:Semigroup as S]:U	=
-		reduceWith(S.combine)
+	@deprecated("use combineAll1", "0.267.0")
+	def reduce[U>:T:Semigroup as S]:U   =
+		combineAll1
 
-	def reduceWith[U>:T](func:(U, U)=>U):U	= {
+	// semigroups are associative, but not necessarily coo´mmutative, so the order does make a difference here - and we run from the left
+	def combineAll1[U>:T:Semigroup as S]:U	=
+		reduceLeft(S.combine)
+
+	def reduceLeft[U>:T](func:(U, U)=>U):U	= {
+		val iter	= tail.iterator
 		var state:U	= head
-		tail.foreach { it =>
-			state	= func(state, it)
+		while iter.hasNext do {
+			state	= func(state, iter.next)
 		}
 		state
+	}
+
+	def reduceRight[U>:T](func:(U, U)=>U):U	= {
+		val iter	= tail.reverseIterator
+		if (iter.hasNext) then {
+			var state:U	= iter.next
+			while iter.hasNext do {
+				state	= func(iter.next, state)
+			}
+			func(state, head)
+		}
+		else head
 	}
 
 	def storeAt[U>:T](index:Int):Option[Store[U, Nes[U]]]	=
