@@ -2,11 +2,13 @@ package scutil.regex.extension
 
 import java.util.regex.PatternSyntaxException
 
+import scala.annotation.nowarn
 import scala.quoted.*
 import scala.util.matching.Regex
 
 import scutil.lang.GenericLiteral
 
+@nowarn("msg=unused explicit parameter in extension method")
 object RegexLiterals {
 	extension (inline peer:StringContext) {
 		inline def re(inline args:Any*):Regex	= ${ reImpl('peer) }

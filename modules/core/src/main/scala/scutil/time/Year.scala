@@ -44,7 +44,7 @@ final case class Year(value:Int) extends Ordered[Year] {
 		else					52
 
 	lazy val longCalendarWeeks:Boolean	=
-		Year.longYears contains moduloInt(value, 2000)
+		Year.longYears.contains(moduloInt(value, 2000))
 
 	lazy val gregorianLeap:Boolean	=
 		(value % 4 == 0)	&&

@@ -1,10 +1,12 @@
 package scutil.color.extension
 
+import scala.annotation.nowarn
 import scala.quoted.*
 
 import scutil.lang.GenericLiteral
 import scutil.color.*
 
+@nowarn("msg=unused explicit parameter in extension method")
 object HexColorLiterals {
 	/** provide string interpolators for web-style hex colors */
 	extension (inline peer:StringContext) {

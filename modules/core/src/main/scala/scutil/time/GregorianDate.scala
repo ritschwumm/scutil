@@ -29,9 +29,9 @@ final case class GregorianDate(day:Int, month:Int, year:Int) extends Ordered[Gre
 		this.toJulianDay.until(that.toJulianDay)
 
 	def compare(that:GregorianDate):Int		= {
-		val	y	= this.year		compare that.year;	if (y != 0)	return y
-		val	m	= this.month	compare that.month;	if (m != 0)	return m
-		val	d	= this.day		compare that.day;	if (d != 0)	return d
+		val	y	= this.year		`compare` that.year;	if (y != 0)	return y
+		val	m	= this.month	`compare` that.month;	if (m != 0)	return m
+		val	d	= this.day		`compare` that.day;		if (d != 0)	return d
 		0
 	}
 

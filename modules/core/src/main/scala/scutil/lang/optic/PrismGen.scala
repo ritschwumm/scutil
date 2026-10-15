@@ -1,5 +1,6 @@
 package scutil.lang
 
+import scala.annotation.nowarn
 import scala.language.dynamics
 import scala.deriving.*
 import scala.quoted.*
@@ -21,6 +22,7 @@ tuple type helpers @see https://docs.scala-lang.org/scala3/guides/macros/faq.htm
 */
 object PrismGenImpl {
 	// NOTE needs a transparent call to make the return type flexible
+	@nowarn("msg=unused pattern variable")
 	def selectImpl[T:Type, N<:String&Singleton:Type](variantNameExpr:Expr[N])(using quotes:Quotes):Expr[Any] = {
 		import quotes.reflect.*
 

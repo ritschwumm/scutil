@@ -17,7 +17,7 @@ object SimpleWorker {
 						try {
 							while (keepOn.get() && !isInterrupted() && action.unsafeRun()) {}
 						}
-						catch { case e:InterruptedException =>
+						catch { case _:InterruptedException =>
 							// just exit
 						}
 				}

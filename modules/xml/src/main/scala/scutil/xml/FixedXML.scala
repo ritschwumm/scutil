@@ -52,7 +52,7 @@ object FixedXML extends XMLLoader[Elem] {
 	}
 
 	def saveXML(file:File, node:Node) {
-		file writeString (encoding, node.toString)
+		file.writeString(encoding, node.toString)
 	}
 	*/
 

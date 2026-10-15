@@ -1,5 +1,6 @@
 package scutil.collection.extension
 
+import scala.annotation.nowarn
 import scala.collection.Factory
 import scala.collection.BuildFrom
 import scala.collection.generic.IsSeq
@@ -7,6 +8,7 @@ import scala.collection.mutable.Builder
 
 import scutil.lang.*
 
+@nowarn("msg=unused explicit parameter in extension method")
 object SeqExtensions {
 	extension [Repr,T,Self](peer:Repr)(using isSeq:IsSeq[Repr] { type A = T; type C = Self }) {
 		inline private def ops	= isSeq(peer)
@@ -69,7 +71,7 @@ object SeqExtensions {
 		concatenate the Seq with itself n times
 		def times(count:Int)(using factory:Factory[T,Repr]):Repr	=
 			factory.fromSpecific(
-				(0 until count).flatMap { _ => peer }
+				0.until(count).flatMap { _ => peer }
 			)
 		*/
 
@@ -129,7 +131,7 @@ object SeqExtensions {
 		def distinctWith(same:(T,T)=>Boolean)(using factory:Factory[T,Repr]):Repr =
 			factory.fromSpecific(
 				ops.foldLeft(Seq.empty[T]) { (retained:Seq[T], candidate:T) =>
-					retained find { same(_,candidate) } match {
+					retained.find { same(_,candidate) } match {
 						case Some(_)	=> retained
 						case None		=> candidate +: retained
 					}
@@ -163,7 +165,7 @@ object SeqExtensions {
 
 				while (iter.hasNext) {
 					val cur	= iter.next()
-					func(old, cur) foreach out.+=
+					func(old, cur).foreach(out.+=)
 					out	+= mod(cur)
 					old	= cur
 				}

@@ -2,11 +2,13 @@ package scutil.number.extension
 
 import java.math.{ BigInteger as JBigInteger }
 
+import scala.annotation.nowarn
 import scala.quoted.*
 
 import scutil.lang.GenericLiteral
 import scutil.number.BigRational
 
+@nowarn("msg=unused explicit parameter in extension method")
 object BigRationalLiterals {
 	extension (inline peer:StringContext) {
 		inline def br(inline args:Any*):BigRational	= ${ brImpl('peer) }

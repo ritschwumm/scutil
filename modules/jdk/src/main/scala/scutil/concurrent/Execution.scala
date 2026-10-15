@@ -6,7 +6,7 @@ import scutil.lang.*
 import scutil.lang.implicits.*
 
 object Execution {
-	val ignore:Execution	= Execution { task	=> ()		}
+	val ignore:Execution	= Execution { _		=> ()		}
 	val direct:Execution	= Execution { task	=> task()	}
 	val thread:Execution	= Execution { task	=> new Thread(task.toRunnable).start()	}
 	val daemon:Execution	= Execution { task	=> new Thread(task.toRunnable).doto(_.setDaemon(true)).start() }

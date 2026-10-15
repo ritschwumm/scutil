@@ -29,8 +29,8 @@ object Diff {
 		// This is the main dynamic programming loop that
 		// computes the score and backtracking arrays.
 		for {
-			ii <- 1 to n
-			jj <- 1 to m
+			ii <- 1.to(n)
+			jj <- 1.to(m)
 		} {
 			if (equal(a(ii-1), b(jj-1))) {
 				S(ii)(jj)	= S(ii-1)(jj-1) + 1
@@ -92,9 +92,9 @@ object Diff {
 final case class Diff[T](deltas:Seq[Delta[T]]) {
 	def patch(iseq:Seq[T]):Seq[T]	= {
 		val out	= mutable.ArrayBuffer(iseq*)
-		deltas foreach {
+		deltas.foreach {
 			case Delta.Include(index, element)	=> out.insert(index, element)
-			case Delta.Remove(index, element)	=> out.remove(index)
+			case Delta.Remove(index, _)			=> out.remove(index)
 		}
 		out.toVector
 	}

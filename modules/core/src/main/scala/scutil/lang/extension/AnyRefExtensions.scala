@@ -15,6 +15,6 @@ object AnyRefExtensions {
 		/** fail with an Exception if null */
 		def nullError(s: =>String):T	=
 			if (peer != null)	peer
-			else				sys error s
+			else				sys.error(s)
 	}
 }

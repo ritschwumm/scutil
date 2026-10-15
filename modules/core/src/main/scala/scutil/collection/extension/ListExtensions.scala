@@ -14,7 +14,7 @@ object ListExtensions {
 		calculate common prefix and differing tails for two lists
 		usage example:
 		<code>
-		List(1,2,3,4) unprefix List(1,2,4,5)
+		List(1,2,3,4) `unprefix`` List(1,2,4,5)
 		==&gt; Triple(List(1,2), List(3,4), List(4,5))
 		</code>
 		*/

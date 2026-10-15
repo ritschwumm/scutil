@@ -45,7 +45,7 @@ object AnyExtensions {
 			PartialFunction.condOpt(peer)(pf).flatten
 
 		def matchBoolean[U](pf:PartialFunction[T,Unit]):Boolean =
-			pf isDefinedAt peer
+			pf.isDefinedAt(peer)
 
 		//------------------------------------------------------------------------------
 
@@ -89,11 +89,11 @@ object AnyExtensions {
 
 		/** Right if Some else original value in Left */
 		def rightBy[U](func:T=>Option[U]):Either[T,U]	=
-			func(peer) toRight peer
+			func(peer).toRight(peer)
 
 		/** Left if Some else original value in Right */
 		def leftBy[U](func:T=>Option[U]):Either[U,T]	=
-			func(peer) toLeft peer
+			func(peer).toLeft(peer)
 
 		/** Fail if Some else original value in Win */
 		def invalidBy[E](func:T=>Option[E]):Validated[E,T]	=
@@ -163,7 +163,7 @@ object AnyExtensions {
 		/** apply until the value becomes None */
 		def rewrite(func:T=>Option[T]):T	=
 			tailFold(func) { (t, tOpt) =>
-				tOpt toLeft t
+				tOpt.toLeft(t)
 			}
 	}
 }

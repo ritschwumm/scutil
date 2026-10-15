@@ -1,5 +1,6 @@
 package scutil.lang
 
+import scala.annotation.nowarn
 import scala.language.dynamics
 import scala.quoted.*
 import scala.compiletime.asMatchable
@@ -16,6 +17,7 @@ final class LensGen[T] extends Dynamic {
 
 object LensGenImpl {
 	// NOTE needs a transparent call to make the return type flexible
+	@nowarn("msg=match may not be exhaustive")
 	def selectImpl[T:Type](name:Expr[String])(using quotes:Quotes):Expr[Any] = {
 		import quotes.reflect.*
 

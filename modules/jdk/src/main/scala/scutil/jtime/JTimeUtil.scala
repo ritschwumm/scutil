@@ -32,7 +32,7 @@ object JTimeUtil {
 		cal.setLenient(false)
 		gregorianDateIntoCalendar(it, cal)
 		try { cal.getTime; Some(cal) }
-		catch { case e:Exception => None }
+		catch { case _:Exception => None }
 	}
 
 	def gregorianDateIntoCalendar(it:GregorianDate, cal:Calendar):Unit = {

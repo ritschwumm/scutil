@@ -39,14 +39,14 @@ final case class MilliDuration(millis:Long) extends Ordered[MilliDuration] {
 	def /! (factor:Long):MilliDuration	= MilliDuration(millis / factor)
 	def %! (factor:Long):MilliDuration	= MilliDuration(millis % factor)
 
-	def compare(that:MilliDuration):Int			= this.millis compare that.millis
+	def compare(that:MilliDuration):Int			= this.millis `compare` that.millis
 	def min(that:MilliDuration):MilliDuration	= if (this < that) this else that
 	def max(that:MilliDuration):MilliDuration	= if (this > that) this else that
 
 	def micros:Long	= millis*1000
 	def nanos:Long	= millis*1000*1000
 
-	def toHumanString:String	= Human fullMilliDuration millis
+	def toHumanString:String	= Human.fullMilliDuration(millis)
 
 	override def toString:String	= millis.toString
 }

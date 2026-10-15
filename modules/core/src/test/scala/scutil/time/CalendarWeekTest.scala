@@ -4,7 +4,7 @@ import minitest.*
 
 object CalendarWeekTest extends SimpleTestSuite {
 	test("CalendarWeek should roundtrip index") {
-		0 until 10000 by 3 foreach { i =>
+		0.until(10000).by(3).foreach { i =>
 			val jd	= JulianDay.epoch.move(i)
 			val x1	= jd.calendarWeek
 			val idx	= x1.toIndex

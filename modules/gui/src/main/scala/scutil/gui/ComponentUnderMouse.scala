@@ -113,7 +113,7 @@ final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Excepti
 						x	-= pp.x
 						y	-= pp.y
 					}
-					catch { case e:IllegalComponentStateException	=>
+					catch { case _:IllegalComponentStateException	=>
 						x	-= cc.getX
 						y	-= cc.getY
 					}

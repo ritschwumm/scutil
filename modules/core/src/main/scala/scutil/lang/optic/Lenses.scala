@@ -23,7 +23,7 @@ object Lenses {
 
 	def set[T](t:T):Lens[Set[T],Boolean]	=
 		Lens(
-			get	= _ contains t,
+			get	= _.contains(t),
 			set	= v => c	=> if (v) c + t else c - t
 		)
 
@@ -36,7 +36,7 @@ object Lenses {
 	/*
 	// TODO check this works
 	def mapWithDefault2[S,T](key:S, default:T):Lens[Map[S,T],T]	=
-		map(key) >=> (Bijections withDefault default).toLens
+		map(key) >=> Bijections.withDefault(default).toLens
 	*/
 
 	def mapWithDefault[S,T](key:S, default:T):Lens[Map[S,T],T]	=

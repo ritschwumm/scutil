@@ -17,7 +17,7 @@ object Optional {
 
 	def trivial[T]:Optional[T,Unit]	=
 		Optional(
-			get	= t			=> Some(()),
+			get	= _			=> Some(()),
 			set	= _ => t	=> t
 		)
 
@@ -28,7 +28,7 @@ object Optional {
 		)
 
 	def always[T]:Optional[Option[T],T]	=
-		Optional(Predef.identity, x => t => Some(x))
+		Optional(Predef.identity, x => _ => Some(x))
 
 	def filtered[T](pred:T=>Boolean):Optional[T,T]	=
 		Optional(
@@ -259,6 +259,6 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 	/*
 	// NOTE optics this does note make sense as a get after a set would not return the same value
 	def toLens(default: =>Store[T,S]):Lens[S,T]	=
-		Lens fromStoreAt { on(_).getOrElse(default) }
+		Lens.fromStoreAt { on(_).getOrElse(default) }
 	*/
 }

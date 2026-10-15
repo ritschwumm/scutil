@@ -32,6 +32,6 @@ object SetExtensions {
 
 		/** create a map from all elements with a given function to generate the values */
 		def mapTo[U](value:T=>U):Map[T,U]	=
-			(peer map { it => (it, value(it)) }).toMap
+			peer.map { it => (it, value(it)) }.toMap
 	}
 }

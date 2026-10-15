@@ -26,10 +26,10 @@ object RegexExtensions {
 			while (i < str.length) {
 				val c	= str.charAt(i)
 				c match {
-					case '\\' | '-' | '^' | '[' | ']'	=> b append '\\'
+					case '\\' | '-' | '^' | '[' | ']'	=> b.append('\\')
 					case _								=>
 				}
-				b append c
+				b.append(c)
 				i	+= 1
 			}
 			b.toString

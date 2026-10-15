@@ -63,7 +63,7 @@ object BigRational {
 		s.splitAroundChar('/') match {
 			case Seq(num, den)	=>
 				try { BigRational(new JBigInteger(num), new JBigInteger(den)) }
-				catch { case e:NumberFormatException	=> None }
+				catch { case _:NumberFormatException	=> None }
 			case _	=> None
 		}
 

@@ -24,9 +24,9 @@ object OrderingExtensions {
 								val tmp	= base.compare(aa, bb)
 								if (tmp != 0)	tmp
 								else			loop(index+1)
-							case (Some(aa), None)	=>
+							case (Some(_), None)	=>
 								if (missingFirst) +1 else -1
-							case (None, Some(bb))	=>
+							case (None, Some(_))	=>
 								if (missingFirst) -1 else +1
 							case (None, None)	=>
 								0

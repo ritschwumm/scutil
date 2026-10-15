@@ -10,7 +10,7 @@ object SeqJCollectionExtensions {
 	extension [T](peer:Seq[T]) {
 		def toJList:JList[T]	=  {
 			val out	= new JArrayList[T]
-			peer foreach out.add
+			peer.foreach(out.add)
 			JCollections.unmodifiableList(out)
 		}
 	}

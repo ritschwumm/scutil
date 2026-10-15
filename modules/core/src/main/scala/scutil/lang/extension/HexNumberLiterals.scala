@@ -1,10 +1,12 @@
 package scutil.lang.extension
 
+import scala.annotation.nowarn
 import scala.quoted.*
 
 import scutil.lang.GenericLiteral
 import scutil.codec.Hex
 
+@nowarn("msg=unused explicit parameter in extension method")
 object HexNumberLiterals {
 	extension (inline peer:StringContext) {
 		/** provide string interpolator for hex bytes */
@@ -28,7 +30,7 @@ object HexNumberLiterals {
 	private def parser[T](byteCount:Int, convert:BigInt=>T)(literal:String):Either[String,T]	=
 		Hex.decodeByteString(literal) match {
 			case Some(x) if x.size == byteCount	=> Right(convert(BigInt(x.unsafeValue)))
-			case Some(x)						=> Left("unexpected HexNumber literal length")
+			case Some(_)						=> Left("unexpected HexNumber literal length")
 			case None							=> Left("not a valid HexNumber literal")
 		}
 }

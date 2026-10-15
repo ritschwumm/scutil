@@ -16,14 +16,14 @@ object HashSalt {
 		args match {
 			case Array(password)	=>
 				val cooked	= cook(password)
-				System.out println cooked
+				System.out.println(cooked)
 			case Array(password, cooked)	=>
 				val ok	= taste(password, cooked)
-				if (ok)	System.out println	"success"
-				else	System.out println	"failure"
+				if (ok)	System.out.println("success")
+				else	System.out.println("failure")
 			case _ =>
-				System.err println "usage: [ password | password cooked ]"
-				sys exit 2
+				System.err.println("usage: [ password | password cooked ]")
+				sys.exit(2)
 		}
 	}
 

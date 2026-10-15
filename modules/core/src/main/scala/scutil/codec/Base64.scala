@@ -61,24 +61,24 @@ object Base64 {
 		var	inputIndex		= 0
 		var packetsIndex	= 0
 		while (packetsIndex < packetsSize) {
-			output append (alphabet(((data(inputIndex+0) >> 2) & 0x3f)))
-			output append (alphabet(((data(inputIndex+0) << 4) & 0x30) | ((data(inputIndex+1) >> 4) & 0x0f)))
-			output append (alphabet(((data(inputIndex+1) << 2) & 0x3c) | ((data(inputIndex+2) >> 6) & 0x03)))
-			output append (alphabet(((data(inputIndex+2)     ) & 0x3f)))
+			output.append(alphabet(((data(inputIndex+0) >> 2) & 0x3f)))
+			output.append(alphabet(((data(inputIndex+0) << 4) & 0x30) | ((data(inputIndex+1) >> 4) & 0x0f)))
+			output.append(alphabet(((data(inputIndex+1) << 2) & 0x3c) | ((data(inputIndex+2) >> 6) & 0x03)))
+			output.append(alphabet(((data(inputIndex+2)     ) & 0x3f)))
 			packetsIndex	+= 1
 			inputIndex		+= 3
 		}
 		if (extraSize == 1) {
-			output append (alphabet(((data(inputIndex+0) >> 2) & 0x3f)))
-			output append (alphabet(((data(inputIndex+0) << 4) & 0x30)))
-			output append padding
-			output append padding
+			output.append(alphabet(((data(inputIndex+0) >> 2) & 0x3f)))
+			output.append(alphabet(((data(inputIndex+0) << 4) & 0x30)))
+			output.append(padding)
+			output.append(padding)
 		}
 		else if (extraSize == 2) {
-			output append (alphabet(((data(inputIndex+0) >> 2) & 0x3f)))
-			output append (alphabet(((data(inputIndex+0) << 4) & 0x30) | ((data(inputIndex+1) >> 4) & 0x0f)))
-			output append (alphabet(((data(inputIndex+1) << 2) & 0x3c)))
-			output append padding
+			output.append(alphabet(((data(inputIndex+0) >> 2) & 0x3f)))
+			output.append(alphabet(((data(inputIndex+0) << 4) & 0x30) | ((data(inputIndex+1) >> 4) & 0x0f)))
+			output.append(alphabet(((data(inputIndex+1) << 2) & 0x3c)))
+			output.append(padding)
 		}
 		output.result
 	}
@@ -146,7 +146,7 @@ object Base64 {
 		breakLines(s, 64)
 
 	private def breakLines(s:String, length:Int):String	=
-		(s grouped length) mkString "\r\n"
+		s.grouped(length).mkString("\r\n")
 
 	def unbreakLines(s:String):String	=
 		s.replaceAll("\r\n", "")

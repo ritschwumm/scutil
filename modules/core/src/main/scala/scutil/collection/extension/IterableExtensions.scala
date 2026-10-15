@@ -137,8 +137,8 @@ object IterableExtensions {
 		/** like flatMap, but avoiding the dubious Option=>Iterable implicit  */
 		def mapFilter[That,U](func:T=>Option[U])(using bf:BuildFrom[Repr,U,That]):That	= {
 			val builder	= bf.newBuilder(peer)
-			ops foreach {
-				func(_) foreach {
+			ops.foreach {
+				func(_).foreach {
 					builder	+= _
 				}
 			}
@@ -214,7 +214,7 @@ object IterableExtensions {
 		def traverseValidated[That,I,V](func:T=>Validated[I,V])(using bf:BuildFrom[Repr,V,That], cc:Semigroup[I]):Validated[I,That]	= {
 			var problems:Option[I]	= None
 			val builder	= bf.newBuilder(peer)
-			ops foreach { it =>
+			ops.foreach { it =>
 				func(it) match {
 					case Validated.Valid(x)	=>
 						if (problems.isEmpty) {
@@ -240,7 +240,7 @@ object IterableExtensions {
 			State { s =>
 				var temp	= s
 				val builder	= bf.newBuilder(peer)
-				ops foreach { it =>
+				ops.foreach { it =>
 					val (next, part)	= func(it).run(temp)
 					temp	= next
 					builder += part

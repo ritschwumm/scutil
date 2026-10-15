@@ -26,13 +26,13 @@ trait Applicative[F[_]] extends Functor[F] {
 		ap(map(as)(func.curried))(bs)
 
 	def product[A,B](as:F[A], bs:F[B]):F[(A,B)]	=
-		map2(as, bs)((a,b) => (a,b))
+		map2(as, bs)((a, b) => (a,b))
 
 	def productL[A,B](as:F[A], bs:F[B]):F[A]	=
-		map2(as, bs)((a,b) => a)
+		map2(as, bs)((a, _) => a)
 
 	def productR[A,B](as:F[A], bs:F[B]):F[B]	=
-		map2(as, bs)((a,b) => b)
+		map2(as, bs)((_, b) => b)
 
 	//------------------------------------------------------------------------------
 

@@ -49,8 +49,8 @@ enum Validated[+E,+T] {
 
 	def isValid:Boolean	=
 		this match {
-			case Validated.Invalid(x)	=> false
-			case Validated.Valid(x)		=> true
+			case Validated.Invalid(_)	=> false
+			case Validated.Valid(_)		=> true
 		}
 
 	def isInvalid:Boolean	=
@@ -60,13 +60,13 @@ enum Validated[+E,+T] {
 
 	def exists(pred:Predicate[T]):Boolean	=
 		this match {
-			case Validated.Invalid(x)	=> false
+			case Validated.Invalid(_)	=> false
 			case Validated.Valid(x)		=> pred(x)
 		}
 
 	def forall(pred:Predicate[T]):Boolean	=
 		this match {
-			case Validated.Invalid(x)	=> true
+			case Validated.Invalid(_)	=> true
 			case Validated.Valid(x)		=> pred(x)
 		}
 
@@ -74,13 +74,13 @@ enum Validated[+E,+T] {
 
 	def iterator:Iterator[T]	=
 		this match {
-			case Validated.Invalid(x)	=> Iterator.empty
-			case Validated.Valid(x)		=> Iterator single x
+			case Validated.Invalid(_)	=> Iterator.empty
+			case Validated.Valid(x)		=> Iterator.single(x)
 		}
 
 	def foreach(effect:Effect[T]):Unit	=
 		this match {
-			case Validated.Invalid(x)	=> ()
+			case Validated.Invalid(_)	=> ()
 			case Validated.Valid(x)		=> effect(x)
 		}
 
@@ -150,7 +150,7 @@ enum Validated[+E,+T] {
 	def invalidToOption:Option[E]	=
 		this match {
 			case Validated.Invalid(x)	=> Some(x)
-			case Validated.Valid(x)		=> None
+			case Validated.Valid(_)		=> None
 		}
 
 	//------------------------------------------------------------------------------
@@ -165,7 +165,7 @@ enum Validated[+E,+T] {
 
 	def getOrElse[TT>:T](that: =>TT):TT	=
 		this match {
-			case Validated.Invalid(x)	=> that
+			case Validated.Invalid(_)	=> that
 			case Validated.Valid(x)		=> x
 		}
 
@@ -176,7 +176,7 @@ enum Validated[+E,+T] {
 		}
 
 	def getOrError(s: =>String):T	=
-		getOrElse(sys error s)
+		getOrElse(sys.error(s))
 
 	def getOrThrow(func:E=>Throwable):T	=
 		this match {
@@ -227,7 +227,7 @@ enum Validated[+E,+T] {
 	}
 
 	def invalidEffect(effect:Effect[E]):this.type	= {
-		invalidToOption foreach effect
+		invalidToOption.foreach(effect)
 		this
 	}
 
@@ -241,7 +241,7 @@ enum Validated[+E,+T] {
 
 	def toOption:Option[T]	=
 		this match {
-			case Validated.Invalid(x)	=> None
+			case Validated.Invalid(_)	=> None
 			case Validated.Valid(x)		=> Some(x)
 		}
 
@@ -250,13 +250,13 @@ enum Validated[+E,+T] {
 
 	def toList:List[T]	=
 		this match {
-			case Validated.Invalid(x)	=> Nil
+			case Validated.Invalid(_)	=> Nil
 			case Validated.Valid(x)		=> List(x)
 		}
 
 	def toVector:Vector[T]	=
 		this match {
-			case Validated.Invalid(x)	=> Vector.empty
+			case Validated.Invalid(_)	=> Vector.empty
 			case Validated.Valid(x)		=> Vector(x)
 		}
 

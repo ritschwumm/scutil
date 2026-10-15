@@ -2,7 +2,7 @@ package scutil.lang
 
 object NaturalTransformation {
 	def identity[F[_]]:F ~> F	=
-		// TODO dotty should work, but does not
+		// TODO dotty should work, but does not @see https://docs.scala-lang.org/sips/polymorphic-eta-expansion.html
 		//[A] => (it:F[A]) => it
 		new NaturalTransformation[F,F] {
 			def apply[A](fa:F[A]):F[A]	= fa
@@ -19,7 +19,7 @@ trait NaturalTransformation[-F[_],+G[_]] { self =>
 		that.andThen(this)
 
 	def andThen[H[_]](that:G ~> H):F ~> H	=
-		// TODO dotty should work, but does not
+		// TODO dotty should work, but does not @see https://docs.scala-lang.org/sips/polymorphic-eta-expansion.html
 		// [A] => (it:F[A]) => that(self(it))
 		new NaturalTransformation[F,H] {
 			def apply[A](it:F[A]):H[A]	=

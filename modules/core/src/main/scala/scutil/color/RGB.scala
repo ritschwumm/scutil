@@ -44,8 +44,8 @@ final case class RGB(r:Float, g:Float, b:Float) {
 		RGBA(this, alpha)
 
 	def toHSB:HSB = {
-		val	cmax	= r max g max b
-		val	cmin	= r min g min b
+		val	cmax	= r `max` g `max` b
+		val	cmin	= r `min` g `min` b
 		val	B	= cmax
 		if (B == 0)	return HSB(0, 0, B)
 

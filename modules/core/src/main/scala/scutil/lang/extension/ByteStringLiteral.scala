@@ -1,11 +1,13 @@
 package scutil.lang.extension
 
+import scala.annotation.nowarn
 import scala.quoted.*
 
 import scutil.lang.GenericLiteral
 import scutil.lang.ByteString
 import scutil.codec.Hex
 
+@nowarn("msg=unused explicit parameter in extension method")
 object ByteStringLiteral {
 	extension (inline peer:StringContext) {
 		/** provide string interpolator for hex bytes */

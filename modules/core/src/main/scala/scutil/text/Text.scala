@@ -14,20 +14,20 @@ object Text {
 		while (i < text.length) {
 			text.charAt(i) match {
 				case '\r'	=>
-					out append '\r'
+					out.append('\r')
 					col	= 0
 				case '\n'	=>
-					out append '\n'
+					out.append('\n')
 					col	= 0
 				case '\t'	=>
 					while {
-						out append ' '
+						out.append(' ')
 						col	+= 1
 						col % width != 0
 					}
 					do ()
 				case x	=>
-					out append x
+					out.append(x)
 					col	+= 1
 			}
 			i	+= 1
@@ -56,7 +56,7 @@ object Text {
 			cells
 			.zipAll (widths, "", 0)
 			.map { (cell, width) =>
-				cell + " " * ((width - cell.length max 0))
+				cell + " " * (width - cell.length).max(0)
 			}
 			.mkString ("│", "│", "│")
 		}

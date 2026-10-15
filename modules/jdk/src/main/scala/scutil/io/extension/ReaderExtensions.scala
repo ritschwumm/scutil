@@ -57,7 +57,7 @@ object ReaderExtensions {
 		def skipFully():Unit = {
 			val	buffer	= new Array[Char](blockSize)
 			var running	= true
-			while (true) {
+			while (running) {
 				val len = peer.read(buffer)
 				if (len == -1)	running	= false
 			}

@@ -14,8 +14,8 @@ object IntSpan {
 final class IntSpan private (val start:Int, val size:Int) {
 	val end:Int			= start + size
 	def empty:Boolean	= size == 0
-	def min:Int			= start min end
-	def max:Int			= start max end
+	def min:Int			= start `min` end
+	def max:Int			= start `max` end
 	def center:Int		= (start + end) / 2
 
 	def negate:IntSpan	= new IntSpan(end, -size)
@@ -36,8 +36,8 @@ final class IntSpan private (val start:Int, val size:Int) {
 
 	def union(that:IntSpan):IntSpan	=
 		IntSpan.startEnd(
-			start	= this.start	min that.start,
-			end		= this.end		min that.end
+			start	= this.start	`min` that.start,
+			end		= this.end		`min` that.end
 		)
 
 	def intersect(that:IntSpan):Option[IntSpan]	=

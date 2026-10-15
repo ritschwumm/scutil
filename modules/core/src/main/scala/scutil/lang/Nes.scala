@@ -60,7 +60,7 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		tail.lastOption.getOrElse(head)
 
 	def init:Seq[T]	=
-		if (tail.nonEmpty)	head +: (tail dropRight 1)
+		if (tail.nonEmpty)	head +: tail.dropRight(1)
 		else				Vector(head)
 
 	def size:Int	= tail.size + 1
@@ -77,13 +77,13 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 
 	def count(pred:Predicate[T]):Int	=
 		(if (pred(head)) 1 else 0) +
-		(tail count pred)
+		tail.count(pred)
 
 	def forall(pred:Predicate[T]):Boolean	=
-		pred(head) && (tail forall pred)
+		pred(head) && tail.forall(pred)
 
 	def exists(pred:Predicate[T]):Boolean	=
-		pred(head) || (tail exists pred)
+		pred(head) || tail.exists(pred)
 
 	def drop(count:Int):Option[Nes[T]]	=
 		Nes.fromSeq(toVector.drop(count))
@@ -102,7 +102,7 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 
 	def initNes:Option[Nes[T]]	=
 		if (tail.isEmpty)	None
-		else				Some(Nes(head, tail dropRight 1))
+		else				Some(Nes(head, tail.dropRight(1)))
 
 	def map[U](func:T=>U):Nes[U]	=
 		Nes(func(head), tail.map(func))
@@ -186,7 +186,7 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 	def zip[U](that:Nes[U]):Nes[(T,U)]	=
 		Nes(
 			(this.head, that.head),
-			this.tail zip that.tail
+			this.tail `zip` that.tail
 		)
 
 	// NOTE zipWith and map2 are different things for Iterables
@@ -202,12 +202,12 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 			this.tail.zipWithIndex.map { (v,i) => (v,i+1) }
 		)
 
-	def reduce[U>:T:Semigroup as S](func:(U,U)=>U):U	=
+	def reduce[U>:T:Semigroup as S]:U	=
 		reduceWith(S.combine)
 
 	def reduceWith[U>:T](func:(U,U)=>U):U	= {
 		var state:U	= head
-		tail foreach { it =>
+		tail.foreach { it =>
 			state	= func(state, it)
 		}
 		state
@@ -226,7 +226,7 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 
 	def foreach(effect:Effect[T]):Unit	= {
 		effect(head)
-		tail foreach effect
+		tail.foreach(effect)
 	}
 
 	def toList:List[T]	=
@@ -239,10 +239,10 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		toVector
 
 	def to[CC[_],U>:T](factory:IterableFactory[CC]):CC[U]	=
-		factory from toVector
+		factory.from(toVector)
 
 	def mkString(separator:String):String	=
-		toVector mkString separator
+		toVector.mkString(separator)
 
 	def mkString(prefix:String, separator:String, suffix:String):String	=
 		toVector.mkString(prefix, separator, suffix)

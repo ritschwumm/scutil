@@ -21,7 +21,7 @@ object OptionExtensions {
 	}
 
 	extension [T](peer:Option[T]) {
-		def getOrError(s:String)	= peer.getOrElse {  sys error s }
+		def getOrError(s:String)	= peer.getOrElse { sys.error(s) }
 
 		def cata[X](none: => X, some:T => X):X =
 			peer match {
@@ -37,7 +37,7 @@ object OptionExtensions {
 			for { f	<- peer; s	<- source } yield f(s)
 
 		def product[U](that:Option[U]):Option[(T,U)]	=
-			peer zip that
+			peer `zip` that
 
 		def map2[U,V](that:Option[U])(func:(T,U)=>V):Option[V]	=
 			(peer,that) match {
@@ -66,7 +66,7 @@ object OptionExtensions {
 		//------------------------------------------------------------------------------
 
 		def someEffect(effect:T=>Unit):Option[T] = {
-			peer foreach effect
+			peer.foreach(effect)
 			peer
 		}
 
@@ -108,7 +108,7 @@ object OptionExtensions {
 			val builder	= factory.newBuilder
 			peer.map(func) match {
 				case None		=> builder += None; builder.result
-				case Some(xs)	=> xs foreach { x => builder += Some(x) }
+				case Some(xs)	=> xs.foreach { x => builder += Some(x) }
 			}
 			builder.result
 		}

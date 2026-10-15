@@ -151,10 +151,10 @@ enum Io[T] {
 		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => func(t,u)))
 
 	final def productL[U](that:Io[U]):Io[T]	=
-		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => t))
+		Io.FlatMap(this, (t:T) => Io.Map(that, (_:U) => t))
 
 	final def productR[U](that:Io[U]):Io[U]	=
-		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => u))
+		Io.FlatMap(this, (_:T) => Io.Map(that, (u:U) => u))
 
 	final def attempt:Io[Either[Exception,T]]	=
 		Io.Suspend { () =>

@@ -2,11 +2,13 @@ package scutil.lang.extension
 
 import java.nio.charset.Charset
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.mutable
 
 import scutil.lang.*
 
+@nowarn("msg=unused explicit parameter in extension method")
 object StringExtensions {
 	extension (peer:String) {
 		def toBigIntOption:Option[BigInt]	= parseBigInt.toOption
@@ -177,11 +179,11 @@ object StringExtensions {
 			var i	= 0
 			while (i < peer.length) {
 				peer.charAt(i) match {
-					case '<'			=> b append "&lt;"
-					case '>'			=> b append "&gt;"
-					case '&'			=> b append "&amp;"
-					case '"'	if quot	=> b append "&quot;"
-					case '\''	if apos	=> b append "&apos;"
+					case '<'			=> b.append("&lt;")
+					case '>'			=> b.append("&gt;")
+					case '&'			=> b.append("&amp;")
+					case '"'	if quot	=> b.append("&quot;")
+					case '\''	if apos	=> b.append("&apos;")
 					case x				=> b += x
 				}
 				i	+= 1

@@ -7,6 +7,9 @@ object Extractor {
 	def total[S,T](func:S=>T):Extractor[S,T]	=
 		Extractor(s	=> Some(func(s)))
 
+	def optional[S,T](func:S=>Option[T]):Extractor[S,T]	=
+		Extractor(func)
+
 	def partial[S,T](func:PartialFunction[S,T]):Extractor[S,T]	=
 		Extractor(func.lift)
 
@@ -56,7 +59,7 @@ final case class Extractor[S,T](read:S=>Option[T]) {
 		Extractor(s => read(s).map(func))
 
 	def contraMap[R](func:R=>S):Extractor[R,T]	=
-		Extractor(func andThen read)
+		Extractor(func `andThen` read)
 
 	def filter(pred:T=>Boolean):Extractor[S,T]	=
 		Extractor(s	=> read(s).filter(pred))
@@ -68,5 +71,5 @@ final case class Extractor[S,T](read:S=>Option[T]) {
 		s => read(s)
 
 	def toPartialFunction:PartialFunction[S,T]	=
-		Function unlift read
+		Function.unlift(read)
 }

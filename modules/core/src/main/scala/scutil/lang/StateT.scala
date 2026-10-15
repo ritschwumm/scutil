@@ -34,10 +34,10 @@ object StateT { outer =>
 	//------------------------------------------------------------------------------
 
 	def set[F[_]:Applicative as F,S](it:S):StateT[F,S,Unit]	=
-		StateT { s => F.pure(it -> (())) }
+		StateT { _ => F.pure(it -> (())) }
 
 	def setF[F[_]:Functor as F,S](it:F[S]):StateT[F,S,Unit]	=
-		StateT { s => F.map(it)(s1 => (s1, ())) }
+		StateT { _ => F.map(it)(s1 => (s1, ())) }
 
 	def setOld[F[_]:Applicative as F,S](it:S):StateT[F,S,S]	=
 		StateT { s => F.pure(it -> s) }

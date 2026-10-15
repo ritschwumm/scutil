@@ -5,9 +5,9 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.257.0",
+	version			:= "0.258.0",
 
-	scalaVersion	:= "3.6.3",
+	scalaVersion	:= "3.7.1",
 	scalacOptions	++= Seq(
 		"-feature",
 		"-deprecation",
@@ -19,6 +19,7 @@ inThisBuild(Seq(
 		"-Wshadow:all",
 		"-Xfatal-warnings",
 		"-Xkind-projector:underscores",
+		"-Xcheck-macros"
 		// leads to an InternalError for the variable e inside Catch.in
 		// "-Ysafe-init-global",
 	),
@@ -37,21 +38,17 @@ inThisBuild(Seq(
 		Wart.TryPartial,
 		Wart.Enumeration,
 		Wart.FinalCaseClass,
-		Wart.JavaConversions,
 		Wart.Option2Iterable,
-		Wart.JavaSerializable,
 		//Wart.Any,
 		Wart.AnyVal,
 		//Wart.Nothing,
 		Wart.ArrayEquals,
 		// TODO get this back - for some reason, it cannot be disabled
 		//Wart.ImplicitParameter,
-		Wart.ExplicitImplicitTypes,
 		Wart.LeakingSealed,
 		Wart.DefaultArguments,
 		//Wart.Overloading,
-		//Wart.PublicInference,
-		//Wart.TraversableOps,
+		//Wart.IterableOps,
 		Wart.ListUnapply,
 		Wart.ListAppend,
 		Wart.GlobalExecutionContext,
@@ -181,7 +178,7 @@ lazy val `scutil-xml`	=
 		fixConsoleSettings,
 		scalacOptions	++= Seq(),
 		libraryDependencies	++= Seq(
-			"org.scala-lang.modules"	%% "scala-xml"	% "2.3.0"	% "compile"
+			"org.scala-lang.modules"	%% "scala-xml"	% "2.4.0"	% "compile"
 		)
 	)
 	.dependsOn(

@@ -122,34 +122,34 @@ object SeqExtensionsTest extends SimpleTestSuite {
 
 	test("insertBetween should work with 0 elements") {
 		assertEquals(
-			Seq.empty[Int].insertBetween(it => it.toString, (a,b) => Some("x")),
+			Seq.empty[Int].insertBetween(it => it.toString, (_, _) => Some("x")),
 			Seq.empty
 		)
 	}
 
 	test("insertBetween should work with 1 element") {
 		assertEquals(
-			Seq(1).insertBetween(it => it.toString, (a,b) => Some("x")),
+			Seq(1).insertBetween(it => it.toString, (_, _) => Some("x")),
 			Seq("1")
 		)
 	}
 
 	test("insertBetween should work with 2 elements") {
 		assertEquals(
-			Seq(1,2).insertBetween(it => it.toString, (a,b) => Some("x")),
+			Seq(1,2).insertBetween(it => it.toString, (_, _) => Some("x")),
 			Seq("1", "x", "2")
 		)
 	}
 
 	test("insertBetween should work with 3 elements") {
 		assertEquals(
-			Seq(1,2,3).insertBetween(it => it.toString, (a,b) => Some("x")),
+			Seq(1,2,3).insertBetween(it => it.toString, (_, _) => Some("x")),
 			Seq("1", "x", "2", "x", "3")
 		)
 	}
 
 	test("insertBetween should return the right type") {
-		val a	= Vector(1,2,3).insertBetween(it => it.toString, (a,b) => Some("x"))
+		val a	= Vector(1,2,3).insertBetween(it => it.toString, (_, _) => Some("x"))
 		typed[ Vector[String] ](a)
 		assertEquals(
 			a,

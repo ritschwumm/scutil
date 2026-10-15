@@ -32,8 +32,8 @@ final case class CalendarWeek(number:Int, year:Int) extends Ordered[CalendarWeek
 		this.firstDay.toJulianDay.until(that.firstDay.toJulianDay) / CalendarWeek.days
 
 	def compare(that:CalendarWeek):Int		= {
-		val	y	= this.year		compare that.year;		if (y != 0)	return y
-		val	n	= this.number	compare that.number;	if (n != 0)	return n
+		val	y	= this.year		`compare` that.year;	if (y != 0)	return y
+		val	n	= this.number	`compare` that.number;	if (n != 0)	return n
 		0
 	}
 	def min(that:CalendarWeek):CalendarWeek	= if (this < that) this else that

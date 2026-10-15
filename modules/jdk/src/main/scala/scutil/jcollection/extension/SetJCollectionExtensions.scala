@@ -10,7 +10,7 @@ object SetJCollectionExtensions {
 	extension [T](peer:Set[T]) {
 		def toJSet:JSet[T]	=  {
 			val out	= new JHashSet[T]
-			peer foreach out.add
+			peer.foreach(out.add)
 			JCollections.unmodifiableSet(out)
 		}
 	}

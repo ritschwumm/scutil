@@ -16,7 +16,7 @@ object ReleaseableSyntax {
 			}
 			finally {
 				try {
-					RS release peer
+					RS.release(peer)
 				}
 				catch { case e:Throwable	=>
 					if (primary ne null)	primary.addSuppressed(e)

@@ -60,7 +60,7 @@ object DndFileExport {
 
 	private final class FileTransferable(files:Nes[File]) extends Transferable {
 		def isDataFlavorSupported(flavor:DataFlavor):Boolean	=
-			getTransferDataFlavors contains flavor
+			getTransferDataFlavors.contains(flavor)
 
 		def getTransferDataFlavors:Array[DataFlavor] =
 			exportable.toArray
@@ -81,7 +81,7 @@ object DndFileExport {
 					// NOTE does not work on windows
 					Files.newInputStream(files.head.toPath)
 				case x	=>
-					sys error s"unexpected DataFlavor ${x.toString}"
+					sys.error(s"unexpected DataFlavor ${x.toString}")
 			}
 	}
 }

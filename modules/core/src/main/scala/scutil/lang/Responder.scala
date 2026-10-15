@@ -4,7 +4,7 @@ import scutil.lang.tc.*
 
 object Responder {
 	def never[T]:Responder[T]	=
-		Responder { cont => }
+		Responder { _ => }
 
 	def pure[T](value:T):Responder[T]	=
 		Responder { cont =>

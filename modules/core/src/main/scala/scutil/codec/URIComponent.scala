@@ -27,12 +27,12 @@ final class URIComponent(charset:Charset) {
 		while (i < bytes.length) {
 			val byte	= bytes(i)
 			if (safe(byte)) {
-				out append byte.toChar
+				out.append(byte.toChar)
 			}
 			else {
-				out append '%'
-				out append encodeNibble((byte >> 4) & 0xf)
-				out append encodeNibble((byte >> 0) & 0xf)
+				out.append('%')
+				out.append(encodeNibble((byte >> 4) & 0xf))
+				out.append(encodeNibble((byte >> 0) & 0xf))
 			}
 			i	+= 1
 		}

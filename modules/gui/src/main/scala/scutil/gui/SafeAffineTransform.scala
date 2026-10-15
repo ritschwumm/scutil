@@ -73,7 +73,7 @@ final case class SafeAffineTransform private (delegate:AffineTransform) {
 
 	def inverse:Option[SafeAffineTransform]	=
 		try { Some(SafeAffineTransform.unsafeFromAwtAffineTransform(delegate.createInverse)) }
-		catch { case e:NoninvertibleTransformException => None }
+		catch { case _:NoninvertibleTransformException => None }
 
 	/** rotate around a given center */
 	def rotateAround(theta:Double, center:DoublePoint):SafeAffineTransform	=

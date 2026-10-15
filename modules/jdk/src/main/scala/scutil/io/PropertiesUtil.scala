@@ -25,14 +25,14 @@ object PropertiesUtil {
 
 	def loadRawURL(url:URL, proxy:Option[Proxy]):Properties	=
 		url.withInputStream(proxy) { st =>
-			new Properties doto {
+			(new Properties).doto {
 				_.load(st)
 			}
 		}
 
 	def loadRawFile(path:Path):Properties	=
 		MoreFiles.withInputStream(path) { st =>
-			new Properties doto {
+			(new Properties).doto {
 				_.load(st)
 			}
 		}

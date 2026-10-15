@@ -2,6 +2,8 @@ package scutil.gui.insets
 
 import java.awt.Insets
 
+import scala.annotation.nowarn
+
 def TopLeft(hgap:Int, vgap:Int):Insets		= new Insets(0,		0,		vgap,	hgap)
 def TopCenter(hgap:Int, vgap:Int):Insets	= new Insets(0,		hgap,	vgap,	hgap)
 def TopRight(hgap:Int, vgap:Int):Insets		= new Insets(0,		hgap,	vgap,	0)
@@ -11,10 +13,17 @@ def CenterRight(hgap:Int, vgap:Int):Insets	= new Insets(vgap,	hgap,	vgap,	0)
 def BottomLeft(hgap:Int, vgap:Int):Insets	= new Insets(vgap,	0,		0,		hgap)
 def BottomCenter(hgap:Int, vgap:Int):Insets	= new Insets(vgap,	hgap,	0,		hgap)
 def BottomRight(hgap:Int, vgap:Int):Insets	= new Insets(vgap,	hgap,	0,		0)
+@nowarn("msg=unused explicit parameter")
 def AloneLeft(hgap:Int, vgap:Int):Insets	= new Insets(0,		0,		0,		hgap)
+@nowarn("msg=unused explicit parameter")
 def AloneCenter(hgap:Int, vgap:Int):Insets	= new Insets(0,		hgap,	0,		hgap)
+@nowarn("msg=unused explicit parameter")
 def AloneRight(hgap:Int, vgap:Int):Insets	= new Insets(0,		hgap,	0,		0)
+@nowarn("msg=unused explicit parameter")
 def TopAlone(hgap:Int, vgap:Int):Insets		= new Insets(0,		0,		vgap,	0)
+@nowarn("msg=unused explicit parameter")
 def CenterAlone(hgap:Int, vgap:Int):Insets	= new Insets(vgap,	0,		vgap,	0)
+@nowarn("msg=unused explicit parameter")
 def BottomAlone(hgap:Int, vgap:Int):Insets	= new Insets(vgap,	0,		0,		0)
+@nowarn("msg=unused explicit parameter")
 def AloneAlone(hgap:Int, vgap:Int):Insets	= new Insets(0,		0,		0,		0)

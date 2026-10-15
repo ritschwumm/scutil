@@ -41,15 +41,15 @@ object MapExtensions {
 		*/
 		def ior[U](that:Map[S,U]):Map[S,Ior[T,U]]	= {
 			var out	= Map.empty[S,Ior[T,U]]
-			peer foreach { case (s, t) =>
+			peer.foreach { case (s, t) =>
 				that.get(s) match {
 					case Some(u)	=> out += (s -> Ior.both(t, u))
 					case None		=> out += (s -> Ior.left(t))
 				}
 			}
-			that foreach { case (s, u) =>
+			that.foreach { case (s, u) =>
 				peer.get(s) match {
-					case Some(t1)	=>
+					case Some(_)	=>
 					case None		=> out += (s -> Ior.right(u))
 				}
 			}
@@ -98,7 +98,7 @@ object MapExtensions {
 
 		/** None when the key does not exist */
 		def updatedAt(key:S, value:T):Option[Map[S,T]]	=
-			if (peer contains key)	Some(peer.updated(key, value))
+			if (peer.contains(key))	Some(peer.updated(key, value))
 			else					None
 
 		/** map the value for a single key if it exists or insert a new value for this key */
@@ -106,7 +106,7 @@ object MapExtensions {
 			peer + (key -> peer.get(key).map(update).getOrElse(insert))
 
 		def putIfNotExist(key:S, value:T):(Map[S,T],Boolean)	=
-			if (peer contains key)	(peer, false)
+			if (peer.contains(key))	(peer, false)
 			else					(peer + (key -> value), true)
 
 		def storeAt(key:S):Option[Store[T,Map[S,T]]]	=

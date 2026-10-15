@@ -5,7 +5,7 @@ import scutil.lang.tc.*
 object State {
 	def pure[S,T](it:T):State[S,T]		= State { s => (s,			it)	}
 	def get[S]:State[S,S]				= State { s => (s,			s)	}
-	def set[S](it:S):State[S,Unit]		= State { s => (it,			())	}
+	def set[S](it:S):State[S,Unit]		= State { _ => (it,			())	}
 	def setOld[S](it:S):State[S,S]		= State { s => (it,			s)	}
 	def mod[S](func:S=>S):State[S,Unit]	= State { s => (func(s),	())	}
 	def modOld[S](func:S=>S):State[S,S]	= State { s => (func(s),	s)	}

@@ -1,7 +1,5 @@
 package scutil.lang
 
-import scala.annotation.nowarn
-
 import minitest.*
 
 // NOTE the @nowarn are necessary dues to https://github.com/scala/scala3/issues/17753
@@ -36,28 +34,28 @@ object PrismGenTest extends SimpleTestSuite {
 
 	test("get on generated prisms should work for object case") {
 		assertEquals(
-			( Foo.P.Obj.get(Foo.Obj) ) : @nowarn,
+			Foo.P.Obj.get(Foo.Obj),
 			Some(Foo.Obj)
 		)
 	}
 
 	test("get on generated prisms should work for nullary case") {
 		assertEquals(
-			( Foo.P.Nullary.get(Foo.Nullary()) ) : @nowarn,
+			Foo.P.Nullary.get(Foo.Nullary()),
 			Some(Foo.Nullary())
 		)
 	}
 
 	test("get on generated prisms should work for unary case") {
 		assertEquals(
-			( Foo.P.Unary.get(Foo.Unary(1)) ) : @nowarn,
+			Foo.P.Unary.get(Foo.Unary(1)),
 			Some(Foo.Unary(1))
 		)
 	}
 
 	test("get on generated prisms should work for binary case") {
 		assertEquals(
-			( Foo.P.Binary.get(Foo.Binary("a", true)) ) : @nowarn,
+			Foo.P.Binary.get(Foo.Binary("a", true)),
 			Some(Foo.Binary("a", true))
 		)
 	}
@@ -66,7 +64,7 @@ object PrismGenTest extends SimpleTestSuite {
 
 	test("get on generated prisms should reject mismatch") {
 		assertEquals(
-			( Foo.P.Unary.get(Foo.Binary("a", true)) ) : @nowarn,
+			Foo.P.Unary.get(Foo.Binary("a", true)),
 			None
 		)
 	}
@@ -75,28 +73,28 @@ object PrismGenTest extends SimpleTestSuite {
 
 	test("set on generated prisms should work for object case") {
 		assertEquals(
-			( Foo.P.Obj.set(Foo.Obj) ) : @nowarn,
+			Foo.P.Obj.set(Foo.Obj),
 			Foo.Obj
 		)
 	}
 
 	test("set on generated prisms should work for nullary case") {
 		assertEquals(
-			( Foo.P.Nullary.set(Foo.Nullary()) ) : @nowarn,
+			Foo.P.Nullary.set(Foo.Nullary()),
 			Foo.Nullary()
 		)
 	}
 
 	test("set on generated prisms should work for unary case") {
 		assertEquals(
-			( Foo.P.Unary.set(Foo.Unary(1)) ) : @nowarn,
+			Foo.P.Unary.set(Foo.Unary(1)),
 			Foo.Unary(1)
 		)
 	}
 
 	test("set on generated prisms should work for binary case") {
 		assertEquals(
-			( Foo.P.Binary.set(Foo.Binary("a", true)) ) : @nowarn,
+			Foo.P.Binary.set(Foo.Binary("a", true)),
 			Foo.Binary("a", true)
 		)
 	}
@@ -105,14 +103,14 @@ object PrismGenTest extends SimpleTestSuite {
 
 	test("get on generated prisms should work for generic enum") {
 		assertEquals(
-			( Bar.P.Unary.get(Bar.Unary(1)) ) : @nowarn,
+			Bar.P.Unary.get(Bar.Unary(1)),
 			Some(Bar.Unary(1))
 		)
 	}
 
 	test("set on generated prisms should work for generic enum") {
 		assertEquals(
-			( Bar.P.Unary.set(Bar.Unary(1)) ) : @nowarn,
+			Bar.P.Unary.set(Bar.Unary(1)),
 			Bar.Unary(1)
 		)
 	}

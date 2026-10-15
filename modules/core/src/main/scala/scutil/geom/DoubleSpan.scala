@@ -39,8 +39,8 @@ final class DoubleSpan private (val start:Double, val size:Double) {
 
 	def union(that:DoubleSpan):DoubleSpan	=
 		DoubleSpan.startEnd(
-			start	= this.start	min that.start,
-			end		= this.end		min that.end
+			start	= this.start	`min` that.start,
+			end		= this.end		`min` that.end
 		)
 
 	def intersect(that:DoubleSpan):Option[DoubleSpan]	=

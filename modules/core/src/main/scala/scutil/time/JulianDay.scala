@@ -16,7 +16,7 @@ final case class JulianDay(value:Int) extends Ordered[JulianDay] {
 	def move(offset:Int):JulianDay	= JulianDay(value + offset)
 	def until(that:JulianDay):Int	= that.value - this.value
 
-	def compare(that:JulianDay):Int		= this.value compare that.value
+	def compare(that:JulianDay):Int		= this.value `compare` that.value
 	def min(that:JulianDay):JulianDay	= if (this < that) this else that
 	def max(that:JulianDay):JulianDay	= if (this > that) this else that
 

@@ -13,7 +13,7 @@ object Prism {
 		Prism(get.lift, set)
 
 	def total[S,T](get:S=>T, set:T=>S):Prism[S,T] =
-		Prism(get andThen Some.apply, set)
+		Prism(get `andThen` Some.apply, set)
 
 	def identity[T]:Prism[T,T] =
 		total[T,T](Predef.identity[T], Predef.identity[T])

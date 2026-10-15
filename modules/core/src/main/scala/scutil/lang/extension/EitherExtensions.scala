@@ -82,7 +82,7 @@ object EitherExtensions {
 				case (Right(a),	Right(b))	=> Right((a, b))
 				case (Left(a),	Right(_))	=> Left(a)
 				case (Right(_),	Left(b))	=> Left(b)
-				case (Left(a),	Left(b))	=> Left(a)
+				case (Left(a),	Left(_))	=> Left(a)
 			}
 
 		//------------------------------------------------------------------------------
@@ -135,7 +135,7 @@ object EitherExtensions {
 			}
 
 		def getOrError(s: =>String):R	=
-			peer.getOrElse{ sys error s }
+			peer.getOrElse{ sys.error(s) }
 
 		//------------------------------------------------------------------------------
 
@@ -207,12 +207,12 @@ object EitherExtensions {
 		//------------------------------------------------------------------------------
 
 		def leftEffect(fx:L=>Unit):Either[L,R]	= {
-			peer.swap foreach fx
+			peer.swap.foreach(fx)
 			peer
 		}
 
 		def rightEffect(fx:R=>Unit):Either[L,R]	= {
-			peer foreach fx
+			peer.foreach(fx)
 			peer
 		}
 

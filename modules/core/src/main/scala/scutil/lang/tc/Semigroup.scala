@@ -33,7 +33,7 @@ object Semigroup extends SemigroupLow {
 	/*
 	// TODO does this make sense without further constraints on T?
 	given [S,T] => Semigroup[Either[S,T]]	=
-		Semigroup instance { (a,b) =>
+		Semigroup.instance { (a,b) =>
 			a match {
 				case Left(_)	=> b
 				case Right(_)	=> a
@@ -44,7 +44,7 @@ object Semigroup extends SemigroupLow {
 	/*
 	// NOTE already done with PFunctionSemigroup
 	given [T] => Semigroup[T=>Option[T]]	=
-		Semigroup instance (_ `andThenFixed` _)
+		Semigroup.instance(_ `andThenFixed` _)
 	*/
 
 	//------------------------------------------------------------------------------
@@ -119,7 +119,7 @@ object Semigroup extends SemigroupLow {
 
 	def KleisliMonoid[S,T:Monoid as M]:Monoid[S=>T]	=
 		Monoid.instance(
-						(s) => Monoid.empty[T],
+						(_) => Monoid.empty[T],
 			(a,b) =>	(s) => M.combine(a(s), b(s)),
 		)
 }
@@ -140,7 +140,7 @@ trait Semigroup[F] {
 
 	// TODO foldable add a Foldable1 typeclass
 	def combineAll1(items:Nes[F]):F	=
-		items.reduce(combine)(using this)
+		items.reduceWith(combine)
 
 	def foldMap1[S](items:Nes[S])(func:S=>F):F	=
 		items.tail.foldLeft(func(items.head)) { (f, s) =>

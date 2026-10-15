@@ -65,7 +65,7 @@ final case class SgSpan private (start:Double, end:Double) {
 	// TODO should this normalize?
 	def contains(that:SgSpan):Boolean	= {
 		val thisNormal	= this.normalize
-		val thatNormal	= this.normalize
+		val thatNormal	= that.normalize
 		thatNormal.start	>=	thisNormal.start	&&
 		thatNormal.start	<	thisNormal.end		&&
 		thatNormal.end		<=	thisNormal.end		&&

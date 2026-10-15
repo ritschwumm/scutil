@@ -14,7 +14,7 @@ object External {
 	def exec(command:Seq[String], env:Map[String,String]=Map.empty, pwd:Option[Path]=None, input:Seq[String]=Seq.empty):External = {
 		val	builder	= new ProcessBuilder(command.toJList)
 		builder.environment().putAll(env.toJMap)
-		pwd foreach { path => builder.directory(path.toFile) }
+		pwd.foreach { path => builder.directory(path.toFile) }
 		val proc	= builder.start()
 
 		/* val in = */ spawn { spewLines(proc.getOutputStream, input) }
@@ -30,7 +30,7 @@ object External {
 
 	private def spewLines(st:OutputStream, lines:Seq[String]):Unit = {
 		new OutputStreamWriter(st) use { writer =>
-			lines foreach { line =>
+			lines.foreach { line =>
 				writer.write(line)
 				writer.write(SystemProperties.line.separator)
 			}

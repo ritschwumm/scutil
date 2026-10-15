@@ -98,6 +98,6 @@ final case class Bijection[S,T](get:S=>T, set:T=>S) {
 	def toLens:Lens[S,T]	=
 		Lens(
 			get	= get,
-			set	= t => s => set(t)
+			set	= t => _ => set(t)
 		)
 }

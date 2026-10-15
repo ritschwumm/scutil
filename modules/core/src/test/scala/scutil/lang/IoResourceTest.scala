@@ -7,7 +7,7 @@ object IoResourceTest extends SimpleTestSuite {
 		var tmp	= ""
 		val u	=
 			for {
-				a	<-	IoResource.unsafe.disposing{								1 }{ _ => tmp = tmp + "a closed" }
+				_	<-	IoResource.unsafe.disposing{								1 }{ _ => tmp = tmp + "a closed" }
 				_	<-	IoResource.unsafe.disposing{ sys error "create b failed";	2 }{ _ => tmp = tmp + "b closed" }
 			}
 			yield ()
@@ -28,7 +28,7 @@ object IoResourceTest extends SimpleTestSuite {
 		var tmp	= ""
 		val u	=
 			for {
-				a	<-	IoResource.unsafe.disposing{								1 }{ _ => sys error "close a failed" }
+				_	<-	IoResource.unsafe.disposing{								1 }{ _ => sys error "close a failed" }
 				_	<-	IoResource.unsafe.disposing{ sys error "create b failed";	2 }{ _ => tmp = tmp + "b closed" }
 			}
 			yield ()
