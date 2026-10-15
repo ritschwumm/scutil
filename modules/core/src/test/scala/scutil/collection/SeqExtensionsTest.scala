@@ -63,19 +63,19 @@ object SeqExtensionsTest extends SimpleTestSuite {
 	}
 
 	test("splitAround should split an empty Seq before a leading separator") {
-		(Seq(1,2) splitAround 1) must haveTheSameElementsAs(Seq(Seq(),Seq(2)))
+		(Seq(1, 2) splitAround 1) must haveTheSameElementsAs(Seq(Seq(),Seq(2)))
 	}
 
 	test("splitAround should split an empty Seq after a trailing separator") {
-		(Seq(0,1) splitAround 1) must haveTheSameElementsAs(Seq(Seq(0),Seq()))
+		(Seq(0, 1) splitAround 1) must haveTheSameElementsAs(Seq(Seq(0),Seq()))
 	}
 
 	test("splitAround should split a simple Seq correctly") {
-		(Seq(0,1,2) splitAround 1) must haveTheSameElementsAs(Seq(Seq(0),Seq(2)))
+		(Seq(0, 1, 2) splitAround 1) must haveTheSameElementsAs(Seq(Seq(0),Seq(2)))
 	}
 
 	test("splitAround should create an empty Seq between two adjacent separators") {
-		(Seq(0,1,1,2) splitAround 1) must haveTheSameElementsAs(Seq(Seq(0),Seq(),Seq(2)))
+		(Seq(0, 1, 1, 2) splitAround 1) must haveTheSameElementsAs(Seq(Seq(0),Seq(),Seq(2)))
 	}
 	*/
 
@@ -91,30 +91,30 @@ object SeqExtensionsTest extends SimpleTestSuite {
 	test("adjacents should work with 1 element") {
 		assertEquals(
 			Seq(1).adjacents,
-			Seq((None,1,None))
+			Seq((None, 1, None))
 		)
 	}
 
 	test("adjacents should work with 2 elements") {
 		assertEquals(
-			Seq(1,2).adjacents,
-			Seq((None,1,Some(2)), (Some(1),2,None))
+			Seq(1, 2).adjacents,
+			Seq((None, 1, Some(2)), (Some(1), 2, None))
 		)
 	}
 
 	test("adjacents should work with 3 elements") {
 		assertEquals(
-			Seq(1,2,3).adjacents,
-			Seq((None,1,Some(2)), (Some(1),2,Some(3)), (Some(2),3,None))
+			Seq(1, 2, 3).adjacents,
+			Seq((None, 1, Some(2)), (Some(1), 2, Some(3)), (Some(2), 3, None))
 		)
 	}
 
 	test("adjacents should return the right type") {
-		val a	= Vector(1,2,3).adjacents
-		typed[ Vector[(Option[Int],Int,Option[Int])] ](a)
+		val a	= Vector(1, 2, 3).adjacents
+		typed[ Vector[(Option[Int], Int, Option[Int])] ](a)
 		assertEquals(
 			a,
-			Seq((None,1,Some(2)), (Some(1),2,Some(3)), (Some(2),3,None))
+			Seq((None, 1, Some(2)), (Some(1), 2, Some(3)), (Some(2), 3, None))
 		)
 	}
 
@@ -136,20 +136,20 @@ object SeqExtensionsTest extends SimpleTestSuite {
 
 	test("insertBetween should work with 2 elements") {
 		assertEquals(
-			Seq(1,2).insertBetween(it => it.toString, (_, _) => Some("x")),
+			Seq(1, 2).insertBetween(it => it.toString, (_, _) => Some("x")),
 			Seq("1", "x", "2")
 		)
 	}
 
 	test("insertBetween should work with 3 elements") {
 		assertEquals(
-			Seq(1,2,3).insertBetween(it => it.toString, (_, _) => Some("x")),
+			Seq(1, 2, 3).insertBetween(it => it.toString, (_, _) => Some("x")),
 			Seq("1", "x", "2", "x", "3")
 		)
 	}
 
 	test("insertBetween should return the right type") {
-		val a	= Vector(1,2,3).insertBetween(it => it.toString, (_, _) => Some("x"))
+		val a	= Vector(1, 2, 3).insertBetween(it => it.toString, (_, _) => Some("x"))
 		typed[ Vector[String] ](a)
 		assertEquals(
 			a,
@@ -184,28 +184,28 @@ object SeqExtensionsTest extends SimpleTestSuite {
 
 	test("splitWhere should split an empty Seq before a leading separator") {
 		assertEquals(
-			Seq(1,2).splitWhere(splitWherePredicate),
+			Seq(1, 2).splitWhere(splitWherePredicate),
 			Seq(Right(Seq()),Left(1),Right(Seq(2)))
 		)
 	}
 
 	test("splitWhere should split an empty Seq after a trailing separator") {
 		assertEquals(
-			Seq(0,1).splitWhere(splitWherePredicate),
+			Seq(0, 1).splitWhere(splitWherePredicate),
 			Seq(Right(Seq(0)),Left(1),Right(Seq()))
 		)
 	}
 
 	test("splitWhere should split a simple Seq correctly") {
 		assertEquals(
-			Seq(0,1,2).splitWhere(splitWherePredicate),
+			Seq(0, 1, 2).splitWhere(splitWherePredicate),
 			Seq(Right(Seq(0)),Left(1),Right(Seq(2)))
 		)
 	}
 
 	test("splitWhere should create an empty Seq between two adjacent separators") {
 		assertEquals(
-			Seq(0,1,1,2).splitWhere(splitWherePredicate),
+			Seq(0, 1, 1, 2).splitWhere(splitWherePredicate),
 			Seq(Right(Seq(0)),Left(1),Right(Seq()),Left(1),Right(Seq(2)))
 		)
 	}
@@ -214,29 +214,29 @@ object SeqExtensionsTest extends SimpleTestSuite {
 
 	test("moveAt should fail without enough elements") {
 		assertEquals(
-			Seq().moveAt(0,0),
+			Seq().moveAt(0, 0),
 			None
 		)
 	}
 
 	test("moveAt should move from start to end") {
 		assertEquals(
-			Seq(1,2,3).moveAt(0,3),
-			Some(Seq(2,3,1))
+			Seq(1, 2, 3).moveAt(0, 3),
+			Some(Seq(2, 3, 1))
 		)
 	}
 
 	test("moveAt should move from end to start") {
 		assertEquals(
-			Seq(1,2,3).moveAt(2,0),
-			Some(Seq(3,1,2))
+			Seq(1, 2, 3).moveAt(2, 0),
+			Some(Seq(3, 1, 2))
 		)
 	}
 
 	test("moveAt should not move to gap left") {
 		// TODO this would work as a no-op, why do we reject it?
 		assertEquals(
-			Seq(1,2,3,4).moveAt(1,1),
+			Seq(1, 2, 3, 4).moveAt(1, 1),
 			None
 		)
 	}
@@ -244,22 +244,22 @@ object SeqExtensionsTest extends SimpleTestSuite {
 	test("moveAt should not move to gap right") {
 		// TODO this would work as a no-op, why do we reject it?
 		assertEquals(
-			Seq(1,2,3,4).moveAt(1,2),
+			Seq(1, 2, 3, 4).moveAt(1, 2),
 			None
 		)
 	}
 
 	test("moveAt should move to gap further left") {
 		assertEquals(
-			Seq(1,2,3,4).moveAt(1,0),
-			Some(Seq(2,1,3,4))
+			Seq(1, 2, 3, 4).moveAt(1, 0),
+			Some(Seq(2, 1, 3, 4))
 		)
 	}
 
 	test("moveAt should move to gap further right") {
 		assertEquals(
-			Seq(1,2,3,4).moveAt(1,3),
-			Some(Seq(1,3,2,4))
+			Seq(1, 2, 3, 4).moveAt(1, 3),
+			Some(Seq(1, 3, 2, 4))
 		)
 	}
 
@@ -268,72 +268,72 @@ object SeqExtensionsTest extends SimpleTestSuite {
 	// TODO dotty actually move more than 1
 	test("moveManyAt should fail without enough elements") {
 		assertEquals(
-			Seq().moveManyAt(0,1,0),
+			Seq().moveManyAt(0, 1, 0),
 			None
 		)
 	}
 
 	test("moveManyAt should move from start to end") {
 		assertEquals(
-			Seq(1,2,3).moveManyAt(0,1,3),
-			Some(Seq(2,3,1))
+			Seq(1, 2, 3).moveManyAt(0, 1, 3),
+			Some(Seq(2, 3, 1))
 		)
 	}
 
 	test("moveManyAt should move from end to start") {
 		assertEquals(
-			Seq(1,2,3).moveManyAt(2,1,0),
-			Some(Seq(3,1,2))
+			Seq(1, 2, 3).moveManyAt(2, 1, 0),
+			Some(Seq(3, 1, 2))
 		)
 	}
 
 	test("moveManyAt should not move to gap left") {
 		// TODO moveMany rejects this, probably without a good reason
 		assertEquals(
-			Seq(1,2,3,4).moveManyAt(1,1,1),
-			Some(Seq(1,2,3,4))
+			Seq(1, 2, 3, 4).moveManyAt(1, 1, 1),
+			Some(Seq(1, 2, 3, 4))
 		)
 	}
 
 	test("moveManyAt should not move to gap right") {
 		// TODO moveMany rejects this, probably without a good reason
 		assertEquals(
-			Seq(1,2,3,4).moveManyAt(1,1,2),
-			Some(Seq(1,2,3,4))
+			Seq(1, 2, 3, 4).moveManyAt(1, 1, 2),
+			Some(Seq(1, 2, 3, 4))
 		)
 	}
 
 	test("moveManyAt should move to gap further left") {
 		assertEquals(
-			Seq(1,2,3,4).moveManyAt(1,1,0),
-			Some(Seq(2,1,3,4))
+			Seq(1, 2, 3, 4).moveManyAt(1, 1, 0),
+			Some(Seq(2, 1, 3, 4))
 		)
 	}
 
 	test("moveManyAt should move to gap further right") {
 		assertEquals(
-			Seq(1,2,3,4).moveManyAt(1,1,3),
-			Some(Seq(1,3,2,4))
+			Seq(1, 2, 3, 4).moveManyAt(1, 1, 3),
+			Some(Seq(1, 3, 2, 4))
 		)
 	}
 
 	//------------------------------------------------------------------------------
 
 	test("tailOption should compile and work") {
-		val input:Vector[Int]			= Vector(1,2,3)
+		val input:Vector[Int]			= Vector(1, 2, 3)
 		val output:Option[Vector[Int]]	= input.tailOption
 		assertEquals(
 			output,
-			Some(Vector(2,3))
+			Some(Vector(2, 3))
 		)
 	}
 
 	test("updatedBy should compile and work") {
-		val input:Vector[Int]			= Vector(1,2,3)
+		val input:Vector[Int]			= Vector(1, 2, 3)
 		val output:Option[Vector[Int]]	= input.updatedBy(1, it => it*it)
 		assertEquals(
 			output,
-			Some(Vector(1,4,3))
+			Some(Vector(1, 4, 3))
 		)
 	}
 
@@ -341,15 +341,15 @@ object SeqExtensionsTest extends SimpleTestSuite {
 
 	test("extractHead works for Vector") {
 		assertEquals(
-			Vector(1,2,3).extractHead,
-			Some((1, Vector(2,3)))
+			Vector(1, 2, 3).extractHead,
+			Some((1, Vector(2, 3)))
 		)
 	}
 
 	test("extractHead works for Queue") {
 		assertEquals(
-			immutable.Queue(1,2,3).extractHead,
-			Some((1, immutable.Queue(2,3)))
+			immutable.Queue(1, 2, 3).extractHead,
+			Some((1, immutable.Queue(2, 3)))
 		)
 	}
 }

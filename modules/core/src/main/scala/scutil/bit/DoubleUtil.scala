@@ -20,7 +20,7 @@ object DoubleUtil {
 
 	inline def ftz(it:Double):Double	= if denormal(it) then 0d else it
 
-	def bits(it:Double):(Boolean,Long,Short)	= {
+	def bits(it:Double):(Boolean, Long, Short)	= {
 		// positive infinity	0x7ff0000000000000L
 		// negative infinity	0xfff0000000000000L
 		// NaN					0x7ff8000000000000L

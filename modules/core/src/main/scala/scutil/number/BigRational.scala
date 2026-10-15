@@ -54,7 +54,7 @@ object BigRational {
 			JBigDecimal.ONE.scaleByPowerOfTen(numerator.scale).toBigInteger
 		)
 
-	def unapply(self:BigRational):(JBigInteger,JBigInteger) =
+	def unapply(self:BigRational):(JBigInteger, JBigInteger) =
 		(self.numerator, self.denominator)
 
 	//------------------------------------------------------------------------------
@@ -167,7 +167,7 @@ final class BigRational private (_numerator:JBigInteger, _denominator:JBigIntege
 	def integralValue:JBigInteger		= numerator .divide		(denominator)
 	def integralRemainder:JBigInteger	= numerator .remainder	(denominator)
 
-	def integralValueAndRemainder:(JBigInteger,JBigInteger)	= {
+	def integralValueAndRemainder:(JBigInteger, JBigInteger)	= {
 		val	both	= numerator.divideAndRemainder(denominator)
 		(both(0), both(1))
 	}

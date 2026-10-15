@@ -9,22 +9,22 @@ object Prism {
 
 	//-----------------------------------------------------------------------------
 
-	def partial[S,T](get:PartialFunction[S,T], set:T=>S):Prism[S,T] =
+	def partial[S, T](get:PartialFunction[S, T], set:T=>S):Prism[S, T] =
 		Prism(get.lift, set)
 
-	def total[S,T](get:S=>T, set:T=>S):Prism[S,T] =
+	def total[S, T](get:S=>T, set:T=>S):Prism[S, T] =
 		Prism(get `andThen` Some.apply, set)
 
-	def identity[T]:Prism[T,T] =
-		total[T,T](Predef.identity[T], Predef.identity[T])
+	def identity[T]:Prism[T, T] =
+		total[T, T](Predef.identity[T], Predef.identity[T])
 
-	def always[T]:Prism[Option[T],T]	=
+	def always[T]:Prism[Option[T], T]	=
 		Prism(Predef.identity, Some.apply)
 
-	def trivial[T](value:T):Prism[T,Unit]	=
+	def trivial[T](value:T):Prism[T, Unit]	=
 		Prism(_ => Some(()), _ => value)
 
-	def filtered[T](pred:T=>Boolean):Prism[T,T]	=
+	def filtered[T](pred:T=>Boolean):Prism[T, T]	=
 		Prism(
 			it => if pred(it) then Some(it) else None,
 			Predef.identity
@@ -32,7 +32,7 @@ object Prism {
 
 	//------------------------------------------------------------------------------
 
-	def subType[S,T<:S](using tt:TypeTest[S,T]):Prism[S,T]	=
+	def subType[S, T<:S](using tt:TypeTest[S, T]):Prism[S, T]	=
 		Prism(tt.unapply, Predef.identity)
 
 	/**
@@ -42,11 +42,11 @@ object Prism {
 	val p:Prism[MyEnum, MyEnumVairant] = P[MyEnumVariant]
 	*/
 	def subTypes[S]:[T <: S] => (TypeTest[S, T]) ?=> Prism[S, T]	=
-		[T<:S] => (tt:TypeTest[S, T]) ?=> subType[S,T]
+		[T<:S] => (tt:TypeTest[S, T]) ?=> subType[S, T]
 }
 
 /** parser and unparser for some data into a side format, aka Prism' */
-final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
+final case class Prism[S, T](get:S=>Option[T], set:T=>S) {
 	// can be used as scala function and extractor
 	def apply(t:T):S			= set(t)
 	def unapply(s:S):Option[T]	= get(s)
@@ -84,7 +84,7 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 
 	//------------------------------------------------------------------------------
 
-	def embedState[U](state:State[T,U]):State[S,Option[U]]	=
+	def embedState[U](state:State[T, U]):State[S, Option[U]]	=
 		State { s =>
 			get(s)
 			.map { t1 =>
@@ -94,24 +94,24 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 			.getOrElse	(s -> None)
 		}
 
-	def getState:State[S,Option[T]]	=
+	def getState:State[S, Option[T]]	=
 		embedState(State.get)
 
-	def setState(it:T):State[S,Option[Unit]]	=
+	def setState(it:T):State[S, Option[Unit]]	=
 		embedState(State.set(it))
 
-	def setOldState(it:T):State[S,Option[T]]	=
+	def setOldState(it:T):State[S, Option[T]]	=
 		embedState(State.setOld(it))
 
-	def modState(func:T=>T):State[S,Option[Unit]]	=
+	def modState(func:T=>T):State[S, Option[Unit]]	=
 		embedState(State.mod(func))
 
-	def modOldState(func:T=>T):State[S,Option[T]]	=
+	def modOldState(func:T=>T):State[S, Option[T]]	=
 		embedState(State.modOld(func))
 
 	//------------------------------------------------------------------------------
 
-	def embedStateT[F[_]:Applicative as F,U](state:StateT[F,T,U]):StateT[F,S,Option[U]]	=
+	def embedStateT[F[_]:Applicative as F, U](state:StateT[F ,T, U]):StateT[F, S, Option[U]]	=
 		StateT { s =>
 			get(s)
 			.map { t1 =>
@@ -125,24 +125,24 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 			)
 		}
 
-	def getStateT[F[_]:Applicative]:StateT[F,S,Option[T]]	=
+	def getStateT[F[_]:Applicative]:StateT[F, S, Option[T]]	=
 		embedStateT(StateT.get)
 
-	def setStateT[F[_]:Applicative](it:T):StateT[F,S,Option[Unit]]	=
+	def setStateT[F[_]:Applicative](it:T):StateT[F, S, Option[Unit]]	=
 		embedStateT(StateT.set(it))
 
-	def setOldStateT[F[_]:Applicative](it:T):StateT[F,S,Option[T]]	=
+	def setOldStateT[F[_]:Applicative](it:T):StateT[F, S, Option[T]]	=
 		embedStateT(StateT.setOld(it))
 
-	def modStateT[F[_]:Applicative](func:T=>T):StateT[F,S,Option[Unit]]	=
+	def modStateT[F[_]:Applicative](func:T=>T):StateT[F, S, Option[Unit]]	=
 		embedStateT(StateT.mod(func))
 
-	def modOldStateT[F[_]:Applicative](func:T=>T):StateT[F,S,Option[T]]	=
+	def modOldStateT[F[_]:Applicative](func:T=>T):StateT[F, S, Option[T]]	=
 		embedStateT(StateT.modOld(func))
 
 	//------------------------------------------------------------------------------
 
-	def embedStateOpt[U](state:State[T,U]):StateT[Option,S,U]	=
+	def embedStateOpt[U](state:State[T, U]):StateT[Option, S, U]	=
 		StateT { (s:S) =>
 			get(s).map { t1 =>
 				val (t2, u)	= state.run(t1)
@@ -153,14 +153,14 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 	//------------------------------------------------------------------------------
 
 	/** filter the source value */
-	def filterBefore(pred:Predicate[S]):Prism[S,T]	=
+	def filterBefore(pred:Predicate[S]):Prism[S, T]	=
 		Prism(
 			get	= s	=> if pred(s) then get(s) else None,
 			set	= set
 		)
 
 	/** filter the target value */
-	def filterAfter(pred:Predicate[T]):Prism[S,T]	=
+	def filterAfter(pred:Predicate[T]):Prism[S, T]	=
 		Prism(
 			get	= s	=> get(s).filter(pred),
 			set	= set
@@ -169,17 +169,17 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 	//------------------------------------------------------------------------------
 
 	/** symbolic alias for andThen */
-	def >=>[U](that:Prism[T,U]):Prism[S,U]	=
+	def >=>[U](that:Prism[T, U]):Prism[S, U]	=
 		this.andThen(that)
 
 	/** symbolic alias for compose */
-	def <=<[R](that:Prism[R,S]):Prism[R,T]	=
+	def <=<[R](that:Prism[R, S]):Prism[R, T]	=
 		this.compose(that)
 
-	def compose[R](that:Prism[R,S]):Prism[R,T]	=
+	def compose[R](that:Prism[R, S]):Prism[R, T]	=
 		that.andThen(this)
 
-	def andThen[U](that:Prism[T,U]):Prism[S,U]	=
+	def andThen[U](that:Prism[T, U]):Prism[S, U]	=
 		Prism(
 			get	= s	=> this.get(s).flatMap(that.get),
 			set	= t	=> this.set(that.set(t))
@@ -188,11 +188,11 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 	//------------------------------------------------------------------------------
 
 	// impossible
-	// def zip[U](that:Prism[S,U]):Prism[S,(T,U)]
-	// def sum[SS](that:Prism[SS,T]):Prism[Either[S,SS],T]
+	// def zip[U](that:Prism[S, U]):Prism[S, (T, U)]
+	// def sum[SS](that:Prism[SS, T]):Prism[Either[S, SS], T]
 
 	// ***
-	def product[SS,TT](that:Prism[SS,TT]):Prism[(S,SS),(T,TT)]	=
+	def product[SS, TT](that:Prism[SS, TT]):Prism[(S, SS), (T, TT)]	=
 		Prism(
 			get	= sss	=> this.get(sss._1) `zip` that.get(sss._2),
 			set	= ttt	=> (this.set(ttt._1), that.set(ttt._2))
@@ -200,26 +200,26 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 
 	//------------------------------------------------------------------------------
 
-	def writeExtractor:Extractor[S,T]	=
+	def writeExtractor:Extractor[S, T]	=
 		Extractor(get)
 
-	def toSetter:Setter[S,T]	=
+	def toSetter:Setter[S, T]	=
 		Setter(mod)
 
-	def toOptional:Optional[S,T]	=
+	def toOptional:Optional[S, T]	=
 		Optional(
 			get	= get,
 			set	= setMatching
 		)
 
 	// TODO optics this is questionable
-	def toBijection(func:S=>T):Bijection[S,T]	=
+	def toBijection(func:S=>T):Bijection[S, T]	=
 		Bijection(
 			get	= s => get(s).getOrElse(func(s)),
 			set	= set
 		)
 
 	// TODO optics this is questionable
-	def toBijectionWith(default: =>T):Bijection[S,T]	=
+	def toBijectionWith(default: =>T):Bijection[S, T]	=
 		toBijection(constant(default))
 }

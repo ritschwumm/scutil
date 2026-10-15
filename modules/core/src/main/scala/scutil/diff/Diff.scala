@@ -8,7 +8,7 @@ based on Java	code by Neil Jones	at http://bix.ucsd.edu/bioalgorithms/downloads/
 */
 object Diff {
 	// BETTER only compare from the first different element to the last different element
-	def compile[T](a:Seq[T], b:Seq[T], equal:(T,T)=>Boolean):Diff[T] = {
+	def compile[T](a:Seq[T], b:Seq[T], equal:(T, T)=>Boolean):Diff[T] = {
 		val n	= a.length
 		val m	= b.length
 

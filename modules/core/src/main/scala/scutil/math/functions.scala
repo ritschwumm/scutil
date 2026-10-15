@@ -39,21 +39,21 @@ object functions {
 
 	//------------------------------------------------------------------------------
 
-	def max3Byte(a:Byte, b:Byte, c:Byte):Byte			= max(a, max(b,c)).toByte
-	def max3Short(a:Short, b:Short, c:Short):Short		= max(a, max(b,c)).toShort
-	def max3Int(a:Int, b:Int, c:Int):Int				= max(a, max(b,c))
-	def max3Long(a:Long, b:Long, c:Long):Long			= max(a, max(b,c))
-	def max3Float(a:Float, b:Float, c:Float):Float		= max(a, max(b,c))
-	def max3Double(a:Double, b:Double, c:Double):Double	= max(a, max(b,c))
+	def max3Byte(a:Byte, b:Byte, c:Byte):Byte			= max(a, max(b, c)).toByte
+	def max3Short(a:Short, b:Short, c:Short):Short		= max(a, max(b, c)).toShort
+	def max3Int(a:Int, b:Int, c:Int):Int				= max(a, max(b, c))
+	def max3Long(a:Long, b:Long, c:Long):Long			= max(a, max(b, c))
+	def max3Float(a:Float, b:Float, c:Float):Float		= max(a, max(b, c))
+	def max3Double(a:Double, b:Double, c:Double):Double	= max(a, max(b, c))
 
 	//------------------------------------------------------------------------------
 
-	def min3Byte(a:Byte, b:Byte, c:Byte):Byte			= min(a, min (b,c)).toByte
-	def min3Short(a:Short, b:Short, c:Short):Short		= min(a, min (b,c)).toShort
-	def min3Int(a:Int, b:Int, c:Int):Int				= min(a, min(b,c))
-	def min3Long(a:Long, b:Long, c:Long):Long			= min(a, min(b,c))
-	def min3Float(a:Float, b:Float, c:Float):Float		= min(a, min(b,c))
-	def min3Double(a:Double, b:Double, c:Double):Double	= min(a, min(b,c))
+	def min3Byte(a:Byte, b:Byte, c:Byte):Byte			= min(a, min(b, c)).toByte
+	def min3Short(a:Short, b:Short, c:Short):Short		= min(a, min(b, c)).toShort
+	def min3Int(a:Int, b:Int, c:Int):Int				= min(a, min(b, c))
+	def min3Long(a:Long, b:Long, c:Long):Long			= min(a, min(b, c))
+	def min3Float(a:Float, b:Float, c:Float):Float		= min(a, min(b, c))
+	def min3Double(a:Double, b:Double, c:Double):Double	= min(a, min(b, c))
 
 	//------------------------------------------------------------------------------
 

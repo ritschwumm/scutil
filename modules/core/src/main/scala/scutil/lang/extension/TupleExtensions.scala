@@ -1,10 +1,12 @@
 package scutil.lang.extension
 
-import scutil.lang.tc.Applicative
 import scutil.lang.tc.ApplicativeTuple
 import scutil.lang.tc.NaryFunction
 
 object TupleExtensions {
+	//-----------------------------------------------------------------------------
+	//## pairwise application
+
 	/* takes a Tuple of inputs and a Tuple of functions from input to output and returns a Tuple of outputs */
 	type Applied[TupS <: Tuple, TupF <: Tuple] <: Tuple	=
 		(TupS, TupF) match {
@@ -30,35 +32,23 @@ object TupleExtensions {
 		}
 	}
 
-	extension [TupT <: NonEmptyTuple : ApplicativeTuple as at](inputs:TupT) {
-		def zipN:at.Container[at.Elements]	= at.build(inputs)
-
-		def mapN[U](using ap:Applicative[at.Container], nf:NaryFunction[at.Elements, U])(func:nf.Nary):at.Container[U]	=
-			ap.map(zipN)(
-				nf.tupled(func)
-			)
-	}
-
-
 	//-----------------------------------------------------------------------------
+	//## applicative traversal
 
-	/*
-	// NOTE TupledFunction disallows inferring the types of the function parameters
-	extension [F[_]:Applicative as F, FSS <: Tuple:Tuple.IsMappedBy[F]](fss:FSS) {
-		def mapN2[C, T](func:C)(using tf:TupledFunction[C, Tuple.InverseMap[FSS, F] => T]):F[T] =
-			F.map(zipN2(fss))(tf.tupled(func))
+	extension [TupT <: NonEmptyTuple : ApplicativeTuple as AT](inputs:TupT) {
+		def productN:AT.Result	=
+			AT.productN(inputs)
+
+		@deprecated("use productN", "0.264.0")
+		def zipN:AT.Container[AT.Elements]	=
+			AT.productN(inputs)
+
+		def mapN[U](using NF:NaryFunction[AT.Elements, U])(func:NF.Nary):AT.Container[U]	=
+			ApplicativeTuple.mapN(inputs)(func)
 	}
 
-	// NOTE fails to determine the Applicative at the call site, ApplicativeTuple works though
-	extension [SS <: Tuple](ss:SS) {
-		def zipN2[F[_]](using ev:Tuple.IsMappedBy[F][SS], F:Applicative[F]):F[Tuple.InverseMap[SS, F]] = {
-			def loop[E <: Tuple](it:E):F[Tuple]	=
-				it match{
-					case EmptyTuple	=> F.pure(EmptyTuple)
-					case h *: t		=> F.map2(h.asInstanceOf[F[Any]], loop(t.asInstanceOf[Tuple]) )(_ *: _)
-				}
-			loop(ss).asInstanceOf[F[Tuple.InverseMap[SS, F]]]
-		}
+	extension [TupT <: Tuple](inputs:TupT) {
+		def traverseN[F[_]](func:[A] => A => F[A])(using AT:ApplicativeTuple[Tuple.Map[inputs.type, F]]):AT.Result	=
+			ApplicativeTuple.traverseN(inputs)(func)
 	}
-	*/
 }

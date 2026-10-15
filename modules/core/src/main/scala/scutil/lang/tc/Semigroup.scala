@@ -8,7 +8,7 @@ import scutil.lang.extension.PFunctionExtensions.*
 object Semigroup extends SemigroupLow {
 	def apply[F:Semigroup as F]:Semigroup[F]	= F
 
-	def instance[T](func:(T,T)=>T):Semigroup[T]	=
+	def instance[T](func:(T, T)=>T):Semigroup[T]	=
 		new Semigroup[T] {
 			def combine(a:T, b:T):T	= func(a, b)
 		}
@@ -27,13 +27,13 @@ object Semigroup extends SemigroupLow {
 	//------------------------------------------------------------------------------
 
 	// TODO questionable
-	given [S,T] => Semigroup[S=>Option[T]]	=
+	given [S, T] => Semigroup[S=>Option[T]]	=
 		Semigroup.instance(_ `orElse` _)
 
 	/*
 	// TODO does this make sense without further constraints on T?
-	given [S,T] => Semigroup[Either[S,T]]	=
-		Semigroup.instance { (a,b) =>
+	given [S, T] => Semigroup[Either[S, T]]	=
+		Semigroup.instance { (a, b) =>
 			a match {
 				case Left(_)	=> b
 				case Right(_)	=> a
@@ -61,12 +61,12 @@ object Semigroup extends SemigroupLow {
 		Monoid.instance(Set.empty, _ ++ _)
 
 	given Monoid[Unit]	=
-		Monoid.instance((), (_,_)=>())
+		Monoid.instance((), (_, _)=>())
 
 	given Monoid[String]	=
 		Monoid.instance("", _ + _)
 
-	given [T1,T2] => (T1:Monoid[T1], T2:Monoid[T2]) => Monoid[(T1,T2)]	=
+	given [T1, T2] => (T1:Monoid[T1], T2:Monoid[T2]) => Monoid[(T1, T2)]	=
 		Monoid.instance(
 			(T1.empty, T2.empty),
 			(a, b) => (
@@ -79,7 +79,7 @@ object Semigroup extends SemigroupLow {
 
 	// TODO tc add more alternatives here
 
-	def MapLastMonoid[K,V]:Monoid[Map[K,V]]	=
+	def MapLastMonoid[K, V]:Monoid[Map[K, V]]	=
 		Monoid.instance(Map.empty, _ ++ _)
 
 	//-----------------------------------------------------------------------------
@@ -88,13 +88,13 @@ object Semigroup extends SemigroupLow {
 	def OptionMergeMonoid[T:Semigroup as S]:Monoid[Option[T]]	=
 		Monoid.instance(
 			None,
-			(a,b) => a.oneOrTwo(b)(S.combine)
+			(a, b) => a.oneOrTwo(b)(S.combine)
 		)
 
 	def OptionBothMonoid[T:Semigroup as S]:Monoid[Option[T]]	=
 		Monoid.instance(
 			None,
-			(a,b) => (a,b) match {
+			(a, b) => (a, b) match {
 				case (Some(a), Some(b))	=> Some(S.combine(a, b))
 				case _					=> None
 			}
@@ -103,13 +103,13 @@ object Semigroup extends SemigroupLow {
 	def OptionFirstMonoid[T]:Monoid[Option[T]]	=
 		Monoid.instance(
 			None,
-			(a,b) => a `orElse` b
+			(a, b) => a `orElse` b
 		)
 
 	def OptionLastMonoid[T]:Monoid[Option[T]]	=
 		Monoid.instance(
 			None,
-			(a,b) => b `orElse` a
+			(a, b) => b `orElse` a
 		)
 
 	//-----------------------------------------------------------------------------
@@ -117,10 +117,10 @@ object Semigroup extends SemigroupLow {
 	def EndoMonoid[T]:Monoid[T=>T]	=
 		Monoid.instance(identity, _ `andThen` _)
 
-	def KleisliMonoid[S,T:Monoid as M]:Monoid[S=>T]	=
+	def KleisliMonoid[S, T:Monoid as M]:Monoid[S=>T]	=
 		Monoid.instance(
 						(_) => Monoid.empty[T],
-			(a,b) =>	(s) => M.combine(a(s), b(s)),
+			(a, b) =>	(s) => M.combine(a(s), b(s)),
 		)
 }
 

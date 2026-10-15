@@ -137,51 +137,51 @@ object SgSpanTest extends SimpleTestSuite {
 	test("SgSpan should intersect left to inside") {
 		assertEquals(
 			SgSpan.startEnd(0, 3).intersect(SgSpan.startEnd(2, 4)),
-			Some(SgSpan.startEnd(2,3))
+			Some(SgSpan.startEnd(2, 3))
 		)
 	}
 	test("SgSpan should intersect left to end") {
 		assertEquals(
 			SgSpan.startEnd(0, 4).intersect(SgSpan.startEnd(2, 4)),
-			Some(SgSpan.startEnd(2,4))
+			Some(SgSpan.startEnd(2, 4))
 		)
 	}
 	test("SgSpan should intersect left to right") {
 		assertEquals(
 			SgSpan.startEnd(0, 5).intersect(SgSpan.startEnd(2, 4)),
-			Some(SgSpan.startEnd(2,4))
+			Some(SgSpan.startEnd(2, 4))
 		)
 	}
 
 	test("SgSpan should intersect start to inside") {
 		assertEquals(
 			SgSpan.startEnd(2, 3).intersect(SgSpan.startEnd(2, 4)),
-			Some(SgSpan.startEnd(2,3))
+			Some(SgSpan.startEnd(2, 3))
 		)
 	}
 	test("SgSpan should intersect start to end") {
 		assertEquals(
 			SgSpan.startEnd(2, 4).intersect(SgSpan.startEnd(2, 4)),
-			Some(SgSpan.startEnd(2,4))
+			Some(SgSpan.startEnd(2, 4))
 		)
 	}
 	test("SgSpan should intersect start to right") {
 		assertEquals(
 			SgSpan.startEnd(2, 5).intersect(SgSpan.startEnd(2, 4)),
-			Some(SgSpan.startEnd(2,4))
+			Some(SgSpan.startEnd(2 ,4))
 		)
 	}
 
 	test("SgSpan should intersect inside to end") {
 		assertEquals(
 			SgSpan.startEnd(3, 4).intersect(SgSpan.startEnd(2, 4)),
-			Some(SgSpan.startEnd(3,4))
+			Some(SgSpan.startEnd(3, 4))
 		)
 	}
 	test("SgSpan should intersect inside to right") {
 		assertEquals(
 			SgSpan.startEnd(3, 5).intersect(SgSpan.startEnd(2, 4)),
-			Some(SgSpan.startEnd(3,4))
+			Some(SgSpan.startEnd(3, 4))
 		)
 	}
 

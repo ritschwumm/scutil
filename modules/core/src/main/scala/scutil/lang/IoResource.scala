@@ -51,7 +51,7 @@ object IoResource {
 	given IoResourceMonad:Monad[IoResource]	=
 		new Monad[IoResource] {
 			def pure[T](value:T):IoResource[T]											= IoResource.pure(value)
-			def flatMap[S,T](value:IoResource[S])(func:S=>IoResource[T]):IoResource[T]	= value.flatMap(func)
+			def flatMap[S, T](value:IoResource[S])(func:S=>IoResource[T]):IoResource[T]	= value.flatMap(func)
 		}
 
 	given IoResourceDelay:Delay[IoResource]	=
@@ -60,7 +60,7 @@ object IoResource {
 		}
 }
 
-final case class IoResource[T](open:Io[(T,Io[Unit])]) {
+final case class IoResource[T](open:Io[(T, Io[Unit])]) {
 	final def openVoid:Io[Io[Unit]]	=
 		open.map(_._2)
 
@@ -88,13 +88,13 @@ final case class IoResource[T](open:Io[(T,Io[Unit])]) {
 	final def map[U](func:T=>U):IoResource[U]	=
 		flatMap(func.andThen(IoResource.pure))
 
-	final def ap[U,V](that:IoResource[U])(using ev:T <:< (U=>V)):IoResource[V]	=
-		map2(that) { (t,u) => t(u) }
+	final def ap[U, V](that:IoResource[U])(using ev:T <:< (U=>V)):IoResource[V]	=
+		map2(that) { (t, u) => t(u) }
 
-	final def product[U](that:IoResource[U]):IoResource[(T,U)]	=
-		map2(that) { (t,u) => (t,u) }
+	final def product[U](that:IoResource[U]):IoResource[(T, U)]	=
+		map2(that) { (t, u) => (t, u) }
 
-	final def map2[U,V](that:IoResource[U])(func:(T,U)=>V):IoResource[V]	=
+	final def map2[U, V](that:IoResource[U])(func:(T, U)=>V):IoResource[V]	=
 		for { thisValue <- this; thatValue <- that }
 		yield func(thisValue, thatValue)
 
@@ -108,8 +108,8 @@ final case class IoResource[T](open:Io[(T,Io[Unit])]) {
 								case Left(eu)		=>
 									// second open failed, close first resource and fail now
 									dt.attempt.flatMap {
-										case Left(edt)	=> Io.raiseWithSecondary[(U,Io[Unit])](eu, edt)
-										case Right(_)	=> Io.raise[(U,Io[Unit])](eu)
+										case Left(edt)	=> Io.raiseWithSecondary[(U, Io[Unit])](eu, edt)
+										case Right(_)	=> Io.raise[(U, Io[Unit])](eu)
 									}
 								case Right((u, du))	=>
 									// both opens worked, close both resources later

@@ -3,16 +3,16 @@ package scutil.lang.extension
 import scutil.lang.*
 
 object Function1Extensions {
-	extension [S,T](peer:Function1[S,T]) {
+	extension [S, T](peer:Function1[S, T]) {
 		/** symbolic alias for apply */
 		def <|(value:S):T	= peer(value)
 
 		/** symbolic alias for andThen */
-		def >=>[U](that:Function1[T,U]):Function1[S,U]	=
+		def >=>[U](that:Function1[T, U]):Function1[S, U]	=
 			peer.andThen(that)
 
 		/** symbolic alias for compose */
-		def <=<[R](that:Function1[R,S]):Function1[R,T]	=
+		def <=<[R](that:Function1[R, S]):Function1[R, T]	=
 			peer.compose(that)
 
 		// TODO extension these had to be renamed as they break simple things like String.flatMap,
@@ -27,13 +27,13 @@ object Function1Extensions {
 		def contraMapFunction[R](func:R=>S):R=>T	=
 			peer.compose(func)
 
-		def partial(predicate:Predicate[S]):PartialFunction[S,T]	=
-			new PartialFunction[S,T] {
+		def partial(predicate:Predicate[S]):PartialFunction[S, T]	=
+			new PartialFunction[S, T] {
 				def isDefinedAt(s:S):Boolean	= predicate(s)
 				def apply(s:S):T				= peer(s)
 			}
 
-		def toPartialFunction:PartialFunction[S,T]	=
+		def toPartialFunction:PartialFunction[S, T]	=
 			{ case x => peer(x) }
 
 		def toPFunction:S=>Option[T]	=
@@ -43,9 +43,9 @@ object Function1Extensions {
 			() => peer(s)
 
 		// standard lib only has this at arity 2 and above
-		def curried:Function1[S,T]			= peer
+		def curried:Function1[S, T]			= peer
 
 		// standard lib only has this at arity 2 and above
-		def tupled:Function1[Tuple1[S],T]	= it => peer(it._1)
+		def tupled:Function1[Tuple1[S], T]	= it => peer(it._1)
 	}
 }

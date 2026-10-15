@@ -8,7 +8,7 @@ import scutil.lang.*
 import scutil.lang.tc.*
 
 object IterableExtensions {
-	extension [Repr,T,Self](peer:Repr)(using isIterable:IsIterable[Repr] { type A = T; type C = Self  }) {
+	extension [Repr, T, Self](peer:Repr)(using isIterable:IsIterable[Repr] { type A = T; type C = Self  }) {
 		inline private def ops	= isIterable(peer)
 
 		/** Some if the collection contains exactly one element, else None */
@@ -21,7 +21,7 @@ object IterableExtensions {
 		}
 
 		/** Left(false) for zero elements, Right(x) for one element, Left(true) for more */
-		def singleEither:Either[Boolean,T] = {
+		def singleEither:Either[Boolean, T] = {
 			val iter	= ops.iterator
 			if !iter.hasNext	then return Left(false)
 			val out		= iter.next()
@@ -34,10 +34,10 @@ object IterableExtensions {
 			ops.map(func).toSet
 
 		/** create a map from all elements with a given function to generate the keys */
-		def mapBy[S](key:T=>S):Map[S,T]	=
+		def mapBy[S](key:T=>S):Map[S, T]	=
 			mapToMap(it => (key(it), it))
 
-		def mapToMap[U,V](func:T=>(U,V)):Map[U,V]	=
+		def mapToMap[U, V](func:T=>(U, V)):Map[U, V]	=
 			ops.map(func).toMap
 
 		def scanLeftNes[U](z: U)(op: (U, T) => U):Nes[U]	= {
@@ -56,7 +56,7 @@ object IterableExtensions {
 
 		/**
 		return the first Some find creates from elements of this collection
-		resembles collectFirst, but uses Function1[_,Option[_]] instead of a PartialFunction[_,_]
+		resembles collectFirst, but uses Function1[_, Option[_]] instead of a PartialFunction[_, _]
 		*/
 		// TODO cats mapFilterFirst would be better
 		def collectFirstSome[U](find:T=>Option[U]):Option[U]	= {
@@ -72,33 +72,33 @@ object IterableExtensions {
 
 		/** pair elements of a collection with a function applied to an element */
 		// TODO extension this had to be renamed to avoid clashing with the FunctorSyntax
-		def fproductIterable[That,U](func:T=>U)(using bf:BuildFrom[Repr,(T,U),That]):That	=
+		def fproductIterable[That, U](func:T=>U)(using bf:BuildFrom[Repr, (T, U), That]):That	=
 			bf.fromSpecific(peer)(
 				ops.map(it => (it, func(it)))
 			)
 
-		def partitionEither[L,R,CL,CR](using ev:T <:< Either[L,R], bfl:BuildFrom[Repr,L,CL], bfr:BuildFrom[Repr,R,CR]):(CL, CR)	= {
+		def partitionEither[L, R, CL, CR](using ev:T <:< Either[L, R], bfl:BuildFrom[Repr, L, CL], bfr:BuildFrom[Repr, R, CR]):(CL, CR)	= {
 			val (ls, rs)	= ops.partitionMap(ev)
 			val cl	= bfl.fromSpecific(peer)(ls)
 			val cr	= bfr.fromSpecific(peer)(rs)
 			(cl, cr)
 		}
 
-		def partitionValidated[B,G,CB,CG](using ev:T <:< Validated[B,G], bfb:BuildFrom[Repr,B,CB], bfg:BuildFrom[Repr,G,CG]):(CB, CG)	= {
+		def partitionValidated[B, G, CB, CG](using ev:T <:< Validated[B, G], bfb:BuildFrom[Repr, B, CB], bfg:BuildFrom[Repr, G, CG]):(CB, CG)	= {
 			val (bs, gs)	= ops.partitionMap(it => ev(it).toEither)
 			val cb	= bfb.fromSpecific(peer)(bs)
 			val cg	= bfg.fromSpecific(peer)(gs)
 			(cb, cg)
 		}
 
-		def validateEither[L,R,CL,CR](using ev:T <:< Either[L,R], bfl:BuildFrom[Repr,L,CL], bfr:BuildFrom[Repr,R,CR]):Either[CL,CR]	= {
+		def validateEither[L, R , CL, CR](using ev:T <:< Either[L, R], bfl:BuildFrom[Repr, L, CL], bfr:BuildFrom[Repr, R, CR]):Either[CL, CR]	= {
 			val (ls, rs)	= ops.partitionMap(ev)
 			if ls.isEmpty
 			then Right(bfr.fromSpecific(peer)(rs))
 			else Left(bfl.fromSpecific(peer)(ls))
 		}
 
-		def validateValidated[B,G,CB,CG](using ev:T <:< Validated[B,G], bfb:BuildFrom[Repr,B,CB], bfg:BuildFrom[Repr,G,CG]):Validated[CB,CG]	= {
+		def validateValidated[B, G, CB, CG](using ev:T <:< Validated[B, G], bfb:BuildFrom[Repr, B, CB], bfg:BuildFrom[Repr, G, CG]):Validated[CB, CG]	= {
 			val (bs, gs)	= ops.partitionMap(it => ev(it).toEither)
 			if bs.isEmpty
 			then Validated.valid(bfg.fromSpecific(peer)(gs))
@@ -107,7 +107,7 @@ object IterableExtensions {
 
 		// NOTE zipWith and map2 are different things for Iterables
 		/** combine elements of two collections using a function */
-		def zipWith[That,U,V](that:Iterable[U])(func:(T,U)=>V)(using bf:BuildFrom[Repr,V,That]):That	= {
+		def zipWith[That, U, V](that:Iterable[U])(func:(T, U)=>V)(using bf:BuildFrom[Repr, V, That]):That	= {
 			val builder	= bf.newBuilder(peer)
 			val	xi	= ops.iterator
 			val yi	= that.iterator
@@ -117,7 +117,7 @@ object IterableExtensions {
 			builder.result()
 		}
 
-		def zipTail[That](using bf:BuildFrom[Repr,(T,T),That]):That	= {
+		def zipTail[That](using bf:BuildFrom[Repr, (T, T), That]):That	= {
 			val builder	=  bf.newBuilder(peer)
 			if ops.nonEmpty then {
 				val now		= ops.iterator
@@ -133,11 +133,11 @@ object IterableExtensions {
 		}
 
 		/** like flatten, but avoiding the dubious Option=>Iterable implicit */
-		def flattenOption[That,U](using bf:BuildFrom[Repr,U,That], ev: T <:< Option[U]):That	=
+		def flattenOption[That, U](using bf:BuildFrom[Repr, U, That], ev: T <:< Option[U]):That	=
 			mapFilter(ev)
 
 		/** like flatMap, but avoiding the dubious Option=>Iterable implicit  */
-		def mapFilter[That,U](func:T=>Option[U])(using bf:BuildFrom[Repr,U,That]):That	= {
+		def mapFilter[That, U](func:T=>Option[U])(using bf:BuildFrom[Repr, U, That]):That	= {
 			val builder	= bf.newBuilder(peer)
 			ops.foreach {
 				func(_).foreach {
@@ -148,8 +148,8 @@ object IterableExtensions {
 		}
 
 		/** insert a separator between elements */
-		def intersperse[That,U>:T](separator: =>U)(using bf:BuildFrom[Repr,U,That]):That	= {
-			val bld:Builder[U,That]	= bf.newBuilder(peer)
+		def intersperse[That, U>:T](separator: =>U)(using bf:BuildFrom[Repr, U, That]):That	= {
+			val bld:Builder[U, That]	= bf.newBuilder(peer)
 			if ops.nonEmpty then {
 				val iter	= ops.iterator
 				var first	= true
@@ -168,7 +168,7 @@ object IterableExtensions {
 		* functionally this is the same as the builtin groupMap,
 		* but might trade some calculation for object allocations
 		*/
-		def groupMapPaired[That,K,V](func:T=>(K,V))(using bf:BuildFrom[Repr,V,That]):Map[K,That]	=
+		def groupMapPaired[That, K, V](func:T=>(K, V))(using bf:BuildFrom[Repr, V, That]):Map[K, That]	=
 			ops
 			.map		(func)
 			.groupBy	{ _._1 }
@@ -179,10 +179,10 @@ object IterableExtensions {
 		// NOTE these should be generalized to other AFs, not just Option and Tried
 		// NOTE supplying pure and flatMap of a Monad would work, too!
 
-		def sequenceOption[That,U](using bf:BuildFrom[Repr,U,That], ev:T <:< Option[U]):Option[That]	=
+		def sequenceOption[That, U](using bf:BuildFrom[Repr, U, That], ev:T <:< Option[U]):Option[That]	=
 			traverseOption(ev)
 
-		def traverseOption[That,U](func:T=>Option[U])(using bf:BuildFrom[Repr,U,That]):Option[That]	= {
+		def traverseOption[That, U](func:T=>Option[U])(using bf:BuildFrom[Repr, U, That]):Option[That]	= {
 			val builder	= bf.newBuilder(peer)
 			val iter	= ops.iterator
 			while iter.hasNext do {
@@ -194,10 +194,10 @@ object IterableExtensions {
 			Some(builder.result())
 		}
 
-		def sequenceEither[That,L,R](using bf:BuildFrom[Repr,R,That], ev:T <:< Either[L,R]):Either[L,That]	=
+		def sequenceEither[That, L, R](using bf:BuildFrom[Repr, R, That], ev:T <:< Either[L, R]):Either[L, That]	=
 			traverseEither(ev)
 
-		def traverseEither[That,L,R](func:T=>Either[L,R])(using bf:BuildFrom[Repr,R,That]):Either[L,That]	= {
+		def traverseEither[That, L, R](func:T=>Either[L, R])(using bf:BuildFrom[Repr, R, That]):Either[L, That]	= {
 			val builder	= bf.newBuilder(peer)
 			val iter	= ops.iterator
 			while iter.hasNext do {
@@ -210,11 +210,11 @@ object IterableExtensions {
 		}
 
 		/** peer is traversable (in the haskell sense), Validated is an idiom. */
-		def sequenceValidated[That,I,V](using bf:BuildFrom[Repr,V,That], cc:Semigroup[I], ev:T <:< Validated[I,V]):Validated[I,That]	=
+		def sequenceValidated[That, I, V](using bf:BuildFrom[Repr, V, That], cc:Semigroup[I], ev:T <:< Validated[I, V]):Validated[I, That]	=
 			traverseValidated(ev)
 
 		/** peer is traversable (in the haskell sense), Validated is an idiom. */
-		def traverseValidated[That,I,V](func:T=>Validated[I,V])(using bf:BuildFrom[Repr,V,That], cc:Semigroup[I]):Validated[I,That]	= {
+		def traverseValidated[That, I, V](func:T=>Validated[I, V])(using bf:BuildFrom[Repr, V, That], cc:Semigroup[I]):Validated[I, That]	= {
 			var problems:Option[I]	= None
 			val builder	= bf.newBuilder(peer)
 			ops.foreach { it =>
@@ -236,10 +236,10 @@ object IterableExtensions {
 			}
 		}
 
-		def sequenceState[That,S,U](using bf:BuildFrom[Repr,U,That], ev:T <:< State[S,U]):State[S,That]	=
+		def sequenceState[That, S, U](using bf:BuildFrom[Repr, U, That], ev:T <:< State[S, U]):State[S, That]	=
 			traverseState(ev)
 
-		def traverseState[That,S,U](func:T=>State[S,U])(using bf:BuildFrom[Repr,U,That]):State[S,That]	=
+		def traverseState[That, S, U](func:T=>State[S, U])(using bf:BuildFrom[Repr, U, That]):State[S, That]	=
 			State { s =>
 				var temp	= s
 				val builder	= bf.newBuilder(peer)

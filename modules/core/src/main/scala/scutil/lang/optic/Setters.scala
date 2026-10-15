@@ -6,12 +6,12 @@ object Setters {
 	//-----------------------------------------------------------------------------
 	//## tuple
 
-	def first[S,T]:Setter[(S,T),S]	=
+	def first[S, T]:Setter[(S, T), S]	=
 		Setter { ss => st =>
 			(ss(st._1), st._2)
 		}
 
-	def second[S,T]:Setter[(S,T),T]	=
+	def second[S, T]:Setter[(S, T), T]	=
 		Setter { tt => st =>
 			(st._1, tt(st._2))
 		}
@@ -27,12 +27,12 @@ object Setters {
 	//-----------------------------------------------------------------------------
 	//## Either
 
-	def left[L,R]:Setter[Either[L,R], L]	=
+	def left[L, R]:Setter[Either[L, R], L]	=
 		Setter { ll => lr =>
 			lr.leftMap(ll)
 		}
 
-	def right[L,R]:Setter[Either[L,R], R]	=
+	def right[L, R]:Setter[Either[L, R], R]	=
 		Setter { rr => lr =>
 			lr.map(rr)
 		}

@@ -3,115 +3,115 @@ package scutil.lang
 import scutil.lang.tc.*
 
 object StateT { outer =>
-	def pure[F[_]:Applicative as F,S,T](it:T):StateT[F,S,T]	=
+	def pure[F[_]:Applicative as F, S, T](it:T):StateT[F, S, T]	=
 		StateT { s => F.pure(s -> it) }
 
-	def pureF[F[_]:Functor as F,S,T](it:F[T]):StateT[F,S,T]	=
+	def pureF[F[_]:Functor as F, S, T](it:F[T]):StateT[F, S, T]	=
 		StateT { s => F.map(it) { s -> _ } }
 
-	def fromState[F[_]:Applicative as F,S,T](it:State[S,T]):StateT[F,S,T]	=
+	def fromState[F[_]:Applicative as F, S, T](it:State[S, T]):StateT[F, S, T]	=
 		fromStateFunc(it.run)
 
-	def fromStateFunc[F[_]:Applicative as F,S,T](it:S=>(S,T)):StateT[F,S,T]	=
+	def fromStateFunc[F[_]:Applicative as F, S, T](it:S=>(S, T)):StateT[F, S, T]	=
 		StateT { s => F.pure(it(s)) }
 
-	def transformPureF[M[_]:Functor as M,S]:M ~> StateT[M,S,_]	=
-		new (M ~> StateT[M,S,_]) {
-			def apply[X](it:M[X]):StateT[M,S,X]	=
+	def transformPureF[M[_]:Functor as M, S]:M ~> StateT[M, S ,_]	=
+		new (M ~> StateT[M, S, _]) {
+			def apply[X](it:M[X]):StateT[M, S, X]	=
 				StateT.pureF(it)
 		}
 
 	//------------------------------------------------------------------------------
 
-	def delay[F[_]:Delay as D,S,T](it: =>T):StateT[F,S,T]	=
+	def delay[F[_]:Delay as D, S, T](it: =>T):StateT[F, S, T]	=
 		StateT { s => D.delay(s -> it) }
 
 	//------------------------------------------------------------------------------
 
-	def get[F[_]:Applicative as F,S]:StateT[F,S,S]	=
+	def get[F[_]:Applicative as F, S]:StateT[F, S, S]	=
 		StateT { s => F.pure(s -> s) }
 
 	//------------------------------------------------------------------------------
 
-	def set[F[_]:Applicative as F,S](it:S):StateT[F,S,Unit]	=
+	def set[F[_]:Applicative as F, S](it:S):StateT[F, S, Unit]	=
 		StateT { _ => F.pure(it -> (())) }
 
-	def setF[F[_]:Functor as F,S](it:F[S]):StateT[F,S,Unit]	=
+	def setF[F[_]:Functor as F, S](it:F[S]):StateT[F, S, Unit]	=
 		StateT { _ => F.map(it)(s1 => (s1, ())) }
 
-	def setOld[F[_]:Applicative as F,S](it:S):StateT[F,S,S]	=
+	def setOld[F[_]:Applicative as F, S](it:S):StateT[F, S, S]	=
 		StateT { s => F.pure(it -> s) }
 
 	//------------------------------------------------------------------------------
 
-	def mod[F[_]:Applicative as F,S](func:S=>S):StateT[F,S,Unit]	=
+	def mod[F[_]:Applicative as F, S](func:S=>S):StateT[F, S, Unit]	=
 		StateT { s => F.pure(func(s) -> (())) }
 
-	def modF[F[_]:Functor as F,S](func:S=>F[S]):StateT[F,S,Unit]	=
+	def modF[F[_]:Functor as F, S](func:S=>F[S]):StateT[F, S, Unit]	=
 		StateT { s => F.map(func(s))(s1 => (s1, ())) }
 
-	def modOld[F[_]:Applicative as F,S](func:S=>S):StateT[F,S,S]	=
+	def modOld[F[_]:Applicative as F, S](func:S=>S):StateT[F, S, S]	=
 		StateT { s => F.pure(func(s) -> s) }
 
 	//------------------------------------------------------------------------------
 
 	// == get map func
-	def stateless[F[_]:Applicative as F,S,T](func:S=>T):StateT[F,S,T]	=
+	def stateless[F[_]:Applicative as F, S, T](func:S=>T):StateT[F, S, T]	=
 		StateT { s => F.pure(s -> func(s)) }
 
-	def statelessF[F[_]:Functor as F,S,T](func:S=>F[T]):StateT[F,S,T]	=
+	def statelessF[F[_]:Functor as F, S, T](func:S=>F[T]):StateT[F, S, T]	=
 		StateT { s => F.map(func(s)) { s -> _ } }
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	given [F[_]:Delay,S] => Delay[StateT[F,S,_]]	=
-		new Delay[StateT[F,S,_]] {
-			override def delay[T](it: =>T):StateT[F,S,T]	= StateT.delay(it)
+	given [F[_]:Delay, S] => Delay[StateT[F,  S, _]]	=
+		new Delay[StateT[F, S, _]] {
+			override def delay[T](it: =>T):StateT[F, S, T]	= StateT.delay(it)
 		}
 
-	given [F[_]:Monad,S] => Monad[StateT[F,S,_]]	=
-		new Monad[StateT[F,S,_]] {
-			override def pure[T](it:T):StateT[F,S,T]											= StateT.pure(it)
-			override def map[T,U](its:StateT[F,S,T])(func:T=>U):StateT[F,S,U]					= its.map(func)
-			override def flatMap[T,U](its:StateT[F,S,T])(func:T=>StateT[F,S,U]):StateT[F,S,U]	= its.flatMap(func)
+	given [F[_]:Monad, S] => Monad[StateT[F, S, _]]	=
+		new Monad[StateT[F, S, _]] {
+			override def pure[T](it:T):StateT[F, S,  T]													= StateT.pure(it)
+			override def map[T, U](its:StateT[F, S, T])(func:T=>U):StateT[F, S,  U]						= its.map(func)
+			override def flatMap[T, U](its:StateT[F, S, T])(func:T=>StateT[F, S, U]):StateT[F, S, U]	= its.flatMap(func)
 		}
 }
 
-final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
-	def mapK[G[_]](nat:F ~> G):StateT[G,S,T]	=
+final case class StateT[F[_], S, T](run:S=>F[(S, T)]) {
+	def mapK[G[_]](nat:F ~> G):StateT[G, S, T]	=
 		StateT { s0 =>
 			nat(run(s0))
 		}
 
-	def transformFunc[G[_]](func:(S=>F[(S,T)])=>(S=>G[(S,T)])):StateT[G,S,T]	=
+	def transformFunc[G[_]](func:(S=>F[(S, T)])=>(S=>G[(S, T)])):StateT[G, S, T]	=
 		StateT { s0 =>
 			func(run)(s0)
 		}
 
 	//------------------------------------------------------------------------------
 
-	def map[U](func:T=>U)(using F:Functor[F]):StateT[F,S,U]	=
+	def map[U](func:T=>U)(using F:Functor[F]):StateT[F, S, U]	=
 		StateT { s0 =>
 			F.map(run(s0)) { (s1, t) => (s1, func(t)) }
 		}
 
-	def flatMap[U](func:T=>StateT[F,S,U])(using F:Monad[F]):StateT[F,S,U]	=
+	def flatMap[U](func:T=>StateT[F, S, U])(using F:Monad[F]):StateT[F, S, U]	=
 		StateT { s0 =>
 			F.flatMap(run(s0)) { (s1, t) =>
 				func(t).run(s1)
 			}
 		}
 
-	def flatten[U](using F:Monad[F], ev:T <:< StateT[F,S,U]):StateT[F,S,U]	=
+	def flatten[U](using F:Monad[F], ev:T <:< StateT[F, S, U]):StateT[F, S, U]	=
 		flatMap(ev)
 
 	/** function effect first */
-	def ap[A,B](that:StateT[F,S,A])(using F:Monad[F], ev:T <:< (A=>B)):StateT[F,S,B]	=
+	def ap[A, B](that:StateT[F, S, A])(using F:Monad[F], ev:T <:< (A=>B)):StateT[F, S, B]	=
 		that.pa(this.map(ev))
 
 	/** function effect first */
-	def pa[U](that:StateT[F,S,T=>U])(using F:Monad[F]):StateT[F,S,U]	=
+	def pa[U](that:StateT[F ,S ,T=>U])(using F:Monad[F]):StateT[F, S, U]	=
 		StateT { s0 =>
 			F.flatMap(that.run(s0)) { (s1, tu) =>
 				F.map(this.run(s1)) { (s2, t) =>
@@ -120,10 +120,10 @@ final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
 			}
 		}
 
-	def product[U](that:StateT[F,S,U])(using F:Monad[F]):StateT[F,S,(T,U)]	=
+	def product[U](that:StateT[F, S ,U])(using F:Monad[F]):StateT[F, S, (T, U)]	=
 		this.map2(that)(_ -> _)
 
-	def map2[U,X](that:StateT[F,S,U])(func:(T,U)=>X)(using F:Monad[F]):StateT[F,S,X]	=
+	def map2[U, X](that:StateT[F, S, U])(func:(T, U)=>X)(using F:Monad[F]):StateT[F, S, X]	=
 		StateT { s0 =>
 			F.flatMap(this.run(s0)) { (s1, t) =>
 				F.map(that.run(s1)) { (s2, u) =>
@@ -132,7 +132,7 @@ final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
 			}
 		}
 
-	def subMap[U](func:F[T]=>F[U])(using F:Monad[F]):StateT[F,S,U]	=
+	def subMap[U](func:F[T]=>F[U])(using F:Monad[F]):StateT[F, S, U]	=
 		StateT { s0 =>
 			F.flatMap(run(s0)) { (s1, t) =>
 				F.map(func(F.pure(t))) { u =>
@@ -141,7 +141,7 @@ final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
 			}
 		}
 
-	def subFlatMap[U](func:T=>F[U])(using F:Monad[F]):StateT[F,S,U]	=
+	def subFlatMap[U](func:T=>F[U])(using F:Monad[F]):StateT[F, S, U]	=
 		StateT { s0 =>
 			F.flatMap(run(s0)) { (s1, t) =>
 				F.map(func(t)) { u =>
@@ -150,16 +150,16 @@ final case class StateT[F[_],S,T](run:S=>F[(S,T)]) {
 			}
 		}
 
-	def subFlatten[U](using F:Monad[F], ev:T <:< F[U]):StateT[F,S,U]	=
+	def subFlatten[U](using F:Monad[F], ev:T <:< F[U]):StateT[F, S, U]	=
 		subFlatMap(ev)
 
-	def innerFlatMap[U](func:F[T]=>StateT[F,S,U])(using F:Monad[F]):StateT[F,S,U]	=
+	def innerFlatMap[U](func:F[T]=>StateT[F, S, U])(using F:Monad[F]):StateT[F, S, U]	=
 		StateT { s0 =>
 			F.flatMap(run(s0)) { (s1, t) =>
 				func(F.pure(t)).run(s1)
 			}
 		}
 
-	def innerFlatten[U](using F:Monad[F], ev:F[T] <:< StateT[F,S,U]):StateT[F,S,U]	=
+	def innerFlatten[U](using F:Monad[F], ev:F[T] <:< StateT[F, S, U]):StateT[F, S, U]	=
 		innerFlatMap(ev)
 }

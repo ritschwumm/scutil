@@ -8,8 +8,8 @@ type Effect[-T]			= T=>Unit
 
 //------------------------------------------------------------------------------
 
-def constant[S,T](value: =>T):(S=>T)		= _ => value
-def ignorant[S,T](thunk:Thunk[T]):(S=>T)	= _ => thunk()
+def constant[S, T](value: =>T):(S=>T)		= _ => value
+def ignorant[S, T](thunk:Thunk[T]):(S=>T)	= _ => thunk()
 
 def thunk[T](value: =>T):Thunk[T]			= () => value
 
@@ -18,7 +18,7 @@ def nothing:Nothing	= sys error "silence! i kill you!"
 
 //------------------------------------------------------------------------------
 
-type ~>[-F[_],+G[_]]	= NaturalTransformation[F,G]
+type ~>[-F[_],+G[_]]	= NaturalTransformation[F, G]
 
 //------------------------------------------------------------------------------
 

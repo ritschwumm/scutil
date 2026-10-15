@@ -28,7 +28,7 @@ object BeanCasters {
 		def removePropertyChangeListener(name:String, listener:PropertyChangeListener):Unit
 	}
 	// NOTE this cannot be made implicit
-	def generifyNamedPropertyChangeCaster(name:String, caster:NamedPropertyChangeCaster):Caster[PropertyChangeListener,PropertyChangeEvent] = new Caster[PropertyChangeListener,PropertyChangeEvent] {
+	def generifyNamedPropertyChangeCaster(name:String, caster:NamedPropertyChangeCaster):Caster[PropertyChangeListener, PropertyChangeEvent] = new Caster[PropertyChangeListener, PropertyChangeEvent] {
 		def addListener(listener:PropertyChangeListener)	{ caster.addPropertyChangeListener(name, listener) }
 		def removeListener(listener:PropertyChangeListener)	{ caster.removePropertyChangeListener(name, listener) }
 		def createListener(callback:PropertyChangeEvent=>Unit)	= mkPropertyChangeListener(callback)

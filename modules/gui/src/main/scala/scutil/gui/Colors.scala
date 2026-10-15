@@ -9,7 +9,7 @@ object Colors {
 	def decodeOption(s:String):Option[Color]	=
 		decodeEither(s).toOption
 
-	def decodeEither(s:String):Either[NumberFormatException,Color]	=
+	def decodeEither(s:String):Either[NumberFormatException, Color]	=
 		try {
 			Right(Color.decode(s))
 		}

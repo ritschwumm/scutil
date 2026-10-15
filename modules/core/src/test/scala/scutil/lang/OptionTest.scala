@@ -8,14 +8,14 @@ object OptionTest extends SimpleTestSuite {
 	test("Option.product works") {
 		assertEquals(
 			Option(1).product(Option(2)),
-			Option((1,2))
+			Option((1, 2))
 		)
 	}
 
 	test("Option.zip returns an Option") {
 		assertEquals(
 			Option(1) zip Option(2),
-			Option((1,2))
+			Option((1, 2))
 		)
 	}
 

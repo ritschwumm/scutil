@@ -52,12 +52,12 @@ object BooleanExtensions {
 			then Set(falseValue)
 			else Set.empty
 
-		def either[U,V](falseLeft: =>U, trueRight: =>V):Either[U,V] =
+		def either[U, V](falseLeft: =>U, trueRight: =>V):Either[U, V] =
 			if peer
 			then Right(trueRight)
 			else Left(falseLeft)
 
-		def validated[E,T](falseProblems: =>E, trueValid: =>T):Validated[E,T]	=
+		def validated[E, T](falseProblems: =>E, trueValid: =>T):Validated[E, T]	=
 			Validated.switch(peer, falseProblems, trueValid)
 
 		//------------------------------------------------------------------------------
@@ -74,10 +74,10 @@ object BooleanExtensions {
 
 		//------------------------------------------------------------------------------
 
-		def optionT[F[_]:Applicative,T](trueValue: =>T):OptionT[F,T] =
+		def optionT[F[_]:Applicative, T](trueValue: =>T):OptionT[F, T] =
 			OptionT.fromOption(option(trueValue))
 
-		def optionNotT[F[_]:Applicative,T](falseValue: =>T):OptionT[F,T] =
+		def optionNotT[F[_]:Applicative, T](falseValue: =>T):OptionT[F, T] =
 			OptionT.fromOption(optionNot(falseValue))
 
 		//------------------------------------------------------------------------------
@@ -90,22 +90,22 @@ object BooleanExtensions {
 		def preventOption:Option[Unit]	=
 			optionNot(())
 
-		def guardEither[U](leftValue: =>U):Either[U,Unit]	=
+		def guardEither[U](leftValue: =>U):Either[U, Unit]	=
 			if peer
 			then Right(())
 			else Left(leftValue)
 
-		def preventEither[U](leftValue: =>U):Either[U,Unit]	=
+		def preventEither[U](leftValue: =>U):Either[U, Unit]	=
 			if !peer
 			then Right(())
 			else Left(leftValue)
 
-		def guardValidated[E](problems: =>E):Validated[E,Unit]	=
+		def guardValidated[E](problems: =>E):Validated[E, Unit]	=
 			if peer
 			then Validated.valid(())
 			else Validated.invalid(problems)
 
-		def preventValidated[E](problems: =>E):Validated[E,Unit]	=
+		def preventValidated[E](problems: =>E):Validated[E, Unit]	=
 			if !peer
 			then Validated.valid(())
 			else Validated.invalid(problems)
@@ -128,16 +128,16 @@ object BooleanExtensions {
 
 		//------------------------------------------------------------------------------
 
-		def guardOptionT[F[_]:Applicative]:OptionT[F,Unit]	=
+		def guardOptionT[F[_]:Applicative]:OptionT[F, Unit]	=
 			OptionT.fromOption(guardOption)
 
-		def preventOptionT[F[_]:Applicative]:OptionT[F,Unit]	=
+		def preventOptionT[F[_]:Applicative]:OptionT[F, Unit]	=
 			OptionT.fromOption(preventOption)
 
-		def guardEitherT[F[_]:Applicative,U](leftValue: =>U):EitherT[F,U,Unit]	=
+		def guardEitherT[F[_]:Applicative, U](leftValue: =>U):EitherT[F, U, Unit]	=
 			EitherT.switch(peer, leftValue, ())
 
-		def preventEitherT[F[_]:Applicative,U](leftValue: =>U):EitherT[F,U,Unit]	=
+		def preventEitherT[F[_]:Applicative, U](leftValue: =>U):EitherT[F, U, Unit]	=
 			EitherT.switch(!peer, leftValue, ())
 
 		//------------------------------------------------------------------------------

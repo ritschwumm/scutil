@@ -7,7 +7,7 @@ import scutil.lang.*
 
 object DateFormatExtensions {
 	extension (peer:DateFormat) {
-		def toPrism:Prism[String,Date]	=
+		def toPrism:Prism[String, Date]	=
 			Prism(
 				it =>
 						Catch.byType[ParseException]

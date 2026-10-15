@@ -56,21 +56,21 @@ object LensTest extends SimpleTestSuite {
 
 	test("Lenses.map should add a non-existing item") {
 		assertEquals(
-			Lenses.map[String,Int]("three").set(Some(99))(Map("one" -> 1, "two" -> 2)),
+			Lenses.map[String, Int]("three").set(Some(99))(Map("one" -> 1, "two" -> 2)),
 			Map("one" -> 1, "two" -> 2, "three" -> 99)
 		)
 	}
 
 	test("Lenses.map should change an existing item") {
 		assertEquals(
-			Lenses.map[String,Int]("two").set(Some(99))(Map("one" -> 1, "two" -> 2)),
+			Lenses.map[String, Int]("two").set(Some(99))(Map("one" -> 1, "two" -> 2)),
 			Map("one" -> 1, "two" -> 99)
 		)
 	}
 
 	test("Lenses.map should remove an existing item") {
 		assertEquals(
-			Lenses.map[String,Int]("two").set(None)(Map("one" -> 1, "two" -> 2)),
+			Lenses.map[String, Int]("two").set(None)(Map("one" -> 1, "two" -> 2)),
 			Map("one" -> 1)
 		)
 	}

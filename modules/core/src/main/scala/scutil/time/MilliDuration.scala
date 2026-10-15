@@ -15,7 +15,7 @@ object MilliDuration {
 	def milli:MilliDuration		= MilliDuration(1)
 	def zero:MilliDuration		= MilliDuration(0)
 
-	val newType	= Bijection[MilliDuration,Long](_.millis, MilliDuration.apply)
+	val newType	= Bijection[MilliDuration, Long](_.millis, MilliDuration.apply)
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances

@@ -61,7 +61,7 @@ final class URIComponent(charset:Charset) {
 	//------------------------------------------------------------------------------
 	//## decoding
 
-	def decode(s:String):Either[URIComponentProblem,String]	= {
+	def decode(s:String):Either[URIComponentProblem, String]	= {
 		val b	= new mutable.ArrayBuffer[Byte]
 		var i	= 0
 		while i < s.length do {

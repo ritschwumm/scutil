@@ -5,15 +5,15 @@ import scala.util.{ Try, Success, Failure }
 
 object FutureExtensions {
 	extension [T](peer:Future[T]) {
-		def map2[U,V](that:Future[U])(func:(T,U)=>V)(using executor:ExecutionContext):Future[V]	=
+		def map2[U, V](that:Future[U])(func:(T, U)=>V)(using executor:ExecutionContext):Future[V]	=
 			peer.zip(that).map(func.tupled)
 
 		// TODO is this correct, or should we use flatMap?
-		def product[U](that:Future[U]):Future[(T,U)]	=
+		def product[U](that:Future[U]):Future[(T, U)]	=
 			peer `zip` that
 
 		// TODO is this correct, or should we use flatMap?
-		def ap[U,V](that:Future[U])(using executor:ExecutionContext, ev:T <:< (U=>V)):Future[V]	=
+		def ap[U ,V](that:Future[U])(using executor:ExecutionContext, ev:T <:< (U=>V)):Future[V]	=
 			peer.zip(that).map { (u2v, u) => u2v(u) }
 
 		//------------------------------------------------------------------------------
@@ -32,14 +32,14 @@ object FutureExtensions {
 		//------------------------------------------------------------------------------
 
 		/** always succeeds wrapping the original success/failure in a Tried */
-		def wrapEither(using executor:ExecutionContext):Future[Either[Throwable,T]]	=
+		def wrapEither(using executor:ExecutionContext):Future[Either[Throwable, T]]	=
 			peer.transform { it => Try(it.toEither) }
 
 		/** succeeds for a Win, fails for a Fail */
-		def unwrapEither[X](using executor:ExecutionContext, ev:T <:< Either[Throwable,X]):Future[X]	=
+		def unwrapEither[X](using executor:ExecutionContext, ev:T <:< Either[Throwable, X]):Future[X]	=
 			peer.transform(_.flatMap { ev(_).toTry })
 
-		def mapEither[X](func:Either[Throwable,T]=>Either[Throwable,X])(using executor:ExecutionContext):Future[X]	=
+		def mapEither[X](func:Either[Throwable, T]=>Either[Throwable, X])(using executor:ExecutionContext):Future[X]	=
 			peer.transform { it => func(it.toEither).toTry }
 	}
 }

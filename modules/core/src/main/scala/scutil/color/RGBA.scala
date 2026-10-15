@@ -8,7 +8,7 @@ object RGBA {
 	val transparentWhite	= RGBA(RGB.white, Alpha.transparent)
 
 	def parseHex(s:String):Option[RGBA]	=
-		Hex.decodeByteString(s).collect { case ByteString(r,g,b,a)	=>
+		Hex.decodeByteString(s).collect { case ByteString(r, g, b, a)	=>
 			RGBA(
 				RGB(
 					(r & 0xff) / 255f,

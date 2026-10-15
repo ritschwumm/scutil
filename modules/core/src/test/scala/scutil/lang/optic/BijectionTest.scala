@@ -12,7 +12,7 @@ object BijectionTest extends SimpleTestSuite {
 
 	trait Fooz[T]
 	final case class Parametrized1[A](x:Fooz[A])
-	final case class Parametrized2[A,B](x:Fooz[A], y:Fooz[B])
+	final case class Parametrized2[A, B](x:Fooz[A], y:Fooz[B])
 
 	object Wrapper {
 		final case class Inner(t:Int)
@@ -48,11 +48,11 @@ object BijectionTest extends SimpleTestSuite {
 	}
 
 	test("Bijection should work with binary case classes") {
-		val value		= Binary(1,2)
+		val value		= Binary(1, 2)
 		val	bijection	= Bijection.more[Binary]
-		assertEquals[(Int,Short)](
+		assertEquals[(Int, Short)](
 			bijection.get(value),
-			(1,2)
+			(1, 2)
 		)
 	}
 
@@ -83,7 +83,7 @@ object BijectionTest extends SimpleTestSuite {
 	}
 
 	test("Bijection should work with case classes with multiple type parameters") {
-		val _ = Bijection.more[Parametrized2[Int,String]]
+		val _ = Bijection.more[Parametrized2[Int, String]]
 		assertEquals(
 			1,
 			1

@@ -7,7 +7,7 @@ object Catch {
 	def apply[E<:Throwable](pfunc:Throwable=>Option[E]):Catch[E]	=
 		new Catch[E](pfunc)
 
-	def partial[E<:Throwable,T](pf:PartialFunction[Throwable,E]):Catch[E]	=
+	def partial[E<:Throwable, T](pf:PartialFunction[Throwable, E]):Catch[E]	=
 		Catch(pf.lift)
 
 	//------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ object Catch {
 		partial { case e:Exception => e }
 
 	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
-	def byType[E<:Throwable](using tt:TypeTest[Throwable,E]):Catch[E]	=
+	def byType[E<:Throwable](using tt:TypeTest[Throwable, E]):Catch[E]	=
 		Catch(tt.unapply)
 
 	@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
@@ -30,12 +30,12 @@ object Catch {
 			else None
 		}
 
-	def byPrism[E<:Throwable](prism:Prism[Throwable,E]):Catch[E]	=
+	def byPrism[E<:Throwable](prism:Prism[Throwable, E]):Catch[E]	=
 		Catch(prism.get)
 }
 
 final class Catch[E<:Throwable](func:Throwable=>Option[E]) {
-	def in[T](value: =>T):Either[E,T]	=
+	def in[T](value: =>T):Either[E, T]	=
 		try {
 			Right(value)
 		}
@@ -43,6 +43,6 @@ final class Catch[E<:Throwable](func:Throwable=>Option[E]) {
 			func(e).map(Left.apply).getOrElse{ throw e }
 		}
 
-	def get[T](value:Thunk[T]):Either[E,T]	=
+	def get[T](value:Thunk[T]):Either[E, T]	=
 		in(value())
 }

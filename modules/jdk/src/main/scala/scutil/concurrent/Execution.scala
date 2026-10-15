@@ -20,7 +20,7 @@ object Execution {
 final case class Execution(submit:(()=>Unit)=>Unit) {
 	/** transports Exceptions (but not every Throwable) to the user of the value */
 	def withResult[T](job:Thunk[T]):Thunk[T] = {
-		val	out	= new LinkedBlockingQueue[Either[Exception,T]](1)
+		val	out	= new LinkedBlockingQueue[Either[Exception, T]](1)
 		submit(thunk { out.put(Catch.exception.get(job)) })
 		thunk { out.take().throwException }
 	}

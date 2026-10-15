@@ -5,10 +5,11 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.263.0",
+	version			:= "0.264.0",
 
 	scalaVersion	:= "3.7.3",
 	scalacOptions	++= Seq(
+		"-preview",
 		"-feature",
 		"-deprecation",
 		"-unchecked",
@@ -42,8 +43,6 @@ inThisBuild(Seq(
 		Wart.AnyVal,
 		//Wart.Nothing,
 		Wart.ArrayEquals,
-		// TODO get this back - for some reason, it cannot be disabled
-		//Wart.ImplicitParameter,
 		Wart.LeakingSealed,
 		Wart.DefaultArguments,
 		//Wart.Overloading,

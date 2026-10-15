@@ -9,12 +9,12 @@ trait Applicative[F[_]] extends Functor[F] {
 	//## own
 
 	def pure[T](it:T):F[T]
-	def ap[S,T](func:F[S=>T])(its:F[S]):F[T]
+	def ap[S, T](func:F[S=>T])(its:F[S]):F[T]
 
 	//------------------------------------------------------------------------------
 	//## super
 
-	def map[S,T](its:F[S])(func:S=>T):F[T]	=
+	def map[S, T](its:F[S])(func:S=>T):F[T]	=
 		ap(pure(func))(its)
 
 	//------------------------------------------------------------------------------
@@ -22,16 +22,16 @@ trait Applicative[F[_]] extends Functor[F] {
 
 	def unit:F[Unit]	= pure(())
 
-	def map2[A,B,C](as:F[A], bs:F[B])(func:(A,B)=>C):F[C]	=
+	def map2[A, B, C](as:F[A], bs:F[B])(func:(A, B)=>C):F[C]	=
 		ap(map(as)(func.curried))(bs)
 
-	def product[A,B](as:F[A], bs:F[B]):F[(A,B)]	=
-		map2(as, bs)((a, b) => (a,b))
+	def product[A, B](as:F[A], bs:F[B]):F[(A, B)]	=
+		map2(as, bs)((a, b) => (a, b))
 
-	def productL[A,B](as:F[A], bs:F[B]):F[A]	=
+	def productL[A, B](as:F[A], bs:F[B]):F[A]	=
 		map2(as, bs)((a, _) => a)
 
-	def productR[A,B](as:F[A], bs:F[B]):F[B]	=
+	def productR[A, B](as:F[A], bs:F[B]):F[B]	=
 		map2(as, bs)((_, b) => b)
 
 	//------------------------------------------------------------------------------

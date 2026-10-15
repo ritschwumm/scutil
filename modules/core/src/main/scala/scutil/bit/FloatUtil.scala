@@ -20,7 +20,7 @@ object FloatUtil {
 
 	inline def ftz(it:Float):Float	= if denormal(it) then 0f else it
 
-	def bits(it:Float):(Boolean,Int,Short)	= {
+	def bits(it:Float):(Boolean, Int, Short)	= {
 		// positive infinity	0x7f800000
 		// negative infinity	0xff800000
 		// NaN					0x7fc00000

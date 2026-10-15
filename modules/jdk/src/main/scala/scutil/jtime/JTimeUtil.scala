@@ -43,14 +43,14 @@ object JTimeUtil {
 
 	//------------------------------------------------------------------------------
 
-	val milliInstantDateBijection	= Bijection[MilliInstant,Date](milliInstantToDate, dateToMilliInstant)
+	val milliInstantDateBijection	= Bijection[MilliInstant, Date](milliInstantToDate, dateToMilliInstant)
 
 	def dateToMilliInstant(it:Date):MilliInstant	= MilliInstant(it.getTime)
 	def milliInstantToDate(it:MilliInstant):Date	= new Date(it.millis)
 
 	//------------------------------------------------------------------------------
 
-	val milliInstantInstantBijection	= Bijection[MilliInstant,Instant](milliInstantToInstant, instantToMilliInstant)
+	val milliInstantInstantBijection	= Bijection[MilliInstant, Instant](milliInstantToInstant, instantToMilliInstant)
 
 	def milliInstantToInstant(it:MilliInstant):Instant	= Instant.ofEpochMilli(it.millis)
 	def instantToMilliInstant(it:Instant):MilliInstant	= MilliInstant(it.toEpochMilli)
@@ -61,7 +61,7 @@ object JTimeUtil {
 	def instantToIso8601(instant:Instant):String	=
 		instant.toString
 
-	def iso8601ToInstant(str:String):Either[DateTimeParseException,Instant]	=
+	def iso8601ToInstant(str:String):Either[DateTimeParseException, Instant]	=
 		try {
 			//Right(Instant.from(DateTimeFormatter.ISO_INSTANT parse str))
 			Right(Instant.parse(str))

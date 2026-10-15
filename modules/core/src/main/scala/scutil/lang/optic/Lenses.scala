@@ -6,13 +6,13 @@ object Lenses {
 	//-----------------------------------------------------------------------------
 	//## tuple
 
-	def first[S,T]:Lens[(S,T),S]	=
+	def first[S, T]:Lens[(S, T), S]	=
 		Lens(
 			get	= p			=> p._1,
 			set	= t => p	=> (t, p._2)
 		)
 
-	def second[S,T]:Lens[(S,T),T]	=
+	def second[S, T]:Lens[(S, T), T]	=
 		Lens(
 			get	= p			=> p._2,
 			set	=  t => p	=> (p._1, t)
@@ -21,7 +21,7 @@ object Lenses {
 	//-----------------------------------------------------------------------------
 	//## set
 
-	def set[T](t:T):Lens[Set[T],Boolean]	=
+	def set[T](t:T):Lens[Set[T], Boolean]	=
 		Lens(
 			get	= _.contains(t),
 			set	= v => c	=> if v then c + t else c - t
@@ -30,16 +30,16 @@ object Lenses {
 	//-----------------------------------------------------------------------------
 	//## map
 
-	def map[K,V](k:K):Lens[Map[K,V],Option[V]]	=
+	def map[K, V](k:K):Lens[Map[K, V], Option[V]]	=
 		Lens.fromStoreAt(_.optionStoreAt(k))
 
 	/*
 	// TODO check this works
-	def mapWithDefault2[S,T](key:S, default:T):Lens[Map[S,T],T]	=
+	def mapWithDefault2[S, T](key:S, default:T):Lens[Map[S, T], T]	=
 		map(key) >=> Bijections.withDefault(default).toLens
 	*/
 
-	def mapWithDefault[S,T](key:S, default:T):Lens[Map[S,T],T]	=
+	def mapWithDefault[S, T](key:S, default:T):Lens[Map[S, T], T]	=
 		Lens(
 			get	= map =>
 				map.get(key).getOrElse(default),

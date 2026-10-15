@@ -6,8 +6,8 @@ import scala.collection.immutable.HashMap
 
 object PropertiesExtensions {
 	extension (peer:Properties) {
-		def toHashMap:Map[String,String]	= {
-			var out		= HashMap.empty[String,String]
+		def toHashMap:Map[String, String]	= {
+			var out		= HashMap.empty[String, String]
 			val keyIter	= peer.stringPropertyNames.iterator
 			while keyIter.hasNext do {
 				val key		= keyIter.next
@@ -17,6 +17,6 @@ object PropertiesExtensions {
 			out
 		}
 
-		def toMap:Map[String,String]	= toHashMap
+		def toMap:Map[String, String]	= toHashMap
 	}
 }

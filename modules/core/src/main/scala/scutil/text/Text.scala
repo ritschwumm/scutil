@@ -49,7 +49,7 @@ object Text {
 			rows.foldLeft(Vector.empty[Int]) { (widths, row) =>
 				widths
 				.zipAll(row.map(_.length), 0, 0)
-				.map((a,b) => a.max(b))
+				.map((a, b) => a.max(b))
 			}
 
 		val lines	= rows.map { cells =>

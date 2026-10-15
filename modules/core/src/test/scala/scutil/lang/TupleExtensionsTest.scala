@@ -23,7 +23,7 @@ object TupleExtensionsTest extends SimpleTestSuite {
 
 	//-----------------------------------------------------------------------------
 
-	test("tuple transform syntax should work for 1 element") {
+	test("Tuple.ap should work for 1 element") {
 		assertEquals(
 			Tuple1("hello").ap(Tuple1(
 				(_:String)	=> 1)
@@ -32,7 +32,7 @@ object TupleExtensionsTest extends SimpleTestSuite {
 		)
 	}
 
-	test("tuple transform syntax should work for 2 elements") {
+	test("Tuple.ap should work for 2 elements") {
 		assertEquals(
 			Tuple2("hello", 1).ap(Tuple2(
 				(_:String)	=> 1,
@@ -42,7 +42,7 @@ object TupleExtensionsTest extends SimpleTestSuite {
 		)
 	}
 
-	test("tuple transform syntax should work for 3 elements") {
+	test("Tuple.ap should work for 3 elements") {
 		assertEquals(
 			Tuple3("hello", 1, true).ap(Tuple3(
 				(_:String)	=> 1,
@@ -55,77 +55,104 @@ object TupleExtensionsTest extends SimpleTestSuite {
 
 	//-----------------------------------------------------------------------------
 
-	test("applicative tuple syntax should zip 1 element") {
+	test("Tuple.productN should deal with different types") {
 		assertEquals(
-			Tuple1(Vector(1)).zipN,
+			(Vector(1), Vector("1"), Vector(true)).productN,
+			Vector((1, "1", true))
+		)
+	}
+
+	//-----------------------------------------------------------------------------
+
+	test("Tuple.productN should zip 1 element") {
+		assertEquals(
+			Tuple1(Vector(1)).productN,
 			Vector(Tuple1(1))
 		)
 	}
 
-	test("applicative tuple syntax should zip 2 elements") {
+	test("Tuple.productN should zip 2 elements") {
 		assertEquals(
-			(Vector(1), Vector(2)).zipN,
-			Vector((1,2))
+			(Vector(1), Vector(2)).productN,
+			Vector((1, 2))
 		)
 	}
 
-	test("applicative tuple syntax should zip 3 elements") {
+	test("Tuple.productN should zip 3 elements") {
 		assertEquals(
-			(Vector(1), Vector(2), Vector(3)).zipN,
-			Vector((1,2,3))
-		)
-	}
-
-	//-----------------------------------------------------------------------------
-
-	test("applicative tuple syntax should zip vector") {
-		assertEquals(
-			(Vector(1), Vector(2), Vector(3)).zipN,
-			Vector((1,2,3))
-		)
-	}
-
-	test("applicative tuple syntax should zip option") {
-		assertEquals(
-			(Option.some(1), Option.some(2), Option.some(3)).zipN,
-			Some((1,2,3))
-		)
-	}
-
-	test("applicative tuple syntax should zip either") {
-		assertEquals(
-			(Either.right[String,Int](1), Either.right[String,Int](2), Either.right[String,Int](3)).zipN,
-			Right((1,2,3))
-		)
-	}
-
-	test("applicative tuple syntax should zip validated") {
-		assertEquals(
-			(Validated.valid[String,Int](1), Validated.valid[String,Int](2), Validated.valid[String,Int](3)).zipN,
-			Validated.valid((1,2,3))
+			(Vector(1), Vector(2), Vector(3)).productN,
+			Vector((1, 2, 3))
 		)
 	}
 
 	//-----------------------------------------------------------------------------
 
-	test("applicative tuple syntax should map 1 element") {
+	test("Tuple.productN should zip vector") {
+		assertEquals(
+			(Vector(1), Vector(2), Vector(3)).productN,
+			Vector((1, 2, 3))
+		)
+	}
+
+	test("Tuple.productN should zip option") {
+		assertEquals(
+			(Option.some(1), Option.some(2), Option.some(3)).productN,
+			Some((1, 2, 3))
+		)
+	}
+
+	test("Tuple.productN should zip either") {
+		assertEquals(
+			(Either.right[String, Int](1), Either.right[String, Int](2), Either.right[String, Int](3)).productN,
+			Right((1, 2, 3))
+		)
+	}
+
+	test("Tuple.productN should zip validated") {
+		assertEquals(
+			(Validated.valid[String, Int](1), Validated.valid[String, Int](2), Validated.valid[String, Int](3)).productN,
+			Validated.valid((1, 2, 3))
+		)
+	}
+
+	//-----------------------------------------------------------------------------
+
+	test("Tuple.mapN should deal with different types") {
+		assertEquals(
+			(Vector(1), Vector("1"), Vector(true)).mapN((a, b, c) => (c, b, a)),
+			Vector((true, "1", 1))
+		)
+	}
+
+	//-----------------------------------------------------------------------------
+
+	test("Tuple.mapN should map 1 element") {
 		assertEquals(
 			Tuple1(Vector(1)).mapN((a) => Tuple1(a)),
 			Vector(Tuple1(1))
 		)
 	}
 
-	test("applicative tuple syntax should map 2 elements") {
+	test("Tuple.mapN should map 2 elements") {
 		assertEquals(
-			(Vector(1), Vector(2)).mapN((a,b) => (a,b)),
-			Vector((1,2))
+			(Vector(1), Vector(2)).mapN((a, b) => (a, b)),
+			Vector((1, 2))
 		)
 	}
 
-	test("applicative tuple syntax should map 3 elements") {
+	test("Tuple.mapN should map 3 elements") {
 		assertEquals(
-			(Vector(1), Vector(2), Vector(3)).mapN((a,b,c) => (a,b,c)),
-			Vector((1,2,3))
+			(Vector(1), Vector(2), Vector(3)).mapN((a, b, c) => (a, b, c)),
+			Vector((1, 2, 3))
+		)
+	}
+
+	//-----------------------------------------------------------------------------
+
+	test("Tuple.traverseN should work") {
+		assertEquals(
+			(1, "1", true).traverseN([A] => (a:A) => Vector(a)),
+			Vector((1, "1", true))
 		)
 	}
 }

@@ -34,34 +34,34 @@ object OptionExtensions {
 		// NOTE we get these from applicative syntax
 
 		// * ap of the monad, <*> of the applicative functor
-		def ap[U,V](source:Option[U])(using ev: T <:< (U=>V)):Option[V] =
+		def ap[U, V](source:Option[U])(using ev: T <:< (U=>V)):Option[V] =
 			for { f	<- peer; s	<- source } yield f(s)
 
-		def product[U](that:Option[U]):Option[(T,U)]	=
+		def product[U](that:Option[U]):Option[(T, U)]	=
 			peer `zip` that
 
-		def map2[U,V](that:Option[U])(func:(T,U)=>V):Option[V]	=
-			(peer,that) match {
-				case ((Some(t),Some(u)))	=> Some(func(t,u))
+		def map2[U, V](that:Option[U])(func:(T, U)=>V):Option[V]	=
+			(peer, that) match {
+				case ((Some(t),Some(u)))	=> Some(func(t, u))
 				case _						=> None
 			}
 		*/
 
 		/** the partition method defined on Iterable is useless */
-		def partition(pred:Predicate[T]):(Option[T],Option[T])	=
+		def partition(pred:Predicate[T]):(Option[T], Option[T])	=
 			(peer.filter(pred), peer.filterNot(pred))
 
-		def partitionEither[U,V](using ev: T <:< Either[U,V]):(Option[U],Option[V])	=
+		def partitionEither[U, V](using ev: T <:< Either[U, V]):(Option[U], Option[V])	=
 			peer.map(ev) match {
 				case Some(Left(x))	=> (Some(x),	None)
 				case Some(Right(x))	=> (None,		Some(x))
 				case None			=> (None,		None)
 			}
 
-		def flatMapMany[Repr](func:T=>Repr)(using iter:IsIterable[Repr], factory:Factory[iter.A,Repr]):Repr	=
+		def flatMapMany[Repr](func:T=>Repr)(using iter:IsIterable[Repr], factory:Factory[iter.A, Repr]):Repr	=
 			peer.map(func).flattenMany
 
-		def flattenMany(using iter:IsIterable[T], factory:Factory[iter.A,T]):T	=
+		def flattenMany(using iter:IsIterable[T], factory:Factory[iter.A, T]):T	=
 			peer.getOrElse(factory.newBuilder.result())
 
 		//------------------------------------------------------------------------------
@@ -102,10 +102,10 @@ object OptionExtensions {
 		/*
 		// TODO generify these - right now, they are not working
 
-		def sequenceIterable[CC[_]<:Iterable[U],U](using factory:Factory[Option[U],CC[Option[U]]], ev: T <:< CC[U]):CC[Option[U]]	=
+		def sequenceIterable[CC[_]<:Iterable[U], U](using factory:Factory[Option[U], CC[Option[U]]], ev: T <:< CC[U]):CC[Option[U]]	=
 			traverseIterable(ev)
 
-		def traverseIterable[CC[_]<:Iterable[U],U](func:T=>CC[U])(using factory:Factory[Option[U],CC[Option[U]]]):CC[Option[U]]	= {
+		def traverseIterable[CC[_]<:Iterable[U], U](func:T=>CC[U])(using factory:Factory[Option[U], CC[Option[U]]]):CC[Option[U]]	= {
 			val builder	= factory.newBuilder
 			peer.map(func) match {
 				case None		=> builder += None; builder.result
@@ -115,30 +115,30 @@ object OptionExtensions {
 		}
 		*/
 
-		def sequenceEither[F,W](using ev: T <:< Either[F,W]):Either[F,Option[W]]	=
+		def sequenceEither[F, W](using ev: T <:< Either[F, W]):Either[F, Option[W]]	=
 			traverseEither(ev)
 
-		def traverseEither[F,W](func:T=>Either[F,W]):Either[F,Option[W]]	=
+		def traverseEither[F, W](func:T=>Either[F, W]):Either[F, Option[W]]	=
 			peer.map(func) match {
 				case None			=> Right(None)
 				case Some(Left(x))	=> Left(x)
 				case Some(Right(x))	=> Right(Some(x))
 			}
 
-		def sequenceValidated[F,W](using ev: T <:< Validated[F,W]):Validated[F,Option[W]]	=
+		def sequenceValidated[F, W](using ev: T <:< Validated[F, W]):Validated[F, Option[W]]	=
 			traverseValidated(ev)
 
-		def traverseValidated[F,W](func:T=>Validated[F,W]):Validated[F,Option[W]]	=
+		def traverseValidated[F, W](func:T=>Validated[F, W]):Validated[F, Option[W]]	=
 			peer.map(func) match {
 				case None						=> Validated.valid(None)
 				case Some(Validated.Invalid(x))	=> Validated.invalid(x)
 				case Some(Validated.Valid(x))	=> Validated.valid(Some(x))
 			}
 
-		def sequenceState[S,U](using ev:T <:< State[S,U]):State[S,Option[U]]	=
+		def sequenceState[S, U](using ev:T <:< State[S, U]):State[S, Option[U]]	=
 			traverseState(ev)
 
-		def traverseState[S,U](func:T=>State[S,U]):State[S,Option[U]]	=
+		def traverseState[S, U](func:T=>State[S, U]):State[S, Option[U]]	=
 			peer.map(func) match {
 				case None		=> State.pure(None)
 				case Some(st)	=> st.map(Some.apply)
@@ -148,7 +148,7 @@ object OptionExtensions {
 
 		//------------------------------------------------------------------------------
 
-		def oneOrTwo(that:Option[T])(combine:(T,T)=>T):Option[T]	=
+		def oneOrTwo(that:Option[T])(combine:(T, T)=>T):Option[T]	=
 			(peer, that) match {
 				case (None,		None)		=> None
 				case (Some(aa),	None)		=> Some(aa)
@@ -158,10 +158,10 @@ object OptionExtensions {
 
 		//------------------------------------------------------------------------------
 
-		def failEither:Either[T,Unit]	=
+		def failEither:Either[T, Unit]	=
 			peer.toLeft(())
 
-		def failValidated:Validated[T,Unit]	=
+		def failValidated:Validated[T, Unit]	=
 			toInvalid(())
 
 		//------------------------------------------------------------------------------
@@ -169,19 +169,19 @@ object OptionExtensions {
 		// exists: toLeft
 		// exists: toRight
 
-		def toValid[F](invalid: =>F):Validated[F,T]	=
+		def toValid[F](invalid: =>F):Validated[F, T]	=
 			peer match {
 				case None		=> Validated.invalid(invalid)
 				case Some(x)	=> Validated.valid(x)
 			}
 
-		def toInvalid[ES,W](valid: =>W):Validated[T,W]	=
+		def toInvalid[ES, W](valid: =>W):Validated[T, W]	=
 			peer match {
 				case None		=> Validated.valid(valid)
 				case Some(x)	=> Validated.invalid(x)
 			}
 
-		def toValidNes[F](invalid: =>F):Validated[Nes[F],T]	=
+		def toValidNes[F](invalid: =>F):Validated[Nes[F], T]	=
 			peer match {
 				case None		=> Validated.invalid(Nes.one(invalid))
 				case Some(x)	=> Validated.valid(x)
@@ -214,19 +214,19 @@ object OptionExtensions {
 
 		//------------------------------------------------------------------------------
 
-		def toOptionT[F[_]:Applicative]:OptionT[F,T]	=
+		def toOptionT[F[_]:Applicative]:OptionT[F, T]	=
 			OptionT.fromOption(peer)
 
-		def toRightF[F[_]:Monad,L](leftValue: =>F[L]):EitherT[F,L,T]	=
+		def toRightF[F[_]:Monad, L](leftValue: =>F[L]):EitherT[F, L, T]	=
 			toOptionT[F].toRightF(leftValue)
 
-		def toRightT[F[_]:Applicative,L](leftValue: =>L):EitherT[F,L,T]	=
+		def toRightT[F[_]:Applicative, L](leftValue: =>L):EitherT[F, L, T]	=
 			toOptionT[F].toRight(leftValue)
 
-		def toLeftF[F[_]:Monad,R](rightValue: =>F[R]):EitherT[F,T,R]	=
+		def toLeftF[F[_]:Monad, R](rightValue: =>F[R]):EitherT[F, T, R]	=
 			toOptionT[F].toLeftF(rightValue)
 
-		def toLeftT[F[_]:Applicative,R](rightValue: =>R):EitherT[F,T,R]	=
+		def toLeftT[F[_]:Applicative, R](rightValue: =>R):EitherT[F, T, R]	=
 			toOptionT[F].toLeft(rightValue)
 	}
 }

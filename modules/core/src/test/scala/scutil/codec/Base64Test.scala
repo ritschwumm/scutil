@@ -34,12 +34,12 @@ object Base64Test extends SimpleTestSuite {
 	}
 
 	test("Base64 should handle roundtripping 2 bytes at all") {
-		val bytes	= ByteString(1,2)
+		val bytes	= ByteString(1, 2)
 		val round	= Base64.decodeByteString(Base64.encodeByteString(bytes))
 		assertEquals(round.isDefined, true)
 	}
 	test("Base64 should correctly roundtrip 2 bytes") {
-		val bytes	= ByteString(1,2)
+		val bytes	= ByteString(1, 2)
 		val round	= Base64.decodeByteString(Base64.encodeByteString(bytes))
 		assertEquals(
 			round,
@@ -48,12 +48,12 @@ object Base64Test extends SimpleTestSuite {
 	}
 
 	test("Base64 should handle roundtripping 3 bytes at all") {
-		val bytes	= ByteString(3,4,5)
+		val bytes	= ByteString(3, 4, 5)
 		val round	= Base64.decodeByteString(Base64.encodeByteString(bytes))
 		assertEquals(round.isDefined, true)
 	}
 	test("Base64 should correctly roundtrip 2 bytes") {
-		val bytes	= ByteString(3,4,5)
+		val bytes	= ByteString(3, 4, 5)
 		val round	= Base64.decodeByteString(Base64.encodeByteString(bytes))
 		assertEquals(
 			round,
@@ -62,12 +62,12 @@ object Base64Test extends SimpleTestSuite {
 	}
 
 	test("Base64 should handle roundtripping 4 bytes at all") {
-		val bytes	= ByteString(6,7,8,9)
+		val bytes	= ByteString(6, 7, 8, 9)
 		val round	= Base64.decodeByteString(Base64.encodeByteString(bytes))
 		assertEquals(round.isDefined, true)
 	}
 	test("Base64 should correctly roundtrip 2 bytes") {
-		val bytes	= ByteString(6,7,8,9)
+		val bytes	= ByteString(6, 7, 8, 9)
 		val round	= Base64.decodeByteString(Base64.encodeByteString(bytes))
 		assertEquals(
 			round,

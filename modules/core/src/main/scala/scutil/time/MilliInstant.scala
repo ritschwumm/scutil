@@ -9,7 +9,7 @@ object MilliInstant {
 	def zero:MilliInstant	= MilliInstant(0)
 	def now():MilliInstant	= MilliInstant(System.currentTimeMillis)
 
-	val newType	= Bijection[MilliInstant,Long](_.millis, MilliInstant.apply)
+	val newType	= Bijection[MilliInstant, Long](_.millis, MilliInstant.apply)
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances

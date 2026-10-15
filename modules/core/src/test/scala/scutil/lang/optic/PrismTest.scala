@@ -5,8 +5,8 @@ import minitest.*
 object PrismTest extends SimpleTestSuite {
 	object DragData {
 		object P {
-			val WorkMove:Prism[DragData,Int]			= Prism.partial({ case PrismTest.DragData.WorkMove(workId)				=> workId				},	PrismTest.DragData.WorkMove.apply)
-			val WorkInject:Prism[DragData,(Int,String)]	= Prism.partial({ case PrismTest.DragData.WorkInject(workId, projectId)	=> (workId, projectId)	},	PrismTest.DragData.WorkInject.apply.tupled)
+			val WorkMove:Prism[DragData, Int]				= Prism.partial({ case PrismTest.DragData.WorkMove(workId)				=> workId				},	PrismTest.DragData.WorkMove.apply)
+			val WorkInject:Prism[DragData, (Int, String)]	= Prism.partial({ case PrismTest.DragData.WorkInject(workId, projectId)	=> (workId, projectId)	},	PrismTest.DragData.WorkInject.apply.tupled)
 		}
 	}
 	enum DragData {
@@ -40,8 +40,8 @@ object PrismTest extends SimpleTestSuite {
 
 	test("Prism should switch from the non-matching to the matchiong side when setting") {
 		assertEquals(
-			DragData.P.WorkInject.set((1,"")),
-			DragData.WorkInject(1,"")
+			DragData.P.WorkInject.set((1, "")),
+			DragData.WorkInject(1, "")
 		)
 	}
 
@@ -56,7 +56,7 @@ object PrismTest extends SimpleTestSuite {
 	test("Prism should leave the non-matching side alone when setting the converted Optional") {
 		val orig:DragData	= DragData.WorkMove(1)
 		assertEquals(
-			DragData.P.WorkInject.toOptional.set((1,""))(orig),
+			DragData.P.WorkInject.toOptional.set((1, ""))(orig),
 			orig
 		)
 	}
@@ -64,7 +64,7 @@ object PrismTest extends SimpleTestSuite {
 	//------------------------------------------------------------------------------
 
 	test("Prism.subType should not get the wrong variant") {
-		val prism	= Prism.subType[PrismSuper,PrismTwo]
+		val prism	= Prism.subType[PrismSuper, PrismTwo]
 		assertEquals(
 			prism.get(PrismOne(1)),
 			None
@@ -72,14 +72,14 @@ object PrismTest extends SimpleTestSuite {
 	}
 
 	test("Prism.subType should get a case object") {
-		val prism	= Prism.subType[PrismSuper,PrismObject.type]
+		val prism	= Prism.subType[PrismSuper, PrismObject.type]
 		assertEquals(
 			prism.get(PrismObject),
 			Some(PrismObject)
 		)
 	}
 	test("Prism.subType should put a case object") {
-		val prism	= Prism.subType[PrismSuper,PrismObject.type]
+		val prism	= Prism.subType[PrismSuper, PrismObject.type]
 		assertEquals(
 			prism.set(PrismObject),
 			PrismObject
@@ -87,14 +87,14 @@ object PrismTest extends SimpleTestSuite {
 	}
 
 	test("Prism.subType should get a case class with 0 fields") {
-		val prism	= Prism.subType[PrismSuper,PrismZero]
+		val prism	= Prism.subType[PrismSuper, PrismZero]
 		assertEquals(
 			prism.get(PrismZero()),
 			Some(PrismZero())
 		)
 	}
 	test("Prism.subType should put a case class with 0 fields") {
-		val prism	= Prism.subType[PrismSuper,PrismZero]
+		val prism	= Prism.subType[PrismSuper, PrismZero]
 		assertEquals(
 			prism.set(PrismZero()),
 			PrismZero()
@@ -102,14 +102,14 @@ object PrismTest extends SimpleTestSuite {
 	}
 
 	test("Prism.subType should get a case class with 1 field") {
-		val prism	= Prism.subType[PrismSuper,PrismOne]
+		val prism	= Prism.subType[PrismSuper, PrismOne]
 		assertEquals(
 			prism.get(PrismOne(1)),
 			Some(PrismOne(1))
 		)
 	}
 	test("Prism.subType should put a case class with 1 field") {
-		val prism	= Prism.subType[PrismSuper,PrismOne]
+		val prism	= Prism.subType[PrismSuper, PrismOne]
 		assertEquals(
 			prism.set(PrismOne(1)),
 			PrismOne(1)
@@ -117,14 +117,14 @@ object PrismTest extends SimpleTestSuite {
 	}
 
 	test("Prism.subType should get a case class with 2 fields") {
-		val prism	= Prism.subType[PrismSuper,PrismTwo]
+		val prism	= Prism.subType[PrismSuper, PrismTwo]
 		assertEquals(
 			prism.get(PrismTwo("hello", true)),
 			Some(PrismTwo("hello", true))
 		)
 	}
 	test("Prism.subType should put a case class with 2 fields") {
-		val prism	= Prism.subType[PrismSuper,PrismTwo]
+		val prism	= Prism.subType[PrismSuper, PrismTwo]
 		assertEquals(
 			prism.set( PrismTwo("hello", true)),
 			PrismTwo("hello", true)

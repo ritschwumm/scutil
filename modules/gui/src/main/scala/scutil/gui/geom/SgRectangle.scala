@@ -92,7 +92,7 @@ final case class SgRectangle private (x:SgSpan, y:SgSpan) {
 	def normal:Boolean		= x.normal && y.normal
 	def size:SgPoint		= SgPoint(x.size, y.size)
 
-	def swap:SgRectangle	= SgRectangle.horizontalWithVertical(x,y)
+	def swap:SgRectangle	= SgRectangle.horizontalWithVertical(x, y)
 
 	def normalize:SgRectangle	=
 		SgRectangle.horizontalWithVertical(
@@ -108,7 +108,7 @@ final case class SgRectangle private (x:SgSpan, y:SgSpan) {
 
 	def intersect(that:SgRectangle):Option[SgRectangle]	=
 		(this.x.intersect(that.x), this.y.intersect(that.y)) match {
-			case (Some(x), Some(y))	=> Some(SgRectangle.horizontalWithVertical(x,y))
+			case (Some(x), Some(y))	=> Some(SgRectangle.horizontalWithVertical(x, y))
 			case _					=> None
 		}
 

@@ -8,7 +8,7 @@ import scala.collection.mutable.Builder
 import scutil.lang.*
 
 object SeqExtensions {
-	extension [Repr,T,Self](peer:Repr)(using isSeq:IsSeq[Repr] { type A = T; type C = Self }) {
+	extension [Repr, T, Self](peer:Repr)(using isSeq:IsSeq[Repr] { type A = T; type C = Self }) {
 		inline private def ops	= isSeq(peer)
 
 		def toNesOption:Option[Nes[T]]	=
@@ -25,37 +25,37 @@ object SeqExtensions {
 			else None
 
 		/** get first item and rest of the Seq if possible */
-		def extractHead:Option[(T,Self)]	=
+		def extractHead:Option[(T, Self)]	=
 			if ops.nonEmpty
 			then Some((ops.head, ops.tail))
 			else None
 
 		/** get last item and rest of the Seq if possible */
-		def extractLast:Option[(T,Self)]	=
+		def extractLast:Option[(T, Self)]	=
 			if ops.nonEmpty
 			then Some((ops.last, ops.init))
 			else None
 
 		/** map the value for a single index */
-		def updatedBy(index:Int, func:T=>T)(using factory:Factory[T,Self]):Option[Self]	=
+		def updatedBy(index:Int, func:T=>T)(using factory:Factory[T, Self]):Option[Self]	=
 			if containsIndex(index)
 			then Some(factory.fromSpecific(ops.updated(index, func(ops(index)))))
 			else None
 
 		/** None when the index is outside our bounds */
-		def updatedAt(index:Int, item:T)(using factory:Factory[T,Self]):Option[Self]	=
+		def updatedAt(index:Int, item:T)(using factory:Factory[T, Self]):Option[Self]	=
 			if containsIndex(index)
 			then Some(factory.fromSpecific(ops.updated(index, item)))
 			else None
 
 		/** insert an item at a given index if possible */
-		def insertAt(gap:Int, item:T)(using factory:Factory[T,Self]):Option[Self]	=
+		def insertAt(gap:Int, item:T)(using factory:Factory[T, Self]):Option[Self]	=
 			if containsGap(gap)
 			then Some(factory.fromSpecific(ops.patch(gap, Seq(item), 0)))
 			else None
 
 		/** remove the item at a given index if possible */
-		def removeAt(index:Int)(using factory:Factory[T,Self]):Option[Self]	=
+		def removeAt(index:Int)(using factory:Factory[T, Self]):Option[Self]	=
 			if containsIndex(index)
 			then Some(factory.fromSpecific(ops.patch(index, Seq.empty, 1)))
 			else None
@@ -75,7 +75,7 @@ object SeqExtensions {
 		/*
 		// NOTE this exists in monoid syntax already
 		concatenate the Seq with itself n times
-		def times(count:Int)(using factory:Factory[T,Repr]):Repr	=
+		def times(count:Int)(using factory:Factory[T, Repr]):Repr	=
 			factory.fromSpecific(
 				0.until(count).flatMap { _ => peer }
 			)
@@ -110,7 +110,7 @@ object SeqExtensions {
 			else None
 
 		/** like collectFirst but searching from the end to the front */
-		def collectLast[U](pf:PartialFunction[T,U]):Option[U]	=
+		def collectLast[U](pf:PartialFunction[T, U]):Option[U]	=
 			// behaves like peer.reverse collectFirst pf
 			collectLastSome(pf.lift)
 
@@ -129,7 +129,7 @@ object SeqExtensions {
 		}
 
 		/** get item at index and the Seq without that element if possible */
-		def extractAt(index:Int)(using factory:Factory[T,Repr]):Option[(T,Repr)]	=
+		def extractAt(index:Int)(using factory:Factory[T, Repr]):Option[(T, Repr)]	=
 			lift(index).map { it =>
 				(
 					it,
@@ -138,10 +138,10 @@ object SeqExtensions {
 			}
 
 		/** distinct with a custom equality check */
-		def distinctWith(same:(T,T)=>Boolean)(using factory:Factory[T,Repr]):Repr =
+		def distinctWith(same:(T, T)=>Boolean)(using factory:Factory[T, Repr]):Repr =
 			factory.fromSpecific(
 				ops.foldLeft(Seq.empty[T]) { (retained:Seq[T], candidate:T) =>
-					retained.find { same(_,candidate) } match {
+					retained.find { same(_, candidate) } match {
 						case Some(_)	=> retained
 						case None		=> candidate +: retained
 					}
@@ -150,7 +150,7 @@ object SeqExtensions {
 			)
 
 		/** triple every item with its previous and next item */
-		def adjacents[That](using bf:BuildFrom[Repr, (Option[T],T,Option[T]), That]):That	= {
+		def adjacents[That](using bf:BuildFrom[Repr, (Option[T], T, Option[T]), That]):That	= {
 			val last	= ops.size-1
 			val out	=
 				ops.indices
@@ -165,7 +165,7 @@ object SeqExtensions {
 		}
 
 		/** optionally insert something between two items */
-		def insertBetween[That,U](mod:T=>U, func:(T,T)=>Option[U])(using bf:BuildFrom[Repr,U,That]):That	=
+		def insertBetween[That, U](mod:T=>U, func:(T, T)=>Option[U])(using bf:BuildFrom[Repr, U, That]):That	=
 			if ops.size > 1 then {
 				val	out		= bf.newBuilder(peer)
 
@@ -187,10 +187,10 @@ object SeqExtensions {
 			}
 
 		/** separators go to the Left, the rest goes into Right Seqs  */
-		def splitWhere[That](separator:Predicate[T])(using factory:Factory[T,Repr], bf:BuildFrom[Repr,Either[T,Repr],That]):That = {
-			val outer:Builder[Either[T,Repr],That]	= bf.newBuilder(peer)
+		def splitWhere[That](separator:Predicate[T])(using factory:Factory[T, Repr], bf:BuildFrom[Repr, Either[T, Repr], That]):That = {
+			val outer:Builder[Either[T, Repr], That]	= bf.newBuilder(peer)
 			if ops.nonEmpty then {
-				val inner:Builder[T,Repr]	= factory.newBuilder
+				val inner:Builder[T, Repr]	= factory.newBuilder
 				val iter	= ops.iterator
 				while iter.hasNext do {
 					val cur	= iter.next()
@@ -209,11 +209,11 @@ object SeqExtensions {
 		}
 
 		/** equivalent elements go into own Seqs */
-		def equivalentSpans[That](equivalent:(T,T)=>Boolean)(using factory:Factory[T,Repr], bf:BuildFrom[Repr,Repr,That]):That	= {
-			val outer:Builder[Repr,That]	= bf.newBuilder(peer)
+		def equivalentSpans[That](equivalent:(T, T)=>Boolean)(using factory:Factory[T, Repr], bf:BuildFrom[Repr, Repr, That]):That	= {
+			val outer:Builder[Repr, That]	= bf.newBuilder(peer)
 			//out += 1
 			if ops.nonEmpty then {
-				val inner:Builder[T,Repr]	= factory.newBuilder
+				val inner:Builder[T, Repr]	= factory.newBuilder
 
 				val iter	= ops.iterator
 				var old		= iter.next()
@@ -235,15 +235,15 @@ object SeqExtensions {
 		}
 
 		/** equivalentSpans on a single property */
-		def equivalentSpansBy[That,U](extract:T=>U)(using factory:Factory[T,Repr], bf:BuildFrom[Repr,Repr,That]):That	=
+		def equivalentSpansBy[That, U](extract:T=>U)(using factory:Factory[T, Repr], bf:BuildFrom[Repr, Repr, That]):That	=
 			equivalentSpans { extract(_) == extract(_) }
 
 		/** move an item from a given item index to an inter-item gap */
-		def moveAt(fromIndex:Int, toGap:Int)(using factory:Factory[T,Repr]):Option[Repr]	=
+		def moveAt(fromIndex:Int, toGap:Int)(using factory:Factory[T, Repr]):Option[Repr]	=
 			if containsIndex(fromIndex) && containsGap(toGap) then {
 				if fromIndex < toGap-1 then {
 					// move right
-					val bld:Builder[T,Repr]	= factory.newBuilder
+					val bld:Builder[T, Repr]	= factory.newBuilder
 					var i = 0
 					while i < ops.size do {
 						val orig	=
@@ -258,7 +258,7 @@ object SeqExtensions {
 				}
 				else if fromIndex > toGap then {
 					// move left
-					val bld:Builder[T,Repr]	= factory.newBuilder
+					val bld:Builder[T, Repr]	= factory.newBuilder
 					var i = 0
 					while i < ops.size do {
 						val orig	=
@@ -276,7 +276,7 @@ object SeqExtensions {
 			else None
 
 		/** move multiple items item from a given index to a inter-item gap of another index if possible */
-		def moveManyAt(fromIndex:Int, count:Int, toGap:Int)(using factory:Factory[T,Repr]):Option[Repr]	=
+		def moveManyAt(fromIndex:Int, count:Int, toGap:Int)(using factory:Factory[T, Repr]):Option[Repr]	=
 			if (
 				fromIndex	>= 0 && fromIndex+count	<= ops.size &&
 				toGap		>= 0 && toGap			<= ops.size
@@ -284,7 +284,7 @@ object SeqExtensions {
 				Some(
 					if fromIndex < toGap then {
 						// move right
-						val bld:Builder[T,Repr]	= factory.newBuilder
+						val bld:Builder[T, Repr]	= factory.newBuilder
 						val items	= ops.toSeq
 						bld	++= items.slice(0,					fromIndex)
 						bld	++= items.slice(fromIndex + count,	toGap)
@@ -294,7 +294,7 @@ object SeqExtensions {
 					}
 					else if fromIndex > toGap then {
 						// move left
-						val bld:Builder[T,Repr]	= factory.newBuilder
+						val bld:Builder[T, Repr]	= factory.newBuilder
 						val items	= ops.toSeq
 						bld	++= items.slice(0,					toGap)
 						bld	++= items.slice(fromIndex,			fromIndex + count)
@@ -307,9 +307,9 @@ object SeqExtensions {
 			}
 			else None
 
-		def storeAt(index:Int)(using factory:Factory[T,Repr]):Option[Store[T,Repr]]	=
+		def storeAt(index:Int)(using factory:Factory[T, Repr]):Option[Store[T, Repr]]	=
 			lift(index).map { item =>
-				Store[T,Repr](
+				Store[T, Repr](
 					item,
 					it => factory.fromSpecific(ops.updated(index, it))
 				)

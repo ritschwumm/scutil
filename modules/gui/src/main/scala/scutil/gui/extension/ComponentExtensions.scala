@@ -68,7 +68,7 @@ object ComponentExtensions {
 
 		/*
 		def componentsUnder(parent:Component, pos:Point):List[Component] =
-			if (parent.isVisible && parent.contains(pos.x,pos.y)))
+			if (parent.isVisible && parent.contains(pos.x, pos.y)))
 				parent ::
 				(parent match {
 					case cont:Container	=>

@@ -5,8 +5,8 @@ import minitest.*
 object ByteArrayUtilTest extends SimpleTestSuite {
 	test("reversing array") {
 		assertArrayEquals(
-			ByteArrayUtil.reverse(Array[Byte](1,2,3,4,5)),
-			Array[Byte](5,4,3,2,1)
+			ByteArrayUtil.reverse(Array[Byte](1, 2, 3, 4, 5)),
+			Array[Byte](5, 4, 3, 2, 1)
 		)
 	}
 

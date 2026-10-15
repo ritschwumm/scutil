@@ -1,36 +1,36 @@
 package scutil.lang
 
 object Setter {
-	def identity[T]:Setter[T,T]		=
+	def identity[T]:Setter[T, T]		=
 		Setter(it => it)
 
-	def trivial[T]:Setter[T,Unit]	=
+	def trivial[T]:Setter[T, Unit]	=
 		Setter(_ => it => it)
 }
 
-final case class Setter[S,T](mod:(T=>T)=>(S=>S)) {
+final case class Setter[S, T](mod:(T=>T)=>(S=>S)) {
 	def set(value:T):S=>S	= mod(constant(value))
 
 	//-----------------------------------------------------------------------------
 
 	/** symbolic alias for andThen */
-	def >=>[U](that:Setter[T,U]):Setter[S,U]	=
+	def >=>[U](that:Setter[T, U]):Setter[S, U]	=
 		this.andThen(that)
 
 	/** symbolic alias for compose */
-	def <=<[R](that:Setter[R,S]):Setter[R,T]	=
+	def <=<[R](that:Setter[R, S]):Setter[R, T]	=
 		this.compose(that)
 
-	def compose[R](that:Setter[R,S]):Setter[R,T]	=
+	def compose[R](that:Setter[R, S]):Setter[R, T]	=
 		that.andThen(this)
 
-	def andThen[U](that:Setter[T,U]):Setter[S,U]	=
+	def andThen[U](that:Setter[T, U]):Setter[S, U]	=
 		Setter(that.mod `andThen` this.mod)
 
 	//-----------------------------------------------------------------------------
 
 	/*
-	def zip[U](that:Setter[S,U]):Setter[S,(T,U)]	=
+	def zip[U](that:Setter[S, U]):Setter[S, (T, U)]	=
 		Setter { tutu => s0 =>
 			val tt:T=>T	= ???
 			val ss1		= this.mod(tt)
@@ -45,7 +45,7 @@ final case class Setter[S,T](mod:(T=>T)=>(S=>S)) {
 		}
 	*/
 
-	def sum[SS](that:Setter[SS,T]):Setter[Either[S,SS],T]	=
+	def sum[SS](that:Setter[SS, T]):Setter[Either[S, SS], T]	=
 		Setter { tt => e0 =>
 			e0 match {
 				case Left(s)	=> Left(this.mod(tt)(s))
@@ -54,9 +54,9 @@ final case class Setter[S,T](mod:(T=>T)=>(S=>S)) {
 		}
 
 	/*
-	def product[SS,TT](that:Setter[SS,TT]):Setter[(S,SS),(T,TT)]	=
+	def product[SS, TT](that:Setter[SS, TT]):Setter[(S, SS),(T, TT)]	=
 		Setter { (tp:((T, TT)) => (T, TT))	=>
-			val out:((S,SS))=>(S,SS)	=
+			val out:((S, SS))=>(S, SS)	=
 				(s:S, ss:SS)	=> {
 					this.mod { t=>
 						that.mod { tt =>

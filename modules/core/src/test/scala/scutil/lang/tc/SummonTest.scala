@@ -83,13 +83,13 @@ object SummonTest extends SimpleTestSuite {
 
 	//-----------------------------------------------------------------------------
 
-	test("can summon an Applicative for Validated[Vector[String],_]") {
-		summon[Applicative[Validated[Vector[String],_]]]
+	test("can summon an Applicative for Validated[Vector[String], _]") {
+		summon[Applicative[Validated[Vector[String], _]]]
 		()
 	}
 
-	test("can summon a Functor for Validated[Vector[String],_]") {
-		summon[Functor[Validated[Vector[String],_]]]
+	test("can summon a Functor for Validated[Vector[String], _]") {
+		summon[Functor[Validated[Vector[String], _]]]
 		()
 	}
 }

@@ -3,8 +3,10 @@ package scutil.lang.tc
 import scala.util.TupledFunction
 
 object NaryFunction {
-	// calculate a tupled function from a non-tupled one without
-	// having to know the type of that function up front as with TupledFunction
+	/*
+	calculate a tupled function from a non-tupled one without
+	having to know the type of that function up front as with TupledFunction
+	*/
 	def tupled[TupS <: Tuple, Out](using nf:NaryFunction[TupS, Out])(nary:nf.Nary):TupS	=> Out	=
 		nf.tupled(nary)
 

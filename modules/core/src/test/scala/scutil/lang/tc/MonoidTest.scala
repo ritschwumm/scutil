@@ -23,15 +23,15 @@ object MonoidTest extends SimpleTestSuite {
 
 	test("monoid should support times 0 on vector") {
 		assertEquals(
-			Vector(1,2,3).times(0),
+			Vector(1, 2, 3).times(0),
 			Vector()
 		)
 	}
 
 	test("monoid should support times n on vector") {
 		assertEquals(
-			Vector(1,2,3).times(3),
-			Vector(1,2,3,1,2,3,1,2,3)
+			Vector(1, 2, 3).times(3),
+			Vector(1, 2, 3, 1, 2, 3, 1, 2, 3)
 		)
 	}
 }

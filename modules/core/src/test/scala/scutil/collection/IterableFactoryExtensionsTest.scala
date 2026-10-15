@@ -10,7 +10,7 @@ object IterableFactoryExtensionsTest extends SimpleTestSuite {
 			List.unfoldSimple(1) { it =>
 				if it < 5 then Some(it + 1) else None
 			},
-			List(2,3,4,5)
+			List(2, 3, 4, 5)
 		)
 	}
 
@@ -19,7 +19,7 @@ object IterableFactoryExtensionsTest extends SimpleTestSuite {
 			Vector.unfoldSimple(1) { it =>
 				if it < 5 then Some(it + 1) else None
 			},
-			Vector(2,3,4,5)
+			Vector(2, 3, 4, 5)
 		)
 	}
 }

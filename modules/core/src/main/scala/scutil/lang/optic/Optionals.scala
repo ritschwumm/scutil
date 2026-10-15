@@ -19,57 +19,57 @@ object Optionals {
 	//-----------------------------------------------------------------------------
 	//## Either
 
-	def left[L,R]:Optional[Either[L,R], L]	=
+	def left[L, R]:Optional[Either[L, R], L]	=
 		Optional(
 			get	= _.leftToOption,
-			set	= (t:L) => (s:Either[L,R]) => s.leftMap(_ => t)
+			set	= (t:L) => (s:Either[L, R]) => s.leftMap(_ => t)
 		)
 
-	def right[L,R]:Optional[Either[L,R], R]	=
+	def right[L, R]:Optional[Either[L, R], R]	=
 		Optional(
 			get	= _.toOption,
-			set	= (t:R) => (s:Either[L,R]) => s.map(_ => t)
+			set	= (t:R) => (s:Either[L, R]) => s.map(_ => t)
 		)
 
 	//-----------------------------------------------------------------------------
 	//## Seq
 
-	def seq[T](i:Int):Optional[Seq[T],T]	=
+	def seq[T](i:Int):Optional[Seq[T], T]	=
 		Optional(
 			get	= s			=> s.lift(i),
 			set	= t => s	=> s.updatedAt(i, t).getOrElse(s)
 		)
 
-	def seqHead[T]:Optional[Seq[T],T]	=
+	def seqHead[T]:Optional[Seq[T], T]	=
 		Optional(
 			get	=			s	=> s.headOption,
 			set	=	t	=>	s	=> if s.nonEmpty then s.updated(0, t) else s
 		)
 
-	def seqLast[T]:Optional[Seq[T],T]	=
+	def seqLast[T]:Optional[Seq[T], T]	=
 		Optional(
 			get	=			s	=> s.lastOption,
 			set	=	t	=>	s	=> if s.nonEmpty then s.updated(s.size-1, t) else s
 		)
 
-	def seqFirstWhere[T](pred:Predicate[T]):Optional[Seq[T],T]	=
+	def seqFirstWhere[T](pred:Predicate[T]):Optional[Seq[T], T]	=
 		Optional(
 			get	= items			=> items.find(pred),
 			set	= item => items	=> items.indexWhereOption(pred).cata(items, index => items.updated(index, item))
 		)
 
-	def seqLastWhere[T](pred:Predicate[T]):Optional[Seq[T],T]	=
+	def seqLastWhere[T](pred:Predicate[T]):Optional[Seq[T], T]	=
 		Optional(
 			get	= items			=> items.find(pred),
 			set	= item => items	=> items.lastIndexWhereOption(pred).cata(items, index => items.updated(index, item))
 		)
 
-	def seqFirstWhereEqual[S,T](extract:S=>T, id:T):Optional[Seq[S],S]	=
+	def seqFirstWhereEqual[S, T](extract:S=>T, id:T):Optional[Seq[S], S]	=
 		seqFirstWhere { it =>
 			extract(it) ==== id
 		}
 
-	def seqLastWhereEqual[S,T](extract:S=>T, id:T):Optional[Seq[S],S]	=
+	def seqLastWhereEqual[S, T](extract:S=>T, id:T):Optional[Seq[S], S]	=
 		seqLastWhere { it =>
 			extract(it) ==== id
 		}
@@ -77,42 +77,42 @@ object Optionals {
 	//-----------------------------------------------------------------------------
 	//## Vector
 
-	def vector[T](i:Int):Optional[Vector[T],T]	=
+	def vector[T](i:Int):Optional[Vector[T], T]	=
 		Optional(
 			get	= s			=> s.lift(i),
 			set	= t => s	=> s.updatedAt(i, t).getOrElse(s)
 		)
 
-	def vectorHead[T]:Optional[Vector[T],T]	=
+	def vectorHead[T]:Optional[Vector[T], T]	=
 		Optional(
 			get	=			s	=> s.headOption,
 			set	=	t	=>	s	=> if s.nonEmpty then s.updated(0, t) else s
 		)
 
-	def vectorLast[T]:Optional[Vector[T],T]	=
+	def vectorLast[T]:Optional[Vector[T], T]	=
 		Optional(
 			get	=			s	=> s.lastOption,
 			set	=	t	=>	s	=> if s.nonEmpty then s.updated(s.size-1, t) else s
 		)
 
-	def vectorFirstWhere[T](pred:Predicate[T]):Optional[Vector[T],T]	=
+	def vectorFirstWhere[T](pred:Predicate[T]):Optional[Vector[T], T]	=
 		Optional(
 			get	= items			=> items.find(pred),
 			set	= item => items	=> items.indexWhereOption(pred).cata(items, index => items.updated(index, item))
 		)
 
-	def vectorLastWhere[T](pred:Predicate[T]):Optional[Vector[T],T]	=
+	def vectorLastWhere[T](pred:Predicate[T]):Optional[Vector[T], T]	=
 		Optional(
 			get	= items			=> items.find(pred),
 			set	= item => items	=> items.lastIndexWhereOption(pred).cata(items, index => items.updated(index, item))
 		)
 
-	def vectorFirstWhereEqual[S,T](extract:S=>T, id:T):Optional[Vector[S],S]	=
+	def vectorFirstWhereEqual[S, T](extract:S=>T, id:T):Optional[Vector[S], S]	=
 		vectorFirstWhere { it =>
 			extract(it) ==== id
 		}
 
-	def vectorLastWhereEqual[S,T](extract:S=>T, id:T):Optional[Vector[S],S]	=
+	def vectorLastWhereEqual[S, T](extract:S=>T, id:T):Optional[Vector[S], S]	=
 		vectorLastWhere { it =>
 			extract(it) ==== id
 		}
@@ -120,7 +120,7 @@ object Optionals {
 	//-----------------------------------------------------------------------------
 	//## IndexedSeq
 
-	def indexed[F[T] <: IndexedSeq[T], T](i:Int)(using factory:Factory[T, F[T]]):Optional[F[T],T]	=
+	def indexed[F[T] <: IndexedSeq[T], T](i:Int)(using factory:Factory[T, F[T]]):Optional[F[T], T]	=
 		Optional(
 			get	= s			=> s.lift(i),
 			set	= t => s	=>
@@ -132,7 +132,7 @@ object Optionals {
 	//-----------------------------------------------------------------------------
 	//## Nes
 
-	def nes[T](i:Int):Optional[Nes[T],T]	=
+	def nes[T](i:Int):Optional[Nes[T], T]	=
 		Optional(
 			get	= s			=> s.get(i),
 			set	= t => s	=> s.updatedAt(i, t).getOrElse(s)
@@ -141,7 +141,7 @@ object Optionals {
 	//-----------------------------------------------------------------------------
 	//## Map
 
-	def map[K,V](k:K):Optional[Map[K,V],V]	=
+	def map[K, V](k:K):Optional[Map[K, V], V]	=
 		Optional(
 			get	= s			=> s.get(k),
 			set	= t => s	=> s.updatedAt(k, t).getOrElse(s)

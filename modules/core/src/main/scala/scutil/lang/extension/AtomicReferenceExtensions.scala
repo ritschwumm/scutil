@@ -7,10 +7,10 @@ import scutil.lang.*
 object AtomicReferenceExtensions {
 	/** works in scala-js where AtomicReference.getAndUpdate is not supported */
 	extension [T](peer:AtomicReference[T]) {
-		def modify[U](func:T=>(T,U)):U	= RefUtil.modify(peer, func)
+		def modify[U](func:T=>(T, U)):U	= RefUtil.modify(peer, func)
 
 		/** change state and return something */
-		def modifyState[U](state:State[T,U]):U	=
+		def modifyState[U](state:State[T, U]):U	=
 			modify(state.run)
 
 		/*

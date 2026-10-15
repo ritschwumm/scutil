@@ -6,11 +6,11 @@ import scutil.lang.*
 import scutil.codec.*
 
 object RGB {
-	val white	= RGB(1,1,1)
-	val black	= RGB(0,0,0)
+	val white	= RGB(1, 1, 1)
+	val black	= RGB(0, 0, 0)
 
 	def parseHex(s:String):Option[RGB]	=
-		Hex.decodeByteString(s).collect { case ByteString(r,g,b)	=>
+		Hex.decodeByteString(s).collect { case ByteString(r, g, b)	=>
 			RGB(
 				(r & 0xff) / 255f,
 				(g & 0xff) / 255f,

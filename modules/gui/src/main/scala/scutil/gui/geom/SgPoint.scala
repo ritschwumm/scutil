@@ -30,10 +30,10 @@ object SgPoint {
 	//------------------------------------------------------------------------------
 	//## pair conversion
 
-	def fromPair(it:(Double,Double)):SgPoint	=
+	def fromPair(it:(Double, Double)):SgPoint	=
 		SgPoint(it._1, it._2)
 
-	def toPair(it:SgPoint):(Double,Double)	=
+	def toPair(it:SgPoint):(Double, Double)	=
 		it.toPair
 
 	//------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ object SgPoint {
 
 final case class SgPoint(x:Double, y:Double) {
 	def unary_- :SgPoint	= SgPoint(-x, -y)
-	def swap:SgPoint		= SgPoint(y,x)
+	def swap:SgPoint		= SgPoint(y, x)
 
 	def addInverse:SgPoint	= SgPoint(-x, -y)
 	def mulInverse:SgPoint	= SgPoint(1/x, 1/y)
@@ -147,11 +147,11 @@ final case class SgPoint(x:Double, y:Double) {
 	//------------------------------------------------------------------------------
 	//## pair conversion
 
-	def toPair:(Double,Double)	= (x, y)
+	def toPair:(Double, Double)	= (x, y)
 
 	//------------------------------------------------------------------------------
 	//## awt conversion
 
-	def toAwtPoint2D:Point2D			= new Point2D.Double(x,y)
-	def toAwtDimension2D:Dimension2D	= new Dimension2D_Double(x,y)
+	def toAwtPoint2D:Point2D			= new Point2D.Double(x, y)
+	def toAwtDimension2D:Dimension2D	= new Dimension2D_Double(x, y)
 }

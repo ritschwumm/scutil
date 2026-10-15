@@ -56,14 +56,14 @@ object OptionalTest extends SimpleTestSuite {
 
 	test("Optionals.map should change an existing item") {
 		assertEquals(
-			Optionals.map[String,Int]("two").set(99)(Map("one" -> 1, "two" -> 2)),
+			Optionals.map[String, Int]("two").set(99)(Map("one" -> 1, "two" -> 2)),
 			Map("one" -> 1, "two" -> 99)
 		)
 	}
 
 	test("Optionals.map should not insert a missing item") {
 		assertEquals(
-			Optionals.map[String,Int]("three").set(99)(Map("one" -> 1, "two" -> 2)),
+			Optionals.map[String, Int]("three").set(99)(Map("one" -> 1, "two" -> 2)),
 			Map("one" -> 1, "two" -> 2)
 		)
 	}

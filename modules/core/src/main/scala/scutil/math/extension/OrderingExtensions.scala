@@ -56,16 +56,16 @@ object OrderingExtensions {
 			peer on func
 
 		/**
-		alternative to the implicit (Ordering[T],Ordering[T]) => Ordering[T] conversion in Ordering.Implicits
+		alternative to the implicit (Ordering[T], Ordering[T]) => Ordering[T] conversion in Ordering.Implicits
 		and Comparator's thenCompare. forms a Monoid with Orderings#trivial
 		*/
 		def orElse[U<:T](that:Ordering[U]):Ordering[U]	=
 			new Ordering[U] {
 				def compare(x:U, y:U):Int	= {
-					val	high	= peer.compare(x,y)
+					val	high	= peer.compare(x, y)
 					if high != 0
 					then high
-					else that.compare(x,y)
+					else that.compare(x, y)
 				}
 			}
 	}

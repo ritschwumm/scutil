@@ -8,10 +8,10 @@ import scutil.lang.*
 
 object RegexExtensions {
 	extension (peer:Regex.type) {
-		def prism:Prism[String,Regex]	=
+		def prism:Prism[String, Regex]	=
 			Prism(compile(_).toOption, _.pattern.toString)
 
-		def compile(str:String):Either[PatternSyntaxException,Regex]	=
+		def compile(str:String):Either[PatternSyntaxException, Regex]	=
 			try		{ Right(new Regex(str)) }
 			catch	{ case e:PatternSyntaxException => Left(e) }
 
@@ -40,7 +40,7 @@ object RegexExtensions {
 		def test(s:CharSequence):Boolean	=
 			peer.pattern.matcher(s).matches
 
-		def toPrism:Prism[String,String]	=
+		def toPrism:Prism[String, String]	=
 			Prism.filtered(test)
 
 		def removeAllFrom(s:String):String	=

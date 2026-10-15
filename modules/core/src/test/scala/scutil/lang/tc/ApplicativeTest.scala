@@ -14,10 +14,10 @@ object ApplicativeTest extends SimpleTestSuite {
 	}
 
 	test("map2 in the same order as flatMap for Vector") {
-		val as	= Vector(1,2)
-		val bs	= Vector(3,4)
+		val as	= Vector(1, 2)
+		val bs	= Vector(3, 4)
 
-		// 3,4,6,8
+		// 3, 4, 6, 8
 		val x	=
 			as.flatMap { a =>
 				bs.map { b =>
@@ -26,7 +26,7 @@ object ApplicativeTest extends SimpleTestSuite {
 			}
 		assertEquals(
 			x,
-			Vector(3,4,6,8)
+			Vector(3, 4, 6, 8)
 		)
 
 		val y	= as.map2(bs)(_*_)
@@ -34,10 +34,10 @@ object ApplicativeTest extends SimpleTestSuite {
 	}
 
 	test("map2 in the same order as flatMap for Nes") {
-		val as	= Nes.of(1,2)
-		val bs	= Nes.of(3,4)
+		val as	= Nes.of(1, 2)
+		val bs	= Nes.of(3, 4)
 
-		// 3,4,6,8
+		// 3, 4, 6, 8
 		val x	=
 			as.flatMap { a =>
 				bs.map { b =>
@@ -46,7 +46,7 @@ object ApplicativeTest extends SimpleTestSuite {
 			}
 		assertEquals(
 			x,
-			Nes.of(3,4,6,8)
+			Nes.of(3, 4, 6, 8)
 		)
 
 		val y	= as.map2(bs)(_*_)
@@ -57,14 +57,14 @@ object ApplicativeTest extends SimpleTestSuite {
 		val f1:Int=>Int	= _-1
 		val f2:Int=>Int	= _+1
 
-		val as	= Vector(3,4)
+		val as	= Vector(3, 4)
 		val bs	= Vector(f1, f2)
 
 		// function effect first
 		val x	= bs.ap(as)
 		assertEquals(
 			x,
-			Vector(2,3,4,5)
+			Vector(2, 3, 4, 5)
 		)
 
 		val y	= Applicative[Vector].ap(bs)(as)
@@ -72,10 +72,10 @@ object ApplicativeTest extends SimpleTestSuite {
 	}
 
 	test("do the function effect first") {
-		val f:Either[String,Int=>Int]	= Left("function")
-		val v:Either[String,Int]		= Left("value")
+		val f:Either[String, Int=>Int]	= Left("function")
+		val v:Either[String, Int]		= Left("value")
 		assertEquals(
-			Applicative[Either[String,_]].ap(f)(v),
+			Applicative[Either[String, _]].ap(f)(v),
 			Left("function")
 		)
 	}

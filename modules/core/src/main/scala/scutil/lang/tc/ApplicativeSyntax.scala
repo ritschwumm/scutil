@@ -14,10 +14,10 @@ object ApplicativeSyntax {
 		def optionalA[F[_]](action:T=>F[Unit])(using F:Applicative[F]):F[Unit]	= F.optionalA(peer)(action)
 	}
 
-	extension [F[_],T](peer:F[T])(using F:Applicative[F]) {
-		def map2[U,V](that:F[U])(func:(T,U)=>V):F[V]	= F.map2(peer, that)(func)
+	extension [F[_], T](peer:F[T])(using F:Applicative[F]) {
+		def map2[U, V](that:F[U])(func:(T, U)=>V):F[V]	= F.map2(peer, that)(func)
 
-		def product[U](that:F[U]):F[(T,U)]	= F.product(peer, that)
+		def product[U](that:F[U]):F[(T, U)]	= F.product(peer, that)
 
 		def productL[U](that:F[U]):F[T]		= F.productL(peer, that)
 		def productR[U](that:F[U]):F[U]		= F.productR(peer, that)
@@ -26,7 +26,7 @@ object ApplicativeSyntax {
 		def *> [U](that:F[U]):F[U]	= productR(that)
 	}
 
-	extension [F[_],S,T](peer:F[S=>T])(using F:Applicative[F]) {
+	extension [F[_], S, T](peer:F[S=>T])(using F:Applicative[F]) {
 		def ap(it:F[S]):F[T]	= F.ap(peer)(it)
 	}
 }

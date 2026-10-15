@@ -25,7 +25,7 @@ object SearchParser {
 		)
 	}
 
-	private def parseHit(descriptor:String):(Boolean,SearchToken) = {
+	private def parseHit(descriptor:String):(Boolean, SearchToken) = {
 		val (exclude,	a)	= scan(descriptor,	_.cutPrefix("-"))
 		val (start,		b)	= scan(a,			_.cutPrefix("|"))
 		val (end,		c)	= scan(b,			_.cutSuffix("|"))
@@ -34,7 +34,7 @@ object SearchParser {
 		(exclude, SearchToken(c, noCase, start, end))
 	}
 
-	private def scan(s:String, func:String=>Option[String]):(Boolean,String)	= {
+	private def scan(s:String, func:String=>Option[String]):(Boolean, String)	= {
 		val t	= func(s).filter(_.nonEmpty).toRight(s)
 		(t.isRight, t.merge)
 	}

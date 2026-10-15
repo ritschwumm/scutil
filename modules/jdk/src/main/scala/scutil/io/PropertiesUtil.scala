@@ -12,13 +12,13 @@ import scutil.jdk.implicits.*
 object PropertiesUtil {
 	def empty:Properties	= new Properties
 
-	def loadURL(url:URL, proxy:Option[Proxy]):Map[String,String]	=
+	def loadURL(url:URL, proxy:Option[Proxy]):Map[String, String]	=
 		loadRawURL(url, proxy).toMap
 
-	def loadFile(path:Path):Map[String,String]	=
+	def loadFile(path:Path):Map[String, String]	=
 		loadRawFile(path).toMap
 
-	def saveFile(path:Path, it:Map[String,String]):Unit	=
+	def saveFile(path:Path, it:Map[String, String]):Unit	=
 		saveRawFile(path, it.toProperties)
 
 	//------------------------------------------------------------------------------
@@ -44,8 +44,8 @@ object PropertiesUtil {
 
 	//------------------------------------------------------------------------------
 
-	def loadOrdered(ist:InputStream):Seq[(String,String)]	= {
-		var out	= Vector.empty[(String,String)]
+	def loadOrdered(ist:InputStream):Seq[(String, String)]	= {
+		var out	= Vector.empty[(String, String)]
 		val p	= new Properties() {
 			@SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
 			override def put(key:AnyRef, value:AnyRef):AnyRef	= {

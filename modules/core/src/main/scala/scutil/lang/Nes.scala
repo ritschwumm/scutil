@@ -43,10 +43,10 @@ object Nes {
 
 	given TraversedMonad[Nes]	=
 		new TraversedMonad[Nes] {
-			override def map[A,B](it:Nes[A])(func:A=>B):Nes[B]			= it.map(func)
-			override def pure[A](it:A):Nes[A]							= Nes.one(it)
-			override def flatMap[A,B](it:Nes[A])(func:A=>Nes[B]):Nes[B]	= it.flatMap(func)
-			override def traverse[G[_]:Applicative as AP,S,T](it:Nes[S])(func:S=>G[T]):G[Nes[T]]	=
+			override def map[A, B](it:Nes[A])(func:A=>B):Nes[B]				= it.map(func)
+			override def pure[A](it:A):Nes[A]								= Nes.one(it)
+			override def flatMap[A, B](it:Nes[A])(func:A=>Nes[B]):Nes[B]	= it.flatMap(func)
+			override def traverse[G[_]:Applicative as AP, S, T](it:Nes[S])(func:S=>G[T]):G[Nes[T]]	=
 				(it.tail.map(func).foldLeft(AP.map(func(it.head))(Nes.one[T]))) { (xs, x) =>
 					AP.map2(xs, x)(_ :+ _)
 				}
@@ -112,15 +112,15 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		Nes(func(head), tail.map(func))
 
 	// NOTE zipWith and map2 are different things for Iterables
-	def map2[U,V](that:Nes[U])(func:(T,U)=>V):Nes[V]	=
+	def map2[U, V](that:Nes[U])(func:(T, U)=>V):Nes[V]	=
 		for {
 			thisVal	<- this
 			thatVal	<- that
 		}
 		yield func(thisVal, thatVal)
 
-	def product[U](that:Nes[U]):Nes[(T,U)]	=
-		map2(that)((_,_))
+	def product[U](that:Nes[U]):Nes[(T, U)]	=
+		map2(that)((_, _))
 
 	def flatMap[U](func:T=>Nes[U]):Nes[U]	= {
 		val Nes(h, t)	= func(head)
@@ -192,29 +192,29 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		}
 		else None
 
-	def zip[U](that:Nes[U]):Nes[(T,U)]	=
+	def zip[U](that:Nes[U]):Nes[(T, U)]	=
 		Nes(
 			(this.head, that.head),
 			this.tail `zip` that.tail
 		)
 
 	// NOTE zipWith and map2 are different things for Iterables
-	def zipWith[U,V](that:Nes[U])(func:(T,U)=>V):Nes[V]	=
+	def zipWith[U, V](that:Nes[U])(func:(T, U)=>V):Nes[V]	=
 		Nes(
 			func(this.head, that.head),
 			this.tail.zip(that.tail).map(func.tupled)
 		)
 
-	def zipWithIndex:Nes[(T,Int)]	=
+	def zipWithIndex:Nes[(T, Int)]	=
 		Nes(
 			(this.head, 0),
-			this.tail.zipWithIndex.map { (v,i) => (v,i+1) }
+			this.tail.zipWithIndex.map { (v, i) => (v, i+1) }
 		)
 
 	def reduce[U>:T:Semigroup as S]:U	=
 		reduceWith(S.combine)
 
-	def reduceWith[U>:T](func:(U,U)=>U):U	= {
+	def reduceWith[U>:T](func:(U, U)=>U):U	= {
 		var state:U	= head
 		tail.foreach { it =>
 			state	= func(state, it)
@@ -222,7 +222,7 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 		state
 	}
 
-	def storeAt[U>:T](index:Int):Option[Store[U,Nes[U]]]	=
+	def storeAt[U>:T](index:Int):Option[Store[U, Nes[U]]]	=
 		get(index).map { item =>
 			Store(
 				item,
@@ -248,7 +248,7 @@ final case class Nes[+T](head:T, tail:Seq[T]) {
 	def toSeq:Seq[T]	=
 		toVector
 
-	def to[CC[_],U>:T](factory:IterableFactory[CC]):CC[U]	=
+	def to[CC[_], U>:T](factory:IterableFactory[CC]):CC[U]	=
 		factory.from(toVector)
 
 	def mkString(separator:String):String	=

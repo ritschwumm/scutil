@@ -15,7 +15,7 @@ object Io extends IoInstancesLow {
 
 	def unit:Io[Unit]	= Pure(())
 
-	def fromEither[T](value:Either[Exception,T]):Io[T]	=
+	def fromEither[T](value:Either[Exception, T]):Io[T]	=
 		value match {
 			case Left(e)	=> Raise(e)
 			case Right(t)	=> Pure(t)
@@ -61,16 +61,16 @@ object Io extends IoInstancesLow {
 
 	// NOTE cokleisli would be unsafe by definition
 
-	def staticToKleisli[S,T](func:Io[S=>T]):(S => Io[T])	=
+	def staticToKleisli[S, T](func:Io[S=>T]):(S => Io[T])	=
 		s	=>  delay { func.unsafeRun().apply(s) }
 
-	def kleisliToStatic[S,T](func:S=>Io[T]):Io[S=>T]	=
+	def kleisliToStatic[S, T](func:S=>Io[T]):Io[S=>T]	=
 		delay { s => func(s).unsafeRun() }
 
 	//------------------------------------------------------------------------------
 
-	val ToResponder:NaturalTransformation[Io,Responder]	=
-		new NaturalTransformation[Io,Responder] {
+	val ToResponder:NaturalTransformation[Io, Responder]	=
+		new NaturalTransformation[Io, Responder] {
 			def apply[T](orig:Io[T]):Responder[T]	= orig.toResponder
 		}
 
@@ -86,8 +86,8 @@ object Io extends IoInstancesLow {
 	given Monad[Io]	=
 		new Monad[Io] {
 			override def pure[A](it:A):Io[A]							= Io.pure(it)
-			override def map[A,B](it:Io[A])(func:A=>B):Io[B]			= it.map(func)
-			override def flatMap[A,B](it:Io[A])(func:A=>Io[B]):Io[B]	= it.flatMap(func)
+			override def map[A, B](it:Io[A])(func:A=>B):Io[B]			= it.map(func)
+			override def flatMap[A, B](it:Io[A])(func:A=>Io[B]):Io[B]	= it.flatMap(func)
 		}
 
 	given Delay[Io]	=
@@ -126,8 +126,8 @@ enum Io[T] {
 	case Pure[T](value:T)							extends Io[T]
 	case Raise[T](error:Exception)					extends Io[T]
 	case Suspend[T](thunk:()=>T)					extends Io[T]
-	case Map[S,T](base:Io[S], func:S=>T)			extends Io[T]
-	case FlatMap[S,T](base:Io[S], func:S=>Io[T])	extends Io[T]
+	case Map[S, T](base:Io[S], func:S=>T)			extends Io[T]
+	case FlatMap[S, T](base:Io[S], func:S=>Io[T])	extends Io[T]
 
 	final def unsafeRun():T	= Io.unsafeRun(this)
 
@@ -135,7 +135,7 @@ enum Io[T] {
 		Io.Map(this, func)
 
 	/** function effect first */
-	final def ap[U,V](that:Io[U])(using ev:T <:< (U=>V)):Io[V]	=
+	final def ap[U, V](that:Io[U])(using ev:T <:< (U=>V)):Io[V]	=
 		Io.FlatMap(this, (f:T) => Io.Map(that, (u:U) => f(u)))
 
 	final def flatMap[U](func:T=>Io[U]):Io[U]	=
@@ -144,11 +144,11 @@ enum Io[T] {
 	final def flatten[U](using ev:T <:< Io[U]):Io[U]	=
 		Io.FlatMap(this, ev)
 
-	final def product[U](that:Io[U]):Io[(T,U)]	=
-		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => (t,u)))
+	final def product[U](that:Io[U]):Io[(T, U)]	=
+		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => (t, u)))
 
-	final def map2[U,V](that:Io[U])(func:(T,U)=>V):Io[V]	=
-		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => func(t,u)))
+	final def map2[U, V](that:Io[U])(func:(T, U)=>V):Io[V]	=
+		Io.FlatMap(this, (t:T) => Io.Map(that, (u:U) => func(t, u)))
 
 	final def productL[U](that:Io[U]):Io[T]	=
 		Io.FlatMap(this, (t:T) => Io.Map(that, (_:U) => t))
@@ -156,13 +156,13 @@ enum Io[T] {
 	final def productR[U](that:Io[U]):Io[U]	=
 		Io.FlatMap(this, (_:T) => Io.Map(that, (u:U) => u))
 
-	final def attempt:Io[Either[Exception,T]]	=
+	final def attempt:Io[Either[Exception, T]]	=
 		Io.Suspend { () =>
 			try { Right(unsafeRun()) }
 			catch { case e:Exception => Left(e) }
 		}
 
-	final def rethrow[U](using ev:T <:< Either[Exception,U]):Io[U]	=
+	final def rethrow[U](using ev:T <:< Either[Exception, U]):Io[U]	=
 		Io.FlatMap(this, (it:T) => Io.fromEither(ev(it)))
 
 	def guarantee(cleanup:Io[Unit]):Io[T]	=

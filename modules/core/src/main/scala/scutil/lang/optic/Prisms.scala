@@ -4,19 +4,19 @@ object Prisms {
 	//-----------------------------------------------------------------------------
 	//## Option
 
-	def some[T]:Prism[Option[T],T]			= Prism(x=>x, Some.apply)
+	def some[T]:Prism[Option[T], T]			= Prism(x=>x, Some.apply)
 
 	//-----------------------------------------------------------------------------
 	//## Either
 
-	def left[A,B]:Prism[Either[A,B],A]		= Prism(_.swap.toOption,	Left.apply)
-	def right[A,B]:Prism[Either[A,B],B]		= Prism(_.toOption,			Right.apply)
+	def left[A, B]:Prism[Either[A, B], A]		= Prism(_.swap.toOption,	Left.apply)
+	def right[A, B]:Prism[Either[A, B], B]		= Prism(_.toOption,			Right.apply)
 
 	//-----------------------------------------------------------------------------
 	//## Validated
 
-	def invalid[A,B]:Prism[Validated[A,B],A]	= Prism(_.invalidToOption,	Validated.invalid)
-	def valid[A,B]:Prism[Validated[A,B],B]		= Prism(_.toOption,			Validated.valid)
+	def invalid[A, B]:Prism[Validated[A, B], A]	= Prism(_.invalidToOption,	Validated.invalid)
+	def valid[A, B]:Prism[Validated[A, B], B]	= Prism(_.toOption,			Validated.valid)
 
 	//-----------------------------------------------------------------------------
 	//## List

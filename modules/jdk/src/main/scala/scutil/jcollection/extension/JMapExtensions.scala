@@ -5,9 +5,9 @@ import java.util.{ Map as JMap }
 import scala.collection.immutable.HashMap
 
 object JMapExtensions {
-	extension [K,V](peer:JMap[K,V]) {
-		def toHashMap:Map[K,V]	= {
-			var out		= HashMap.empty[K,V]
+	extension [K, V](peer:JMap[K, V]) {
+		def toHashMap:Map[K, V]	= {
+			var out		= HashMap.empty[K, V]
 			val keyIter	= peer.keySet.iterator
 			while keyIter.hasNext do {
 				val key		= keyIter.next
@@ -17,6 +17,6 @@ object JMapExtensions {
 			out
 		}
 
-		def toMap:Map[K,V]	= toHashMap
+		def toMap:Map[K, V]	= toHashMap
 	}
 }

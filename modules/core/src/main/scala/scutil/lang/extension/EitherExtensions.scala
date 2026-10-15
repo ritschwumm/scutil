@@ -5,31 +5,31 @@ import scutil.lang.tc.*
 
 object EitherExtensions {
 	extension (peer:Either.type) {
-		def unit[L]:Either[L,Unit]			= Right(())
+		def unit[L]:Either[L, Unit]			= Right(())
 
-		def right[L,R](it:R):Either[L,R]	= Right(it)
-		def left[L,R](it:L):Either[L,R]		= Left(it)
+		def right[L, R](it:R):Either[L, R]	= Right(it)
+		def left[L, R](it:L):Either[L, R]		= Left(it)
 
 		//------------------------------------------------------------------------------
 
-		def notNull[T<:AnyRef](it:T):Either[Null,T]	=
+		def notNull[T<:AnyRef](it:T):Either[Null, T]	=
 			if it eq null
 			then Left(null)
 			else Right(it)
 
 		// Either.cond with flipped arguments
-		def switch[L,R](condition:Boolean, falseLeft: =>L, trueRight: =>R):Either[L,R]	=
+		def switch[L, R](condition:Boolean, falseLeft: =>L, trueRight: =>R):Either[L, R]	=
 			Either.cond(condition, trueRight, falseLeft)
 	}
 
-	extension [L,R](peer:Either[L,R]) {
+	extension [L, R](peer:Either[L, R]) {
 		def cata[U](left:L=>U, right:R=>U):U	= peer.fold(left, right)
 
 		//------------------------------------------------------------------------------
 
 		// exists: merge
 
-		def iorFail[LL,RR](that:Either[LL,RR]):Either[Ior[L,LL],(R,RR)]	=
+		def iorFail[LL, RR](that:Either[LL, RR]):Either[Ior[L, LL],(R,  RR)]	=
 			(peer, that) match {
 				case (Left(a),	Left(b))	=> Left(Ior.both(a, b))
 				case (Left(a),	Right(_))	=> Left(Ior.left(a))
@@ -56,15 +56,15 @@ object EitherExtensions {
 		/*
 		// NOTE we get these from applicative syntax
 
-		def flatten[LL>:L,X](using ev: R <:< Either[LL,X]):Either[LL,X]	=
+		def flatten[LL>:L, X](using ev: R <:< Either[LL, X]):Either[LL, X]	=
 			peer.flatMap(ev)
 
 		// * function effect first
-		def ap[LL>:L,X,Y](that:Either[LL,X])(using ev: R <:< (X=>Y)):Either[LL,Y]	=
+		def ap[LL>:L, X, Y](that:Either[LL, X])(using ev: R <:< (X=>Y)):Either[LL, Y]	=
 			that.pa(peer.map(ev))
 
 		// * function effect first
-		def pa[LL>:L,X](that:Either[LL,R=>X]):Either[LL,X]	=
+		def pa[LL>:L, X](that:Either[LL, R=>X]):Either[LL, X]	=
 			that match {
 				case Left(l1)	=> Left(l1)
 				case Right(r1)	=>
@@ -74,11 +74,11 @@ object EitherExtensions {
 					}
 			}
 
-		def map2[LL>:L,X,Y](that:Either[LL,X])(func:(R,X)=>Y):Either[LL,Y]	=
+		def map2[LL>:L, X, Y](that:Either[LL, X])(func:(R, X)=>Y):Either[LL, Y]	=
 			peer.zip(that).map(func.tupled)
 		*/
 
-		def zip[LL>:L,X](that:Either[LL,X]):Either[LL,(R,X)]	=
+		def zip[LL>:L, X](that:Either[LL, X]):Either[LL, (R, X)]	=
 			(peer, that) match {
 				case (Right(a),	Right(b))	=> Right((a, b))
 				case (Left(a),	Right(_))	=> Left(a)
@@ -90,10 +90,10 @@ object EitherExtensions {
 
 		// exists: swap
 
-		def withSwapped[LL,RR](func:Either[R,L]=>Either[RR,LL]):Either[LL,RR]	=
+		def withSwapped[LL, RR](func:Either[R, L]=>Either[RR, LL]):Either[LL, RR]	=
 			func(peer.swap).swap
 
-		def bimap[LL,RR](leftFunc:L=>LL, rightFunc:R=>RR):Either[LL,RR]	=
+		def bimap[LL, RR](leftFunc:L=>LL, rightFunc:R=>RR):Either[LL, RR]	=
 			peer match {
 				case Left(x)	=> Left(leftFunc(x))
 				case Right(x)	=> Right(rightFunc(x))
@@ -101,19 +101,19 @@ object EitherExtensions {
 
 		//------------------------------------------------------------------------------
 
-		def leftMap[LL](func:L=>LL):Either[LL,R]	=
+		def leftMap[LL](func:L=>LL):Either[LL, R]	=
 			peer match {
 				case Left(x)	=> Left(func(x))
 				case Right(x)	=> Right(x)
 			}
 
-		def leftFlatMap[LL,RR>:R](func:L=>Either[LL,RR]):Either[LL,RR]	=
+		def leftFlatMap[LL, RR>:R](func:L=>Either[LL, RR]):Either[LL, RR]	=
 			peer match {
 				case Left(x)	=> func(x)
 				case Right(x)	=> Right(x)
 			}
 
-		def leftFlatten[LL,RR>:R](using ev: L <:< Either[LL,RR]):Either[LL,RR]	=
+		def leftFlatten[LL, RR>:R](using ev: L <:< Either[LL, RR]):Either[LL, RR]	=
 			leftFlatMap(ev)
 
 		def leftToOption:Option[L]	=
@@ -121,7 +121,7 @@ object EitherExtensions {
 
 		//------------------------------------------------------------------------------
 
-		def orElse[LL>:L,RR>:R](that: =>Either[LL,RR]):Either[LL,RR]	=
+		def orElse[LL>:L, RR>:R](that: =>Either[LL, RR]):Either[LL, RR]	=
 			peer match {
 				case Left(_)	=> that
 				case Right(x)	=> Right(x)
@@ -140,43 +140,43 @@ object EitherExtensions {
 
 		//------------------------------------------------------------------------------
 
-		def rescue[RR>:R](func:L=>Option[RR]):Either[L,RR]	=
+		def rescue[RR>:R](func:L=>Option[RR]):Either[L, RR]	=
 			peer match {
 				case Left(x)	=> func(x).map(Right.apply).getOrElse(Left(x))
 				case Right(x)	=> Right(x)
 			}
 
-		def rescuePartial[RR>:R](func:PartialFunction[L,RR]):Either[L,RR]	=
+		def rescuePartial[RR>:R](func:PartialFunction[L, RR]):Either[L, RR]	=
 			rescue(func.lift)
 
-		def reject[LL>:L](func:R=>Option[LL]):Either[LL,R]	=
+		def reject[LL>:L](func:R=>Option[LL]):Either[LL, R]	=
 			peer match {
 				case Left(x)	=> Left(x)
 				case Right(x)	=> func(x).map(Left.apply).getOrElse(Right(x))
 			}
 
-		def rejectPartial[LL>:L](func:PartialFunction[R,LL]):Either[LL,R]	=
+		def rejectPartial[LL>:L](func:PartialFunction[R, LL]):Either[LL, R]	=
 			reject(func.lift)
 
-		def rightByOr[LL>:L](func:Predicate[R], fail: =>LL):Either[LL,R]	=
+		def rightByOr[LL>:L](func:Predicate[R], fail: =>LL):Either[LL, R]	=
 			peer match {
 				case Left(x)	=> Left(x)
 				case Right(x)	=> if func(x) then Right(x) else Left(fail)
 			}
 
-		def rightNotByOr[LL>:L](func:Predicate[R], fail: =>LL):Either[LL,R]	=
+		def rightNotByOr[LL>:L](func:Predicate[R], fail: =>LL):Either[LL, R]	=
 			peer match {
 				case Left(x)	=> Left(x)
 				case Right(x)	=> if !func(x) then Right(x) else Left(fail)
 			}
 
-		def collapseOr[LL>:L,RR](func:R=>Option[RR], fail: =>LL):Either[LL,RR]	=
+		def collapseOr[LL>:L, RR](func:R=>Option[RR], fail: =>LL):Either[LL, RR]	=
 			peer match {
 				case Left(x)	=> Left(x)
 				case Right(x)	=> func(x).map(Right.apply).getOrElse(Left(fail))
 			}
 
-		def collectOr[LL>:L,RR](func:PartialFunction[R,RR], fail: =>LL):Either[LL,RR]	=
+		def collectOr[LL>:L, RR](func:PartialFunction[R, RR], fail: =>LL):Either[LL, RR]	=
 			collapseOr(func.lift, fail)
 
 		//------------------------------------------------------------------------------
@@ -207,19 +207,19 @@ object EitherExtensions {
 
 		//------------------------------------------------------------------------------
 
-		def leftEffect(fx:L=>Unit):Either[L,R]	= {
+		def leftEffect(fx:L=>Unit):Either[L, R]	= {
 			peer.swap.foreach(fx)
 			peer
 		}
 
-		def rightEffect(fx:R=>Unit):Either[L,R]	= {
+		def rightEffect(fx:R=>Unit):Either[L, R]	= {
 			peer.foreach(fx)
 			peer
 		}
 
 		//------------------------------------------------------------------------------
 
-		def toIor:Ior[L,R]	=
+		def toIor:Ior[L, R]	=
 			peer match {
 				case Left(a)	=> Ior.left(a)
 				case Right(b)	=> Ior.right(b)
@@ -233,7 +233,7 @@ object EitherExtensions {
 			}
 		*/
 
-		def toValidated:Validated[L,R]	=
+		def toValidated:Validated[L, R]	=
 			peer match {
 				case Left(x)	=> Validated.invalid(x)
 				case Right(x)	=> Validated.valid(x)
@@ -256,7 +256,7 @@ object EitherExtensions {
 
 		//------------------------------------------------------------------------------
 
-		def toEitherT[F[_]](using M:Applicative[F]):EitherT[F,L,R]	=
+		def toEitherT[F[_]](using M:Applicative[F]):EitherT[F, L, R]	=
 			EitherT.fromEither(peer)
 	}
 }

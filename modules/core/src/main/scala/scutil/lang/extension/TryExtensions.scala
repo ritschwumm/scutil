@@ -10,10 +10,10 @@ object TryExtensions {
 		def cata[U](failure:Throwable=>U, success:T=>U):U	=
 			peer.fold(failure, success)
 
-		def toValidated:Validated[Throwable,T]	=
+		def toValidated:Validated[Throwable, T]	=
 			peer.fold(Validated.invalid, Validated.valid)
 
-		def toEitherT[F[_]:Applicative]:EitherT[F,Throwable,T]	=
+		def toEitherT[F[_]:Applicative]:EitherT[F, Throwable, T]	=
 			EitherExtensions.toEitherT(peer.toEither)
 	}
 }

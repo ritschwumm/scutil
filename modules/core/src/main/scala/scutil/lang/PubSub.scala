@@ -7,7 +7,7 @@ object PubSub {
 
 	def create[T]:Io[PubSub[T]]	=
 		for {
-			subscribers	<-	AtomicRef[Io,Io,Vector[Item[T]]](Vector.empty)
+			subscribers	<-	AtomicRef[Io, Io, Vector[Item[T]]](Vector.empty)
 		}
 		yield PubSub[T](
 			publish	= (value:T) =>

@@ -82,7 +82,7 @@ object ByteString {
 	def unsafeFromByteBuffer(it:ByteBuffer):ByteString	=
 		unsafeFromArray(it.array())
 
-	val unboundedArrayBijection:Bijection[Array[Byte],ByteString]	=
+	val unboundedArrayBijection:Bijection[Array[Byte], ByteString]	=
 		Bijection(ByteString.unsafeFromArray, _.unsafeValue)
 
 	def unboundedSliceFromArray(it:Array[Byte], srcPos:Int, copyLength:Int):ByteString	=
@@ -142,7 +142,7 @@ final class ByteString private (val value:IArray[Byte]) {
 		then Some(rawGap)
 		else None
 
-	def safeSlicing(rawBegin:Int, rawEnd:Int):Option[(Int,Int)]	=
+	def safeSlicing(rawBegin:Int, rawEnd:Int):Option[(Int, Int)]	=
 		if containsSlice(rawBegin, rawEnd)
 		then Some((rawBegin, rawEnd))
 		else None
@@ -158,17 +158,17 @@ final class ByteString private (val value:IArray[Byte]) {
 		else if	begin == 0 && end == size		then	Some(this)
 		else											Some(unboundedSlice(begin, end))
 
-	def splitFirst:Option[(ByteString,Byte)]	=
+	def splitFirst:Option[(ByteString, Byte)]	=
 		if size > 0
 		then Some((unboundedSlice(1, size), unboundedGet(0)))
 		else None
 
-	def splitLast:Option[(ByteString,Byte)]	=
+	def splitLast:Option[(ByteString, Byte)]	=
 		if size > 0
 		then Some((unboundedSlice(0, last), unboundedGet(last)))
 		else None
 
-	def splitAt(index:Int):Option[(ByteString,ByteString)]	=
+	def splitAt(index:Int):Option[(ByteString, ByteString)]	=
 		if		!containsGap(index)	then	None
 		else if	index == 0			then	Some((ByteString.empty, this))
 		else if	index == size		then	Some((this, ByteString.empty))

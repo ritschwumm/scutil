@@ -27,7 +27,7 @@ object HexNumberLiterals {
 	private def intImpl		(context:Expr[StringContext])(using Quotes):Expr[Int]	= GenericLiteral.build(context)(parser(4, _.intValue))
 	private def longImpl	(context:Expr[StringContext])(using Quotes):Expr[Long]	= GenericLiteral.build(context)(parser(8, _.longValue))
 
-	private def parser[T](byteCount:Int, convert:BigInt=>T)(literal:String):Either[String,T]	=
+	private def parser[T](byteCount:Int, convert:BigInt=>T)(literal:String):Either[String, T]	=
 		Hex.decodeByteString(literal) match {
 			case Some(x) if x.size == byteCount	=> Right(convert(BigInt(x.unsafeValue)))
 			case Some(_)						=> Left("unexpected HexNumber literal length")

@@ -21,8 +21,8 @@ object ListExtensionsTest extends SimpleTestSuite {
 
 	test("unprefix should find a common prefix") {
 		assertEquals(
-			List(1,2,10,11).unprefix(List(1,2,20,21)),
-			((List(1,2), List(10,11), List(20,21)))
+			List(1, 2, 10, 11).unprefix(List(1, 2, 20, 21)),
+			((List(1, 2), List(10, 11), List(20, 21)))
 		)
 	}
 }

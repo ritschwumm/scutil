@@ -3,50 +3,50 @@ package scutil.lang
 import scutil.lang.tc.*
 
 object Optional {
-	def partial[S,T](get:PartialFunction[S,T], set:T=>S):Optional[S,T] =
+	def partial[S, T](get:PartialFunction[S, T], set:T=>S):Optional[S, T] =
 		Optional(get.lift, t => _ => set(t))
 
-	def total[S,T](get:S=>T, set:T=>S):Optional[S,T]	=
+	def total[S, T](get:S=>T, set:T=>S):Optional[S, T]	=
 		Optional(
 			get	= get.andThen(Some.apply),
 			set	= t => _ => set(t)
 		)
 
-	def identity[T]:Optional[T,T]	=
+	def identity[T]:Optional[T, T]	=
 		Optional.total(Predef.identity, Predef.identity)
 
-	def trivial[T]:Optional[T,Unit]	=
+	def trivial[T]:Optional[T, Unit]	=
 		Optional(
 			get	= _			=> Some(()),
 			set	= _ => t	=> t
 		)
 
-	def void[S,T]:Optional[S,T]	=
+	def void[S, T]:Optional[S, T]	=
 		Optional(
 			get	= _			=> None,
 			set	= _ => s	=> s
 		)
 
-	def always[T]:Optional[Option[T],T]	=
+	def always[T]:Optional[Option[T], T]	=
 		Optional(Predef.identity, x => _ => Some(x))
 
-	def filtered[T](pred:T=>Boolean):Optional[T,T]	=
+	def filtered[T](pred:T=>Boolean):Optional[T, T]	=
 		Optional(
 			s => if pred(s) then Some(s) else None,
 			x => _ => x
 		)
 
-	def codiag[T]:Optional[Either[T,T],T]	=
+	def codiag[T]:Optional[Either[T, T], T]	=
 		identity[T].sum(identity[T])
 
-	def fromStoreAt[S,T](func:S=>Option[Store[T,S]]):Optional[S,T]	=
+	def fromStoreAt[S, T](func:S=>Option[Store[T, S]]):Optional[S, T]	=
 		Optional(
 			get	= s			=> func(s).map(_.index),
 			set	= t => s	=> func(s).map(_.peek(t)).getOrElse(s)
 		)
 }
 
-final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
+final case class Optional[S, T](get:S=>Option[T], set:T=>S=>S) {
 	def mod(func:T=>T):S=>S	=
 		s	=> {
 			get(s)
@@ -84,7 +84,7 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 
 	//------------------------------------------------------------------------------
 
-	def embedState[U](state:State[T,U]):State[S,Option[U]]	=
+	def embedState[U](state:State[T, U]):State[S, Option[U]]	=
 		State { s =>
 			get(s)
 			.map { t1 =>
@@ -94,32 +94,32 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 			.getOrElse (s -> None)
 		}
 
-	def getState:State[S,Option[T]]	=
+	def getState:State[S, Option[T]]	=
 		embedState(State.get)
 
-	def setState(it:T):State[S,Option[Unit]]	=
+	def setState(it:T):State[S, Option[Unit]]	=
 		embedState(State.set(it))
 
-	def setStateSuccess(it:T):State[S,Boolean]	=
+	def setStateSuccess(it:T):State[S, Boolean]	=
 		setState(it).map(_.isDefined)
 
-	def setOldState(it:T):State[S,Option[T]]	=
+	def setOldState(it:T):State[S, Option[T]]	=
 		embedState(State.setOld(it))
 
-	def modState(func:T=>T):State[S,Option[Unit]]	=
+	def modState(func:T=>T):State[S, Option[Unit]]	=
 		embedState(State.mod(func))
 
-	def modStateSuccess(func:T=>T):State[S,Boolean]	=
+	def modStateSuccess(func:T=>T):State[S, Boolean]	=
 		embedState(State.mod(func)).map(_.isDefined)
 
-	def modOldState(func:T=>T):State[S,Option[T]]	=
+	def modOldState(func:T=>T):State[S, Option[T]]	=
 		embedState(State.modOld(func))
 
 	// NOTE no transformState
 
 	//------------------------------------------------------------------------------
 
-	def embedStateT[F[_]:Applicative as F,U](state:StateT[F,T,U]):StateT[F,S,Option[U]]	=
+	def embedStateT[F[_]:Applicative as F, U](state:StateT[F, T, U]):StateT[F, S, Option[U]]	=
 		StateT { s =>
 			get(s)
 			.map { t1 =>
@@ -133,24 +133,24 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 			)
 		}
 
-	def getStateT[F[_]:Applicative]:StateT[F,S,Option[T]]	=
+	def getStateT[F[_]:Applicative]:StateT[F, S, Option[T]]	=
 		embedStateT(StateT.get)
 
-	def setStateT[F[_]:Applicative](it:T):StateT[F,S,Option[Unit]]	=
+	def setStateT[F[_]:Applicative](it:T):StateT[F, S, Option[Unit]]	=
 		embedStateT(StateT.set(it))
 
-	def setOldStateT[F[_]:Applicative](it:T):StateT[F,S,Option[T]]	=
+	def setOldStateT[F[_]:Applicative](it:T):StateT[F, S, Option[T]]	=
 		embedStateT(StateT.setOld(it))
 
-	def modStateT[F[_]:Applicative](func:T=>T):StateT[F,S,Option[Unit]]	=
+	def modStateT[F[_]:Applicative](func:T=>T):StateT[F, S, Option[Unit]]	=
 		embedStateT(StateT.mod(func))
 
-	def modOldStateT[F[_]:Applicative](func:T=>T):StateT[F,S,Option[T]]	=
+	def modOldStateT[F[_]:Applicative](func:T=>T):StateT[F, S, Option[T]]	=
 		embedStateT(StateT.modOld(func))
 
 	//------------------------------------------------------------------------------
 
-	def embedStateOpt[U](state:State[T,U]):StateT[Option,S,U]	=
+	def embedStateOpt[U](state:State[T, U]):StateT[Option, S, U]	=
 		StateT { (s:S) =>
 			get(s).map { t1 =>
 				val (t2, u)	= state.run(t1)
@@ -161,14 +161,14 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 	//------------------------------------------------------------------------------
 
 	/** filter the source value */
-	def filterBefore(pred:Predicate[S]):Optional[S,T]	=
+	def filterBefore(pred:Predicate[S]):Optional[S, T]	=
 		Optional(
 			get	= s	=> if pred(s) then get(s) else None,
 			set	= set
 		)
 
 	/** filter the target value */
-	def filterAfter(pred:Predicate[T]):Optional[S,T]	=
+	def filterAfter(pred:Predicate[T]):Optional[S, T]	=
 		Optional(
 			get	= s	=> get(s).filter(pred),
 			set	= set
@@ -177,17 +177,17 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 	//------------------------------------------------------------------------------
 
 	/** symbolic alias for andThen */
-	def >=>[U](that:Optional[T,U]):Optional[S,U]	=
+	def >=>[U](that:Optional[T, U]):Optional[S, U]	=
 		this.andThen(that)
 
 	/** symbolic alias for compose */
-	def <=<[R](that:Optional[R,S]):Optional[R,T]	=
+	def <=<[R](that:Optional[R, S]):Optional[R, T]	=
 		this.compose(that)
 
-	def compose[R](that:Optional[R,S]):Optional[R,T]	=
+	def compose[R](that:Optional[R, S]):Optional[R, T]	=
 		that.andThen(this)
 
-	def andThen[U](that:Optional[T,U]):Optional[S,U]	=
+	def andThen[U](that:Optional[T, U]):Optional[S, U]	=
 		Optional(
 			get	= s => this.get(s).flatMap(that.get),
 			set	= (u:U) => (s:S) => {
@@ -203,14 +203,14 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 
 	// TODO optics does this mean we have an Applicative instance?
 	// TODO optics PLens says this is impossible - investigate
-	def zip[U](that:Optional[S,U]):Optional[S,(T,U)]	=
+	def zip[U](that:Optional[S, U]):Optional[S, (T, U)]	=
 		Optional(
 			get	= s			=> this.get(s) `zip` that.get(s),
 			set	= tu => s	=> that.set(tu._2).apply(this.set(tu._1).apply (s))
 		)
 
 	// |||
-	def sum[SS](that:Optional[SS,T]):Optional[Either[S,SS],T]	=
+	def sum[SS](that:Optional[SS, T]):Optional[Either[S, SS], T]	=
 		Optional(
 			get	=
 				_ match {
@@ -225,7 +225,7 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 		)
 
 	// ***
-	def product[SS,TT](that:Optional[SS,TT]):Optional[(S,SS),(T,TT)]	=
+	def product[SS, TT](that:Optional[SS, TT]):Optional[(S, SS), (T, TT)]	=
 		Optional(
 			get	= sss			=> this.get(sss._1) `zip` that.get(sss._2),
 			set	= ttt => sss	=> (this.set(ttt._1).apply(sss._1), that.set(ttt._2).apply(sss._2))
@@ -233,33 +233,33 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 
 	//------------------------------------------------------------------------------
 
-	def on(s:S):Option[Store[T,S]]	=
+	def on(s:S):Option[Store[T, S]]	=
 		get(s).map { t =>
-			Store[T,S](
+			Store[T, S](
 				index	= t,
 				peek	= t => set(t)(s)
 			)
 		}
 
-	def over[R](store:Option[Store[S,R]]):Option[Store[T,R]]	=
+	def over[R](store:Option[Store[S, R]]):Option[Store[T, R]]	=
 		for {
 			store	<- store
 			here	<- this.on(store.index)
 		}
 		yield store.andThen(here)
 
-	def overTotal[R](store:Store[S,R]):Option[Store[T,R]]	=
+	def overTotal[R](store:Store[S, R]):Option[Store[T, R]]	=
 		this.on(store.index).map { _.compose(store) }
 
 
 	//-----------------------------------------------------------------------------
 
-	def toSetter:Setter[S,T]	=
+	def toSetter:Setter[S, T]	=
 		Setter(mod)
 
 	/*
 	// NOTE optics this does note make sense as a get after a set would not return the same value
-	def toLens(default: =>Store[T,S]):Lens[S,T]	=
+	def toLens(default: =>Store[T, S]):Lens[S, T]	=
 		Lens.fromStoreAt { on(_).getOrElse(default) }
 	*/
 }

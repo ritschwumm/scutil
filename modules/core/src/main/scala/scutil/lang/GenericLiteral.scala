@@ -3,7 +3,7 @@ package scutil.lang
 import scala.quoted.*
 
 object GenericLiteral {
-	def build[T:ToExpr](context:Expr[StringContext])(parse:String=>Either[String,T])(using Quotes):Expr[T]	= {
+	def build[T:ToExpr](context:Expr[StringContext])(parse:String=>Either[String, T])(using Quotes):Expr[T]	= {
 		import quotes.reflect.*
 
 		context.valueOrAbort.parts match {

@@ -12,7 +12,7 @@ object StringExtensions {
 		def toBigIntOption:Option[BigInt]	= parseBigInt.toOption
 
 		// toBoolean throws an IllegalArgumentException, not a NumberFormatException
-		def parseBoolean:Either[NumberFormatException,Boolean]	=
+		def parseBoolean:Either[NumberFormatException, Boolean]	=
 			if		caselessTrue(peer)	then	Right(true)
 			else if	caselessFalse(peer)	then	Right(false)
 			else								Left(new NumberFormatException("not a boolean: " + peer))
@@ -36,15 +36,15 @@ object StringExtensions {
 			{	val	c = it.charAt(3);	(c == 's' || c == 'S')	}	&&
 			{	val	c = it.charAt(4);	(c == 'e' || c == 'E')	}
 
-		def parseByte:Either[NumberFormatException,Byte]		= parseNumber(_.toByte)
-		def parseShort:Either[NumberFormatException,Short]		= parseNumber(_.toShort)
-		def parseInt:Either[NumberFormatException,Int]			= parseNumber(_.toInt)
-		def parseLong:Either[NumberFormatException,Long]		= parseNumber(_.toLong)
-		def parseFloat:Either[NumberFormatException,Float]		= parseNumber(_.toFloat)
-		def parseDouble:Either[NumberFormatException,Double]	= parseNumber(_.toDouble)
-		def parseBigInt:Either[NumberFormatException,BigInt]	= parseNumber(BigInt(_))
+		def parseByte:Either[NumberFormatException, Byte]		= parseNumber(_.toByte)
+		def parseShort:Either[NumberFormatException, Short]		= parseNumber(_.toShort)
+		def parseInt:Either[NumberFormatException, Int]			= parseNumber(_.toInt)
+		def parseLong:Either[NumberFormatException, Long]		= parseNumber(_.toLong)
+		def parseFloat:Either[NumberFormatException, Float]		= parseNumber(_.toFloat)
+		def parseDouble:Either[NumberFormatException, Double]	= parseNumber(_.toDouble)
+		def parseBigInt:Either[NumberFormatException ,BigInt]	= parseNumber(BigInt(_))
 
-		private def parseNumber[T](func:String=>T):Either[NumberFormatException,T]	=
+		private def parseNumber[T](func:String=>T):Either[NumberFormatException, T]	=
 			Catch.byType[NumberFormatException].in(func(peer))
 
 		//------------------------------------------------------------------------------
@@ -112,33 +112,33 @@ object StringExtensions {
 		//------------------------------------------------------------------------------
 
 		/** excludes the indexed char itself */
-		def splitAroundIndex(index:Int):Option[(String,String)]	=
+		def splitAroundIndex(index:Int):Option[(String, String)]	=
 			if index >= 0 && index < peer.length
-			then Some((peer.substring(0,index), peer.substring(index+1)))
+			then Some((peer.substring(0, index), peer.substring(index+1)))
 			else None
 
 		/** excludes the separator char itself */
-		def splitAroundFirstChar(separator:Char):Option[(String,String)] =
+		def splitAroundFirstChar(separator:Char):Option[(String, String)] =
 			splitAroundIndex(peer.indexOf(separator))
 
 		/** excludes the separator char itself */
-		def splitAroundLastChar(separator:Char):Option[(String,String)] =
+		def splitAroundLastChar(separator:Char):Option[(String, String)] =
 			splitAroundIndex(peer.lastIndexOf(separator))
 
 		/** excludes the separator itself */
-		def splitAroundFirstString(separator:String):Option[(String,String)] =
+		def splitAroundFirstString(separator:String):Option[(String, String)] =
 			splitAroundIndex(peer.indexOf(separator))
 
 		/** excludes the separator itself */
-		def splitAroundLastString(separator:String):Option[(String,String)] =
+		def splitAroundLastString(separator:String):Option[(String, String)] =
 			splitAroundIndex(peer.lastIndexOf(separator))
 
 		//------------------------------------------------------------------------------
 
 		/** like splitAt, but None for indices outside the String's boundaries */
-		def splitAtIndex(index:Int):Option[(String,String)]	=
+		def splitAtIndex(index:Int):Option[(String, String)]	=
 			if index >= 0 && index <= peer.length
-			then Some((peer.substring(0,index), peer.substring(index)))
+			then Some((peer.substring(0, index), peer.substring(index)))
 			else None
 
 		//------------------------------------------------------------------------------

@@ -27,10 +27,10 @@ get notifications whenever the mouse enters or leaves a Component area.
 in contrast to simple mouseEnter/mouseExit events this works when the mouse
 moves fast or something is dragged over the component.
 */
-final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String,Exception)=>Unit) {
+final class ComponentUnderMouse(testCycle:MilliDuration, onError:(String, Exception)=>Unit) {
 	import ComponentUnderMouse.*
 
-	private var entries	= new mutable.WeakHashMap[Component,Entry]
+	private var entries	= new mutable.WeakHashMap[Component, Entry]
 
 	/** keep a hard reference to the component and either the callback or the resulting Disposer or updates will stop */
 	def listen(component:Component, callback:Callback):Disposer	= {

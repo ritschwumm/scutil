@@ -5,13 +5,13 @@ import minitest.*
 object ValidatedTest extends SimpleTestSuite {
 	type E = Nes[String]
 	def E(s:String):E				= Nes.one(s)
-	def EE(s:String, ss:String*):E	= Nes.of(s,ss*)
+	def EE(s:String, ss:String*):E	= Nes.of(s, ss*)
 
 	//------------------------------------------------------------------------------
 
 	test("Validated should do successful ap") {
-		val func:Validated[E,Int=>Int]	= Validated.valid(_ * 2)
-		val value:Validated[E,Int]		= Validated.valid(7)
+		val func:Validated[E, Int=>Int]	= Validated.valid(_ * 2)
+		val value:Validated[E, Int]		= Validated.valid(7)
 		assertEquals(
 			func.ap(value),
 			Validated.valid(14)
@@ -19,8 +19,8 @@ object ValidatedTest extends SimpleTestSuite {
 	}
 
 	test("Validated should combine function-first in ap") {
-		val func:Validated[E,Int=>Int]	= Validated.invalid(E("bug"))
-		val value:Validated[E,Int]		= Validated.invalid(E("error"))
+		val func:Validated[E, Int=>Int]	= Validated.invalid(E("bug"))
+		val value:Validated[E, Int]		= Validated.invalid(E("error"))
 		assertEquals(
 			func.ap(value),
 			Validated.invalid(EE("bug", "error"))
@@ -28,13 +28,13 @@ object ValidatedTest extends SimpleTestSuite {
 	}
 
 	test("Validated.merge should work for valid") {
-		val out	= Validated.valid[String,String]("test").merge
+		val out	= Validated.valid[String, String]("test").merge
 		typed[String](out)
 		assertEquals(out, "test")
 	}
 
 	test("Validated.merge should work for invalid") {
-		val out	= Validated.invalid[String,String]("test").merge
+		val out	= Validated.invalid[String, String]("test").merge
 		typed[String](out)
 		assertEquals(out, "test")
 	}

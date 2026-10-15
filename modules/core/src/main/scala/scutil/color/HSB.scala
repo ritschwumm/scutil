@@ -3,8 +3,8 @@ package scutil.color
 import java.lang.Math.*
 
 object HSB {
-	val white	= HSB(0,0,1)
-	val black	= HSB(0,0,0)
+	val white	= HSB(0, 0, 1)
+	val black	= HSB(0, 0, 0)
 }
 
 /** value range is 0..1 */

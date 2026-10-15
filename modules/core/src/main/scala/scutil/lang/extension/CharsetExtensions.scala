@@ -7,13 +7,13 @@ import scutil.lang.ByteString
 
 object CharsetExtensions {
 	extension (peer:Charset) {
-		def encodeEitherByteString(string:String):Either[CharacterCodingException,ByteString]	=
+		def encodeEitherByteString(string:String):Either[CharacterCodingException, ByteString]	=
 			encodeEitherImpl(string).map(ByteString.unsafeFromArray)
 
-		def decodeEitherByteString(string:ByteString):Either[CharacterCodingException,String]	=
+		def decodeEitherByteString(string:ByteString):Either[CharacterCodingException, String]	=
 			decodeEitherImpl(string.unsafeValue)
 
-		private def encodeEitherImpl(string:String):Either[CharacterCodingException,Array[Byte]]	=
+		private def encodeEitherImpl(string:String):Either[CharacterCodingException, Array[Byte]]	=
 			try {
 				Right(
 					failingEncoder.encode(CharBuffer.wrap(string)).array
@@ -23,7 +23,7 @@ object CharsetExtensions {
 				Left(e)
 			}
 
-		private def decodeEitherImpl(bytes:Array[Byte]):Either[CharacterCodingException,String]	=
+		private def decodeEitherImpl(bytes:Array[Byte]):Either[CharacterCodingException, String]	=
 			try {
 				Right(
 					failingDecoder.decode(ByteBuffer.wrap(bytes)).toString

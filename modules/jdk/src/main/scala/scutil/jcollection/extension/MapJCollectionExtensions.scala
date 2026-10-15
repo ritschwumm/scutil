@@ -8,10 +8,10 @@ import java.util.{
 }
 
 object MapJCollectionExtensions {
-	extension [S,T](peer:Map[S,T]) {
-		def toJMap:JMap[S,T]	=  {
-			val out	= new JHashMap[S,T]
-			peer.foreach { case (k,v) => out.put(k, v) }
+	extension [S, T](peer:Map[S, T]) {
+		def toJMap:JMap[S, T]	=  {
+			val out	= new JHashMap[S, T]
+			peer.foreach { case (k, v) => out.put(k, v) }
 			JCollections.unmodifiableMap(out)
 		}
 

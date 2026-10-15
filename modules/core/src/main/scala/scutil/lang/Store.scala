@@ -3,22 +3,22 @@ package scutil.lang
 import scutil.lang.tc.*
 
 object Store {
-	def identity[T](value:T):Store[T,T]	=
+	def identity[T](value:T):Store[T, T]	=
 		Store(value, t => t)
 
-	def trivial[T](value:T):Store[Unit,T]	=
+	def trivial[T](value:T):Store[Unit, T]	=
 		Store((), _ => value)
 
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
-	given [S] => Functor[Store[S,_]]	=
-		new Functor[Store[S,_]] {
-			def map[A,B](it:Store[S,A])(func:A=>B):Store[S,B]	= it.map(func)
+	given [S] => Functor[Store[S, _]]	=
+		new Functor[Store[S, _]] {
+			def map[A, B](it:Store[S, A])(func:A=>B):Store[S, B]	= it.map(func)
 		}
 }
 
-final case class Store[V,C](index:V, peek:V=>C) {
+final case class Store[V, C](index:V, peek:V=>C) {
 	def extract:C	= peek(index)
 
 	def modify(func:V=>V):C		= peek(func(index))
@@ -26,52 +26,52 @@ final case class Store[V,C](index:V, peek:V=>C) {
 	def modifyF[F[_]:Functor as F](func:V=>F[V]):F[C]	=
 		F.map(func(index))(peek)
 
-	def modifyState[X](func:State[V,X]):(C,X)	= {
+	def modifyState[X](func:State[V, X]):(C, X)	= {
 		val (v2, side)	= func.run(index)
 		(peek(v2), side)
 	}
 
-	def modifyStateT[F[_]:Functor as F,X](func:StateT[F,V,X]):F[(C,X)]	=
+	def modifyStateT[F[_]:Functor as F, X](func:StateT[F, V, X]):F[(C, X)]	=
 		F.map(func.run(index)) { (v, x) => (peek(v), x) }
 
 	//------------------------------------------------------------------------------
 
 	// aka coFlatten
-	def duplicate:Store[V,Store[V,C]]	=
+	def duplicate:Store[V, Store[V, C]]	=
 		Store(index, Store(_, peek))
 
-	def map[CC](func:C=>CC):Store[V,CC]	=
-		Store[V,CC](
+	def map[CC](func:C=>CC):Store[V, CC]	=
+		Store[V, CC](
 			index,
 			peek.andThen(func)
 		)
 
 	// TODO does this have a better name?
-	def coFlatMap[CC](func:Store[V,C]=>CC):Store[V,CC] =
-		Store[V,CC](
+	def coFlatMap[CC](func:Store[V, C]=>CC):Store[V, CC] =
+		Store[V, CC](
 			index,
 			x => func(Store(x, peek))
 		)
 
 	/** symbolic alias for andThen */
-	def >=>[VV](that:Store[VV,V]):Store[VV,C]	=
+	def >=>[VV](that:Store[VV, V]):Store[VV, C]	=
 		this.andThen(that)
 
 	/** symbolic alias for compose */
-	def <=<[CC](that:Store[C,CC]):Store[V,CC]	=
+	def <=<[CC](that:Store[C, CC]):Store[V, CC]	=
 		this.compose(that)
 
-	def andThen[VV](that:Store[VV,V]):Store[VV,C]	=
+	def andThen[VV](that:Store[VV, V]):Store[VV, C]	=
 		Store(
 			that.index,
 			that.peek.andThen(this.peek)
 		)
 
-	def compose[CC](that:Store[C,CC]):Store[V,CC]	=
+	def compose[CC](that:Store[C, CC]):Store[V, CC]	=
 		that.andThen(this)
 
 	// TODO optics cleanup
-	def andThenBijection[U](that:Bijection[V,U]):Store[U,C]	=
+	def andThenBijection[U](that:Bijection[V, U]):Store[U, C]	=
 		Store(
 			that.get(index),
 			that.set.andThen(peek)
