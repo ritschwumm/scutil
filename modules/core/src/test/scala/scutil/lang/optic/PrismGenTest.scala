@@ -28,6 +28,12 @@ object PrismGenTest extends SimpleTestSuite {
 
 	//-----------------------------------------------------------------------------
 
+	test("missing variants are not compiled") {
+		assertDoesNotCompile("Foo.P.DoesNotExists")
+	}
+
+	//-----------------------------------------------------------------------------
+
 	test("get on generated prisms should work for object case") {
 		assertEquals(
 			( Foo.P.Obj.get(Foo.Obj) ) : @nowarn,

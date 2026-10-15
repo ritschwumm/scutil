@@ -2,14 +2,10 @@ package scutil.gui
 
 import scutil.lang.*
 
-abstract class Caster[L,E] private[gui] (
-	addListener:Effect[L],
-	removeListener:Effect[L],
-	createListener:Effect[E]=>L
+final class Caster[L] private[gui] (
+	val addListener:Effect[L],
+	val removeListener:Effect[L],
 ) {
-	def connect(callback:E=>Unit):Disposer =
-		listen(createListener(callback))
-
 	def listen(listener:L):Disposer = {
 		{
 			addListener(listener)

@@ -38,6 +38,10 @@ object LensGenTest extends SimpleTestSuite {
 
 	//------------------------------------------------------------------------------
 
+	test("missing fields are not compiled") {
+		assertDoesNotCompile("L1.doesNotExists")
+	}
+
 	test("LensGen should work with simple case class getters") {
 		val container	= Foo(4711, "hallo")
 		val lens		= (Lens.Gen[Foo].a) : @nowarn
