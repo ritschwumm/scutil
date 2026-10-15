@@ -2,13 +2,11 @@ package scutil.lang.extension
 
 import java.nio.charset.Charset
 
-import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.mutable
 
 import scutil.lang.*
 
-@nowarn("msg=unused explicit parameter in extension method")
 object StringExtensions {
 	extension (peer:String) {
 		def toBigIntOption:Option[BigInt]	= parseBigInt.toOption

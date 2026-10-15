@@ -1,6 +1,5 @@
 package scutil.collection.extension
 
-import scala.annotation.nowarn
 import scala.collection.Factory
 import scala.collection.BuildFrom
 import scala.collection.generic.IsSeq
@@ -8,7 +7,6 @@ import scala.collection.mutable.Builder
 
 import scutil.lang.*
 
-@nowarn("msg=unused explicit parameter in extension method")
 object SeqExtensions {
 	extension [Repr,T,Self](peer:Repr)(using isSeq:IsSeq[Repr] { type A = T; type C = Self }) {
 		inline private def ops	= isSeq(peer)
