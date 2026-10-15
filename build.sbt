@@ -1,11 +1,11 @@
-import spray.boilerplate.BoilerplatePlugin
+// import spray.boilerplate.BoilerplatePlugin
 import sbtcrossproject.{ CrossProject, CrossType, Platform }
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(Seq(
 	organization	:= "de.djini",
-	version			:= "0.262.0",
+	version			:= "0.263.0",
 
 	scalaVersion	:= "3.7.3",
 	scalacOptions	++= Seq(
@@ -15,7 +15,6 @@ inThisBuild(Seq(
 		"-explain",
 		"-source:future",
 		"-language:experimental.into",
-		// "-explain",
 		"-Wunused:all",
 		"-Wsafe-init",
 		"-Wshadow:all",
@@ -107,7 +106,7 @@ lazy val `scutil`	=
 lazy val `scutil-core`	=
 	myCrossProject("scutil-core", file("modules/core"), CrossType.Pure)
 	.enablePlugins(
-		BoilerplatePlugin
+		// BoilerplatePlugin
 	)
 	.settings(
 		fixConsoleSettings,
@@ -116,7 +115,7 @@ lazy val `scutil-core`	=
 			"io.monix"			%%	"minitest"		% "2.9.6"				% "test"
 		),
 		testFrameworks	+= new TestFramework("minitest.runner.Framework"),
-		Compile / boilerplateSource	:= baseDirectory.value.getParentFile / "src" / "main" / "boilerplate"
+		// Compile / boilerplateSource	:= baseDirectory.value.getParentFile / "src" / "main" / "boilerplate"
 	)
 	.jvmSettings()
 	.jsSettings(

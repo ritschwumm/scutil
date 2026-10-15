@@ -2,7 +2,6 @@ package scutil.lang
 
 import minitest.*
 
-// NOTE the @nowarn are necessary dues to https://github.com/scala/scala3/issues/17753
 object PrismGenTest extends SimpleTestSuite {
 	object Foo {
 		val P	= PrismGen[Foo]
