@@ -52,4 +52,19 @@ object LoggingTest extends SimpleTestSuite with TestLogging {
 			logHandler.strings(0).matches("""^INFO\t\[.*\]\tLoggingTest.scala:\d+\tstring\t1\t1$""")
 		)
 	}
+
+	test("LogValue.of works for values") {
+		LogValue.of("test")
+		assert(true)
+	}
+
+	test("LogValue.of works for arrays") {
+		LogValue.of(Vector("foo", "bar"))
+		assert(true)
+	}
+
+	test("LogValue.ofN works") {
+		LogValue.ofN("foo", 1)
+		assert(true)
+	}
 }

@@ -14,7 +14,7 @@ trait Logging {
 
 		def time[T](what:into[LogValue]*)(block: =>T)(using sl:SourceLocation):T	= {
 			val (out, dur)	= LogTime.measure(block)
-			val elements	= what.toVector :+ LogValue.string(dur.toHumanString)
+			val elements	= what.toVector :+ LogValue.of(dur.toHumanString)
 			log(elements)(using sl)
 			out
 		}
