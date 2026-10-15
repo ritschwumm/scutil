@@ -1,6 +1,6 @@
 package scutil.lang
 
-object NaturalTransformation {
+object FunctionK {
 	def identity[F[_]]:F ~> F	= [A] => (it:F[A]) => it
 
 	extension [F[_], G[_]](self:F ~> G) {
@@ -13,13 +13,13 @@ object NaturalTransformation {
 }
 
 // aka FunctionK
-type NaturalTransformation[F[_], G[_]]	= [A] => F[A] => G[A]
+type FunctionK[F[_], G[_]]	= [A] => F[A] => G[A]
 
 /*
 NOTE lambda conversion from [A] => F[A] => G[A] to this trait does not work
 @see https://docs.scala-lang.org/sips/polymorphic-eta-expansion.html
 
-trait NaturalTransformation[-F[_],+G[_]] { self =>
+trait FunctionK[-F[_],+G[_]] { self =>
 	def apply[A](fa:F[A]):G[A]
 
 	def compose[E[_]](that:E ~> F):E ~> G =
@@ -28,7 +28,7 @@ trait NaturalTransformation[-F[_],+G[_]] { self =>
 	def andThen[H[_]](that:G ~> H):F ~> H	=
 		// TODO dotty should work, but does not @see https://docs.scala-lang.org/sips/polymorphic-eta-expansion.html
 		// [A] => (it:F[A]) => that(self(it))
-		new NaturalTransformation[F, H] {
+		new FunctionK[F, H] {
 			def apply[A](it:F[A]):H[A]	=
 				that(self(it))
 		}

@@ -30,16 +30,20 @@ object TupleKTest extends SimpleTestSuite {
 
 	test("TupleK.mapK should work") {
 		// TODO dotty has to be in its own variable - why?
-		val nat:Vector ~> Option	= [A] => (a:Vector[A]) => a.headOption
+		// TODO dotty without the type-ascription, this fails, too
+		// val nat1:Vector ~> Option	= [A] => (a:Vector[A]) => a.headOption
+		val nat2	= [A] => (a:Vector[A]) => a.headOption
+		val nat3:Vector ~> Option	= nat2
 
 		assertEquals(
-			TupleK.mapK((Vector(1), Vector("a", "b")))(nat),
+			TupleK.mapK((Vector(1), Vector("a", "b")))(nat3),
 			(Some(1), Some("a"))
 		)
 	}
 
 	test("TupleK.traverseK should work") {
 		// TODO dotty has to be in its own variable - why?
+		// TODO dotty without the type-ascription, this fails, too
 		val nat:Vector ~> Option	= [A] => (a:Vector[A]) => a.headOption
 
 		assertEquals(

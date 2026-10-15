@@ -10,6 +10,7 @@ object extensions {
 	export ByteArrayExtensions.*
 	export CharsetExtensions.*
 	export ClassExtensions.*
+	export CloneableExtensions.*
 	export EitherExtensions.*
 	export Function0Extensions.*
 	export Function1Extensions.*
