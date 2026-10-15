@@ -40,17 +40,6 @@ object Optionals {
 			set	= t => s	=> s.updatedAt(i, t).getOrElse(s)
 		)
 
-	def seqWhere[T](pred:Predicate[T]):Optional[Seq[T],T]	=
-		Optional(
-			get	= items			=> items.find(pred),
-			set	= item => items	=> items.indexWhereOption(pred).cata(items, index => items.updated(index, item))
-		)
-
-	def seqWhereEqual[S,T](extract:S=>T, id:T):Optional[Seq[S],S]	=
-		seqWhere { it =>
-			extract(it) ==== id
-		}
-
 	def seqHead[T]:Optional[Seq[T],T]	=
 		Optional(
 			get	=			s	=> s.headOption,
@@ -63,6 +52,34 @@ object Optionals {
 			set	=	t	=>	s	=> if (s.nonEmpty) s.updated(s.size-1, t) else s
 		)
 
+	@deprecated("use seqFirstWhere", "0.253.0")
+	def seqWhere[T](pred:Predicate[T]):Optional[Seq[T],T]			= seqFirstWhere(pred)
+
+	@deprecated("use seqFirstWhereEqual", "0.253.0")
+	def seqWhereEqual[S,T](extract:S=>T, id:T):Optional[Seq[S],S]	= seqFirstWhereEqual(extract, id)
+
+	def seqFirstWhere[T](pred:Predicate[T]):Optional[Seq[T],T]	=
+		Optional(
+			get	= items			=> items.find(pred),
+			set	= item => items	=> items.indexWhereOption(pred).cata(items, index => items.updated(index, item))
+		)
+
+	def seqLastWhere[T](pred:Predicate[T]):Optional[Seq[T],T]	=
+		Optional(
+			get	= items			=> items.find(pred),
+			set	= item => items	=> items.lastIndexWhereOption(pred).cata(items, index => items.updated(index, item))
+		)
+
+	def seqFirstWhereEqual[S,T](extract:S=>T, id:T):Optional[Seq[S],S]	=
+		seqFirstWhere { it =>
+			extract(it) ==== id
+		}
+
+	def seqLastWhereEqual[S,T](extract:S=>T, id:T):Optional[Seq[S],S]	=
+		seqLastWhere { it =>
+			extract(it) ==== id
+		}
+
 	//-----------------------------------------------------------------------------
 	//## Vector
 
@@ -71,17 +88,6 @@ object Optionals {
 			get	= s			=> s.lift(i),
 			set	= t => s	=> s.updatedAt(i, t).getOrElse(s)
 		)
-
-	def vectorWhere[T](pred:Predicate[T]):Optional[Vector[T],T]	=
-		Optional(
-			get	= items			=> items.find(pred),
-			set	= item => items	=> items.indexWhereOption(pred).cata(items, index => items.updated(index, item))
-		)
-
-	def vectorWhereEqual[S,T](extract:S=>T, id:T):Optional[Vector[S],S]	=
-		vectorWhere { it =>
-			extract(it) ==== id
-		}
 
 	def vectorHead[T]:Optional[Vector[T],T]	=
 		Optional(
@@ -94,6 +100,34 @@ object Optionals {
 			get	=			s	=> s.lastOption,
 			set	=	t	=>	s	=> if (s.nonEmpty) s.updated(s.size-1, t) else s
 		)
+
+	@deprecated("use vectorFirstWhere", "0.253.0")
+	def vectorWhere[T](pred:Predicate[T]):Optional[Vector[T],T]			= vectorFirstWhere(pred)
+
+	@deprecated("use vectorFirstWhereEqual", "0.253.0")
+	def vectorWhereEqual[S,T](extract:S=>T, id:T):Optional[Vector[S],S]	= vectorFirstWhereEqual(extract, id)
+
+	def vectorFirstWhere[T](pred:Predicate[T]):Optional[Vector[T],T]	=
+		Optional(
+			get	= items			=> items.find(pred),
+			set	= item => items	=> items.indexWhereOption(pred).cata(items, index => items.updated(index, item))
+		)
+
+	def vectorLastWhere[T](pred:Predicate[T]):Optional[Vector[T],T]	=
+		Optional(
+			get	= items			=> items.find(pred),
+			set	= item => items	=> items.lastIndexWhereOption(pred).cata(items, index => items.updated(index, item))
+		)
+
+	def vectorFirstWhereEqual[S,T](extract:S=>T, id:T):Optional[Vector[S],S]	=
+		vectorFirstWhere { it =>
+			extract(it) ==== id
+		}
+
+	def vectorLastWhereEqual[S,T](extract:S=>T, id:T):Optional[Vector[S],S]	=
+		vectorLastWhere { it =>
+			extract(it) ==== id
+		}
 
 	//-----------------------------------------------------------------------------
 	//## IndexedSeq

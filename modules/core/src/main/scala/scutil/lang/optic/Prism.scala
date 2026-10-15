@@ -42,9 +42,11 @@ object Prism {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
+	/*
 	// TODO optics is this lawful?
 	given [S,T] => Semigroup[Prism[S,T]]	=
 		Semigroup.instance(_ `orElse` _)
+	*/
 }
 
 /** parser and unparser for some data into a side format, aka Prism' */
@@ -58,9 +60,13 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 	// these fall back to the original value if necessary
 
 	def mod(func:T=>T):S=>S	= s => get(s).map(func.andThen(set)).getOrElse(s)
+
+	@deprecated("use mod(func)(s)", "0.253.0")
 	def modThe(s:S, func:T=>T):S	= mod(func)(s)
 
 	def modF[F[_]](func:T=>F[T])(using F:Applicative[F]):S=>F[S]	= s	=> modOptF(func).apply(s).getOrElse(F.pure(s))
+
+	@deprecated("use modF(func)(s)", "0.253.0")
 	def modTheF[F[_]](s:S, func:T=>F[T])(using F:Applicative[F]):F[S]	= modF(func).apply(s)
 
 	// TODO optics this could be renamed to set, set is actually reverseGet in monocle (?)
@@ -76,6 +82,8 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 	//------------------------------------------------------------------------------
 
 	def modOpt(func:T=>T):S=>Option[S]		= s => get(s).map(func.andThen(set))
+
+	@deprecated("use modOpt(func)(s)", "0.253.0")
 	def modTheOpt(s:S, func:T=>T):Option[S]	= modOpt(func).apply(s)
 
 	def modOptF[F[_]](func:T=>F[T])(using F:Functor[F]):S=>Option[F[S]]	=
@@ -86,6 +94,8 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 				}
 			}
 		}
+
+	@deprecated("use modOptF(func)(s)", "0.253.0")
 	def modTheOptF[F[_]](s:S, func:T=>F[T])(using F:Functor[F]):Option[F[S]]	=
 		modOptF(func).apply(s)
 
@@ -96,7 +106,7 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 			get(s)
 			.map { t1 =>
 				val (t2, u)	= state.run(t1)
-				set(t2) -> (Some(u):Option[U])
+				set(t2) -> Some(u)
 			}
 			.getOrElse	(s -> None)
 		}
@@ -124,11 +134,11 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 			.map { t1 =>
 				val ftu	= state.run(t1)
 				F.map(ftu) { (t2, u) =>
-					set(t2) -> (Some(u):Option[U])
+					set(t2) -> Some(u)
 				}
 			}
 			.getOrElse (
-				F.pure(s -> (None:Option[U]))
+				F.pure(s -> None)
 			)
 		}
 
@@ -159,11 +169,14 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 
 	//------------------------------------------------------------------------------
 
+	/*
+	// TODO optics shouldn't this try to set both? or the one where the first get succeeded?
 	def orElse(that:Prism[S,T]):Prism[S,T]	=
 		Prism(
 			get	= s	=> this.get(s) `orElse` that.get(s),
 			set	= set
 		)
+	*/
 
 	/** filter the source value */
 	def filterBefore(pred:Predicate[S]):Prism[S,T]	=
@@ -213,14 +226,17 @@ final case class Prism[S,T](get:S=>Option[T], set:T=>S) {
 
 	//------------------------------------------------------------------------------
 
+	def writeExtractor:Extractor[S,T]	=
+		Extractor(get)
+
+	def toSetter:Setter[S,T]	=
+		Setter(mod)
+
 	def toOptional:Optional[S,T]	=
 		Optional(
 			get	= get,
 			set	= setMatching
 		)
-
-	def writeExtractor:Extractor[S,T]	=
-		Extractor(get)
 
 	// TODO optics this is questionable
 	def toBijection(func:S=>T):Bijection[S,T]	=

@@ -3,11 +3,32 @@ package scutil.lang
 import scutil.collection.implicits.*
 
 object Lenses {
+	//-----------------------------------------------------------------------------
+	//## tuple
+
+	def first[S,T]:Lens[(S,T),S]	=
+		Lens(
+			get	= p			=> p._1,
+			set	= t => p	=> (t, p._2)
+		)
+
+	def second[S,T]:Lens[(S,T),T]	=
+		Lens(
+			get	= p			=> p._2,
+			set	=  t => p	=> (p._1, t)
+		)
+
+	//-----------------------------------------------------------------------------
+	//## set
+
 	def set[T](t:T):Lens[Set[T],Boolean]	=
 		Lens(
 			get	= _ contains t,
 			set	= v => c	=> if (v) c + t else c - t
 		)
+
+	//-----------------------------------------------------------------------------
+	//## map
 
 	def map[K,V](k:K):Lens[Map[K,V],Option[V]]	=
 		Lens.fromStoreAt(_.optionStoreAt(k))

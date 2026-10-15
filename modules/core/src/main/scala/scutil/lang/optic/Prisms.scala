@@ -1,6 +1,9 @@
 package scutil.lang
 
 object Prisms {
+	//-----------------------------------------------------------------------------
+	//## list
+
 	def listCons[T]:Prism[List[T],(T,List[T])]	=
 		Prism(
 			_ match {
@@ -18,6 +21,9 @@ object Prisms {
 			},
 			_ => Nil
 		)
+
+	//-----------------------------------------------------------------------------
+	//## seq
 
 	// @see extractHead
 	def seqHead[T]:Prism[Seq[T],(T,Seq[T])]	=

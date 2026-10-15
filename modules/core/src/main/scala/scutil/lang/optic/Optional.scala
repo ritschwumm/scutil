@@ -48,12 +48,15 @@ object Optional {
 	//------------------------------------------------------------------------------
 	//## typeclass instances
 
+	/*
 	// TODO optics is this lawful?
 	given [S,T] => Semigroup[Optional[S,T]]	=
 		Semigroup.instance(_ `orElse` _)
+	*/
 }
 
 final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
+	@deprecated("use set(t)(s)", "0.253.0")
 	def setThe(s:S, t:T):S	= set(t)(s)
 
 	//------------------------------------------------------------------------------
@@ -64,9 +67,13 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 			.map		{ t => set(func(t))(s) }
 			.getOrElse	(s)
 		}
+
+	@deprecated("use mod(func)(s)", "0.253.0")
 	def modThe(s:S, func:T=>T):S	= mod(func).apply(s)
 
 	def modF[F[_]](func:T=>F[T])(using F:Applicative[F]):S=>F[S]	= s	=> modOptF(func).apply(s).getOrElse(F.pure(s))
+
+	@deprecated("use modF(func)(s)", "0.253.0")
 	def modTheF[F[_]](s:S, func:T=>F[T])(using F:Applicative[F]):F[S]	= modF(func).apply(s)
 
 	//------------------------------------------------------------------------------
@@ -77,6 +84,7 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 			else					None
 		}
 
+	@deprecated("use setOpt(t)(s)", "0.253.0")
 	def setTheOpt(s:S, t:T):Option[S]	= setOpt(t)(s)
 
 	//------------------------------------------------------------------------------
@@ -87,6 +95,8 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 				set(func(t))(s)
 			}
 		}
+
+	@deprecated("use modOpt(func)(s)", "0.253.0")
 	def modTheOpt(s:S, func:T=>T):Option[S]	= modOpt(func).apply(s)
 
 	def modOptF[F[_]](func:T=>F[T])(using F:Functor[F]):S=>Option[F[S]]	=
@@ -96,6 +106,8 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 				F.map(ft) { t => set(t)(s) }
 			}
 		}
+
+	@deprecated("use modOptF(func)(s)", "0.253.0")
 	def modTheOptF[F[_]](s:S, func:T=>F[T])(using F:Functor[F]):Option[F[S]]	= modOptF(func).apply(s)
 
 	//------------------------------------------------------------------------------
@@ -105,7 +117,7 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 			get(s)
 			.map { t1 =>
 				val (t2, u)	= state.run(t1)
-				set(t2)(s) -> (Some(u):Option[U])
+				set(t2)(s) -> Some(u)
 			}
 			.getOrElse (s -> None)
 		}
@@ -141,11 +153,11 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 			.map { t1 =>
 				val ftu	= state.run(t1)
 				F.map(ftu) { (t2, u) =>
-					set(t2)(s) -> (Some(u):Option[U])
+					set(t2)(s) -> Some(u)
 				}
 			}
 			.getOrElse (
-				F.pure(s -> (None:Option[U]))
+				F.pure(s -> None)
 			)
 		}
 
@@ -176,11 +188,14 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 
 	//------------------------------------------------------------------------------
 
+	/*
+	// TODO optics shouldn't this try to set both? or the one where the first get succeeded?
 	def orElse(that:Optional[S,T]):Optional[S,T]	=
 		Optional(
 			get	= s	=> this.get(s) `orElse` that.get(s),
 			set	= set
 		)
+	*/
 
 	/** filter the source value */
 	def filterBefore(pred:Predicate[S]):Optional[S,T]	=
@@ -272,6 +287,12 @@ final case class Optional[S,T](get:S=>Option[T], set:T=>S=>S) {
 
 	def overTotal[R](store:Store[S,R]):Option[Store[T,R]]	=
 		this.on(store.index).map { _.compose(store) }
+
+
+	//-----------------------------------------------------------------------------
+
+	def toSetter:Setter[S,T]	=
+		Setter(mod)
 
 	/*
 	// NOTE optics this does note make sense as a get after a set would not return the same value

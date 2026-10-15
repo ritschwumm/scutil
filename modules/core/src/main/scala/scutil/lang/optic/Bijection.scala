@@ -43,9 +43,13 @@ final case class Bijection[S,T](get:S=>T, set:T=>S) {
 	//------------------------------------------------------------------------------
 
 	def mod(func:T=>T):S=>S	= s => set(func(get(s)))
+
+	@deprecated("use mod(func)(s)", "0.253.0")
 	def modThe(s:S, func:T=>T):S	= mod(func)(s)
 
 	def modF[F[_]](func:T=>F[T])(using F:Functor[F]):S=>F[S]	= s => F.map(func(get(s)))(set)
+
+	@deprecated("use modF(func)(s)", "0.253.0")
 	def modTheF[F[_]:Functor](s:S, func:T=>F[T]):F[S]	= modF(func).apply(s)
 
 	//------------------------------------------------------------------------------
@@ -85,6 +89,11 @@ final case class Bijection[S,T](get:S=>T, set:T=>S) {
 			get	= s	=> that.get(this.get(s)),
 			set	= u	=> this.set(that.set(u))
 		)
+
+	//-----------------------------------------------------------------------------
+
+	def toSetter:Setter[S,T]	=
+		Setter(mod)
 
 	def toPrism:Prism[S,T]	=
 		Prism.total(get, set)
